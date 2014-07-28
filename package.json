@@ -1,0 +1,13 @@
+{
+  "name": "spark-ide",
+  "main": "./lib/spark-ide",
+  "version": "0.0.1",
+  "description": "Spark Core local IDE",
+  "repository": "https://github.com/spark/spark-ide",
+  "license": "Apache 2.0",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}
