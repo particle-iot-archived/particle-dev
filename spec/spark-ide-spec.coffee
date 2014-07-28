@@ -14,7 +14,7 @@ describe "SparkIde", ->
     activationPromise = atom.packages.activatePackage('spark-ide')
 
   describe "when the spark-ide:toggle event is triggered", ->
-    it "attaches and then detaches the view", ->
+    xit "attaches and then detaches the view", ->
       expect(atom.workspaceView.find('.spark-ide')).not.toExist()
 
       # This is an activation event, triggering it will cause the package to be
