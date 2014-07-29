@@ -1,6 +1,14 @@
+StatusView = null
+
 module.exports =
+  statusView: null
+
   activate: (state) ->
-    console.log 'Activated'
+    # Require modules on activation
+    StatusView ?= require './spark-ide-status-bar-view'
+
+    # Initialize views
+    statusView = new StatusView()
 
   deactivate: ->
     @sparkIdeView.destroy()
