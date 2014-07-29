@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "when": "*",
-    "request": "*"
+    "request": "*",
+    "xtend": "*"
   }
 }
