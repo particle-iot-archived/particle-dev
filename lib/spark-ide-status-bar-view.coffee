@@ -3,8 +3,8 @@
 module.exports =
 class SparkIdeStatusBarView extends View
   @content: ->
-    @div class: 'inline-block spark-ide-status-bar-view', =>
-      @img src: 'atom://spark-ide/images/spark.png', class: 'spark'
+    @div class: 'inline-block', id: 'spark-ide-status-bar-view', =>
+      @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
       @span id: 'spark-login-status', 'Click to log in to Spark Cloud...'
       @span id: 'spark-log'
 

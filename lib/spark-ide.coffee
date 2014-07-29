@@ -11,7 +11,7 @@ module.exports =
     statusView = new StatusView()
 
   deactivate: ->
-    @sparkIdeView.destroy()
+    @statusView?.destroy()
 
   serialize: ->
     null
