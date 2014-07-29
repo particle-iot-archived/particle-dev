@@ -1,11 +1,12 @@
 {View} = require 'atom'
+$ = require('atom').$
 
 module.exports =
 class SparkIdeStatusBarView extends View
   @content: ->
     @div class: 'inline-block', id: 'spark-ide-status-bar-view', =>
       @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
-      @span id: 'spark-login-status', 'Click to log in to Spark Cloud...'
+      @span id: 'spark-login-status'
       @span id: 'spark-log'
 
   initialize: (serializeState) ->
@@ -19,10 +20,25 @@ class SparkIdeStatusBarView extends View
 
   attach: =>
     atom.workspaceView.statusBar.appendLeft(this)
+    @updateLoginStatus()
 
   # Tear down any state and detach
   destroy: ->
     @remove()
+
+  updateLoginStatus: ->
+    settings = require './settings'
+    hasToken = !!settings.access_token
+    statusElement = this.find('#spark-login-status')
+    statusElement.empty()
+
+    if hasToken
+      statusElement.text(settings.username)
+    else
+      loginButton = $('<a/>').text('Click to log in to Spark Cloud...')
+      statusElement.append(loginButton)
+      loginButton.on 'click', =>
+        atom.workspaceView.trigger 'spark-ide:login'
 
   setStatus: (text, type = null) ->
       el = this.find('.spark-log')
