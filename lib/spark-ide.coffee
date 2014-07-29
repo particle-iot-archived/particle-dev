@@ -10,8 +10,16 @@ module.exports =
     # Initialize views
     statusView = new StatusView()
 
+    # Hooking up commands
+    atom.workspaceView.command 'spark-ide:login', '.workspace', => @login()
+
   deactivate: ->
     @statusView?.destroy()
 
   serialize: ->
-    null
+
+  login: ->
+    # TODO
+
+  logout: ->
+    # TODO
