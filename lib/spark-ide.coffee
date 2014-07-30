@@ -1,7 +1,9 @@
 StatusView = null
+LoginView = null
 
 module.exports =
   statusView: null
+  loginView: null
 
   activate: (state) ->
     # Require modules on activation
@@ -19,8 +21,9 @@ module.exports =
   serialize: ->
 
   login: ->
-    # TODO
-    console.log 'Log in...'
+    LoginView ?= require './spark-ide-login-view'
+    loginView = new LoginView()
+    loginView.show()
 
   logout: ->
     # TODO
