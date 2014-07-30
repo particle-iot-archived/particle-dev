@@ -15,6 +15,8 @@ class SparkIdeStatusBarView extends View
     else
       @subscribe atom.packages.once 'activated', @attach
 
+    atom.workspaceView.command 'spark-ide:updateLoginStatus', => @updateLoginStatus()
+
   # Returns an object that can be retrieved when package is activated
   serialize: ->
 
@@ -31,7 +33,7 @@ class SparkIdeStatusBarView extends View
     hasToken = !!settings.access_token
     statusElement = this.find('#spark-login-status')
     statusElement.empty()
-
+    
     if hasToken
       statusElement.text(settings.username)
     else

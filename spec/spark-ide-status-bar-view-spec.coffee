@@ -21,6 +21,9 @@ describe "SparkIdeStatusBarView", ->
 
   afterEach ->
     settings = require '../lib/settings'
+    settings.username = null
+    settings.access_token = null
+
     settings.switchProfile(originalProfile)
     delete require.cache[require.resolve('../lib/settings')]
 
@@ -39,4 +42,16 @@ describe "SparkIdeStatusBarView", ->
       expect(statusBar.find('#spark-login-status a')).toExist()
 
     it "checks if username of logged in user is shown", ->
-      settings = require '../lib/settings'      
+      statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+      # Previously logged out user
+      expect(statusBar.find('#spark-login-status a')).toExist()
+      # Log user in
+      settings = require '../lib/settings'
+      settings.username = 'foo@bar.baz'
+      settings.access_token = '0123456789abcdef0123456789abcdef'
+
+      # Refresh UI
+      atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
+
+      expect(statusBar.find('#spark-login-status a')).not.toExist()
+      expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
