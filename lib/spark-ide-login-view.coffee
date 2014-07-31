@@ -24,7 +24,6 @@ class SparkIdeLoginView extends View
     _s = require 'underscore.string'
 
     # TODO: close with Esc
-    # TODO: show only one dialog
 
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #

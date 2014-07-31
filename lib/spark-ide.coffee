@@ -22,8 +22,8 @@ module.exports =
 
   login: ->
     LoginView ?= require './spark-ide-login-view'
-    loginView = new LoginView()
-    loginView.show()
+    @loginView ?= new LoginView()
+    @loginView.show()
 
   logout: ->
     # TODO
