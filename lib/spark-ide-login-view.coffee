@@ -38,8 +38,6 @@ class SparkIdeLoginView extends View
 
     @loginPromise = null
 
-    # TODO: Enter to submit
-
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #
     # Known issues:
@@ -67,6 +65,8 @@ class SparkIdeLoginView extends View
         else
           @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, cursor.column - 1, 1)
         @passwordEditor.backspace
+      else if e.which == 13
+        @login()
       true
 
   # Returns an object that can be retrieved when package is activated
@@ -83,6 +83,7 @@ class SparkIdeLoginView extends View
       @passwordEditor.getEditor().setText ''
       @passwordEditor.originalText = ''
       @errorLabel.hide()
+      @emailEditor.focus()
 
   hide: ->
     if @hasParent()
