@@ -18,6 +18,7 @@ class SparkIdeLoginView extends View
           @span ' key'
       @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?'), outlet: 'emailEditor'
       @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?'), outlet: 'passwordEditor'
+      @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'login', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
         @button click: 'cancel', class: 'btn', outlet: 'cancelButton', 'Cancel'
@@ -79,6 +80,7 @@ class SparkIdeLoginView extends View
       @emailEditor.getEditor().setText ''
       @passwordEditor.getEditor().setText ''
       @passwordEditor.originalText = ''
+      @errorLabel.hide()
 
   hide: ->
     if @hasParent()
@@ -86,7 +88,9 @@ class SparkIdeLoginView extends View
 
   cancel: (event, element) ->
     if !!@loginPromise
-      # TODO: Cancel login
+      @loginPromise = null
+
+    @unlockUi()
     @hide()
 
   validateInputs: ->
@@ -110,6 +114,10 @@ class SparkIdeLoginView extends View
 
     isOk
 
+  unlockUi: ->
+    @emailEditor.hiddenInput.removeAttr 'disabled'
+    @passwordEditor.hiddenInput.removeAttr 'disabled'
+    @loginButton.removeAttr 'disabled'
 
   login: (event, element) ->
     if !@validateInputs()
@@ -121,5 +129,18 @@ class SparkIdeLoginView extends View
     @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
     @loginButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
+    @errorLabel.hide()
 
+    self = @
     client = new ApiClient settings.apiUrl
+    @loginPromise = client.login 'spark-ide', @email, @password
+    @loginPromise.done (e) ->
+      self.spinner.addClass 'hidden'
+      if !self.loginPromise
+        return
+    , (e) ->
+      self.spinner.addClass 'hidden'
+      if !self.loginPromise
+        return
+      self.unlockUi()
+      self.errorLabel.text(e).show()
