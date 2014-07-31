@@ -38,6 +38,8 @@ class SparkIdeLoginView extends View
 
     @loginPromise = null
 
+    # TODO: Enter to submit
+
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #
     # Known issues:
@@ -138,9 +140,18 @@ class SparkIdeLoginView extends View
       self.spinner.addClass 'hidden'
       if !self.loginPromise
         return
+
+      settings.username = self.email
+      settings.override null, 'username', settings.username
+      settings.access_token = e
+      settings.override null, 'access_token', settings.access_token
+      atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
+      self.cancel()
+
     , (e) ->
       self.spinner.addClass 'hidden'
       if !self.loginPromise
         return
       self.unlockUi()
       self.errorLabel.text(e).show()
+      self.loginPromise = null
