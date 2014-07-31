@@ -1,4 +1,5 @@
 ApiClient = require '../lib/ApiClient'
+settings = require '../lib/settings'
 
 describe 'Tests for mocked ApiClient library which functions should succeed', ->
   client = null
@@ -7,7 +8,7 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
   beforeEach ->
     ApiClient = require './mocks/ApiClient-success'
 
-    client = new ApiClient 'https://api.spark.io'
+    client = new ApiClient settings.apiUrl
 
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
@@ -27,7 +28,7 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
 
     runs ->
       expect(promise).not.toBe(null)
-      status = promise.inspect()      
+      status = promise.inspect()
       expect(status.state).toBe('fulfilled')
       expect(status.value).not.toBe(null)
       # There should be 2 devices, one connected and one not
@@ -43,7 +44,7 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
   beforeEach ->
     ApiClient = require './mocks/ApiClient-fail'
 
-    client = new ApiClient 'https://api.spark.io'
+    client = new ApiClient settings.apiUrl
 
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
