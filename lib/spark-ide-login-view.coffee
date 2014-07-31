@@ -1,6 +1,7 @@
 {$$$, EditorView, View} = require 'atom'
 $ = null
 _s = null
+Subscriber = null
 
 module.exports =
 class SparkIdeLoginView extends View
@@ -20,10 +21,14 @@ class SparkIdeLoginView extends View
         @a href: 'https://www.spark.io/forgot-password', 'Forgot password?'
 
   initialize: (serializeState) ->
+    {Subscriber} = require 'emissary'
     $ = require('atom').$
     _s = require 'underscore.string'
 
-    # TODO: close with Esc
+    @subscriber = new Subscriber()
+
+    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
+      @hide()
 
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #

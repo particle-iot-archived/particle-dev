@@ -12,6 +12,7 @@
     "when": "*",
     "request": "*",
     "xtend": "*",
-    "underscore.string": "*"
+    "underscore.string": "*",
+    "emissary": "1.x"
   }
 }
