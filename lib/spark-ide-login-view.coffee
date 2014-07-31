@@ -12,7 +12,7 @@ class SparkIdeLoginView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?')
+      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?'), outlet: 'emailEditor'
       @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?'), outlet: 'passwordEditor'
       @div class: 'block', =>
         @button class: 'btn btn-primary', 'Log in'
@@ -43,7 +43,6 @@ class SparkIdeLoginView extends View
       false
 
     @passwordEditor.hiddenInput.on 'keydown', (e) =>
-      console.log 'keydown ', e.which
       if e.which == 8
         editor = @passwordEditor.getEditor()
         selection = editor.getSelectedBufferRange()
@@ -66,6 +65,9 @@ class SparkIdeLoginView extends View
   show: ->
     if !@hasParent()
       atom.workspaceView.append(this)
+      @emailEditor.getEditor().setText ''
+      @passwordEditor.getEditor().setText ''
+      @passwordEditor.originalText = ''
 
   hide: ->
     if @hasParent()
