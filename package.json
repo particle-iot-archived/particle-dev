@@ -13,6 +13,7 @@
     "request": "*",
     "xtend": "*",
     "underscore.string": "*",
-    "emissary": "1.x"
+    "emissary": "1.x",
+    "validator": "*"
   }
 }

@@ -2,6 +2,9 @@
 $ = null
 _s = null
 Subscriber = null
+ApiClient = null
+settings = null
+validator = null
 
 module.exports =
 class SparkIdeLoginView extends View
@@ -16,19 +19,23 @@ class SparkIdeLoginView extends View
       @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?'), outlet: 'emailEditor'
       @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?'), outlet: 'passwordEditor'
       @div class: 'block', =>
-        @button class: 'btn btn-primary', 'Log in'
-        @button click: 'cancel', class: 'btn', 'Cancel'
-        @a href: 'https://www.spark.io/forgot-password', 'Forgot password?'
+        @button click: 'login', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
+        @button click: 'cancel', class: 'btn', outlet: 'cancelButton', 'Cancel'
+        @span class: 'loading loading-spinner-tiny inline-block hidden', outlet: 'spinner'
+        @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
   initialize: (serializeState) ->
     {Subscriber} = require 'emissary'
     $ = require('atom').$
     _s = require 'underscore.string'
+    settings = require './settings'
 
     @subscriber = new Subscriber()
 
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      @hide()
+      @cancel()
+
+    @loginPromise = null
 
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #
@@ -57,7 +64,6 @@ class SparkIdeLoginView extends View
         else
           @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, cursor.column - 1, 1)
         @passwordEditor.backspace
-        false
       true
 
   # Returns an object that can be retrieved when package is activated
@@ -79,4 +85,41 @@ class SparkIdeLoginView extends View
       @detach()
 
   cancel: (event, element) ->
+    if !!@loginPromise
+      # TODO: Cancel login
     @hide()
+
+  validateInputs: ->
+    validator ?= require 'validator'
+
+    @emailEditor.removeClass 'editor-error'
+    @passwordEditor.removeClass 'editor-error'
+
+    @email = _s.trim(@emailEditor.getText())
+    @password = _s.trim(@passwordEditor.originalText)
+
+    isOk = true
+
+    if (@email == '') || (!validator.isEmail(@email))
+      @emailEditor.addClass 'editor-error'
+      isOk = false
+
+    if @password == ''
+      @passwordEditor.addClass 'editor-error'
+      isOk = false
+
+    isOk
+
+
+  login: (event, element) ->
+    if !@validateInputs()
+      return false
+
+    ApiClient ?= require './ApiClient'
+
+    @emailEditor.hiddenInput.attr 'disabled', 'disabled'
+    @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
+    @loginButton.attr 'disabled', 'disabled'
+    @spinner.removeClass 'hidden'
+
+    client = new ApiClient settings.apiUrl
