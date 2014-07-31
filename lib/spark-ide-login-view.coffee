@@ -5,16 +5,26 @@ _s = null
 module.exports =
 class SparkIdeLoginView extends View
   @content: ->
-    @div class: 'spark-ide-login-view overlay from-top', =>
-      @h1 'Log in to Spark Cloud'
+    @div id: 'spark-ide-login-view', class: 'overlay from-top', =>
+      @div class: 'block', =>
+        @span 'Log in to Spark Cloud '
+        @span class: 'text-subtle', =>
+          @text 'Close this dialog with the '
+          @span class: 'highlight', 'esc'
+          @span ' key'
       @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?')
       @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?'), outlet: 'passwordEditor'
       @div class: 'block', =>
+        @button class: 'btn btn-primary', 'Log in'
         @button click: 'cancel', class: 'btn', 'Cancel'
+        @a href: 'https://www.spark.io/forgot-password', 'Forgot password?'
 
   initialize: (serializeState) ->
     $ = require('atom').$
     _s = require 'underscore.string'
+
+    # TODO: close with Esc
+    # TODO: show only one dialog
 
     # As Atom doesn't provide password input, we have to hack EditorView to act as one
     #
