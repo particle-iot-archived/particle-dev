@@ -23,6 +23,8 @@ module.exports =
   login: ->
     LoginView ?= require './spark-ide-login-view'
     @loginView ?= new LoginView()
+    # You may ask why this isn't in LoginView? This way, we don't need to
+    # require/initialize login view until it's needed.
     @loginView.show()
 
   logout: ->

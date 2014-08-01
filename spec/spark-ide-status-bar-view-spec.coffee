@@ -1,6 +1,6 @@
 {WorkspaceView} = require 'atom'
 
-describe 'SparkIdeStatusBarView', ->
+describe 'Status Bar Tests', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null
