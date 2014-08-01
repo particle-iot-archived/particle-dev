@@ -16,12 +16,12 @@ class SparkIdeLoginView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?'), outlet: 'emailEditor'
-      @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?'), outlet: 'passwordEditor'
+      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?')
+      @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
-        @button click: 'login', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
-        @button click: 'cancel', class: 'btn', outlet: 'cancelButton', 'Cancel'
+        @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
+        @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
         @span class: 'loading loading-spinner-tiny inline-block hidden', outlet: 'spinner'
         @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
@@ -32,9 +32,8 @@ class SparkIdeLoginView extends View
     settings = require './settings'
 
     @subscriber = new Subscriber()
-
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      @cancel()
+      atom.workspaceView.trigger 'spark-ide:cancelLogin'
 
     @loginPromise = null
 
@@ -92,15 +91,21 @@ class SparkIdeLoginView extends View
   cancel: (event, element) ->
     if !!@loginPromise
       @loginPromise = null
-
     @unlockUi()
+    @clearErrors()
     @hide()
+
+  cancelCommand: ->
+    @cancel()
+
+  clearErrors: ->
+    @emailEditor.removeClass 'editor-error'
+    @passwordEditor.removeClass 'editor-error'
 
   validateInputs: ->
     validator ?= require 'validator'
 
-    @emailEditor.removeClass 'editor-error'
-    @passwordEditor.removeClass 'editor-error'
+    @clearErrors()
 
     @email = _s.trim(@emailEditor.getText())
     @password = _s.trim(@passwordEditor.originalText)

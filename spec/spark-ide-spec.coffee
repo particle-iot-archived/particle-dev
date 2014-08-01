@@ -9,14 +9,12 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:login event is triggered', ->
     it 'shows login view', ->
-      expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
-
-      # This is an activation event, triggering it will cause the package to be
-      # activated.
-      atom.workspaceView.trigger 'spark-ide:login'
-
       waitsForPromise ->
         activationPromise
 
       runs ->
+        expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
+        atom.workspaceView.trigger 'spark-ide:login'
         expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
+        atom.workspaceView.trigger 'spark-ide:cancelLogin'
+        expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
