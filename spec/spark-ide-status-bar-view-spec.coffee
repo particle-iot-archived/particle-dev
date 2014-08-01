@@ -1,7 +1,6 @@
 {WorkspaceView} = require 'atom'
-SparkIde = require '../lib/spark-ide'
 
-describe "SparkIdeStatusBarView", ->
+describe 'SparkIdeStatusBarView', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null
@@ -27,21 +26,21 @@ describe "SparkIdeStatusBarView", ->
     settings.switchProfile(originalProfile)
     delete require.cache[require.resolve('../lib/settings')]
 
-  describe "when the spark-ide is activated", ->
+  describe 'when the spark-ide is activated', ->
     beforeEach ->
       waitsForPromise ->
         activationPromise
       waitsForPromise ->
         statusBarPromise
 
-    it "attaches custom status bar", ->
+    it 'attaches custom status bar', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       expect(statusBar).toExist()
       expect(statusBar.find('#spark-icon').is(':empty')).toBe(true)
       # User should be logged off
       expect(statusBar.find('#spark-login-status a')).toExist()
 
-    it "checks if username of logged in user is shown", ->
+    it 'checks if username of logged in user is shown', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       # Previously logged out user
       expect(statusBar.find('#spark-login-status a')).toExist()
