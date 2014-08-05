@@ -6,7 +6,7 @@ class ApiClientFail extends ApiClient
   constructor: (baseUrl, access_token) ->
     super baseUrl, access_token
 
-  login: (client_id, user, pass) =>
+  login: (client_id, user, pass) ->
     dfd = whenjs.defer()
     request {
         uri: 'http://httpbin.org/delay/1'
@@ -15,7 +15,7 @@ class ApiClientFail extends ApiClient
 
     dfd.promise
 
-  listDevices: =>
+  listDevices: ->
     dfd = whenjs.defer()
     request {
         uri: 'http://httpbin.org/delay/1'
