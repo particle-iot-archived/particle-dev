@@ -1,7 +1,7 @@
 ApiClient = require '../lib/ApiClient'
 settings = require '../lib/settings'
 
-xdescribe 'Tests for mocked ApiClient library which functions should succeed', ->
+describe 'Tests for mocked ApiClient library which functions should succeed', ->
   client = null
   promise = null
 

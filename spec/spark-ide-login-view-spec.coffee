@@ -146,7 +146,7 @@ describe 'Login View Tests', ->
       expect(context.find('.text-error').text()).toEqual('Unknown user')
       expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
-  fit 'tests logging out', ->
+  it 'tests logging out', ->
     waitsForPromise ->
       activationPromise
 

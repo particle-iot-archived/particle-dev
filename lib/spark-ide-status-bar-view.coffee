@@ -34,22 +34,22 @@ class SparkIdeStatusBarView extends View
     statusElement = this.find('#spark-login-status')
     statusElement.empty()
 
-    menu = atom.menu.template.filter (value) ->
+    ideMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark IDE'
 
     if hasToken
       statusElement.text(settings.username)
-      menu[0].submenu[0].label = 'Log out ' + settings.username
-      menu[0].submenu[0].command = 'spark-ide:logout'
+      ideMenu[0].submenu[0].label = 'Log out ' + settings.username
+      ideMenu[0].submenu[0].command = 'spark-ide:logout'
     else
       loginButton = $('<a/>').text('Click to log in to Spark Cloud...')
       statusElement.append(loginButton)
       loginButton.on 'click', =>
         atom.workspaceView.trigger 'spark-ide:login'
-      menu[0].submenu[0].label = 'Log in to Spark Cloud...'
-      menu[0].submenu[0].command = 'spark-ide:login'
+      ideMenu[0].submenu[0].label = 'Log in to Spark Cloud...'
+      ideMenu[0].submenu[0].command = 'spark-ide:login'
     atom.menu.update()
-    
+
   setStatus: (text, type = null) ->
       el = this.find('.spark-log')
       el.text(text)

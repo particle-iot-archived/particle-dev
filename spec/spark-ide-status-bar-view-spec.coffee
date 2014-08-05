@@ -30,14 +30,19 @@ describe 'Status Bar Tests', ->
       waitsForPromise ->
         statusBarPromise
 
-    it 'attaches custom status bar', ->
+    it 'attaches custom status bar and updates menu', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       expect(statusBar).toExist()
       expect(statusBar.find('#spark-icon').is(':empty')).toBe(true)
       # User should be logged off
       expect(statusBar.find('#spark-login-status a')).toExist()
 
-      # TODO: Test menu
+      ideMenu = atom.menu.template.filter (value) ->
+        value.label == 'Spark IDE'
+      expect(ideMenu.length).toBe(1)
+      expect(ideMenu[0].submenu[0].label).toBe('Log in to Spark Cloud...')
+      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:login')
+
 
     it 'checks if username of logged in user is shown', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
@@ -53,6 +58,12 @@ describe 'Status Bar Tests', ->
 
       expect(statusBar.find('#spark-login-status a')).not.toExist()
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
+
+      ideMenu = atom.menu.template.filter (value) ->
+        value.label == 'Spark IDE'
+      expect(ideMenu.length).toBe(1)
+      expect(ideMenu[0].submenu[0].label).toBe('Log out foo@bar.baz')
+      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:logout')
 
       settings.username = null
       settings.access_token = null
