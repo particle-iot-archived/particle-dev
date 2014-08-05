@@ -80,10 +80,43 @@ describe 'Login View Tests', ->
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+      expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
       loginView.emailEditor.getEditor().setText 'foo@bar.baz'
       loginView.passwordEditor.originalText = 'foo'
       loginView.login()
 
+      expect(loginView.spinner.hasClass('hidden')).toBe(false)
+
+    waitsFor ->
+      !loginView.loginPromise
+
+    runs ->
+      context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+      expect(loginView.spinner.hasClass('hidden')).toBe(true)
+
+  it 'tests wrong credentials', ->
+    waitsForPromise ->
+      activationPromise
+
+    runs ->
+      # Mock ApiClient
+      require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-fail'
+
+      context = atom.workspaceView.find('#spark-ide-login-view')
+      expect(context.find('.text-error').css 'display').toEqual('none')
+
+      loginView.emailEditor.getEditor().setText 'foo@bar.baz'
+      loginView.passwordEditor.originalText = 'foo'
+      loginView.login()
+
+    waitsFor ->
+      !loginView.loginPromise
+
+    runs ->
+      context = atom.workspaceView.find('#spark-ide-login-view')
+      expect(context.find('.text-error').css 'display').toEqual('block')
+      expect(context.find('.text-error').text()).toEqual('Unknown user')
+      expect(loginView.spinner.hasClass('hidden')).toBe(true)

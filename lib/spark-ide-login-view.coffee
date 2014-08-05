@@ -131,32 +131,34 @@ class SparkIdeLoginView extends View
     if !@validateInputs()
       return false
 
-    ApiClient ?= require './ApiClient'    
+    # It should be ?= instead of = to save time but then the tests won't work
+    # as ApiClient could be set in one of the previous tests
+    ApiClient = require './ApiClient'
     @emailEditor.hiddenInput.attr 'disabled', 'disabled'
     @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
     @loginButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
     @errorLabel.hide()
-
     self = @
     client = new ApiClient settings.apiUrl
     @loginPromise = client.login 'spark-ide', @email, @password
-    @loginPromise.done (e) ->
-      self.spinner.addClass 'hidden'
-      if !self.loginPromise
+    @loginPromise.done (e) =>
+      @spinner.addClass 'hidden'
+      if !@loginPromise
         return
 
-      settings.username = self.email
+      settings.username = @email
       settings.override null, 'username', settings.username
       settings.access_token = e
       settings.override null, 'access_token', settings.access_token
       atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
-      self.cancel()
+      @loginPromise = null
+      @cancel()
 
-    , (e) ->
-      self.spinner.addClass 'hidden'
-      if !self.loginPromise
+    , (e) =>
+      @spinner.addClass 'hidden'
+      if !@loginPromise
         return
-      self.unlockUi()
-      self.errorLabel.text(e).show()
-      self.loginPromise = null
+      @unlockUi()
+      @errorLabel.text(e).show()
+      @loginPromise = null
