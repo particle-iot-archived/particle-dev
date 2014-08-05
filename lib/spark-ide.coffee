@@ -14,6 +14,7 @@ module.exports =
 
     # Hooking up commands
     atom.workspaceView.command 'spark-ide:login', => @login()
+    atom.workspaceView.command 'spark-ide:logout', => @logout()
 
   deactivate: ->
     @statusView?.destroy()
@@ -29,4 +30,7 @@ module.exports =
     @loginView.show()
 
   logout: ->
-    # TODO
+    LoginView ?= require './spark-ide-login-view'
+    @loginView ?= new LoginView()
+
+    @loginView.logout()
