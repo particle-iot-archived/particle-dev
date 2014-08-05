@@ -75,7 +75,7 @@ class SparkIdeLoginView extends View
   destroy: ->
     @remove()
 
-  show: ->
+  show: =>
     if !@hasParent()
       atom.workspaceView.append(this)
       @emailEditor.getEditor().setText ''
@@ -127,7 +127,7 @@ class SparkIdeLoginView extends View
     @passwordEditor.hiddenInput.removeAttr 'disabled'
     @loginButton.removeAttr 'disabled'
 
-  login: (event, element) ->
+  login: (event, element) =>
     if !@validateInputs()
       return false
 
@@ -163,7 +163,7 @@ class SparkIdeLoginView extends View
       @errorLabel.text(e).show()
       @loginPromise = null
 
-  logout: ->
+  logout: =>
     settings.username = null
     settings.override null, 'username', settings.username
     settings.access_token = null

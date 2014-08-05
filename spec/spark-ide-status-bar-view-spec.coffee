@@ -1,4 +1,5 @@
 {WorkspaceView} = require 'atom'
+settings = null
 
 describe 'Status Bar Tests', ->
   activationPromise = null
@@ -19,10 +20,6 @@ describe 'Status Bar Tests', ->
     activationPromise = atom.packages.activatePackage('spark-ide')
 
   afterEach ->
-    settings = require '../lib/settings'
-    settings.username = null
-    settings.access_token = null
-
     settings.switchProfile(originalProfile)
     delete require.cache[require.resolve('../lib/settings')]
 
@@ -40,6 +37,8 @@ describe 'Status Bar Tests', ->
       # User should be logged off
       expect(statusBar.find('#spark-login-status a')).toExist()
 
+      # TODO: Test menu
+
     it 'checks if username of logged in user is shown', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       # Previously logged out user
@@ -54,3 +53,8 @@ describe 'Status Bar Tests', ->
 
       expect(statusBar.find('#spark-login-status a')).not.toExist()
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
+
+      settings.username = null
+      settings.access_token = null
+
+      # TODO: Test menu
