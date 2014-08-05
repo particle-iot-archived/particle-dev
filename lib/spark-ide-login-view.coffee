@@ -88,7 +88,7 @@ class SparkIdeLoginView extends View
     if @hasParent()
       @detach()
 
-  cancel: (event, element) ->
+  cancel: (event, element) =>
     if !!@loginPromise
       @loginPromise = null
     @unlockUi()
@@ -127,12 +127,11 @@ class SparkIdeLoginView extends View
     @passwordEditor.hiddenInput.removeAttr 'disabled'
     @loginButton.removeAttr 'disabled'
 
-  login: (event, element) ->
+  login: (event, element) =>
     if !@validateInputs()
       return false
 
-    ApiClient ?= require './ApiClient'
-
+    ApiClient ?= require './ApiClient'    
     @emailEditor.hiddenInput.attr 'disabled', 'disabled'
     @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
     @loginButton.attr 'disabled', 'disabled'

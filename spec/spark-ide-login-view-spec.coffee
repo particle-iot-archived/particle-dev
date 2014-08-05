@@ -3,16 +3,19 @@ $ = require('atom').$
 
 describe 'Login View Tests', ->
   activationPromise = null
+  loginView = null
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide')
+    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+        loginView = mainModule.loginView
+
     atom.workspaceView.trigger 'spark-ide:login'
 
   afterEach ->
     atom.workspaceView.trigger 'spark-ide:cancelLogin'
 
-  it 'checks validation', ->
+  it 'tests hiding and showing', ->
     waitsForPromise ->
       activationPromise
 
@@ -33,31 +36,54 @@ describe 'Login View Tests', ->
       expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
       atom.workspaceView.trigger 'spark-ide:login'
 
-      # Test empty fields
+
+  it 'tests empty values', ->
+    waitsForPromise ->
+      activationPromise
+
+    runs ->
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
-      atom.workspaceView.find('#spark-ide-login-view #loginButton').click()
+
+      loginView.login()
+
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
 
-      # Restart
-      atom.workspaceView.trigger 'spark-ide:cancelLogin'
-      atom.workspaceView.trigger 'spark-ide:login'
 
-      # Test invalid input
+  it 'tests invalid values', ->
+    waitsForPromise ->
+      activationPromise
+
+    runs ->
+      context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
 
-      context.find('.editor.mini:eq(0) .hidden-input').val 'qwertyuiop'
-
-      # Fake space key
-      passwordInput = context.find('.editor.mini:eq(1) .hidden-input')
-      e = $.Event 'keypress'
-      e.which = 32
-      passwordInput.trigger e
-
-      context.find('#loginButton').click()
+      loginView.emailEditor.getEditor().setText 'foobarbaz'
+      loginView.passwordEditor.originalText = ' '
+      loginView.login()
 
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
+
+
+  it 'tests valid values', ->
+    waitsForPromise ->
+      activationPromise
+
+    runs ->
+      # Mock ApiClient
+      require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
+
+      context = atom.workspaceView.find('#spark-ide-login-view')
+      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+
+      loginView.emailEditor.getEditor().setText 'foo@bar.baz'
+      loginView.passwordEditor.originalText = 'foo'
+      loginView.login()
+
+      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
