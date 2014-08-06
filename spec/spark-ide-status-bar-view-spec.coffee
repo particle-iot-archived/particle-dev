@@ -43,6 +43,8 @@ describe 'Status Bar Tests', ->
       expect(ideMenu[0].submenu[0].label).toBe('Log in to Spark Cloud...')
       expect(ideMenu[0].submenu[0].command).toBe('spark-ide:login')
 
+      expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(true)
+
 
     it 'checks if username of logged in user is shown', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
@@ -65,7 +67,9 @@ describe 'Status Bar Tests', ->
       expect(ideMenu[0].submenu[0].label).toBe('Log out foo@bar.baz')
       expect(ideMenu[0].submenu[0].command).toBe('spark-ide:logout')
 
+      expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(false)
+
       settings.username = null
       settings.access_token = null
 
-      # TODO: Test menu
+    # TODO: Test current core

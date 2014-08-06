@@ -13,6 +13,10 @@
     margin-right: 5px;
   }
 
+  #spark-current-core {
+    margin-left: 10px;
+  }
+
   a:hover {
     text-decoration: none;
   }
@@ -40,5 +44,23 @@
 
   .lines {
     color: @text-color-error;
+  }
+}
+
+@-webkit-keyframes breathingCyan {
+	0% { background-color: rgba(0, 255, 255, 1); }
+	50% { background-color: rgba(0, 255, 255, 0); }
+  100% { background-color: rgba(0, 255, 255, 1); }
+}
+
+.core-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: @text-color-subtle;
+  display: inline-block;
+
+  &.breathing-cyan {
+    -webkit-animation: breathingCyan 4s ease-in-out infinite;
   }
 }
