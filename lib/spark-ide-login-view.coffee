@@ -141,7 +141,7 @@ class SparkIdeLoginView extends View
     @loginButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
     @errorLabel.hide()
-    self = @
+    
     client = new ApiClient settings.apiUrl
     @loginPromise = client.login 'spark-ide', @email, @password
     @loginPromise.done (e) =>

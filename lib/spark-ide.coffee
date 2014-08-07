@@ -1,9 +1,11 @@
 StatusView = null
 LoginView = null
+CoresView = null
 
 module.exports =
   statusView: null
   loginView: null
+  coresView: null
 
   activate: (state) ->
     # Require modules on activation
@@ -15,6 +17,7 @@ module.exports =
     # Hooking up commands
     atom.workspaceView.command 'spark-ide:login', => @login()
     atom.workspaceView.command 'spark-ide:logout', => @logout()
+    atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
 
   deactivate: ->
     @statusView?.destroy()
@@ -34,3 +37,9 @@ module.exports =
     @loginView ?= new LoginView()
 
     @loginView.logout()
+
+  selectCore: ->
+    CoresView ?= require './spark-ide-cores-view'
+    @coresView ?= new CoresView()
+
+    @coresView.show()

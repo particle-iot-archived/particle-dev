@@ -9,7 +9,8 @@ class SparkIdeStatusBarView extends View
       @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
       @span id: 'spark-login-status'
       @span id: 'spark-log'
-      @span id: 'spark-current-core', class: 'hidden'
+      @span id: 'spark-current-core', class: 'hidden', =>
+        @a click: 'selectCore'
 
   initialize: (serializeState) ->
     $ = require('atom').$
@@ -35,17 +36,17 @@ class SparkIdeStatusBarView extends View
   destroy: ->
     @remove()
 
+  selectCore: ->
+    atom.workspaceView.trigger 'spark-ide:select-core'
+
   updateCoreStatus: ->
-    statusElement = this.find('#spark-current-core')
+    statusElement = this.find('#spark-current-core a')
+
     if !settings.current_core
-      selectCoreButton = $('<a/>').text('No cores selected')
-      statusElement.append selectCoreButton
-      statusElement.on 'click', =>
-        atom.workspaceView.trigger 'spark-ide:select-core'
-        console.log 'click'
+      statusElement.text 'No cores selected'
     else
       # TODO: Check if current core is still available
-      # TODO: Show current core
+      statusElement.text settings.current_core_name
 
   updateLoginStatus: ->
     hasToken = !!settings.access_token

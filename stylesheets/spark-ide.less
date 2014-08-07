@@ -16,6 +16,12 @@
 
   #spark-current-core {
     margin-left: 10px;
+
+    &:before {
+      .core-dot();
+      content: " ";
+      margin-right: 5px;
+    }
   }
 
   a:hover {
@@ -60,8 +66,22 @@
   border-radius: 5px;
   background-color: @text-color-subtle;
   display: inline-block;
+}
 
-  &.breathing-cyan {
-    -webkit-animation: breathingCyan 4s ease-in-out infinite;
+.breathing-cyan {
+  -webkit-animation: breathingCyan 4s ease-in-out infinite;
+}
+
+.core-line .primary-line {
+  &:before {
+    .core-dot();
+    content: " ";
+    margin-right: 10px;
+  }
+
+  &.core-online {
+    &:before {
+      .breathing-cyan();
+    }
   }
 }
