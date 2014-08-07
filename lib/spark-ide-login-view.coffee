@@ -1,4 +1,5 @@
-{$$$, EditorView, View} = require 'atom'
+{View, EditorView} = require 'atom'
+
 $ = null
 _s = null
 Subscriber = null
@@ -28,6 +29,7 @@ class SparkIdeLoginView extends View
   initialize: (serializeState) ->
     {Subscriber} = require 'emissary'
     $ = require('atom').$
+
     _s = require 'underscore.string'
     settings = require './settings'
 

@@ -1,5 +1,5 @@
-{View} = require 'atom'
-$ = require('atom').$
+View = require('atom').View
+$ = null
 settings = null
 
 module.exports =
@@ -12,6 +12,8 @@ class SparkIdeStatusBarView extends View
       @span id: 'spark-current-core', class: 'hidden'
 
   initialize: (serializeState) ->
+    $ = require('atom').$
+
     settings = require './settings'
 
     if atom.workspaceView.statusBar
@@ -40,6 +42,7 @@ class SparkIdeStatusBarView extends View
       statusElement.append selectCoreButton
       statusElement.on 'click', =>
         atom.workspaceView.trigger 'spark-ide:select-core'
+        console.log 'click'
     else
       # TODO: Check if current core is still available
       # TODO: Show current core
