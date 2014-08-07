@@ -19,8 +19,8 @@ class SparkIdeStatusBarView extends View
     else
       @subscribe atom.packages.once 'activated', @attach
 
-    atom.workspaceView.command 'spark-ide:updateLoginStatus', => @updateLoginStatus()
-    atom.workspaceView.command 'spark-ide:updateCoreStatus', => @updateCoreStatus()
+    atom.workspaceView.command 'spark-ide:update-login-status', => @updateLoginStatus()
+    atom.workspaceView.command 'spark-ide:update-core-status', => @updateCoreStatus()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -39,7 +39,7 @@ class SparkIdeStatusBarView extends View
       selectCoreButton = $('<a/>').text('No cores selected')
       statusElement.append selectCoreButton
       statusElement.on 'click', =>
-        atom.workspaceView.trigger 'spark-ide:selectCore'
+        atom.workspaceView.trigger 'spark-ide:select-core'
     else
       # TODO: Check if current core is still available
       # TODO: Show current core

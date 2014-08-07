@@ -33,7 +33,7 @@ class SparkIdeLoginView extends View
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      atom.workspaceView.trigger 'spark-ide:cancelLogin'
+      atom.workspaceView.trigger 'spark-ide:cancel-login'
 
     @loginPromise = null
 
@@ -151,7 +151,7 @@ class SparkIdeLoginView extends View
       settings.override null, 'username', settings.username
       settings.access_token = e
       settings.override null, 'access_token', settings.access_token
-      atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
+      atom.workspaceView.trigger 'spark-ide:update-login-status'
       @loginPromise = null
       @cancel()
 
@@ -168,4 +168,4 @@ class SparkIdeLoginView extends View
     settings.override null, 'username', settings.username
     settings.access_token = null
     settings.override null, 'access_token', settings.access_token
-    atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
+    atom.workspaceView.trigger 'spark-ide:update-login-status'

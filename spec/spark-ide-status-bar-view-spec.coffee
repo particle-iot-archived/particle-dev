@@ -56,7 +56,7 @@ describe 'Status Bar Tests', ->
       settings.access_token = '0123456789abcdef0123456789abcdef'
 
       # Refresh UI
-      atom.workspaceView.trigger 'spark-ide:updateLoginStatus'
+      atom.workspaceView.trigger 'spark-ide:update-login-status'
 
       expect(statusBar.find('#spark-login-status a')).not.toExist()
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')

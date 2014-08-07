@@ -26,7 +26,7 @@ describe 'Login View Tests', ->
     settings.switchProfile(originalProfile)
     delete require.cache[require.resolve('../lib/settings')]
 
-    atom.workspaceView.trigger 'spark-ide:cancelLogin'
+    atom.workspaceView.trigger 'spark-ide:cancel-login'
 
 
   it 'tests hiding and showing', ->
@@ -51,7 +51,7 @@ describe 'Login View Tests', ->
       expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
 
       # Test spark-ide:cancelLogin
-      atom.workspaceView.trigger 'spark-ide:cancelLogin'
+      atom.workspaceView.trigger 'spark-ide:cancel-login'
       expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
       atom.workspaceView.trigger 'spark-ide:login'
 

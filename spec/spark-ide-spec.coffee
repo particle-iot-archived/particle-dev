@@ -35,7 +35,7 @@ describe 'Main Tests', ->
         atom.workspaceView.trigger 'spark-ide:login'
         expect(sparkIde.login).toHaveBeenCalled()
 
-        atom.workspaceView.trigger 'spark-ide:cancelLogin'
+        atom.workspaceView.trigger 'spark-ide:cancel-login'
 
   describe 'when the spark-ide:logout event is triggered', ->
     it 'launches logout() method on login view', ->
