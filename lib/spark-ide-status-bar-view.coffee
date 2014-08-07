@@ -40,6 +40,7 @@ class SparkIdeStatusBarView extends View
     atom.workspaceView.trigger 'spark-ide:select-core'
 
   updateCoreStatus: ->
+    # TODO: Update core status periodically
     statusElement = this.find('#spark-current-core a')
 
     if !settings.current_core
