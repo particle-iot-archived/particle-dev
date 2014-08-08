@@ -45,10 +45,10 @@ module.exports =
     @loginView.logout()
 
   selectCore: ->
-    if !settings.access_token
-      return
-
     CoresView ?= require './spark-ide-cores-view'
     @coresView ?= new CoresView()
+
+    if !settings.access_token
+      return
 
     @coresView.show()
