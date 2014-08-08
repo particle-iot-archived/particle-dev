@@ -3,6 +3,7 @@ SelectListView = require('atom').SelectListView
 $ = null
 $$ = null
 ApiClient = null
+Subscriber = null
 settings = null
 
 module.exports =
@@ -11,9 +12,14 @@ class SparkIdeCoresView extends SelectListView
     super
 
     {$, $$} = require 'atom'
+    {Subscriber} = require 'emissary'
     settings = require './settings'
 
+    @subscriber = new Subscriber()
+    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+
     @addClass 'overlay from-top'
+    @attr 'id', 'spark-ide-cores-view'
     @listDevicesPromise = null
 
 

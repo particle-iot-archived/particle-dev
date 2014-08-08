@@ -68,8 +68,30 @@ describe 'Status Bar Tests', ->
       expect(ideMenu[0].submenu[0].command).toBe('spark-ide:logout')
 
       expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(false)
+      expect(statusBar.find('#spark-current-core a').text()).toBe('No cores selected')
 
       settings.username = null
       settings.access_token = null
 
-    # TODO: Test current core
+    it 'checks current core name', ->
+      waitsForPromise ->
+        activationPromise
+      waitsForPromise ->
+        statusBarPromise
+
+      runs ->
+        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+
+        settings = require '../lib/settings'
+        settings.username = 'foo@bar.baz'
+        settings.access_token = '0123456789abcdef0123456789abcdef'
+        settings.current_core = '0123456789abcdef0123456789abcdef'
+        settings.current_core_name = 'Foo'
+
+        atom.workspaceView.trigger 'spark-ide:update-core-status'
+        expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
+
+        settings.username = null
+        settings.access_token = null
+        settings.current_core = null
+        settings.current_core_name = null
