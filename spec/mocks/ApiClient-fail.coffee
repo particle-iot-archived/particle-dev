@@ -27,5 +27,16 @@ class ApiClientFail extends ApiClient
       }
     dfd.promise
 
+  getAttributes: (coreID) ->
+    dfd = whenjs.defer()
+    request {
+        uri: 'http://httpbin.org/delay/1'
+    }, (error, response, body) ->
+      dfd.resolve {
+        "error": "Permission Denied",
+        "info": "I didn't recognize that core name or ID"
+      }
+    dfd.promise
+
 
 module.exports = ApiClientFail
