@@ -1,6 +1,9 @@
 View = require('atom').View
 $ = null
 SettingsHelper = null
+ApiClient = null
+delay = null
+last = 0
 
 module.exports =
 class SparkIdeStatusBarView extends View
@@ -16,6 +19,8 @@ class SparkIdeStatusBarView extends View
     $ = require('atom').$
 
     SettingsHelper = require './settings-helper'
+
+    @getAttributesPromise = null
 
     if atom.workspaceView.statusBar
       @attach()
@@ -40,14 +45,28 @@ class SparkIdeStatusBarView extends View
     atom.workspaceView.trigger 'spark-ide:select-core'
 
   updateCoreStatus: ->
-    # TODO: Update core status periodically
     statusElement = this.find('#spark-current-core a')
+    statusElement.parent().removeClass 'online'
 
     if !SettingsHelper.get 'current_core'
       statusElement.text 'No cores selected'
     else
-      # TODO: Check if current core is still available
       statusElement.text SettingsHelper.get('current_core_name')
+
+      ApiClient = require './ApiClient'
+      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+      @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
+      @getAttributesPromise.done (e) =>
+        if e.error
+          # Check if current core is still available
+          SettingsHelper.clearCurrentCore()
+          @updateCoreStatus()
+        else
+          if e.connected
+            statusElement.parent().addClass 'online'
+
+          # TODO: Check if core is online periodically
+        @getAttributesPromise = null
 
   updateLoginStatus: ->
     statusElement = this.find('#spark-login-status')

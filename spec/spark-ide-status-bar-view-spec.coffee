@@ -7,6 +7,8 @@ describe 'Status Bar Tests', ->
   originalProfile = null
 
   beforeEach ->
+    require '../lib/ApiClient'
+    
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
@@ -17,6 +19,7 @@ describe 'Status Bar Tests', ->
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
+    delete require.cache[require.resolve('../lib/ApiClient')]
 
   describe 'when the spark-ide is activated', ->
     beforeEach ->
@@ -76,9 +79,43 @@ describe 'Status Bar Tests', ->
 
         SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
         SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
 
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
 
+        SettingsHelper.clearCredentials()
+        SettingsHelper.clearCurrentCore()
+
+    it 'checks current core status', ->
+      waitsForPromise ->
+        activationPromise
+      waitsForPromise ->
+        statusBarPromise
+
+      runs ->
+        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+
+        SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+        SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
+
+        atom.workspaceView.trigger 'spark-ide:update-core-status'
+
+      waitsFor ->
+        # Only way to wait for request. This test will timeout instead of failing
+        atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').find('#spark-current-core').hasClass('online')
+
+      runs ->
+        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-offline'
+
+        atom.workspaceView.trigger 'spark-ide:update-core-status'
+
+      waitsFor ->
+        # Only way to wait for request. This test will timeout instead of failing
+        !atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').find('#spark-current-core').hasClass('online')
+
+      runs ->
         SettingsHelper.clearCredentials()
         SettingsHelper.clearCurrentCore()
