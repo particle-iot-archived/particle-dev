@@ -108,3 +108,6 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
       expect(status.value.error).toBe('Permission Denied')
       expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
+
+
+  # TODO: Test offline
