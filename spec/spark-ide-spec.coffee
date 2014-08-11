@@ -1,5 +1,5 @@
 {WorkspaceView} = require 'atom'
-settings = null
+SettingsHelper = require '../lib/settings-helper'
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -13,17 +13,12 @@ describe 'Main Tests', ->
       sparkIde = mainModule
       loginView = mainModule.loginView
 
-    settings = require '../lib/settings'
-    originalProfile = settings.profile
+    originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    settings.switchProfile('spark-ide-test')
-    # ...but Node.js cache won't allow loading settings.js again so
-    # we have to clear it and allow whichProfile() to be called.
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile 'spark-ide-test'
 
   afterEach ->
-    settings.switchProfile(originalProfile)
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile originalProfile
 
   describe 'when the spark-ide:login event is triggered', ->
     it 'calls login() method', ->

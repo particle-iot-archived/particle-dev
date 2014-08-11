@@ -1,5 +1,5 @@
 {WorkspaceView} = require 'atom'
-settings = null
+SettingsHelper = require '../lib/settings-helper'
 
 describe 'Status Bar Tests', ->
   activationPromise = null
@@ -7,21 +7,16 @@ describe 'Status Bar Tests', ->
   originalProfile = null
 
   beforeEach ->
-    settings = require '../lib/settings'
-    originalProfile = settings.profile
+    originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    settings.switchProfile('spark-ide-test')
-    # ...but Node.js cache won't allow loading settings.js again so
-    # we have to clear it and allow whichProfile() to be called.
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile 'spark-ide-test'
 
     atom.workspaceView = new WorkspaceView
     statusBarPromise = atom.packages.activatePackage('status-bar')
     activationPromise = atom.packages.activatePackage('spark-ide')
 
   afterEach ->
-    settings.switchProfile(originalProfile)
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile originalProfile
 
   describe 'when the spark-ide is activated', ->
     beforeEach ->
@@ -51,9 +46,7 @@ describe 'Status Bar Tests', ->
       # Previously logged out user
       expect(statusBar.find('#spark-login-status a')).toExist()
       # Log user in
-      settings = require '../lib/settings'
-      settings.username = 'foo@bar.baz'
-      settings.access_token = '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Refresh UI
       atom.workspaceView.trigger 'spark-ide:update-login-status'
@@ -70,8 +63,7 @@ describe 'Status Bar Tests', ->
       expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(false)
       expect(statusBar.find('#spark-current-core a').text()).toBe('No cores selected')
 
-      settings.username = null
-      settings.access_token = null
+      SettingsHelper.clearCredentials()
 
     it 'checks current core name', ->
       waitsForPromise ->
@@ -82,16 +74,11 @@ describe 'Status Bar Tests', ->
       runs ->
         statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
 
-        settings = require '../lib/settings'
-        settings.username = 'foo@bar.baz'
-        settings.access_token = '0123456789abcdef0123456789abcdef'
-        settings.current_core = '0123456789abcdef0123456789abcdef'
-        settings.current_core_name = 'Foo'
+        SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+        SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
 
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
 
-        settings.username = null
-        settings.access_token = null
-        settings.current_core = null
-        settings.current_core_name = null
+        SettingsHelper.clearCredentials()
+        SettingsHelper.clearCurrentCore()

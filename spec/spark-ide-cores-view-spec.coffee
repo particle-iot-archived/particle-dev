@@ -1,6 +1,6 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
-settings = null
+SettingsHelper = require '../lib/settings-helper'
 
 describe 'Select Core View Tests', ->
   activationPromise = null
@@ -12,13 +12,9 @@ describe 'Select Core View Tests', ->
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       coresView = mainModule.coresView
 
-    settings = require '../lib/settings'
-    originalProfile = settings.profile
+    originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    settings.switchProfile('spark-ide-test')
-    # ...but Node.js cache won't allow loading settings.js again so
-    # we have to clear it and allow whichProfile() to be called.
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile 'spark-ide-test'
 
     # Mock ApiClient
     require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
@@ -26,8 +22,7 @@ describe 'Select Core View Tests', ->
     atom.workspaceView.trigger 'spark-ide:select-core'
 
   afterEach ->
-    settings.switchProfile(originalProfile)
-    delete require.cache[require.resolve('../lib/settings')]
+    SettingsHelper.setProfile originalProfile
 
 
   it 'tests hiding and showing', ->
@@ -35,8 +30,7 @@ describe 'Select Core View Tests', ->
       activationPromise
 
     runs ->
-      settings.username = 'foo@bar.baz'
-      settings.access_token = '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
       atom.workspaceView.trigger 'spark-ide:select-core'
@@ -50,8 +44,7 @@ describe 'Select Core View Tests', ->
       atom.workspaceView.trigger 'core:close'
       expect(atom.workspaceView.find('#spark-ide-cores-view')).not.toExist()
 
-      settings.username = null
-      settings.access_token = null
+      SettingsHelper.clearCredentials()
 
 
   it 'tests loading items', ->
@@ -59,8 +52,7 @@ describe 'Select Core View Tests', ->
       activationPromise
 
     runs ->
-      settings.username = 'foo@bar.baz'
-      settings.access_token = '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       atom.workspaceView.trigger 'spark-ide:select-core'
 
@@ -84,6 +76,5 @@ describe 'Select Core View Tests', ->
       expect(devices.eq(0).find('.secondary-line').text()).toEqual('51ff6e065067545724680187')
       expect(devices.eq(1).find('.secondary-line').text()).toEqual('51ff67258067545724380687')
 
-      settings.username = null
-      settings.access_token = null
+      SettingsHelper.clearCredentials()
       atom.workspaceView.trigger 'core:close'

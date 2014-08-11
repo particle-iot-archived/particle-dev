@@ -4,7 +4,7 @@ $ = null
 $$ = null
 ApiClient = null
 Subscriber = null
-settings = null
+SettingsHelper = null
 
 module.exports =
 class SparkIdeCoresView extends SelectListView
@@ -13,7 +13,7 @@ class SparkIdeCoresView extends SelectListView
 
     {$, $$} = require 'atom'
     {Subscriber} = require 'emissary'
-    settings = require './settings'
+    SettingsHelper = require './settings-helper'
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
@@ -47,11 +47,7 @@ class SparkIdeCoresView extends SelectListView
         @div class: 'secondary-line no-icon', item.id
 
   confirmed: (item) ->
-    settings.current_core = item.id
-    settings.override null, 'current_core', settings.current_core
-
-    settings.current_core_name = item.name
-    settings.override null, 'current_core_name', settings.current_core_name
+    SettingsHelper.setCurrentCore item.id, item.name
 
     @cancel()
     atom.workspaceView.trigger 'spark-ide:update-core-status'
@@ -61,7 +57,7 @@ class SparkIdeCoresView extends SelectListView
 
   loadCores: ->
     ApiClient = require './ApiClient'
-    client = new ApiClient settings.apiUrl, settings.access_token
+    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
 
     @listDevicesPromise = client.listDevices()
     @listDevicesPromise.done (e) =>

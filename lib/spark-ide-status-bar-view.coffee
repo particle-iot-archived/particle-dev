@@ -1,6 +1,6 @@
 View = require('atom').View
 $ = null
-settings = null
+SettingsHelper = null
 
 module.exports =
 class SparkIdeStatusBarView extends View
@@ -15,7 +15,7 @@ class SparkIdeStatusBarView extends View
   initialize: (serializeState) ->
     $ = require('atom').$
 
-    settings = require './settings'
+    SettingsHelper = require './settings-helper'
 
     if atom.workspaceView.statusBar
       @attach()
@@ -43,23 +43,23 @@ class SparkIdeStatusBarView extends View
     # TODO: Update core status periodically
     statusElement = this.find('#spark-current-core a')
 
-    if !settings.current_core
+    if !SettingsHelper.get 'current_core'
       statusElement.text 'No cores selected'
     else
       # TODO: Check if current core is still available
-      statusElement.text settings.current_core_name
+      statusElement.text SettingsHelper.get('current_core_name')
 
   updateLoginStatus: ->
-    hasToken = !!settings.access_token
     statusElement = this.find('#spark-login-status')
     statusElement.empty()
 
     ideMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark IDE'
 
-    if hasToken
-      statusElement.text(settings.username)
-      ideMenu[0].submenu[0].label = 'Log out ' + settings.username
+    if SettingsHelper.loggedIn()
+      username = SettingsHelper.get('username')
+      statusElement.text(username)
+      ideMenu[0].submenu[0].label = 'Log out ' + username
       ideMenu[0].submenu[0].command = 'spark-ide:logout'
 
       this.find('#spark-current-core').removeClass 'hidden'

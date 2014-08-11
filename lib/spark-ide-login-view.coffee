@@ -4,7 +4,7 @@ $ = null
 _s = null
 Subscriber = null
 ApiClient = null
-settings = null
+SettingsHelper = null
 validator = null
 
 module.exports =
@@ -31,7 +31,7 @@ class SparkIdeLoginView extends View
     $ = require('atom').$
 
     _s = require 'underscore.string'
-    settings = require './settings'
+    SettingsHelper = require './settings-helper'
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
@@ -142,19 +142,16 @@ class SparkIdeLoginView extends View
     @spinner.removeClass 'hidden'
     @errorLabel.hide()
 
-    client = new ApiClient settings.apiUrl
+    client = new ApiClient SettingsHelper.get 'apiUrl'
     @loginPromise = client.login 'spark-ide', @email, @password
     @loginPromise.done (e) =>
       @spinner.addClass 'hidden'
       if !@loginPromise
         return
-
-      settings.username = @email
-      settings.override null, 'username', settings.username
-      settings.access_token = e
-      settings.override null, 'access_token', settings.access_token
+      SettingsHelper.setCredentials @email, e
       atom.workspaceView.trigger 'spark-ide:update-login-status'
       @loginPromise = null
+
       @cancel()
 
     , (e) =>
@@ -166,8 +163,5 @@ class SparkIdeLoginView extends View
       @loginPromise = null
 
   logout: =>
-    settings.username = null
-    settings.override null, 'username', settings.username
-    settings.access_token = null
-    settings.override null, 'access_token', settings.access_token
+    SettingsHelper.clearCredentials()
     atom.workspaceView.trigger 'spark-ide:update-login-status'

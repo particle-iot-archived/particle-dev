@@ -1,4 +1,4 @@
-settings = null
+SettingsHelper = null
 
 StatusView = null
 LoginView = null
@@ -12,7 +12,7 @@ module.exports =
   activate: (state) ->
     # Require modules on activation
     StatusView ?= require './spark-ide-status-bar-view'
-    settings ?= require './settings'
+    SettingsHelper ?= require './settings-helper'
 
     # Initialize views
     statusView = new StatusView()
@@ -36,7 +36,7 @@ module.exports =
     @loginView.show()
 
   logout: ->
-    if !settings.access_token
+    if !SettingsHelper.loggedIn()
       return
 
     LoginView ?= require './spark-ide-login-view'
@@ -48,7 +48,7 @@ module.exports =
     CoresView ?= require './spark-ide-cores-view'
     @coresView ?= new CoresView()
 
-    if !settings.access_token
+    if !SettingsHelper.loggedIn()
       return
 
     @coresView.show()
