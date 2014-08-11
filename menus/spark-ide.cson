@@ -1,8 +1,6 @@
 'menu': [
   {
     'label': 'Spark IDE',
-    'submenu': [
-      { 'label': 'Log in to Spark Cloud...', 'command': 'spark-ide:login' }
-    ]
+    'submenu': []
   }
 ]

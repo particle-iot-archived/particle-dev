@@ -2,8 +2,6 @@ View = require('atom').View
 $ = null
 SettingsHelper = null
 ApiClient = null
-delay = null
-last = 0
 
 module.exports =
 class SparkIdeStatusBarView extends View
@@ -78,8 +76,6 @@ class SparkIdeStatusBarView extends View
     if SettingsHelper.loggedIn()
       username = SettingsHelper.get('username')
       statusElement.text(username)
-      ideMenu[0].submenu[0].label = 'Log out ' + username
-      ideMenu[0].submenu[0].command = 'spark-ide:logout'
 
       this.find('#spark-current-core').removeClass 'hidden'
       @updateCoreStatus()
@@ -88,10 +84,10 @@ class SparkIdeStatusBarView extends View
       statusElement.append loginButton
       loginButton.on 'click', =>
         atom.workspaceView.trigger 'spark-ide:login'
-      ideMenu[0].submenu[0].label = 'Log in to Spark Cloud...'
-      ideMenu[0].submenu[0].command = 'spark-ide:login'
 
       this.find('#spark-current-core').addClass 'hidden'
+
+    atom.workspaceView.trigger 'spark-ide:update-menu'
 
     atom.menu.update()
 

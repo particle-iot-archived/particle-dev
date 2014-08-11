@@ -7,8 +7,6 @@ describe 'Status Bar Tests', ->
   originalProfile = null
 
   beforeEach ->
-    require '../lib/ApiClient'
-    
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
@@ -19,7 +17,6 @@ describe 'Status Bar Tests', ->
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
-    delete require.cache[require.resolve('../lib/ApiClient')]
 
   describe 'when the spark-ide is activated', ->
     beforeEach ->
@@ -28,19 +25,12 @@ describe 'Status Bar Tests', ->
       waitsForPromise ->
         statusBarPromise
 
-    it 'attaches custom status bar and updates menu', ->
+    it 'attaches custom status bar', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       expect(statusBar).toExist()
       expect(statusBar.find('#spark-icon').is(':empty')).toBe(true)
       # User should be logged off
       expect(statusBar.find('#spark-login-status a')).toExist()
-
-      ideMenu = atom.menu.template.filter (value) ->
-        value.label == 'Spark IDE'
-      expect(ideMenu.length).toBe(1)
-      expect(ideMenu[0].submenu[0].label).toBe('Log in to Spark Cloud...')
-      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:login')
-
       expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(true)
 
 
@@ -57,16 +47,11 @@ describe 'Status Bar Tests', ->
       expect(statusBar.find('#spark-login-status a')).not.toExist()
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
 
-      ideMenu = atom.menu.template.filter (value) ->
-        value.label == 'Spark IDE'
-      expect(ideMenu.length).toBe(1)
-      expect(ideMenu[0].submenu[0].label).toBe('Log out foo@bar.baz')
-      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:logout')
-
       expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(false)
       expect(statusBar.find('#spark-current-core a').text()).toBe('No cores selected')
 
       SettingsHelper.clearCredentials()
+
 
     it 'checks current core name', ->
       waitsForPromise ->
@@ -86,6 +71,7 @@ describe 'Status Bar Tests', ->
 
         SettingsHelper.clearCredentials()
         SettingsHelper.clearCurrentCore()
+
 
     it 'checks current core status', ->
       waitsForPromise ->

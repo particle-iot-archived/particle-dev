@@ -17,6 +17,7 @@ describe 'Select Core View Tests', ->
     SettingsHelper.setProfile 'spark-ide-test'
 
     # Mock ApiClient
+    require '../lib/ApiClient'
     require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
 
     atom.workspaceView.trigger 'spark-ide:select-core'

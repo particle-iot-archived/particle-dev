@@ -1,4 +1,5 @@
 SettingsHelper = null
+MenuManager = null
 
 StatusView = null
 LoginView = null
@@ -13,6 +14,7 @@ module.exports =
     # Require modules on activation
     StatusView ?= require './spark-ide-status-bar-view'
     SettingsHelper ?= require './settings-helper'
+    MenuManager ?= require './menu-manager'
 
     # Initialize views
     statusView = new StatusView()
@@ -21,6 +23,9 @@ module.exports =
     atom.workspaceView.command 'spark-ide:login', => @login()
     atom.workspaceView.command 'spark-ide:logout', => @logout()
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
+    atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
+
+    MenuManager.update()
 
   deactivate: ->
     @statusView?.destroy()
