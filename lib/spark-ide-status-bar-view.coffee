@@ -73,7 +73,7 @@ class SparkIdeStatusBarView extends View
     ideMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark IDE'
 
-    if SettingsHelper.loggedIn()
+    if SettingsHelper.isLoggedIn()
       username = SettingsHelper.get('username')
       statusElement.text(username)
 

@@ -1,14 +1,15 @@
 SettingsHelper = null
 MenuManager = null
-
 StatusView = null
 LoginView = null
 CoresView = null
+RenameCoreView = null
 
 module.exports =
   statusView: null
   loginView: null
   coresView: null
+  renameCoreView: null
 
   activate: (state) ->
     # Require modules on activation
@@ -23,6 +24,8 @@ module.exports =
     atom.workspaceView.command 'spark-ide:login', => @login()
     atom.workspaceView.command 'spark-ide:logout', => @logout()
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
+    atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
+
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
     MenuManager.update()
@@ -41,7 +44,7 @@ module.exports =
     @loginView.show()
 
   logout: ->
-    if !SettingsHelper.loggedIn()
+    if !SettingsHelper.isLoggedIn()
       return
 
     LoginView ?= require './spark-ide-login-view'
@@ -53,7 +56,19 @@ module.exports =
     CoresView ?= require './spark-ide-cores-view'
     @coresView ?= new CoresView()
 
-    if !SettingsHelper.loggedIn()
+    if !SettingsHelper.isLoggedIn()
       return
 
     @coresView.show()
+
+  renameCore: ->
+    RenameCoreView ?= require './spark-ide-rename-core-view'
+
+    if !SettingsHelper.isLoggedIn()
+      return
+
+    if !SettingsHelper.hasCurrentCore()
+      return
+
+    @renameCoreView ?= new RenameCoreView(SettingsHelper.get 'current_core_name')
+    @renameCoreView.attach()

@@ -27,7 +27,7 @@ module.exports =
     @set 'username', null
     @set 'access_token', null
 
-  loggedIn: ->
+  isLoggedIn: ->
     !!@get('access_token')
 
   setCurrentCore: (id, name) ->
@@ -37,3 +37,6 @@ module.exports =
   clearCurrentCore: ->
     @set 'current_core', null
     @set 'current_core_name', null
+
+  hasCurrentCore: ->
+    !!@get('current_core')
