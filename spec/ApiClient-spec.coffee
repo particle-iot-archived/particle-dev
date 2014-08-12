@@ -72,7 +72,6 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
-
     waitsFor ->
       (promise != null) && (promise.inspect().state != 'pending')
 
@@ -111,3 +110,16 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
 
   # TODO: Test offline
+
+xdescribe 'testing setTimeout', ->
+  done = false
+  it 'sets timeout', ->
+    setTimeout =>
+      done = true
+    , 1000
+
+    waitsFor ->
+      done
+
+    runs ->
+      expect(done).toBe(true)
