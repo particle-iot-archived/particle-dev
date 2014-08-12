@@ -19,6 +19,7 @@ class SparkIdeStatusBarView extends View
     SettingsHelper = require './settings-helper'
 
     @getAttributesPromise = null
+    @interval = null
 
     if atom.workspaceView.statusBar
       @attach()
@@ -58,12 +59,18 @@ class SparkIdeStatusBarView extends View
         if e.error
           # Check if current core is still available
           SettingsHelper.clearCurrentCore()
+          clearInterval @interval
+          @interval = null
           @updateCoreStatus()
         else
           if e.connected
             statusElement.parent().addClass 'online'
 
-          # TODO: Check if core is online periodically
+          # Check if core is online periodically
+          if !@interval
+            @interval = setInterval =>
+              @updateCoreStatus()
+            , 30000
         @getAttributesPromise = null
 
   updateLoginStatus: ->
