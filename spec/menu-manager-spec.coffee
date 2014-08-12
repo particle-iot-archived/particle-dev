@@ -2,7 +2,7 @@
 MenuManager = require '../lib/utils/menu-manager'
 SettingsHelper = require '../lib/utils/settings-helper'
 
-describe 'MenuManager tests', ->
+fdescribe 'MenuManager tests', ->
   activationPromise = null
   originalProfile = null
 
@@ -25,11 +25,9 @@ describe 'MenuManager tests', ->
       activationPromise
 
     runs ->
-      ideMenu = atom.menu.template.filter (value) ->
-        value.label == 'Spark IDE'
-      expect(ideMenu.length).toBe(1)
-      expect(ideMenu[0].submenu[0].label).toBe('Log in to Spark Cloud...')
-      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:login')
+      ideMenu = MenuManager.getMenu()
+      expect(ideMenu.submenu[0].label).toBe('Log in to Spark Cloud...')
+      expect(ideMenu.submenu[0].command).toBe('spark-ide:login')
 
 
   it 'checks menu for logged in user', ->
@@ -42,16 +40,39 @@ describe 'MenuManager tests', ->
       # Refresh UI
       atom.workspaceView.trigger 'spark-ide:update-menu'
 
-      ideMenu = atom.menu.template.filter (value) ->
-        value.label == 'Spark IDE'
-      expect(ideMenu.length).toBe(1)
+      ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu[0].submenu[0].label).toBe('Log out foo@bar.baz')
-      expect(ideMenu[0].submenu[0].command).toBe('spark-ide:logout')
+      expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
+      expect(ideMenu.submenu[0].command).toBe('spark-ide:logout')
 
-      expect(ideMenu[0].submenu[1].type).toBe('separator')
+      expect(ideMenu.submenu[1].type).toBe('separator')
 
-      expect(ideMenu[0].submenu[2].label).toBe('Select Core...')
-      expect(ideMenu[0].submenu[2].command).toBe('spark-ide:select-core')
+      expect(ideMenu.submenu[2].label).toBe('Select Core...')
+      expect(ideMenu.submenu[2].command).toBe('spark-ide:select-core')
 
+      SettingsHelper.clearCredentials()
+
+  it 'checks menu for selected core', ->
+    waitsForPromise ->
+      activationPromise
+
+    runs ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      atom.workspaceView.trigger 'spark-ide:update-menu'
+
+      ideMenu = MenuManager.getMenu()
+
+      expect(ideMenu.submenu.length).toBe(3)
+
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      atom.workspaceView.trigger 'spark-ide:update-menu'
+
+      ideMenu = MenuManager.getMenu()
+
+      expect(ideMenu.submenu.length).toBe(4)
+
+      expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
+      expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')
+
+      SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()

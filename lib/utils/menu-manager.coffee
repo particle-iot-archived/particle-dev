@@ -1,11 +1,17 @@
 SettingsHelper = require './settings-helper'
 
 module.exports =
+  getMenu: ->
+    ideMenu = atom.menu.template.filter (value) ->
+      value.label == 'Spark IDE'
+
+    ideMenu[0]
+
   update: ->
     ideMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark IDE'
 
-    ideMenu = ideMenu[0]
+    ideMenu = @getMenu()
 
     if SettingsHelper.isLoggedIn()
       username = SettingsHelper.get('username')
