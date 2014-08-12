@@ -9,7 +9,7 @@ class ApiClientOffline extends ApiClient
   listDevices: ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       this._devices = [
         {
@@ -33,7 +33,7 @@ class ApiClientOffline extends ApiClient
   getAttributes: (coreID) ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       dfd.resolve {
         "id": "51ff6e065067545724680187",

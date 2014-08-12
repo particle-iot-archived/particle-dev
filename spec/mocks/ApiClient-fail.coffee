@@ -9,7 +9,7 @@ class ApiClientFail extends ApiClient
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       dfd.reject 'Unknown user'
 
@@ -18,7 +18,7 @@ class ApiClientFail extends ApiClient
   listDevices: ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       dfd.resolve {
         "code": 400,
@@ -30,7 +30,7 @@ class ApiClientFail extends ApiClient
   getAttributes: (coreID) ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       dfd.resolve {
         "error": "Permission Denied",

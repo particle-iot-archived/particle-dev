@@ -9,7 +9,7 @@ class ApiClientSuccess extends ApiClient
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       this._access_token = '0123456789abcdef0123456789abcdef'
       dfd.resolve this._access_token
@@ -18,7 +18,7 @@ class ApiClientSuccess extends ApiClient
   listDevices: ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       this._devices = [
         {
@@ -42,7 +42,7 @@ class ApiClientSuccess extends ApiClient
   getAttributes: (coreID) ->
     dfd = whenjs.defer()
     request {
-        uri: 'http://httpbin.org/delay/1'
+        uri: 'http://httpbin.org/'
     }, (error, response, body) ->
       dfd.resolve {
         "id": "51ff6e065067545724680187",
