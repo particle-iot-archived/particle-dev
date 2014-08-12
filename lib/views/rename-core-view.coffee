@@ -34,6 +34,7 @@ class RenameCoreView extends Dialog
           return
         SettingsHelper.set 'current_core_name', newName
         atom.workspaceView.trigger 'spark-ide:update-core-status'
+        atom.workspaceView.trigger 'spark-ide:update-menu'
         @renamePromise = null
 
         @close()

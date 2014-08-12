@@ -9,7 +9,7 @@ module.exports =
 
     if SettingsHelper.isLoggedIn()
       username = SettingsHelper.get('username')
-      # TODO: Check if there is selected core
+
       ideMenu.submenu = [{
         label: 'Log out ' + username,
         command: 'spark-ide:logout'
@@ -18,10 +18,13 @@ module.exports =
       },{
         label: 'Select Core...',
         command: 'spark-ide:select-core'
-      },{
-        label: 'Rename Core...',
-        command: 'spark-ide:rename-core'
       }]
+
+      if SettingsHelper.hasCurrentCore()
+        ideMenu.submenu = ideMenu.submenu.concat [{
+          label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
+          command: 'spark-ide:rename-core'
+        }]
     else
       ideMenu.submenu = [{
         label: 'Log in to Spark Cloud...',
