@@ -1,6 +1,6 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
-SettingsHelper = require '../lib/settings-helper'
+SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'Login View Tests', ->
   activationPromise = null
@@ -89,7 +89,7 @@ describe 'Login View Tests', ->
 
     runs ->
       # Mock ApiClient
-      require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
+      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
 
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
@@ -122,7 +122,7 @@ describe 'Login View Tests', ->
 
     runs ->
       # Mock ApiClient
-      require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-fail'
+      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
 
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.text-error').css 'display').toEqual('none')

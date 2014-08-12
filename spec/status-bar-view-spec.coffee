@@ -1,5 +1,5 @@
 {WorkspaceView} = require 'atom'
-SettingsHelper = require '../lib/settings-helper'
+SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'Status Bar Tests', ->
   activationPromise = null
@@ -64,7 +64,7 @@ describe 'Status Bar Tests', ->
 
         SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
         SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
+        require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
 
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
@@ -84,7 +84,7 @@ describe 'Status Bar Tests', ->
 
         SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
         SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-success'
+        require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
 
         atom.workspaceView.trigger 'spark-ide:update-core-status'
 
@@ -94,7 +94,7 @@ describe 'Status Bar Tests', ->
 
       runs ->
         statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
-        require.cache[require.resolve('../lib/ApiClient')].exports = require './mocks/ApiClient-offline'
+        require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-offline'
 
         atom.workspaceView.trigger 'spark-ide:update-core-status'
 

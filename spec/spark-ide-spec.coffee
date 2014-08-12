@@ -1,5 +1,5 @@
 {WorkspaceView} = require 'atom'
-SettingsHelper = require '../lib/settings-helper'
+SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'Main Tests', ->
   activationPromise = null

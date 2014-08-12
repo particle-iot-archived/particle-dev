@@ -1,22 +1,23 @@
+settingsPath = '../vendor/settings'
 module.exports =
   getProfile: ->
-    delete require.cache[require.resolve('./settings')]
+    delete require.cache[require.resolve(settingsPath)]
 
-    settings = require './settings'
+    settings = require settingsPath
     settings.profile
 
   setProfile: (profileName) ->
-    settings = require './settings'
+    settings = require settingsPath
     settings.switchProfile(profileName)
 
   set: (key, value) ->
-    settings = require './settings'
+    settings = require settingsPath
     settings.override null, key, value
 
   get: (key) ->
-    delete require.cache[require.resolve('./settings')]
+    delete require.cache[require.resolve(settingsPath)]
 
-    settings = require './settings'
+    settings = require settingsPath
     settings[key]
 
   setCredentials: (username, access_token) ->

@@ -13,9 +13,9 @@ module.exports =
 
   activate: (state) ->
     # Require modules on activation
-    StatusView ?= require './spark-ide-status-bar-view'
-    SettingsHelper ?= require './settings-helper'
-    MenuManager ?= require './menu-manager'
+    StatusView ?= require './views/status-bar-view'
+    SettingsHelper ?= require './utils/settings-helper'
+    MenuManager ?= require './utils/menu-manager'
 
     # Initialize views
     statusView = new StatusView()
@@ -36,7 +36,7 @@ module.exports =
   serialize: ->
 
   login: ->
-    LoginView ?= require './spark-ide-login-view'
+    LoginView ?= require './views/login-view'
     @loginView ?= new LoginView()
     # You may ask why this isn't in LoginView? This way, we don't need to
     # require/initialize login view until it's needed.
@@ -47,13 +47,13 @@ module.exports =
     if !SettingsHelper.isLoggedIn()
       return
 
-    LoginView ?= require './spark-ide-login-view'
+    LoginView ?= require './views/login-view'
     @loginView ?= new LoginView()
 
     @loginView.logout()
 
   selectCore: ->
-    CoresView ?= require './spark-ide-cores-view'
+    CoresView ?= require './views/select-core-view'
     @coresView ?= new CoresView()
 
     if !SettingsHelper.isLoggedIn()
@@ -62,7 +62,7 @@ module.exports =
     @coresView.show()
 
   renameCore: ->
-    RenameCoreView ?= require './spark-ide-rename-core-view'
+    RenameCoreView ?= require './views/rename-core-view'
 
     if !SettingsHelper.isLoggedIn()
       return

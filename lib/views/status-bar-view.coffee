@@ -4,7 +4,7 @@ SettingsHelper = null
 ApiClient = null
 
 module.exports =
-class SparkIdeStatusBarView extends View
+class StatusBarView extends View
   @content: ->
     @div class: 'inline-block', id: 'spark-ide-status-bar-view', =>
       @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
@@ -16,7 +16,7 @@ class SparkIdeStatusBarView extends View
   initialize: (serializeState) ->
     $ = require('atom').$
 
-    SettingsHelper = require './settings-helper'
+    SettingsHelper = require '../utils/settings-helper'
 
     @getAttributesPromise = null
     @interval = null
@@ -52,7 +52,7 @@ class SparkIdeStatusBarView extends View
     else
       statusElement.text SettingsHelper.get('current_core_name')
 
-      ApiClient = require './ApiClient'
+      ApiClient = require '../vendor/ApiClient'
       client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
       @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
       @getAttributesPromise.done (e) =>

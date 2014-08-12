@@ -7,13 +7,13 @@ Subscriber = null
 SettingsHelper = null
 
 module.exports =
-class SparkIdeCoresView extends SelectListView
+class SelectCoreView extends SelectListView
   initialize: ->
     super
 
     {$, $$} = require 'atom'
     {Subscriber} = require 'emissary'
-    SettingsHelper = require './settings-helper'
+    SettingsHelper = require '../utils/settings-helper'
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
@@ -56,7 +56,7 @@ class SparkIdeCoresView extends SelectListView
     'name'
 
   loadCores: ->
-    ApiClient = require './ApiClient'
+    ApiClient = require '../vendor/ApiClient'
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
 
     @listDevicesPromise = client.listDevices()

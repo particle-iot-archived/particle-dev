@@ -1,5 +1,5 @@
-ApiClient = require '../lib/ApiClient'
-settings = require '../lib/settings'
+ApiClient = require '../lib/vendor/ApiClient'
+apiUrl = 'http://example.com'
 
 describe 'Tests for mocked ApiClient library which functions should succeed', ->
   client = null
@@ -8,7 +8,7 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
   beforeEach ->
     ApiClient = require './mocks/ApiClient-success'
 
-    client = new ApiClient settings.apiUrl
+    client = new ApiClient apiUrl
 
 
   it 'passes fake credentials', ->
@@ -68,7 +68,7 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
   beforeEach ->
     ApiClient = require './mocks/ApiClient-fail'
 
-    client = new ApiClient settings.apiUrl
+    client = new ApiClient apiUrl
 
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
@@ -116,7 +116,7 @@ describe 'Tests for mocked ApiClient library with devices which should be offlin
   beforeEach ->
     ApiClient = require './mocks/ApiClient-offline'
 
-    client = new ApiClient settings.apiUrl
+    client = new ApiClient apiUrl
 
   it 'lists devices', ->
     promise = client.listDevices()

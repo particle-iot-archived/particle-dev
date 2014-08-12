@@ -1,4 +1,4 @@
-ApiClient = require '../../lib/ApiClient'
+ApiClient = require '../../lib/vendor/ApiClient'
 whenjs = require 'when'
 request = require 'request'
 

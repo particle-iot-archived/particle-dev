@@ -8,7 +8,7 @@ SettingsHelper = null
 validator = null
 
 module.exports =
-class SparkIdeLoginView extends View
+class LoginView extends View
   @content: ->
     @div id: 'spark-ide-login-view', class: 'overlay from-top', =>
       @div class: 'block', =>
@@ -31,7 +31,7 @@ class SparkIdeLoginView extends View
     $ = require('atom').$
 
     _s = require 'underscore.string'
-    SettingsHelper = require './settings-helper'
+    SettingsHelper = require '../utils/settings-helper'
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
@@ -135,7 +135,7 @@ class SparkIdeLoginView extends View
 
     # It should be ?= instead of = to save time but then the tests won't work
     # as ApiClient could be set in one of the previous tests
-    ApiClient = require './ApiClient'
+    ApiClient = require '../vendor/ApiClient'
     @emailEditor.hiddenInput.attr 'disabled', 'disabled'
     @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
     @loginButton.attr 'disabled', 'disabled'

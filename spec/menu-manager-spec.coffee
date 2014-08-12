@@ -1,13 +1,13 @@
 {WorkspaceView} = require 'atom'
-MenuManager = require '../lib/menu-manager'
-SettingsHelper = require '../lib/settings-helper'
+MenuManager = require '../lib/utils/menu-manager'
+SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'MenuManager tests', ->
   activationPromise = null
   originalProfile = null
 
   beforeEach ->
-    require '../lib/ApiClient'
+    require '../lib/vendor/ApiClient'
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -18,7 +18,7 @@ describe 'MenuManager tests', ->
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
-    delete require.cache[require.resolve('../lib/ApiClient')]
+    delete require.cache[require.resolve('../lib/vendor/ApiClient')]
 
   it 'checks menu for logged out user', ->
     waitsForPromise ->
