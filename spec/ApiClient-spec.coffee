@@ -109,7 +109,52 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
       expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
 
 
-  # TODO: Test offline
+describe 'Tests for mocked ApiClient library with devices which should be offline', ->
+  client = null
+  promise = null
+
+  beforeEach ->
+    ApiClient = require './mocks/ApiClient-offline'
+
+    client = new ApiClient settings.apiUrl
+
+  it 'lists devices', ->
+    promise = client.listDevices()
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+      # There should be 2 devices, one connected and one not
+      expect(status.value.length).toBe(2)
+      expect(status.value[0].connected).toBe(false)
+      expect(status.value[1].connected).toBe(false)
+
+  it 'gets device attributes', ->
+    promise = client.getAttributes('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.id).toBe('51ff6e065067545724680187')
+      expect(status.value.name).toBe('Online Core')
+      expect(status.value.connected).toBe(false)
+
+      expect(typeof status.value.variables).toBe('object')
+      expect(Object.keys(status.value.variables).length).toBe(0)
+      expect(status.value.functions instanceof Array).toBe(true)
+      expect(status.value.functions.length).toBe(0)
+
 
 xdescribe 'testing setTimeout', ->
   done = false
