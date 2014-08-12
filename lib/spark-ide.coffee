@@ -70,5 +70,5 @@ module.exports =
     if !SettingsHelper.hasCurrentCore()
       return
 
-    @renameCoreView ?= new RenameCoreView(SettingsHelper.get 'current_core_name')
+    @renameCoreView = new RenameCoreView(SettingsHelper.get 'current_core_name')
     @renameCoreView.attach()

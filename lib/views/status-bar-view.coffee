@@ -66,7 +66,10 @@ class StatusBarView extends View
           if e.connected
             statusElement.parent().addClass 'online'
 
-          # Check if core is online periodically
+          SettingsHelper.set 'current_core_name', e.name
+          statusElement.text e.name
+
+          # Periodically check if core is online
           if !@interval
             @interval = setInterval =>
               @updateCoreStatus()

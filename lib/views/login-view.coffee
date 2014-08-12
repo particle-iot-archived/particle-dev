@@ -28,9 +28,9 @@ class LoginView extends View
 
   initialize: (serializeState) ->
     {Subscriber} = require 'emissary'
-    $ = require('atom').$
+    $ ?= require('atom').$
 
-    _s = require 'underscore.string'
+    _s ?= require 'underscore.string'
     SettingsHelper = require '../utils/settings-helper'
 
     @subscriber = new Subscriber()
