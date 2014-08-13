@@ -52,5 +52,14 @@ class ApiClientSuccess extends ApiClient
     , 1
     dfd.promise
 
+  renameCore: (coreID, name) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "id": "51ff6e065067545724680187",
+        "name": "Bar"
+      }
+    , 1
+    dfd.promise
 
 module.exports = ApiClientSuccess

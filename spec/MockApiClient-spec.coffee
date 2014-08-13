@@ -60,6 +60,22 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.functions.length).toBe(0)
 
 
+  it 'renames core', ->
+    promise = client.renameCore('51ff6e065067545724680187', 'Bar')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.id).toBe('51ff6e065067545724680187')
+      expect(status.value.name).toBe('Bar')
+
+
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
   promise = null
