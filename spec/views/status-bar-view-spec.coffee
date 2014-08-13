@@ -5,26 +5,33 @@ describe 'Status Bar Tests', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null
+  statusView = null
 
   beforeEach ->
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
 
+    require '../../lib/vendor/ApiClient'
+
     atom.workspaceView = new WorkspaceView
     statusBarPromise = atom.packages.activatePackage('status-bar')
-    activationPromise = atom.packages.activatePackage('spark-ide')
+
+    waitsForPromise ->
+      statusBarPromise
+
+    runs ->
+      activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+        statusView = mainModule.statusView
+
+    waitsForPromise ->
+      activationPromise
+
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
   describe 'when the spark-ide is activated', ->
-    beforeEach ->
-      waitsForPromise ->
-        activationPromise
-      waitsForPromise ->
-        statusBarPromise
-
     it 'attaches custom status bar', ->
       statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
       expect(statusBar).toExist()
@@ -54,54 +61,18 @@ describe 'Status Bar Tests', ->
 
 
     it 'checks current core name', ->
-      waitsForPromise ->
-        activationPromise
-      waitsForPromise ->
-        statusBarPromise
+      statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
 
-      runs ->
-        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
-        SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-        SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-        require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      atom.workspaceView.trigger 'spark-ide:update-core-status'
+      expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
 
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
-        expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
-
-        SettingsHelper.clearCredentials()
-        SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
+      SettingsHelper.clearCurrentCore()
 
 
     it 'checks current core status', ->
-      waitsForPromise ->
-        activationPromise
-      waitsForPromise ->
-        statusBarPromise
-
-      runs ->
-        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
-
-        SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-        SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-        require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
-
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
-
-      waitsFor ->
-        # Only way to wait for request. This test will timeout instead of failing
-        atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').find('#spark-current-core').hasClass('online')
-
-      runs ->
-        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
-        require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-offline'
-
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
-
-      waitsFor ->
-        # Only way to wait for request. This test will timeout instead of failing
-        !atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').find('#spark-current-core').hasClass('online')
-
-      runs ->
-        SettingsHelper.clearCredentials()
-        SettingsHelper.clearCurrentCore()
+      # TODO: Check async core status checking

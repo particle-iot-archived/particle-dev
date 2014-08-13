@@ -10,9 +10,6 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
 
     client = new ApiClient apiUrl
 
-    jasmine.unspy(window, 'setTimeout')
-
-
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
 
@@ -72,8 +69,6 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
     client = new ApiClient apiUrl
 
-    jasmine.unspy(window, 'setTimeout')
-
   it 'passes fake credentials', ->
     promise = client.login 'spark-ide', 'foo@bar.com', 'pass'
     waitsFor ->
@@ -121,8 +116,6 @@ describe 'Tests for mocked ApiClient library with devices which should be offlin
     ApiClient = require './mocks/ApiClient-offline'
 
     client = new ApiClient apiUrl
-
-    jasmine.unspy(window, 'setTimeout')
 
   it 'lists devices', ->
     promise = client.listDevices()

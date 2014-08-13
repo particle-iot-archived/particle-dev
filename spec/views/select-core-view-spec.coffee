@@ -2,7 +2,7 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-describe 'Select Core View Tests', ->
+describe 'Select Core View', ->
   activationPromise = null
   coresView = null
   originalProfile = null
@@ -22,15 +22,14 @@ describe 'Select Core View Tests', ->
 
     atom.workspaceView.trigger 'spark-ide:select-core'
 
-  afterEach ->
-    SettingsHelper.setProfile originalProfile
-
-
-  it 'tests hiding and showing', ->
     waitsForPromise ->
       activationPromise
 
-    runs ->
+  afterEach ->
+    SettingsHelper.setProfile originalProfile
+
+  describe '', ->
+    it 'tests hiding and showing', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
@@ -48,11 +47,7 @@ describe 'Select Core View Tests', ->
       SettingsHelper.clearCredentials()
 
 
-  it 'tests loading items', ->
-    waitsForPromise ->
-      activationPromise
-
-    runs ->
+    it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       atom.workspaceView.trigger 'spark-ide:select-core'
@@ -62,20 +57,20 @@ describe 'Select Core View Tests', ->
       expect(coresView.find('span.loading-message').text()).toEqual('Loading cores...')
       expect(coresView.find('ol.list-group li').length).toEqual(0)
 
-    waitsFor ->
-      !coresView.listDevicesPromise
+      waitsFor ->
+        !coresView.listDevicesPromise
 
-    runs ->
-      devices = coresView.find('ol.list-group li')
-      expect(devices.length).toEqual(2)
-      expect(devices.eq(0).find('.primary-line').hasClass('core-online')).toEqual(true)
-      expect(devices.eq(1).find('.primary-line').hasClass('core-offline')).toEqual(true)
+      runs ->
+        devices = coresView.find('ol.list-group li')
+        expect(devices.length).toEqual(2)
+        expect(devices.eq(0).find('.primary-line').hasClass('core-online')).toEqual(true)
+        expect(devices.eq(1).find('.primary-line').hasClass('core-offline')).toEqual(true)
 
-      expect(devices.eq(0).find('.primary-line').text()).toEqual('Online Core')
-      expect(devices.eq(1).find('.primary-line').text()).toEqual('Offline Core')
+        expect(devices.eq(0).find('.primary-line').text()).toEqual('Online Core')
+        expect(devices.eq(1).find('.primary-line').text()).toEqual('Offline Core')
 
-      expect(devices.eq(0).find('.secondary-line').text()).toEqual('51ff6e065067545724680187')
-      expect(devices.eq(1).find('.secondary-line').text()).toEqual('51ff67258067545724380687')
+        expect(devices.eq(0).find('.secondary-line').text()).toEqual('51ff6e065067545724680187')
+        expect(devices.eq(1).find('.secondary-line').text()).toEqual('51ff67258067545724380687')
 
-      SettingsHelper.clearCredentials()
-      atom.workspaceView.trigger 'core:close'
+        SettingsHelper.clearCredentials()
+        atom.workspaceView.trigger 'core:close'

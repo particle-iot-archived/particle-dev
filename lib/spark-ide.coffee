@@ -18,7 +18,7 @@ module.exports =
     MenuManager ?= require './utils/menu-manager'
 
     # Initialize views
-    statusView = new StatusView()
+    @statusView = new StatusView()
 
     # Hooking up commands
     atom.workspaceView.command 'spark-ide:login', => @login()

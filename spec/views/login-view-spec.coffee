@@ -2,7 +2,7 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-describe 'Login View Tests', ->
+describe 'Login View', ->
   activationPromise = null
   loginView = null
   originalProfile = null
@@ -17,19 +17,19 @@ describe 'Login View Tests', ->
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
 
-    atom.workspaceView.trigger 'spark-ide:login'
+    waitsForPromise ->
+      activationPromise
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
     atom.workspaceView.trigger 'spark-ide:cancel-login'
 
+  describe 'when Login View is activated', ->
+    beforeEach ->
+      atom.workspaceView.trigger 'spark-ide:login'
 
-  it 'tests hiding and showing', ->
-    waitsForPromise ->
-      activationPromise
-
-    runs ->
+    it 'tests hiding and showing', ->
       # beforeEach should show the dialog
       expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
 
@@ -49,14 +49,9 @@ describe 'Login View Tests', ->
       # Test spark-ide:cancelLogin
       atom.workspaceView.trigger 'spark-ide:cancel-login'
       expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
-      atom.workspaceView.trigger 'spark-ide:login'
 
 
-  it 'tests empty values', ->
-    waitsForPromise ->
-      activationPromise
-
-    runs ->
+    it 'tests empty values', ->
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
@@ -67,11 +62,7 @@ describe 'Login View Tests', ->
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
 
 
-  it 'tests invalid values', ->
-    waitsForPromise ->
-      activationPromise
-
-    runs ->
+    it 'tests invalid values', ->
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
@@ -84,11 +75,7 @@ describe 'Login View Tests', ->
       expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
 
 
-  it 'tests valid values', ->
-    waitsForPromise ->
-      activationPromise
-
-    runs ->
+    it 'tests valid values', ->
       # Mock ApiClient
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
@@ -103,25 +90,22 @@ describe 'Login View Tests', ->
 
       expect(loginView.spinner.hasClass('hidden')).toBe(false)
 
-    waitsFor ->
-      !loginView.loginPromise
+      waitsFor ->
+        !loginView.loginPromise
 
-    runs ->
-      context = atom.workspaceView.find('#spark-ide-login-view')
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
-      expect(loginView.spinner.hasClass('hidden')).toBe(true)
+      runs ->
+        context = atom.workspaceView.find('#spark-ide-login-view')
+        expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
+        expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+        expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
-      expect(SettingsHelper.get('username')).toEqual('foo@bar.baz')
-      expect(SettingsHelper.get('access_token')).toEqual('0123456789abcdef0123456789abcdef')
+        expect(SettingsHelper.get('username')).toEqual('foo@bar.baz')
+        expect(SettingsHelper.get('access_token')).toEqual('0123456789abcdef0123456789abcdef')
 
-      SettingsHelper.clearCredentials()
+        SettingsHelper.clearCredentials()
 
-  it 'tests wrong credentials', ->
-    waitsForPromise ->
-      activationPromise
 
-    runs ->
+    it 'tests wrong credentials', ->
       # Mock ApiClient
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-fail'
 
@@ -132,20 +116,17 @@ describe 'Login View Tests', ->
       loginView.passwordEditor.originalText = 'foo'
       loginView.login()
 
-    waitsFor ->
-      !loginView.loginPromise
+      waitsFor ->
+        !loginView.loginPromise
 
-    runs ->
-      context = atom.workspaceView.find('#spark-ide-login-view')
-      expect(context.find('.text-error').css 'display').toEqual('block')
-      expect(context.find('.text-error').text()).toEqual('Unknown user')
-      expect(loginView.spinner.hasClass('hidden')).toBe(true)
+      runs ->
+        context = atom.workspaceView.find('#spark-ide-login-view')
+        expect(context.find('.text-error').css 'display').toEqual('block')
+        expect(context.find('.text-error').text()).toEqual('Unknown user')
+        expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
-  it 'tests logging out', ->
-    waitsForPromise ->
-      activationPromise
 
-    runs ->
+    it 'tests logging out', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       atom.workspaceView.trigger 'spark-ide:logout'

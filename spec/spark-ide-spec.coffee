@@ -19,52 +19,44 @@ describe 'Main Tests', ->
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
 
+    waitsForPromise ->
+      activationPromise
+
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
 
   describe 'when the spark-ide:login event is triggered', ->
     it 'calls login() method', ->
-      waitsForPromise ->
-        activationPromise
-
-      runs ->
-        spyOn(sparkIde, 'login').andCallThrough()
-        atom.workspaceView.trigger 'spark-ide:login'
-        expect(sparkIde.login).toHaveBeenCalled()
+      spyOn(sparkIde, 'login')
+      atom.workspaceView.trigger 'spark-ide:login'
+      expect(sparkIde.login).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'login'
 
 
   describe 'when the spark-ide:logout event is triggered', ->
     it 'calls logout() method', ->
-      waitsForPromise ->
-        activationPromise
-
-      runs ->
-        spyOn(sparkIde, 'logout').andCallThrough()
-        atom.workspaceView.trigger 'spark-ide:logout'
-        expect(sparkIde.logout).toHaveBeenCalled()
+      spyOn(sparkIde, 'logout')
+      atom.workspaceView.trigger 'spark-ide:logout'
+      expect(sparkIde.logout).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'logout'
 
 
   describe 'when the spark-ide:select-core event is triggered', ->
     it 'calls selectCore() method', ->
-      waitsForPromise ->
-        activationPromise
-
-      runs ->
-        spyOn(sparkIde, 'selectCore').andCallThrough()
-        atom.workspaceView.trigger 'spark-ide:select-core'
-        expect(sparkIde.selectCore).toHaveBeenCalled()
+      spyOn(sparkIde, 'selectCore')
+      atom.workspaceView.trigger 'spark-ide:select-core'
+      expect(sparkIde.selectCore).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'selectCore'
 
 
   describe 'when the spark-ide:rename-core event is triggered', ->
     it 'calls renameCore() method', ->
       waitsForPromise ->
-        activationPromise
-
-      waitsForPromise ->
         treeViewPromise
 
       runs ->
-        spyOn(sparkIde, 'renameCore').andCallThrough()
+        spyOn(sparkIde, 'renameCore')
         atom.workspaceView.trigger 'spark-ide:rename-core'
         expect(sparkIde.renameCore).toHaveBeenCalled()
+        jasmine.unspy sparkIde, 'renameCore'

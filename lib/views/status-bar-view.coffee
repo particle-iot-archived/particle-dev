@@ -43,38 +43,45 @@ class StatusBarView extends View
   selectCore: ->
     atom.workspaceView.trigger 'spark-ide:select-core'
 
+  getCurrentCoreStatus: ->
+    if !SettingsHelper.hasCurrentCore()
+      return
+
+    statusElement = this.find('#spark-current-core a')
+    ApiClient = require '../vendor/ApiClient'
+    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
+    @getAttributesPromise.done (e) =>
+      if e.error
+        # Check if current core is still available
+        SettingsHelper.clearCurrentCore()
+        clearInterval @interval
+        @interval = null
+        @updateCoreStatus()
+      else
+        if e.connected
+          statusElement.parent().addClass 'online'
+
+        SettingsHelper.set 'current_core_name', e.name
+        statusElement.text e.name
+
+        # Periodically check if core is online
+        if !@interval
+          @interval = setInterval =>
+            @updateCoreStatus()
+          , 30000
+      @getAttributesPromise = null
+
   updateCoreStatus: ->
     statusElement = this.find('#spark-current-core a')
     statusElement.parent().removeClass 'online'
 
-    if !SettingsHelper.get 'current_core'
-      statusElement.text 'No cores selected'
-    else
+    if SettingsHelper.hasCurrentCore()
       statusElement.text SettingsHelper.get('current_core_name')
 
-      ApiClient = require '../vendor/ApiClient'
-      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-      @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
-      @getAttributesPromise.done (e) =>
-        if e.error
-          # Check if current core is still available
-          SettingsHelper.clearCurrentCore()
-          clearInterval @interval
-          @interval = null
-          @updateCoreStatus()
-        else
-          if e.connected
-            statusElement.parent().addClass 'online'
-
-          SettingsHelper.set 'current_core_name', e.name
-          statusElement.text e.name
-
-          # Periodically check if core is online
-          if !@interval
-            @interval = setInterval =>
-              @updateCoreStatus()
-            , 30000
-        @getAttributesPromise = null
+      @getCurrentCoreStatus()
+    else
+      statusElement.text 'No cores selected'
 
   updateLoginStatus: ->
     statusElement = this.find('#spark-login-status')

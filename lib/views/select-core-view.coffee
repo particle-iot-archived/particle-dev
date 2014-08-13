@@ -64,6 +64,5 @@ class SelectCoreView extends SelectListView
       @setItems e
       @listDevicesPromise = null
     , (e) =>
-      console.log e
       # TODO: Error handling
       @listDevicesPromise = null

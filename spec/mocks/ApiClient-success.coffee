@@ -3,6 +3,8 @@ whenjs = require 'when'
 
 class ApiClientSuccess extends ApiClient
   constructor: (baseUrl, access_token) ->
+    if setTimeout.isSpy
+      jasmine.unspy window, 'setTimeout'
     super baseUrl, access_token
 
   login: (client_id, user, pass) ->
