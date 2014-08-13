@@ -1,4 +1,4 @@
 echo "Linting code..."
-coffee-jshint --globals atom,module,require,console lib/*.coffee
+find lib/ -name '*.coffee' | xargs coffee-jshint --globals atom,module,require
 echo "Linting tests..."
-coffee-jshint --globals require,atom,describe,it,expect,beforeEach,afterEach,waitsForPromise,waitsFor,runs,spyOn,console spec/*.coffee
+find spec/ -name '*.coffee' | xargs coffee-jshint --globals require,atom,describe,it,expect,beforeEach,afterEach,waitsForPromise,waitsFor,runs,spyOn
