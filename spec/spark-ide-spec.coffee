@@ -3,6 +3,7 @@ SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'Main Tests', ->
   activationPromise = null
+  treeViewPromise = null
   loginView = null
   sparkIde = null
   originalProfile = null
@@ -12,6 +13,7 @@ describe 'Main Tests', ->
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
       loginView = mainModule.loginView
+    treeViewPromise = atom.packages.activatePackage('tree-view')
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -19,6 +21,7 @@ describe 'Main Tests', ->
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
+
 
   describe 'when the spark-ide:login event is triggered', ->
     it 'calls login() method', ->
@@ -30,7 +33,6 @@ describe 'Main Tests', ->
         atom.workspaceView.trigger 'spark-ide:login'
         expect(sparkIde.login).toHaveBeenCalled()
 
-        atom.workspaceView.trigger 'spark-ide:cancel-login'
 
   describe 'when the spark-ide:logout event is triggered', ->
     it 'calls logout() method', ->
@@ -42,6 +44,7 @@ describe 'Main Tests', ->
         atom.workspaceView.trigger 'spark-ide:logout'
         expect(sparkIde.logout).toHaveBeenCalled()
 
+
   describe 'when the spark-ide:select-core event is triggered', ->
     it 'calls selectCore() method', ->
       waitsForPromise ->
@@ -51,3 +54,17 @@ describe 'Main Tests', ->
         spyOn(sparkIde, 'selectCore').andCallThrough()
         atom.workspaceView.trigger 'spark-ide:select-core'
         expect(sparkIde.selectCore).toHaveBeenCalled()
+
+
+  describe 'when the spark-ide:rename-core event is triggered', ->
+    it 'calls renameCore() method', ->
+      waitsForPromise ->
+        activationPromise
+
+      waitsForPromise ->
+        treeViewPromise
+
+      runs ->
+        spyOn(sparkIde, 'renameCore').andCallThrough()
+        atom.workspaceView.trigger 'spark-ide:rename-core'
+        expect(sparkIde.renameCore).toHaveBeenCalled()
