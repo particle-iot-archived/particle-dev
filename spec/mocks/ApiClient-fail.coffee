@@ -1,6 +1,5 @@
 ApiClient = require '../../lib/vendor/ApiClient'
 whenjs = require 'when'
-request = require 'request'
 
 class ApiClientFail extends ApiClient
   constructor: (baseUrl, access_token) ->
@@ -8,34 +7,31 @@ class ApiClientFail extends ApiClient
 
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       dfd.reject 'Unknown user'
+    , 1
 
     dfd.promise
 
   listDevices: ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       dfd.resolve {
         "code": 400,
         "error": "invalid_grant",
         "error_description": "The access token provided is invalid."
       }
+    , 1
     dfd.promise
 
   getAttributes: (coreID) ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       dfd.resolve {
         "error": "Permission Denied",
         "info": "I didn't recognize that core name or ID"
       }
+    , 1
     dfd.promise
 
 

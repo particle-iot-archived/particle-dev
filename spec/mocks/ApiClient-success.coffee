@@ -1,6 +1,5 @@
 ApiClient = require '../../lib/vendor/ApiClient'
 whenjs = require 'when'
-request = require 'request'
 
 class ApiClientSuccess extends ApiClient
   constructor: (baseUrl, access_token) ->
@@ -8,18 +7,15 @@ class ApiClientSuccess extends ApiClient
 
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       this._access_token = '0123456789abcdef0123456789abcdef'
       dfd.resolve this._access_token
+    , 1
     dfd.promise
 
   listDevices: ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       this._devices = [
         {
           "id": "51ff6e065067545724680187",
@@ -37,13 +33,12 @@ class ApiClientSuccess extends ApiClient
         }
       ]
       dfd.resolve this._devices
+    , 1
     dfd.promise
 
   getAttributes: (coreID) ->
     dfd = whenjs.defer()
-    request {
-        uri: 'http://httpbin.org/'
-    }, (error, response, body) ->
+    setTimeout ->
       dfd.resolve {
         "id": "51ff6e065067545724680187",
         "name": "Online Core",
@@ -52,6 +47,7 @@ class ApiClientSuccess extends ApiClient
         "functions": [],
         "cc3000_patch_version": "1.28"
       }
+    , 1
     dfd.promise
 
 
