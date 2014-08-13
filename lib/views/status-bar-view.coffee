@@ -48,12 +48,14 @@ class StatusBarView extends View
       return
 
     statusElement = this.find('#spark-current-core a')
+    statusElement.parent().removeClass 'online'
+    
     ApiClient = require '../vendor/ApiClient'
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
     @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
+      # Check if current core is still available
       if e.error
-        # Check if current core is still available
         SettingsHelper.clearCurrentCore()
         clearInterval @interval
         @interval = null
@@ -74,7 +76,6 @@ class StatusBarView extends View
 
   updateCoreStatus: ->
     statusElement = this.find('#spark-current-core a')
-    statusElement.parent().removeClass 'online'
 
     if SettingsHelper.hasCurrentCore()
       statusElement.text SettingsHelper.get('current_core_name')

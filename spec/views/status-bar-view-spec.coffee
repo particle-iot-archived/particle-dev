@@ -67,12 +67,42 @@ describe 'Status Bar Tests', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
+      spyOn(statusView, 'getCurrentCoreStatus')
       atom.workspaceView.trigger 'spark-ide:update-core-status'
       expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
+      expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
       SettingsHelper.clearCredentials()
       SettingsHelper.clearCurrentCore()
 
 
     it 'checks current core status', ->
-      # TODO: Check async core status checking
+      # Check async core status checking
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+
+      statusView.getCurrentCoreStatus()
+
+      waitsFor ->
+        !statusView.getAttributesPromise
+
+      runs ->
+        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+        expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(true)
+
+        require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-offline'
+
+        statusView.getCurrentCoreStatus()
+
+      waitsFor ->
+        !statusView.getAttributesPromise
+
+      runs ->
+        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+        expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(false)
+
+        clearInterval statusView.interval
+
+        SettingsHelper.clearCredentials()
+        SettingsHelper.clearCurrentCore()
