@@ -11,6 +11,8 @@ module.exports =
     settings.switchProfile(profileName)
 
   set: (key, value) ->
+    delete require.cache[require.resolve(settingsPath)]
+
     settings = require settingsPath
     settings.override null, key, value
 

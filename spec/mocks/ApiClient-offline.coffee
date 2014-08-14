@@ -34,7 +34,7 @@ class ApiClientOffline extends ApiClient
     dfd = whenjs.defer()
     setTimeout ->
       dfd.resolve {
-        "id": "51ff6e065067545724680187",
+        "id": coreID,
         "name": "Online Core",
         "connected": false,
         "variables": {},

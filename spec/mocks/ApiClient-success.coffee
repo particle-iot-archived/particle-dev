@@ -42,7 +42,7 @@ class ApiClientSuccess extends ApiClient
     dfd = whenjs.defer()
     setTimeout ->
       dfd.resolve {
-        "id": "51ff6e065067545724680187",
+        "id": coreID,
         "name": "Online Core",
         "connected": true,
         "variables": {},
@@ -56,8 +56,8 @@ class ApiClientSuccess extends ApiClient
     dfd = whenjs.defer()
     setTimeout ->
       dfd.resolve {
-        "id": "51ff6e065067545724680187",
-        "name": "Bar"
+        "id": coreID,
+        "name": name
       }
     , 1
     dfd.promise

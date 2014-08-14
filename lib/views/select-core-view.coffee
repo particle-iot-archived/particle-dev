@@ -19,7 +19,7 @@ class SelectCoreView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @attr 'id', 'spark-ide-cores-view'
+    @attr 'id', 'spark-ide-select-core-view'
     @listDevicesPromise = null
 
 
@@ -51,6 +51,7 @@ class SelectCoreView extends SelectListView
 
     @cancel()
     atom.workspaceView.trigger 'spark-ide:update-core-status'
+    atom.workspaceView.trigger 'spark-ide:update-menu'
 
   getFilterKey: ->
     'name'

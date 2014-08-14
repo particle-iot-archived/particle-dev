@@ -12,13 +12,13 @@ class RenameCoreView extends Dialog
       iconClass: ''
 
     @renamePromise = null
+    @attr 'id', 'spark-ide-rename-core-view'
 
   onConfirm: (newName) ->
     SettingsHelper ?= require '../utils/settings-helper'
     _s ?= require 'underscore.string'
 
     @miniEditor.removeClass 'editor-error'
-
     newName = _s.trim(newName)
     if newName == ''
       @miniEditor.addClass 'editor-error'
@@ -27,12 +27,14 @@ class RenameCoreView extends Dialog
 
       ApiClient = require '../vendor/ApiClient'
       client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-
+      workspace = atom.workspaceView
       @renamePromise = client.renameCore SettingsHelper.get('current_core'), newName
       @renamePromise.done (e) =>
         if !@renamePromise
           return
-        SettingsHelper.set 'current_core_name', newName
+
+        atom.workspaceView = workspace
+        SettingsHelper.set 'current_core_name', newName      
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         atom.workspaceView.trigger 'spark-ide:update-menu'
         @renamePromise = null

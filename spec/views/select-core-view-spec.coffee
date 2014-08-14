@@ -20,8 +20,6 @@ describe 'Select Core View', ->
     require '../../lib/vendor/ApiClient'
     require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
-    atom.workspaceView.trigger 'spark-ide:select-core'
-
     waitsForPromise ->
       activationPromise
 
@@ -34,15 +32,15 @@ describe 'Select Core View', ->
 
       # Test core:cancel
       atom.workspaceView.trigger 'spark-ide:select-core'
-      expect(atom.workspaceView.find('#spark-ide-cores-view')).toExist()
+      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-ide-cores-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-ide-select-core-view')).not.toExist()
 
       # Test core:close
       atom.workspaceView.trigger 'spark-ide:select-core'
-      expect(atom.workspaceView.find('#spark-ide-cores-view')).toExist()
+      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-ide-cores-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-ide-select-core-view')).not.toExist()
 
       SettingsHelper.clearCredentials()
 
@@ -52,7 +50,7 @@ describe 'Select Core View', ->
 
       atom.workspaceView.trigger 'spark-ide:select-core'
 
-      expect(atom.workspaceView.find('#spark-ide-cores-view')).toExist()
+      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
       expect(coresView.find('div.loading').css('display')).toEqual('block')
       expect(coresView.find('span.loading-message').text()).toEqual('Loading cores...')
       expect(coresView.find('ol.list-group li').length).toEqual(0)
