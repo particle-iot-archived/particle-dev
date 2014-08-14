@@ -2,7 +2,7 @@
 MenuManager = require '../../lib/utils/menu-manager'
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-fdescribe 'MenuManager tests', ->
+describe 'MenuManager tests', ->
   activationPromise = null
   originalProfile = null
 

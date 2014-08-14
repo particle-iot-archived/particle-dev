@@ -1,11 +1,9 @@
-ApiClient = require '../../lib/vendor/ApiClient'
 whenjs = require 'when'
 
-class ApiClientSuccess extends ApiClient
+class ApiClientSuccess
   constructor: (baseUrl, access_token) ->
     if setTimeout.isSpy
       jasmine.unspy window, 'setTimeout'
-    super baseUrl, access_token
 
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
@@ -58,6 +56,15 @@ class ApiClientSuccess extends ApiClient
       dfd.resolve {
         "id": coreID,
         "name": name
+      }
+    , 1
+    dfd.promise
+
+  removeCore: (coreID) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "ok": true
       }
     , 1
     dfd.promise

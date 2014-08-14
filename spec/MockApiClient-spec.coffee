@@ -75,6 +75,20 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.id).toBe('51ff6e065067545724680187')
       expect(status.value.name).toBe('Bar')
 
+  it 'removes core', ->
+    promise = client.removeCore('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.ok).toBe(true)
+
 
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
@@ -110,6 +124,36 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
   it 'gets device attributes', ->
     promise = client.getAttributes('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.error).toBe('Permission Denied')
+      expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
+
+  it 'renames core', ->
+    promise = client.renameCore('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.error).toBe('Permission Denied')
+      expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
+
+  it 'removes core', ->
+    promise = client.removeCore('51ff6e065067545724680187')
 
     waitsFor ->
       (promise != null) && (promise.inspect().state != 'pending')

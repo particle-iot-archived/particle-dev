@@ -1,11 +1,9 @@
-ApiClient = require '../../lib/vendor/ApiClient'
 whenjs = require 'when'
 
-class ApiClientFail extends ApiClient
+class ApiClientFail
   constructor: (baseUrl, access_token) ->
     if setTimeout.isSpy
       jasmine.unspy window, 'setTimeout'
-    super baseUrl, access_token
 
   login: (client_id, user, pass) ->
     dfd = whenjs.defer()
@@ -27,6 +25,26 @@ class ApiClientFail extends ApiClient
     dfd.promise
 
   getAttributes: (coreID) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "error": "Permission Denied",
+        "info": "I didn't recognize that core name or ID"
+      }
+    , 1
+    dfd.promise
+
+  renameCore: (coreID) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "error": "Permission Denied",
+        "info": "I didn't recognize that core name or ID"
+      }
+    , 1
+    dfd.promise
+
+  removeCore: (coreID) ->
     dfd = whenjs.defer()
     setTimeout ->
       dfd.resolve {
