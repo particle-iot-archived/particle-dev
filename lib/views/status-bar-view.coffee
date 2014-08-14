@@ -49,7 +49,7 @@ class StatusBarView extends View
 
     statusElement = this.find('#spark-current-core a')
     statusElement.parent().removeClass 'online'
-    
+
     ApiClient = require '../vendor/ApiClient'
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
     @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
@@ -82,6 +82,7 @@ class StatusBarView extends View
 
       @getCurrentCoreStatus()
     else
+      statusElement.parent().removeClass 'online'
       statusElement.text 'No cores selected'
 
   updateLoginStatus: ->
@@ -106,8 +107,6 @@ class StatusBarView extends View
       this.find('#spark-current-core').addClass 'hidden'
 
     atom.workspaceView.trigger 'spark-ide:update-menu'
-
-    atom.menu.update()
 
   setStatus: (text, type = null) ->
       el = this.find('.spark-log')

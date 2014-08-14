@@ -76,7 +76,7 @@ describe 'Rename Core View', ->
       runs ->
         expect(SettingsHelper.get('current_core_name')).toBe('Bar')
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger.calls.length).toEqual(2);
+        expect(atom.workspaceView.trigger.calls.length).toEqual(2)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-core-status')
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
         expect(renameCoreView.close).toHaveBeenCalled()
