@@ -2,7 +2,7 @@
 MenuManager = require '../../lib/utils/menu-manager'
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-describe 'MenuManager tests', ->
+fdescribe 'MenuManager tests', ->
   activationPromise = null
   originalProfile = null
 
@@ -69,10 +69,13 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(4)
+      expect(ideMenu.submenu.length).toBe(5)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')
+
+      expect(ideMenu.submenu[4].label).toBe('Remove Foo...')
+      expect(ideMenu.submenu[4].command).toBe('spark-ide:remove-core')
 
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()

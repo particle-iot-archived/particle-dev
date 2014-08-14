@@ -25,6 +25,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:logout', => @logout()
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
     atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
+    atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -72,3 +73,23 @@ module.exports =
 
     @renameCoreView = new RenameCoreView(SettingsHelper.get 'current_core_name')
     @renameCoreView.attach()
+
+  removeCore: ->
+    if !SettingsHelper.isLoggedIn()
+      return
+
+    if !SettingsHelper.hasCurrentCore()
+      return
+
+    # TODO: Implement
+    removeButton = 'Remove ' + SettingsHelper.get('current_core_name')
+    buttons = {}
+    buttons['Cancel'] = ->
+      window.alert 'CANCEL'
+    buttons['Remove ' + SettingsHelper.get('current_core_name')] = ->
+      window.alert 'REMOVE'
+      
+    atom.confirm
+      message: 'Removal confirmation'
+      detailedMessage: 'Do you really want to remove ' + SettingsHelper.get('current_core_name') + '?'
+      buttons: buttons

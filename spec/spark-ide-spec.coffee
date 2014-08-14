@@ -60,3 +60,11 @@ describe 'Main Tests', ->
         atom.workspaceView.trigger 'spark-ide:rename-core'
         expect(sparkIde.renameCore).toHaveBeenCalled()
         jasmine.unspy sparkIde, 'renameCore'
+
+
+  describe 'when the spark-ide:remove-core event is triggered', ->
+    it 'calls removeCore() method', ->
+      spyOn(sparkIde, 'removeCore')
+      atom.workspaceView.trigger 'spark-ide:remove-core'
+      expect(sparkIde.removeCore).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'removeCore'

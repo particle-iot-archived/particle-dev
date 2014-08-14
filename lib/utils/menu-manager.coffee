@@ -30,6 +30,9 @@ module.exports =
         ideMenu.submenu = ideMenu.submenu.concat [{
           label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
           command: 'spark-ide:rename-core'
+        },{
+          label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
+          command: 'spark-ide:remove-core'
         }]
     else
       ideMenu.submenu = [{
