@@ -37,7 +37,7 @@ class ApiClientFail
   renameCore: (coreID) ->
     dfd = whenjs.defer()
     setTimeout ->
-      dfd.resolve {
+      dfd.reject {
         "error": "Permission Denied",
         "info": "I didn't recognize that core name or ID"
       }
@@ -47,7 +47,7 @@ class ApiClientFail
   removeCore: (coreID) ->
     dfd = whenjs.defer()
     setTimeout ->
-      dfd.resolve {
+      dfd.reject {
         "error": "Permission Denied",
         "info": "I didn't recognize that core name or ID"
       }

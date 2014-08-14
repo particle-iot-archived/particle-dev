@@ -146,11 +146,11 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
     runs ->
       expect(promise).not.toBe(null)
       status = promise.inspect()
-      expect(status.state).toBe('fulfilled')
-      expect(status.value).not.toBe(null)
+      expect(status.state).toBe('rejected')
+      expect(status.reason).not.toBe(null)
 
-      expect(status.value.error).toBe('Permission Denied')
-      expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
+      expect(status.reason.error).toBe('Permission Denied')
+      expect(status.reason.info).toBe('I didn\'t recognize that core name or ID')
 
   it 'removes core', ->
     promise = client.removeCore('51ff6e065067545724680187')
@@ -161,11 +161,11 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
     runs ->
       expect(promise).not.toBe(null)
       status = promise.inspect()
-      expect(status.state).toBe('fulfilled')
-      expect(status.value).not.toBe(null)
+      expect(status.state).toBe('rejected')
+      expect(status.reason).not.toBe(null)
 
-      expect(status.value.error).toBe('Permission Denied')
-      expect(status.value.info).toBe('I didn\'t recognize that core name or ID')
+      expect(status.reason.error).toBe('Permission Denied')
+      expect(status.reason.info).toBe('I didn\'t recognize that core name or ID')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->
