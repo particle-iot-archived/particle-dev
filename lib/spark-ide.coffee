@@ -10,6 +10,7 @@ module.exports =
   loginView: null
   coresView: null
   renameCoreView: null
+  removePromise: null
 
   activate: (state) ->
     # Require modules on activation
@@ -81,14 +82,30 @@ module.exports =
     if !SettingsHelper.hasCurrentCore()
       return
 
-    # TODO: Implement
     removeButton = 'Remove ' + SettingsHelper.get('current_core_name')
     buttons = {}
     buttons['Cancel'] = ->
-      window.alert 'CANCEL'
-    buttons['Remove ' + SettingsHelper.get('current_core_name')] = ->
-      window.alert 'REMOVE'
-      
+
+    buttons['Remove ' + SettingsHelper.get('current_core_name')] = =>
+      workspace = atom.workspaceView
+      ApiClient = require './vendor/ApiClient'
+      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+      @removePromise = client.removeCore SettingsHelper.get('current_core')
+      @removePromise.done (e) =>
+        if !@removePromise
+          return
+        atom.workspaceView = workspace
+        SettingsHelper.clearCurrentCore()
+        atom.workspaceView.trigger 'spark-ide:update-core-status'
+        atom.workspaceView.trigger 'spark-ide:update-menu'
+
+        @removePromise = null
+      , (e) =>
+        @removePromise = null
+        atom.confirm
+          message: e.error
+          detailedMessage: e.info
+
     atom.confirm
       message: 'Removal confirmation'
       detailedMessage: 'Do you really want to remove ' + SettingsHelper.get('current_core_name') + '?'

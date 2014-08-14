@@ -66,5 +66,77 @@ describe 'Main Tests', ->
     it 'calls removeCore() method', ->
       spyOn(sparkIde, 'removeCore')
       atom.workspaceView.trigger 'spark-ide:remove-core'
+
       expect(sparkIde.removeCore).toHaveBeenCalled()
+
       jasmine.unspy sparkIde, 'removeCore'
+
+    it 'does nothing for logged out user', ->
+      spyOn(atom, 'confirm')
+      atom.workspaceView.trigger 'spark-ide:remove-core'
+
+      expect(atom.confirm).not.toHaveBeenCalled()
+
+      jasmine.unspy atom, 'confirm'
+
+    it 'does nothing for logged in user without selected core', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      spyOn(atom, 'confirm')
+      atom.workspaceView.trigger 'spark-ide:remove-core'
+
+      expect(atom.confirm).not.toHaveBeenCalled()
+
+      SettingsHelper.clearCredentials()
+      jasmine.unspy atom, 'confirm'
+
+    it 'asks for confirmation for logged in user with selected core', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      spyOn(atom, 'confirm')
+      atom.workspaceView.trigger 'spark-ide:remove-core'
+
+      expect(atom.confirm).toHaveBeenCalled()
+      expect(atom.confirm.calls.length).toEqual(1)
+      expect(atom.confirm.calls[0].args.length).toEqual(1)
+      args = atom.confirm.calls[0].args[0]
+
+      expect(args.message).toEqual('Removal confirmation')
+      expect(args.detailedMessage).toEqual('Do you really want to remove Foo?')
+      expect('Cancel' of args.buttons).toEqual(true)
+      expect('Remove Foo' of args.buttons).toEqual(true)
+
+      # Test remove callback
+      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
+      spyOn(SettingsHelper, 'clearCurrentCore')
+      spyOn(atom.workspaceView, 'trigger')
+      args.buttons['Remove Foo']()
+
+      waitsFor ->
+        !sparkIde.removePromise
+
+      runs ->
+        expect(SettingsHelper.clearCurrentCore).toHaveBeenCalled()
+        expect(atom.workspaceView.trigger).toHaveBeenCalled()
+        expect(atom.workspaceView.trigger.calls.length).toEqual(2)
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-core-status')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
+
+        # Test fail
+        require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
+        args.buttons['Remove Foo']()
+
+      waitsFor ->
+        !sparkIde.removePromise
+
+      runs ->
+        expect(atom.confirm.calls.length).toEqual(2)
+        expect(atom.confirm.calls[1].args.length).toEqual(1)
+        alertArgs = atom.confirm.calls[1].args[0]
+        expect(alertArgs.message).toEqual('Permission Denied')
+        expect(alertArgs.detailedMessage).toEqual('I didn\'t recognize that core name or ID')
+
+        jasmine.unspy SettingsHelper, 'clearCurrentCore'
+        jasmine.unspy(atom.workspaceView, 'trigger')
+        SettingsHelper.clearCredentials()
+        SettingsHelper.clearCurrentCore()
+        jasmine.unspy atom, 'confirm'
