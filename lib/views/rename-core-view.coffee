@@ -1,4 +1,4 @@
-Dialog = require(atom.packages.getLoadedPackage('tree-view')?.path + '/lib/dialog')
+Dialog = require '../vendor/dialog'
 SettingsHelper = null
 _s = null
 
@@ -7,7 +7,7 @@ class RenameCoreView extends Dialog
   constructor: (@initialName) ->
     super
       prompt: 'Enter new name for this Core'
-      initialPath: @initialName
+      initialText: @initialName
       select: true
       iconClass: ''
 
