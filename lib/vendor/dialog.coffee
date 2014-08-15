@@ -40,3 +40,8 @@ class Dialog extends View
   showError: (message='') ->
     @errorMessage.text(message)
     @flashError() if message
+
+  setLoading: (isLoading=false) ->
+    @miniEditor.removeClass 'loading'
+    if isLoading
+      @miniEditor.addClass 'loading'
