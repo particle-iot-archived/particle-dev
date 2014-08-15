@@ -26,9 +26,14 @@ class Dialog extends View
       @miniEditor.getEditor().setSelectedBufferRange([[0, 0], [0, initialText.length]])
 
   attach: ->
+    @hideOthers()
     atom.workspaceView.append(this)
     @miniEditor.focus()
     @miniEditor.scrollToCursorPosition()
+
+  hideOthers: ->
+    $('.spark-ide-dialog').each (idx, item) ->
+      $(item).data('view').close()
 
   close: ->
     @remove()
