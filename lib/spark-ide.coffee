@@ -4,12 +4,15 @@ StatusView = null
 LoginView = null
 CoresView = null
 RenameCoreView = null
+ClaimCoreManuallyView = null
 
 module.exports =
   statusView: null
   loginView: null
   coresView: null
   renameCoreView: null
+  claimCoreManuallyView: null
+
   removePromise: null
 
   activate: (state) ->
@@ -113,4 +116,10 @@ module.exports =
       buttons: buttons
 
   claimCoreManually: ->
-    # TODO: Implement
+    ClaimCoreManuallyView ?= require './views/claim-core-manually-view'
+
+    if !SettingsHelper.isLoggedIn()
+      return
+
+    @claimCoreManuallyView = new ClaimCoreManuallyView()
+    @claimCoreManuallyView.attach()

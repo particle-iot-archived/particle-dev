@@ -49,9 +49,10 @@ class SelectCoreView extends SelectListView
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name
 
-    @cancel()
     atom.workspaceView.trigger 'spark-ide:update-core-status'
     atom.workspaceView.trigger 'spark-ide:update-menu'
+
+    @cancel()
 
   getFilterKey: ->
     'name'
