@@ -42,6 +42,8 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
+      expect(ideMenu.submenu.length).toBe(5)
+
       expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
       expect(ideMenu.submenu[0].command).toBe('spark-ide:logout')
 
@@ -49,6 +51,11 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[2].label).toBe('Select Core...')
       expect(ideMenu.submenu[2].command).toBe('spark-ide:select-core')
+
+      expect(ideMenu.submenu[3].type).toBe('separator')
+
+      expect(ideMenu.submenu[4].label).toBe('Claim Core manually...')
+      expect(ideMenu.submenu[4].command).toBe('spark-ide:claim-core-manually')
 
       SettingsHelper.clearCredentials()
 

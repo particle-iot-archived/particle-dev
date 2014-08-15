@@ -140,3 +140,15 @@ describe 'Main Tests', ->
         SettingsHelper.clearCredentials()
         SettingsHelper.clearCurrentCore()
         jasmine.unspy atom, 'confirm'
+
+
+  describe 'when the spark-ide:claim-core-manually event is triggered', ->
+    it 'calls claimCoreManually() method', ->
+      waitsForPromise ->
+        treeViewPromise
+
+      runs ->
+        spyOn(sparkIde, 'claimCoreManually')
+        atom.workspaceView.trigger 'spark-ide:claim-core-manually'
+        expect(sparkIde.claimCoreManually).toHaveBeenCalled()
+        jasmine.unspy sparkIde, 'claimCoreManually'

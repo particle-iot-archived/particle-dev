@@ -89,6 +89,23 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
 
       expect(status.value.ok).toBe(true)
 
+  it 'claims core', ->
+    promise = client.claimCore('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.user_id).toBe('53187f78907210fed300048f')
+      expect(status.value.id).toBe('51ff6e065067545724680187')
+      expect(status.value.connected).toBe(true)
+      expect(status.value.ok).toBe(true)
+
 
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
@@ -166,6 +183,23 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
 
       expect(status.reason.error).toBe('Permission Denied')
       expect(status.reason.info).toBe('I didn\'t recognize that core name or ID')
+
+  it 'claims core', ->
+    promise = client.claimCore('51ff6e065067545724680187')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('rejected')
+      expect(status.reason).not.toBe(null)
+
+      expect(status.reason.ok).toBe(false)
+      expect(status.reason.errors instanceof Array).toBe(true)
+      expect(status.reason.errors.length).toBe(1)
+      expect(status.reason.errors[0]).toBe('That belongs to someone else')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->
