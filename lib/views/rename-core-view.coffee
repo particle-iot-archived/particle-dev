@@ -10,6 +10,7 @@ class RenameCoreView extends Dialog
       initialText: @initialName
       select: true
       iconClass: ''
+      hideOnBlur: false
 
     @renamePromise = null
     @attr 'id', 'spark-ide-rename-core-view'
@@ -29,6 +30,7 @@ class RenameCoreView extends Dialog
       client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
       workspace = atom.workspaceView
       @renamePromise = client.renameCore SettingsHelper.get('current_core'), newName
+      @setLoading true
       @renamePromise.done (e) =>
         if !@renamePromise
           return
@@ -42,6 +44,7 @@ class RenameCoreView extends Dialog
         @close()
 
       , (e) =>
+        @setLoading false
         @renamePromise = null
         @miniEditor.hiddenInput.removeAttr 'disabled'
         atom.confirm
