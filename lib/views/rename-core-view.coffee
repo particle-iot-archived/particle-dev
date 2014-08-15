@@ -34,7 +34,7 @@ class RenameCoreView extends Dialog
           return
 
         atom.workspaceView = workspace
-        SettingsHelper.set 'current_core_name', newName      
+        SettingsHelper.set 'current_core_name', newName
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         atom.workspaceView.trigger 'spark-ide:update-menu'
         @renamePromise = null
@@ -42,6 +42,7 @@ class RenameCoreView extends Dialog
         @close()
 
       , (e) =>
+        @renamePromise = null
         @miniEditor.hiddenInput.removeAttr 'disabled'
         atom.confirm
           message: 'Error'
