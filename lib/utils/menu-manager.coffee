@@ -34,6 +34,13 @@ module.exports =
           label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
           command: 'spark-ide:remove-core'
         }]
+
+      ideMenu.submenu = ideMenu.submenu.concat [{
+        type: 'separator'
+      },{
+        label: 'Claim Core manually...',
+        command: 'spark-ide:claim-core-manually'
+      }]
     else
       ideMenu.submenu = [{
         label: 'Log in to Spark Cloud...',

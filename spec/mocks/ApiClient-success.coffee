@@ -69,4 +69,16 @@ class ApiClientSuccess
     , 1
     dfd.promise
 
+  claimCore: (coreID) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "ok": true,
+        "user_id": "53187f78907210fed300048f",
+        "id": coreID,
+        "connected": true
+      }
+    , 1
+    dfd.promise
+
 module.exports = ApiClientSuccess

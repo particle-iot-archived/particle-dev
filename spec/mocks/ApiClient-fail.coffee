@@ -54,5 +54,17 @@ class ApiClientFail
     , 1
     dfd.promise
 
+  claimCore: (coreID) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.reject {
+        "ok": false,
+        "errors": [
+          "That belongs to someone else"
+        ]
+      }
+    , 1
+    dfd.promise
+
 
 module.exports = ApiClientFail

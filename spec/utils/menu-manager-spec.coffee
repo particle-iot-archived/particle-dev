@@ -69,14 +69,12 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(3)
-
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       atom.workspaceView.trigger 'spark-ide:update-menu'
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(5)
+      expect(ideMenu.submenu.length).toBe(7)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')

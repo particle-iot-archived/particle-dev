@@ -27,6 +27,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
     atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
+    atom.workspaceView.command 'spark-ide:claim-core-manually', => @claimCoreManually()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -110,3 +111,6 @@ module.exports =
       message: 'Removal confirmation'
       detailedMessage: 'Do you really want to remove ' + SettingsHelper.get('current_core_name') + '?'
       buttons: buttons
+
+  claimCoreManually: ->
+    # TODO: Implement
