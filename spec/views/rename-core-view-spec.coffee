@@ -2,9 +2,8 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-describe 'Rename Core View', ->
+fdescribe 'Rename Core View', ->
   activationPromise = null
-  treeViewPromise = null
   originalProfile = null
   sparkIde = null
   renameCoreView = null
@@ -13,14 +12,8 @@ describe 'Rename Core View', ->
     require '../../lib/vendor/ApiClient'
     atom.workspaceView = new WorkspaceView
 
-    treeViewPromise = atom.packages.activatePackage('tree-view')
-
-    waitsForPromise ->
-      treeViewPromise
-
-    runs ->
-      activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
-        sparkIde = mainModule
+    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+      sparkIde = mainModule
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
