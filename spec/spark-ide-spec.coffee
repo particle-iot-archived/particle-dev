@@ -3,7 +3,6 @@ SettingsHelper = require '../lib/utils/settings-helper'
 
 describe 'Main Tests', ->
   activationPromise = null
-  treeViewPromise = null
   loginView = null
   sparkIde = null
   originalProfile = null
@@ -13,7 +12,6 @@ describe 'Main Tests', ->
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
       loginView = mainModule.loginView
-    treeViewPromise = atom.packages.activatePackage('tree-view')
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -52,14 +50,10 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:rename-core event is triggered', ->
     it 'calls renameCore() method', ->
-      waitsForPromise ->
-        treeViewPromise
-
-      runs ->
-        spyOn sparkIde, 'renameCore'
-        atom.workspaceView.trigger 'spark-ide:rename-core'
-        expect(sparkIde.renameCore).toHaveBeenCalled()
-        jasmine.unspy sparkIde, 'renameCore'
+      spyOn sparkIde, 'renameCore'
+      atom.workspaceView.trigger 'spark-ide:rename-core'
+      expect(sparkIde.renameCore).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'renameCore'
 
 
   describe 'when the spark-ide:remove-core event is triggered', ->
@@ -144,11 +138,7 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:claim-core-manually event is triggered', ->
     it 'calls claimCoreManually() method', ->
-      waitsForPromise ->
-        treeViewPromise
-
-      runs ->
-        spyOn sparkIde, 'claimCoreManually'
-        atom.workspaceView.trigger 'spark-ide:claim-core-manually'
-        expect(sparkIde.claimCoreManually).toHaveBeenCalled()
-        jasmine.unspy sparkIde, 'claimCoreManually'
+      spyOn sparkIde, 'claimCoreManually'
+      atom.workspaceView.trigger 'spark-ide:claim-core-manually'
+      expect(sparkIde.claimCoreManually).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'claimCoreManually'
