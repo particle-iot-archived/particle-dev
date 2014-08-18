@@ -2,7 +2,7 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-fdescribe 'Rename Core View', ->
+describe 'Rename Core View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
@@ -56,7 +56,6 @@ fdescribe 'Rename Core View', ->
       renameCoreView = sparkIde.renameCoreView
 
       editor = renameCoreView.miniEditor.getEditor()
-      expect(editor.getText()).toBe('Foo')
 
       editor.setText 'Bar'
       spyOn(renameCoreView, 'close')
