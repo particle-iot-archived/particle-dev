@@ -41,7 +41,7 @@ describe 'Claim Core manually View', ->
       editor = claimCoreManuallyView.miniEditor.getEditor()
 
       editor.setText ''
-      spyOn(claimCoreManuallyView, 'close')
+      spyOn claimCoreManuallyView, 'close'
       expect(atom.workspaceView.find('#spark-ide-claim-core-manually-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       claimCoreManuallyView.trigger 'core:confirm'
       expect(atom.workspaceView.find('#spark-ide-claim-core-manually-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
@@ -59,8 +59,8 @@ describe 'Claim Core manually View', ->
       editor = claimCoreManuallyView.miniEditor.getEditor()
 
       editor.setText '0123456789abcdef0123456789abcdef'
-      spyOn(claimCoreManuallyView, 'close')
-      spyOn(atom.workspaceView, 'trigger')
+      spyOn claimCoreManuallyView, 'close'
+      spyOn atom.workspaceView, 'trigger'
       claimCoreManuallyView.trigger 'core:confirm'
 
       waitsFor ->

@@ -67,13 +67,14 @@ describe 'Status Bar Tests', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
-      spyOn(statusView, 'getCurrentCoreStatus')
+      spyOn statusView, 'getCurrentCoreStatus'
       atom.workspaceView.trigger 'spark-ide:update-core-status'
       expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
       expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
       SettingsHelper.clearCredentials()
       SettingsHelper.clearCurrentCore()
+      jasmine.unspy statusView, 'getCurrentCoreStatus'
 
 
     it 'checks current core status', ->

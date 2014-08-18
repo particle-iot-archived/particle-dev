@@ -28,7 +28,7 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:login event is triggered', ->
     it 'calls login() method', ->
-      spyOn(sparkIde, 'login')
+      spyOn sparkIde, 'login'
       atom.workspaceView.trigger 'spark-ide:login'
       expect(sparkIde.login).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'login'
@@ -36,7 +36,7 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:logout event is triggered', ->
     it 'calls logout() method', ->
-      spyOn(sparkIde, 'logout')
+      spyOn sparkIde, 'logout'
       atom.workspaceView.trigger 'spark-ide:logout'
       expect(sparkIde.logout).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'logout'
@@ -44,7 +44,7 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:select-core event is triggered', ->
     it 'calls selectCore() method', ->
-      spyOn(sparkIde, 'selectCore')
+      spyOn sparkIde, 'selectCore'
       atom.workspaceView.trigger 'spark-ide:select-core'
       expect(sparkIde.selectCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'selectCore'
@@ -56,7 +56,7 @@ describe 'Main Tests', ->
         treeViewPromise
 
       runs ->
-        spyOn(sparkIde, 'renameCore')
+        spyOn sparkIde, 'renameCore'
         atom.workspaceView.trigger 'spark-ide:rename-core'
         expect(sparkIde.renameCore).toHaveBeenCalled()
         jasmine.unspy sparkIde, 'renameCore'
@@ -64,7 +64,7 @@ describe 'Main Tests', ->
 
   describe 'when the spark-ide:remove-core event is triggered', ->
     it 'calls removeCore() method', ->
-      spyOn(sparkIde, 'removeCore')
+      spyOn sparkIde, 'removeCore'
       atom.workspaceView.trigger 'spark-ide:remove-core'
 
       expect(sparkIde.removeCore).toHaveBeenCalled()
@@ -72,7 +72,7 @@ describe 'Main Tests', ->
       jasmine.unspy sparkIde, 'removeCore'
 
     it 'does nothing for logged out user', ->
-      spyOn(atom, 'confirm')
+      spyOn atom, 'confirm'
       atom.workspaceView.trigger 'spark-ide:remove-core'
 
       expect(atom.confirm).not.toHaveBeenCalled()
@@ -81,7 +81,7 @@ describe 'Main Tests', ->
 
     it 'does nothing for logged in user without selected core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      spyOn(atom, 'confirm')
+      spyOn atom, 'confirm'
       atom.workspaceView.trigger 'spark-ide:remove-core'
 
       expect(atom.confirm).not.toHaveBeenCalled()
@@ -92,7 +92,7 @@ describe 'Main Tests', ->
     it 'asks for confirmation for logged in user with selected core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      spyOn(atom, 'confirm')
+      spyOn atom, 'confirm'
       atom.workspaceView.trigger 'spark-ide:remove-core'
 
       expect(atom.confirm).toHaveBeenCalled()
@@ -107,8 +107,8 @@ describe 'Main Tests', ->
 
       # Test remove callback
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
-      spyOn(SettingsHelper, 'clearCurrentCore')
-      spyOn(atom.workspaceView, 'trigger')
+      spyOn SettingsHelper, 'clearCurrentCore'
+      spyOn atom.workspaceView, 'trigger'
       args.buttons['Remove Foo']()
 
       waitsFor ->
@@ -148,7 +148,7 @@ describe 'Main Tests', ->
         treeViewPromise
 
       runs ->
-        spyOn(sparkIde, 'claimCoreManually')
+        spyOn sparkIde, 'claimCoreManually'
         atom.workspaceView.trigger 'spark-ide:claim-core-manually'
         expect(sparkIde.claimCoreManually).toHaveBeenCalled()
         jasmine.unspy sparkIde, 'claimCoreManually'

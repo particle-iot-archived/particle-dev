@@ -42,13 +42,14 @@ describe 'Rename Core View', ->
       expect(editor.getText()).toBe('Foo')
 
       editor.setText ''
-      spyOn(renameCoreView, 'close')
+      spyOn renameCoreView, 'close'
       expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
       renameCoreView.trigger 'core:confirm'
       expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
       expect(renameCoreView.close).not.toHaveBeenCalled()
 
       atom.workspaceView.trigger 'core:cancel'
+      jasmine.unspy renameCoreView, 'close'
 
     it 'removes the core', ->
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
@@ -58,8 +59,8 @@ describe 'Rename Core View', ->
       editor = renameCoreView.miniEditor.getEditor()
 
       editor.setText 'Bar'
-      spyOn(renameCoreView, 'close')
-      spyOn(atom.workspaceView, 'trigger')
+      spyOn renameCoreView, 'close'
+      spyOn atom.workspaceView, 'trigger'
       renameCoreView.trigger 'core:confirm'
 
       waitsFor ->
@@ -73,6 +74,6 @@ describe 'Rename Core View', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
         expect(renameCoreView.close).toHaveBeenCalled()
 
-        jasmine.unspy(renameCoreView, 'close')
-        jasmine.unspy(atom.workspaceView, 'trigger')
+        jasmine.unspy renameCoreView, 'close'
+        jasmine.unspy atom.workspaceView, 'trigger'
         renameCoreView.close()
