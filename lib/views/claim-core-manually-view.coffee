@@ -41,6 +41,7 @@ class ClaimCoreManuallyView extends Dialog
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         atom.workspaceView.trigger 'spark-ide:update-menu'
 
+        @claimPromise = null
         @close()
 
       , (e) =>
