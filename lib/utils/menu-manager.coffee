@@ -40,6 +40,9 @@ module.exports =
       },{
         label: 'Claim Core manually...',
         command: 'spark-ide:claim-core-manually'
+      },{
+        label: 'Claim Core via USB...',
+        command: 'spark-ide:claim-core-usb'
       }]
     else
       ideMenu.submenu = [{

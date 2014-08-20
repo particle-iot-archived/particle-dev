@@ -31,6 +31,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
     atom.workspaceView.command 'spark-ide:claim-core-manually', => @claimCoreManually()
+    atom.workspaceView.command 'spark-ide:claim-core-usb', => @claimCoreUsb()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -123,3 +124,5 @@ module.exports =
 
     @claimCoreManuallyView = new ClaimCoreManuallyView()
     @claimCoreManuallyView.attach()
+
+  claimCoreUsb: ->
