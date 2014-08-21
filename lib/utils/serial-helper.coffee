@@ -5,9 +5,10 @@ SerialPort = SerialPortLib.SerialPort
 utilities = require '../vendor/utilities.js'
 SerialBoredParser = require '../vendor/SerialBoredParser'
 
-
 module.exports =
-  findCores: (callback) ->
+  listPorts: ->
+    dfd = whenjs.defer()
+
     cores = []
     SerialPortLib.list (err, ports) ->
       for port in ports
@@ -22,7 +23,8 @@ module.exports =
           else if port.comName.indexOf('/dev/cuaU') == 0
             cores.push port
 
-      callback(cores)
+      dfd.resolve(cores)
+    dfd.promise
 
   askForCoreID: (comPort) ->
     failDelay = 5000
