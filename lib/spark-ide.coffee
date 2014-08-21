@@ -126,3 +126,7 @@ module.exports =
     @claimCoreManuallyView.attach()
 
   claimCoreUsb: ->
+    ListeningModeView = require './views/listening-mode-view'
+
+    @listeningModeView = new ListeningModeView()
+    @listeningModeView.show()
