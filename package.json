@@ -14,6 +14,7 @@
     "xtend": "*",
     "underscore.string": "*",
     "emissary": "1.x",
-    "validator": "*"
+    "validator": "*",
+    "serialport": "*"
   }
 }
