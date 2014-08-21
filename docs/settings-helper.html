@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>settings-helper.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="spark-ide.html">
+                spark-ide.coffee
+              </a>
+            
+              
+              <a class="source" href="menu-manager.html">
+                menu-manager.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-helper.html">
+                serial-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="settings-helper.html">
+                settings-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="claim-core-manually-view.html">
+                claim-core-manually-view.coffee
+              </a>
+            
+              
+              <a class="source" href="login-view.html">
+                login-view.coffee
+              </a>
+            
+              
+              <a class="source" href="rename-core-view.html">
+                rename-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-core-view.html">
+                select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="status-bar-view.html">
+                status-bar-view.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>settings-helper.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>settingsPath = <span class="hljs-string">'../vendor/settings'</span>
+<span class="hljs-built_in">module</span>.exports =
+  <span class="hljs-attribute">getProfile</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">delete</span> <span class="hljs-built_in">require</span>.cache[<span class="hljs-built_in">require</span>.resolve(settingsPath)]
+
+    settings = <span class="hljs-built_in">require</span> settingsPath
+    settings.profile
+
+  <span class="hljs-attribute">setProfile</span>: <span class="hljs-function"><span class="hljs-params">(profileName)</span> -&gt;</span>
+    settings = <span class="hljs-built_in">require</span> settingsPath
+    settings.switchProfile(profileName)
+
+  <span class="hljs-attribute">set</span>: <span class="hljs-function"><span class="hljs-params">(key, value)</span> -&gt;</span>
+    <span class="hljs-keyword">delete</span> <span class="hljs-built_in">require</span>.cache[<span class="hljs-built_in">require</span>.resolve(settingsPath)]
+
+    settings = <span class="hljs-built_in">require</span> settingsPath
+    settings.override <span class="hljs-literal">null</span>, key, value
+
+  <span class="hljs-attribute">get</span>: <span class="hljs-function"><span class="hljs-params">(key)</span> -&gt;</span>
+    <span class="hljs-keyword">delete</span> <span class="hljs-built_in">require</span>.cache[<span class="hljs-built_in">require</span>.resolve(settingsPath)]
+
+    settings = <span class="hljs-built_in">require</span> settingsPath
+    settings[key]
+
+  <span class="hljs-attribute">setCredentials</span>: <span class="hljs-function"><span class="hljs-params">(username, access_token)</span> -&gt;</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'username'</span>, username
+    <span class="hljs-property">@set</span> <span class="hljs-string">'access_token'</span>, access_token
+
+  <span class="hljs-attribute">clearCredentials</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'username'</span>, <span class="hljs-literal">null</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'access_token'</span>, <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">isLoggedIn</span>:<span class="hljs-function"> -&gt;</span>
+    !!<span class="hljs-property">@get</span>(<span class="hljs-string">'access_token'</span>)
+
+  <span class="hljs-attribute">setCurrentCore</span>: <span class="hljs-function"><span class="hljs-params">(id, name)</span> -&gt;</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'current_core'</span>, id
+    <span class="hljs-property">@set</span> <span class="hljs-string">'current_core_name'</span>, name
+
+  <span class="hljs-attribute">clearCurrentCore</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'current_core'</span>, <span class="hljs-literal">null</span>
+    <span class="hljs-property">@set</span> <span class="hljs-string">'current_core_name'</span>, <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">hasCurrentCore</span>:<span class="hljs-function"> -&gt;</span>
+    !!<span class="hljs-property">@get</span>(<span class="hljs-string">'current_core'</span>)</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

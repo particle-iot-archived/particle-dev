@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>login-view.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="spark-ide.html">
+                spark-ide.coffee
+              </a>
+            
+              
+              <a class="source" href="menu-manager.html">
+                menu-manager.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-helper.html">
+                serial-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="settings-helper.html">
+                settings-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="claim-core-manually-view.html">
+                claim-core-manually-view.coffee
+              </a>
+            
+              
+              <a class="source" href="login-view.html">
+                login-view.coffee
+              </a>
+            
+              
+              <a class="source" href="rename-core-view.html">
+                rename-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-core-view.html">
+                select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="status-bar-view.html">
+                status-bar-view.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>login-view.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>{View, EditorView} = require 'atom'
+
+$ = null
+_s = null
+Subscriber = null
+ApiClient = null
+SettingsHelper = null
+validator = null
+
+module.exports =
+class LoginView extends View
+  @content: -&gt;
+    @div id: 'spark-ide-login-view', class: 'overlay from-top', =&gt;
+      @div class: 'block', =&gt;
+        @span 'Log in to Spark Cloud '
+        @span class: 'text-subtle', =&gt;
+          @text 'Close this dialog with the '
+          @span class: 'highlight', 'esc'
+          @span ' key'
+      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?')
+      @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?')
+      @div class: 'text-error block', outlet: 'errorLabel'
+      @div class: 'block', =&gt;
+        @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
+        @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
+        @span class: 'loading loading-spinner-tiny inline-block hidden', outlet: 'spinner'
+        @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
+
+  initialize: (serializeState) -&gt;
+    {Subscriber} = require 'emissary'
+    $ ?= require('atom').$
+
+    _s ?= require 'underscore.string'
+    SettingsHelper = require '../utils/settings-helper'
+
+    @subscriber = new Subscriber()
+    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =&gt;
+      atom.workspaceView.trigger 'spark-ide:cancel-login'
+
+    @loginPromise = null</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>As Atom doesn’t provide password input, we have to hack EditorView to act as one</p>
+<p>Known issues:</p>
+<ul>
+<li>doesn’t support pasting (it will show plain text)</li>
+<li>doesn’t work with multiple selections</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@passwordEditor</span>.originalText = <span class="hljs-string">''</span>
+    <span class="hljs-property">@passwordEditor</span>.hiddenInput.<span class="hljs-literal">on</span> <span class="hljs-string">'keypress'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      editor = <span class="hljs-property">@passwordEditor</span>.getEditor()
+      selection = editor.getSelectedBufferRange()
+      cursor = editor.getCursorBufferPosition()
+      <span class="hljs-keyword">if</span> !selection.isEmpty()
+        <span class="hljs-property">@passwordEditor</span>.originalText = _s.splice(<span class="hljs-property">@passwordEditor</span>.originalText, selection.start.column, selection.end.column - selection.start.column, String.fromCharCode(e.which))
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-property">@passwordEditor</span>.originalText = _s.splice(<span class="hljs-property">@passwordEditor</span>.originalText, cursor.column, <span class="hljs-number">0</span>, String.fromCharCode(e.which))
+      <span class="hljs-property">@passwordEditor</span>.insertText <span class="hljs-string">'*'</span>
+      <span class="hljs-literal">false</span>
+
+    <span class="hljs-property">@passwordEditor</span>.hiddenInput.<span class="hljs-literal">on</span> <span class="hljs-string">'keydown'</span>, <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-keyword">if</span> e.which == <span class="hljs-number">8</span>
+        editor = <span class="hljs-property">@passwordEditor</span>.getEditor()
+        selection = editor.getSelectedBufferRange()
+        cursor = editor.getCursorBufferPosition()
+        <span class="hljs-keyword">if</span> !selection.isEmpty()
+          <span class="hljs-property">@passwordEditor</span>.originalText = _s.splice(<span class="hljs-property">@passwordEditor</span>.originalText, selection.start.column, selection.end.column - selection.start.column)
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@passwordEditor</span>.originalText = _s.splice(<span class="hljs-property">@passwordEditor</span>.originalText, cursor.column - <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+        <span class="hljs-property">@passwordEditor</span>.backspace
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> e.which == <span class="hljs-number">13</span>
+        <span class="hljs-property">@login</span>()
+      <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Returns an object that can be retrieved when package is activated</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Tear down any state and detach</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@remove</span>()
+
+  <span class="hljs-attribute">show</span>:<span class="hljs-function"> =&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
+      atom.workspaceView.append(<span class="hljs-keyword">this</span>)
+      <span class="hljs-property">@emailEditor</span>.getEditor().setText <span class="hljs-string">''</span>
+      <span class="hljs-property">@passwordEditor</span>.getEditor().setText <span class="hljs-string">''</span>
+      <span class="hljs-property">@passwordEditor</span>.originalText = <span class="hljs-string">''</span>
+      <span class="hljs-property">@errorLabel</span>.hide()
+      <span class="hljs-property">@emailEditor</span>.focus()
+
+  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
+      <span class="hljs-property">@detach</span>()
+
+  <span class="hljs-attribute">cancel</span>: <span class="hljs-function"><span class="hljs-params">(event, element)</span> =&gt;</span>
+    <span class="hljs-keyword">if</span> !!<span class="hljs-property">@loginPromise</span>
+      <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
+    <span class="hljs-property">@unlockUi</span>()
+    <span class="hljs-property">@clearErrors</span>()
+    <span class="hljs-property">@hide</span>()
+
+  <span class="hljs-attribute">cancelCommand</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@cancel</span>()
+
+  <span class="hljs-attribute">clearErrors</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@emailEditor</span>.removeClass <span class="hljs-string">'editor-error'</span>
+    <span class="hljs-property">@passwordEditor</span>.removeClass <span class="hljs-string">'editor-error'</span>
+
+  <span class="hljs-attribute">validateInputs</span>:<span class="hljs-function"> -&gt;</span>
+    validator ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'validator'</span>
+
+    <span class="hljs-property">@clearErrors</span>()
+
+    <span class="hljs-property">@email</span> = _s.trim(<span class="hljs-property">@emailEditor</span>.getText())
+    <span class="hljs-property">@password</span> = _s.trim(<span class="hljs-property">@passwordEditor</span>.originalText)
+
+    isOk = <span class="hljs-literal">true</span>
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-property">@email</span> == <span class="hljs-string">''</span>) || (!validator.isEmail(<span class="hljs-property">@email</span>))
+      <span class="hljs-property">@emailEditor</span>.addClass <span class="hljs-string">'editor-error'</span>
+      isOk = <span class="hljs-literal">false</span>
+
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@password</span> == <span class="hljs-string">''</span>
+      <span class="hljs-property">@passwordEditor</span>.addClass <span class="hljs-string">'editor-error'</span>
+      isOk = <span class="hljs-literal">false</span>
+
+    isOk
+
+  <span class="hljs-attribute">unlockUi</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@emailEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@passwordEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@loginButton</span>.removeAttr <span class="hljs-string">'disabled'</span>
+
+  <span class="hljs-attribute">login</span>: <span class="hljs-function"><span class="hljs-params">(event, element)</span> =&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@validateInputs</span>()
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>It should be ?= instead of = to save time but then the tests won’t work
+as ApiClient could be set in one of the previous tests</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    ApiClient = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/ApiClient'</span>
+    <span class="hljs-property">@emailEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@passwordEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@loginButton</span>.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@spinner</span>.removeClass <span class="hljs-string">'hidden'</span>
+    <span class="hljs-property">@errorLabel</span>.hide()
+
+    client = <span class="hljs-keyword">new</span> ApiClient SettingsHelper.get <span class="hljs-string">'apiUrl'</span>
+    <span class="hljs-property">@loginPromise</span> = client.login <span class="hljs-string">'spark-ide'</span>, <span class="hljs-property">@email</span>, <span class="hljs-property">@password</span>
+    <span class="hljs-property">@loginPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@spinner</span>.addClass <span class="hljs-string">'hidden'</span>
+      <span class="hljs-keyword">if</span> !<span class="hljs-property">@loginPromise</span>
+        <span class="hljs-keyword">return</span>
+      SettingsHelper.setCredentials <span class="hljs-property">@email</span>, e
+      atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span>
+      <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
+
+      <span class="hljs-property">@cancel</span>()
+
+    , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@spinner</span>.addClass <span class="hljs-string">'hidden'</span>
+      <span class="hljs-keyword">if</span> !<span class="hljs-property">@loginPromise</span>
+        <span class="hljs-keyword">return</span>
+      <span class="hljs-property">@unlockUi</span>()
+      <span class="hljs-property">@errorLabel</span>.text(e).show()
+      <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> =&gt;</span>
+    SettingsHelper.clearCredentials()
+    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

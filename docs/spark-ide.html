@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>spark-ide.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="spark-ide.html">
+                spark-ide.coffee
+              </a>
+            
+              
+              <a class="source" href="menu-manager.html">
+                menu-manager.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-helper.html">
+                serial-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="settings-helper.html">
+                settings-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="claim-core-manually-view.html">
+                claim-core-manually-view.coffee
+              </a>
+            
+              
+              <a class="source" href="login-view.html">
+                login-view.coffee
+              </a>
+            
+              
+              <a class="source" href="rename-core-view.html">
+                rename-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-core-view.html">
+                select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="status-bar-view.html">
+                status-bar-view.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>spark-ide.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>SettingsHelper = <span class="hljs-literal">null</span>
+MenuManager = <span class="hljs-literal">null</span>
+StatusView = <span class="hljs-literal">null</span>
+LoginView = <span class="hljs-literal">null</span>
+CoresView = <span class="hljs-literal">null</span>
+RenameCoreView = <span class="hljs-literal">null</span>
+ClaimCoreManuallyView = <span class="hljs-literal">null</span>
+
+<span class="hljs-built_in">module</span>.exports =
+  <span class="hljs-attribute">statusView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">loginView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">coresView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">renameCoreView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">claimCoreManuallyView</span>: <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">removePromise</span>: <span class="hljs-literal">null</span>
+
+  <span class="hljs-attribute">activate</span>: <span class="hljs-function"><span class="hljs-params">(state)</span> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Require modules on activation</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    StatusView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/status-bar-view'</span>
+    SettingsHelper ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./utils/settings-helper'</span>
+    MenuManager ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./utils/menu-manager'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Initialize views</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@statusView</span> = <span class="hljs-keyword">new</span> StatusView()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Hooking up commands</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@login</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@logout</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:select-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@selectCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:rename-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@renameCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:remove-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@removeCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:claim-core-manually'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@claimCoreManually</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:claim-core-usb'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@claimCoreUsb</span>()
+
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-menu'</span>,<span class="hljs-function"> =&gt;</span> MenuManager.update()
+
+    MenuManager.update()
+
+  <span class="hljs-attribute">deactivate</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@statusView</span>?.destroy()
+
+  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+
+  <span class="hljs-attribute">login</span>:<span class="hljs-function"> -&gt;</span>
+    LoginView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/login-view'</span>
+    <span class="hljs-property">@loginView</span> ?= <span class="hljs-keyword">new</span> LoginView()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>You may ask why this isn’t in LoginView? This way, we don’t need to
+require/initialize login view until it’s needed.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:cancel-login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@loginView</span>.cancelCommand()
+    <span class="hljs-property">@loginView</span>.show()
+
+  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> !SettingsHelper.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    LoginView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/login-view'</span>
+    <span class="hljs-property">@loginView</span> ?= <span class="hljs-keyword">new</span> LoginView()
+
+    <span class="hljs-property">@loginView</span>.logout()
+
+  <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span>
+    CoresView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/select-core-view'</span>
+    <span class="hljs-property">@coresView</span> ?= <span class="hljs-keyword">new</span> CoresView()
+
+    <span class="hljs-keyword">if</span> !SettingsHelper.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-property">@coresView</span>.show()
+
+  <span class="hljs-attribute">renameCore</span>:<span class="hljs-function"> -&gt;</span>
+    RenameCoreView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/rename-core-view'</span>
+
+    <span class="hljs-keyword">if</span> !SettingsHelper.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">if</span> !SettingsHelper.hasCurrentCore()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-property">@renameCoreView</span> = <span class="hljs-keyword">new</span> RenameCoreView(SettingsHelper.get <span class="hljs-string">'current_core_name'</span>)
+    <span class="hljs-property">@renameCoreView</span>.attach()
+
+  <span class="hljs-attribute">removeCore</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> !SettingsHelper.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-keyword">if</span> !SettingsHelper.hasCurrentCore()
+      <span class="hljs-keyword">return</span>
+
+    removeButton = <span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>)
+    buttons = {}
+    buttons[<span class="hljs-string">'Cancel'</span>] =<span class="hljs-function"> -&gt;</span>
+
+    buttons[<span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>)] =<span class="hljs-function"> =&gt;</span>
+      workspace = atom.workspaceView
+      ApiClient = <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/ApiClient'</span>
+      client = <span class="hljs-keyword">new</span> ApiClient SettingsHelper.get(<span class="hljs-string">'apiUrl'</span>), SettingsHelper.get(<span class="hljs-string">'access_token'</span>)
+      <span class="hljs-property">@removePromise</span> = client.removeCore SettingsHelper.get(<span class="hljs-string">'current_core'</span>)
+      <span class="hljs-property">@removePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-keyword">if</span> !<span class="hljs-property">@removePromise</span>
+          <span class="hljs-keyword">return</span>
+        atom.workspaceView = workspace
+        SettingsHelper.clearCurrentCore()
+        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-core-status'</span>
+        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-menu'</span>
+
+        <span class="hljs-property">@removePromise</span> = <span class="hljs-literal">null</span>
+      , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-property">@removePromise</span> = <span class="hljs-literal">null</span>
+        atom.confirm
+          <span class="hljs-attribute">message</span>: e.error
+          <span class="hljs-attribute">detailedMessage</span>: e.info
+
+    atom.confirm
+      <span class="hljs-attribute">message</span>: <span class="hljs-string">'Removal confirmation'</span>
+      <span class="hljs-attribute">detailedMessage</span>: <span class="hljs-string">'Do you really want to remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'?'</span>
+      <span class="hljs-attribute">buttons</span>: buttons
+
+  <span class="hljs-attribute">claimCoreManually</span>:<span class="hljs-function"> -&gt;</span>
+    ClaimCoreManuallyView ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/claim-core-manually-view'</span>
+
+    <span class="hljs-keyword">if</span> !SettingsHelper.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-property">@claimCoreManuallyView</span> = <span class="hljs-keyword">new</span> ClaimCoreManuallyView()
+    <span class="hljs-property">@claimCoreManuallyView</span>.attach()
+
+  <span class="hljs-attribute">claimCoreUsb</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

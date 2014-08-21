@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>serial-helper.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="spark-ide.html">
+                spark-ide.coffee
+              </a>
+            
+              
+              <a class="source" href="menu-manager.html">
+                menu-manager.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-helper.html">
+                serial-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="settings-helper.html">
+                settings-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="claim-core-manually-view.html">
+                claim-core-manually-view.coffee
+              </a>
+            
+              
+              <a class="source" href="login-view.html">
+                login-view.coffee
+              </a>
+            
+              
+              <a class="source" href="rename-core-view.html">
+                rename-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-core-view.html">
+                select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="status-bar-view.html">
+                status-bar-view.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>serial-helper.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>whenjs = <span class="hljs-built_in">require</span> <span class="hljs-string">'when'</span>
+pipeline = <span class="hljs-built_in">require</span> <span class="hljs-string">'when/pipeline'</span>
+SerialPortLib = <span class="hljs-built_in">require</span> <span class="hljs-string">'serialport'</span>
+SerialPort = SerialPortLib.SerialPort
+utilities = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/utilities.js'</span>
+SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/SerialBoredParser'</span>
+
+
+<span class="hljs-built_in">module</span>.exports =
+  <span class="hljs-attribute">findCores</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    cores = []
+    SerialPortLib.list <span class="hljs-function"><span class="hljs-params">(err, ports)</span> -&gt;</span>
+      <span class="hljs-keyword">for</span> port <span class="hljs-keyword">in</span> ports
+        <span class="hljs-keyword">if</span> (port.manufacturer &amp;&amp; port.manufacturer.indexOf(<span class="hljs-string">"Spark"</span>) &gt;= <span class="hljs-number">0</span>) ||
+            (port.pnpId &amp;&amp; port.pnpId.indexOf(<span class="hljs-string">"Spark_Core"</span>) &gt;= <span class="hljs-number">0</span>)
+          cores.push port
+
+      <span class="hljs-keyword">if</span> !cores.length
+        <span class="hljs-keyword">for</span> port <span class="hljs-keyword">in</span> ports
+          <span class="hljs-keyword">if</span> port.comName.indexOf(<span class="hljs-string">'/dev/ttyACM'</span>) == <span class="hljs-number">0</span>
+            cores.push port
+          <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> port.comName.indexOf(<span class="hljs-string">'/dev/cuaU'</span>) == <span class="hljs-number">0</span>
+            cores.push port
+
+      callback(cores)
+
+  <span class="hljs-attribute">askForCoreID</span>: <span class="hljs-function"><span class="hljs-params">(comPort)</span> -&gt;</span>
+    failDelay = <span class="hljs-number">5000</span>
+    dfd = whenjs.defer()
+
+    <span class="hljs-keyword">try</span>
+      boredDelay = <span class="hljs-number">100</span>
+      boredTimer = []
+      chunks = []
+
+      serialPort = <span class="hljs-keyword">new</span> SerialPort comPort, {
+        <span class="hljs-attribute">baudrate</span>: <span class="hljs-number">9600</span>,
+        <span class="hljs-attribute">parser</span>: SerialBoredParser.MakeParser <span class="hljs-number">250</span>
+      }, <span class="hljs-literal">false</span>
+<span class="hljs-function">
+      <span class="hljs-title">whenBored</span> = -&gt;</span>
+        data = chunks.join <span class="hljs-string">''</span>
+        prefix = <span class="hljs-string">'Your core id is '</span>
+        <span class="hljs-keyword">if</span> data.indexOf(prefix) &gt;= <span class="hljs-number">0</span>
+          data = data.replace(prefix, <span class="hljs-string">''</span>).trim()
+          dfd.resolve data
+
+      failTimer = setTimeout <span class="hljs-function">-&gt;</span>
+        dfd.reject <span class="hljs-string">'Serial timed out'</span>
+      , failDelay
+
+      serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-params">(data)</span> -&gt;</span>
+        clearTimeout failTimer
+        clearTimeout boredTimer
+
+        chunks.push data
+        boredTimer = setTimeout whenBored, boredDelay
+
+      serialPort.open <span class="hljs-function"><span class="hljs-params">(err)</span> -&gt;</span>
+        <span class="hljs-keyword">if</span> err
+          dfd.reject <span class="hljs-string">'Serial problems, please reconnect the core.'</span>
+        <span class="hljs-keyword">else</span>
+          serialPort.write <span class="hljs-string">'i'</span>
+
+      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+        serialPort.removeAllListeners <span class="hljs-string">'open'</span>
+        serialPort.removeAllListeners <span class="hljs-string">'data'</span>
+
+    <span class="hljs-keyword">catch</span> ex
+      dfd.reject <span class="hljs-string">'Serial errors'</span>
+
+    whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+      serialPort.close()
+
+  <span class="hljs-attribute">serialPromptDfd</span>: <span class="hljs-function"><span class="hljs-params">(serialPort, prompt, answer, timeout, alwaysResolve)</span> -&gt;</span>
+    dfd = whenjs.defer()
+    failTimer = <span class="hljs-literal">true</span>
+    showTraffic = <span class="hljs-literal">true</span>
+<span class="hljs-function">
+    <span class="hljs-title">writeAndDrain</span> = <span class="hljs-params">(data, callback)</span> -&gt;</span>
+      serialPort.write data,<span class="hljs-function"> -&gt;</span>
+          serialPort.drain callback
+
+    <span class="hljs-keyword">if</span> timeout
+      failTimer = setTimeout <span class="hljs-function">-&gt;</span>
+        <span class="hljs-keyword">if</span> showTraffic
+          <span class="hljs-built_in">console</span>.log <span class="hljs-string">'Timed out on '</span> + prompt
+        <span class="hljs-keyword">if</span> alwaysResolve
+          dfd.resolve <span class="hljs-literal">null</span>
+        <span class="hljs-keyword">else</span>
+          dfd.reject <span class="hljs-string">'Serial prompt timed out - Please try restarting your core'</span>
+      , timeout
+
+    <span class="hljs-keyword">if</span> prompt
+<span class="hljs-function">      <span class="hljs-title">onMessage</span> = <span class="hljs-params">(data)</span> -&gt;</span>
+        data = data.toString()
+
+        <span class="hljs-keyword">if</span> showTraffic
+          <span class="hljs-built_in">console</span>.log <span class="hljs-string">'Serial said: '</span> + data
+        <span class="hljs-keyword">if</span> data &amp;&amp; data.indexOf(prompt) &gt;= <span class="hljs-number">0</span>
+          <span class="hljs-keyword">if</span> answer
+            serialPort.flush <span class="hljs-function">-&gt;</span>
+
+            writeAndDrain answer,<span class="hljs-function"> -&gt;</span>
+              <span class="hljs-keyword">if</span> showTraffic
+                <span class="hljs-built_in">console</span>.log <span class="hljs-string">'I said: '</span> + answer
+              dfd.resolve <span class="hljs-literal">true</span>
+          <span class="hljs-keyword">else</span>
+            dfd.resolve <span class="hljs-literal">true</span>
+
+      serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'data'</span>, onMessage
+
+      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+        clearTimeout failTimer
+        serialPort.removeListener <span class="hljs-string">'data'</span>, onMessage
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> answer
+      clearTimeout failTimer
+
+      <span class="hljs-keyword">if</span> showTraffic
+        <span class="hljs-built_in">console</span>.log <span class="hljs-string">'I said: '</span> + answer
+
+      writeAndDrain answer,<span class="hljs-function"> -&gt;</span>
+        dfd.resolve <span class="hljs-literal">true</span>
+
+    dfd.promise
+
+  <span class="hljs-attribute">serialWifiConfig</span>: <span class="hljs-function"><span class="hljs-params">(comPort, ssid, password, securityType, failDelay)</span> -&gt;</span>
+    dfd = whenjs.defer()
+
+    serialPort = <span class="hljs-keyword">new</span> SerialPort comPort, {
+      <span class="hljs-attribute">baudrate</span>: <span class="hljs-number">9600</span>,
+      <span class="hljs-attribute">parser</span>: SerialBoredParser.MakeParser <span class="hljs-number">250</span>
+    }, <span class="hljs-literal">false</span>
+
+    serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'error'</span>,<span class="hljs-function"> -&gt;</span>
+      dfd.reject <span class="hljs-string">'Serial error'</span>
+
+    serialPort.open <span class="hljs-function">=&gt;</span>
+      configDone = pipeline [<span class="hljs-function">
+        =&gt;</span>
+          <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-literal">null</span>, <span class="hljs-string">'w'</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">true</span>
+        , <span class="hljs-function"><span class="hljs-params">(result)</span> =&gt;</span>
+          <span class="hljs-keyword">if</span> !result
+            <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-literal">null</span>, <span class="hljs-string">'w'</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">true</span>
+          <span class="hljs-keyword">else</span>
+            <span class="hljs-keyword">return</span> whenjs.resolve()
+        ,<span class="hljs-function"> =&gt;</span>
+          <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"SSID:"</span>, ssid + <span class="hljs-string">"\n"</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">false</span>
+        ,<span class="hljs-function"> =&gt;</span>
+          <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"Security 0=unsecured, 1=WEP, 2=WPA, 3=WPA2:"</span>, securityType + <span class="hljs-string">"\n"</span>, <span class="hljs-number">1500</span>, <span class="hljs-literal">true</span>
+        , <span class="hljs-function"><span class="hljs-params">(result)</span> =&gt;</span>
+          passPrompt = <span class="hljs-string">"Password:"</span>
+          <span class="hljs-keyword">if</span> !result
+            passPrompt = <span class="hljs-literal">null</span>
+
+          <span class="hljs-keyword">if</span> !passPrompt || !password || (password == <span class="hljs-string">""</span>)
+            <span class="hljs-keyword">return</span> whenjs.resolve()
+
+          <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, passPrompt, password + <span class="hljs-string">"\n"</span>, <span class="hljs-number">5000</span>
+        ,<span class="hljs-function"> =&gt;</span>
+          <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"Spark &lt;3 you!"</span>, <span class="hljs-literal">null</span>, <span class="hljs-number">15000</span>
+      ]
+      utilities.pipeDeferred configDone, dfd
+
+      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+        serialPort.close()
+
+    dfd.promise</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

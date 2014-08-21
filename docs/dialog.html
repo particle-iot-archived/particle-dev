@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>dialog.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="spark-ide.html">
+                spark-ide.coffee
+              </a>
+            
+              
+              <a class="source" href="menu-manager.html">
+                menu-manager.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-helper.html">
+                serial-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="settings-helper.html">
+                settings-helper.coffee
+              </a>
+            
+              
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="claim-core-manually-view.html">
+                claim-core-manually-view.coffee
+              </a>
+            
+              
+              <a class="source" href="login-view.html">
+                login-view.coffee
+              </a>
+            
+              
+              <a class="source" href="rename-core-view.html">
+                rename-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-core-view.html">
+                select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="status-bar-view.html">
+                status-bar-view.coffee
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>dialog.coffee</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>Forked dialog from tree-view package: <a href="https://github.com/atom/tree-view/blob/master/lib/dialog.coffee">https://github.com/atom/tree-view/blob/master/lib/dialog.coffee</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>{$, EditorView, View} = require 'atom'
+path = require 'path'
+
+module.exports =
+class Dialog extends View
+  @content: ({prompt} = {}) -&gt;
+    @div class: 'spark-ide-dialog overlay from-top', =&gt;
+      @label prompt, class: 'icon', outlet: 'promptText'
+      @subview 'miniEditor', new EditorView(mini: true)
+      @div class: 'error-message', outlet: 'errorMessage'
+
+  initialize: ({initialText, select, iconClass, hideOnBlur} = {}) -&gt;
+    @promptText.addClass(iconClass) if iconClass
+    @on 'core:confirm', =&gt; @onConfirm(@miniEditor.getText())
+    @on 'core:cancel', =&gt; @cancel()
+
+    @miniEditor.getEditor().getBuffer().on 'changed', =&gt; @showError()
+
+    @miniEditor.setText(initialText)
+
+    if hideOnBlur
+      @miniEditor.hiddenInput.on 'focusout', =&gt; @remove()
+
+    if select
+      @miniEditor.getEditor().setSelectedBufferRange([[0, 0], [0, initialText.length]])
+
+  attach: -&gt;
+    @hideOthers()
+    atom.workspaceView.append(this)
+    @miniEditor.focus()
+    @miniEditor.scrollToCursorPosition()
+
+  hideOthers: -&gt;
+    $('.spark-ide-dialog').each (idx, item) -&gt;
+      $(item).data('view').close()
+
+  close: -&gt;
+    @remove()
+    atom.workspaceView.focus()
+
+  cancel: -&gt;
+    @remove()
+
+  showError: (message='') -&gt;
+    @errorMessage.text(message)
+    @flashError() if message
+
+  setLoading: (isLoading=false) -&gt;
+    @miniEditor.removeClass 'loading'
+    if isLoading
+      @miniEditor.addClass 'loading'</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
