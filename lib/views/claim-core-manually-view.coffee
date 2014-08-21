@@ -47,6 +47,5 @@ class ClaimCoreManuallyView extends Dialog
       , (e) =>
         @setLoading false
         @miniEditor.addClass 'editor-error'
-        @showError(e.errors)
-        console.log e
+        @showError(e.errors)    
         @claimPromise = null

@@ -23,7 +23,7 @@ describe 'Serial helper tests', ->
       status = promise.inspect()
       expect(status.value).toBe('0123456789abcdef0123456789abcdef')
 
-  fit 'tests saving WiFi credentials', ->
+  it 'tests saving WiFi credentials', ->
     promise = SerialHelper.serialWifiConfig('foo', 'ssid', 'pass', 3)
 
     waitsFor ->
