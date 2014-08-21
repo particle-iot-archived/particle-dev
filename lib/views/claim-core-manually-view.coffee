@@ -13,7 +13,7 @@ class ClaimCoreManuallyView extends Dialog
       hideOnBlur: false
 
     @claimPromise = null
-    @attr 'id', 'spark-ide-claim-core-manually-view'
+    @prop 'id', 'spark-ide-claim-core-manually-view'
 
   onConfirm: (deviceID) ->
 
@@ -47,5 +47,5 @@ class ClaimCoreManuallyView extends Dialog
       , (e) =>
         @setLoading false
         @miniEditor.addClass 'editor-error'
-        @showError(e.errors)    
+        @showError(e.errors)
         @claimPromise = null

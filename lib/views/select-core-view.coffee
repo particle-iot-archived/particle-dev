@@ -19,7 +19,7 @@ class SelectCoreView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @attr 'id', 'spark-ide-select-core-view'
+    @prop 'id', 'spark-ide-select-core-view'
     @listDevicesPromise = null
 
 

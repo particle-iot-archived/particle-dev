@@ -13,7 +13,7 @@ class RenameCoreView extends Dialog
       hideOnBlur: false
 
     @renamePromise = null
-    @attr 'id', 'spark-ide-rename-core-view'
+    @prop 'id', 'spark-ide-rename-core-view'
 
   onConfirm: (newName) ->
     SettingsHelper ?= require '../utils/settings-helper'
