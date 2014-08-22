@@ -3,18 +3,20 @@ MenuManager = null
 SerialHelper = null
 StatusView = null
 LoginView = null
-CoresView = null
+SelectCoreView = null
 RenameCoreView = null
 ClaimCoreManuallyView = null
 ListeningModeView = null
+SelectPortView = null
 
 module.exports =
   statusView: null
   loginView: null
-  coresView: null
+  selectCoreView: null
   renameCoreView: null
   claimCoreManuallyView: null
   listeningModeView: null
+  selectPortView: null
 
   removePromise: null
 
@@ -34,7 +36,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
     atom.workspaceView.command 'spark-ide:claim-core-manually', => @claimCoreManually()
-    atom.workspaceView.command 'spark-ide:claim-core-usb', => @claimCoreUsb()
+    atom.workspaceView.command 'spark-ide:claim-core-usb', (event, port) => @claimCoreUsb(port)
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -63,13 +65,13 @@ module.exports =
     @loginView.logout()
 
   selectCore: ->
-    CoresView ?= require './views/select-core-view'
-    @coresView ?= new CoresView()
+    SelectCoreView ?= require './views/select-core-view'
+    @selectCoreView ?= new SelectCoreView()
 
     if !SettingsHelper.isLoggedIn()
       return
 
-    @coresView.show()
+    @selectCoreView.show()
 
   renameCore: ->
     RenameCoreView ?= require './views/rename-core-view'
@@ -128,7 +130,7 @@ module.exports =
     @claimCoreManuallyView = new ClaimCoreManuallyView()
     @claimCoreManuallyView.attach()
 
-  claimCoreUsb: ->
+  claimCoreUsb: (port=null) ->
     ListeningModeView ?= require './views/listening-mode-view'
     SerialHelper ?= require './utils/serial-helper'
 
@@ -141,7 +143,15 @@ module.exports =
       if ports.length == 0
         @listeningModeView = new ListeningModeView()
         @listeningModeView.show()
-      else if ports.length == 1
-        # TODO: Only one core
+      else if (ports.length == 1) || (!!port)
+        # TODO: Only one core or it was selected
+        if !port
+          port = ports[0].comName
+
+        console.log 'Will claim core on port ' + port
       else
         # TODO: Show list with cores
+        SelectPortView ?= require './views/select-port-view'
+        @selectPortView ?= new SelectPortView()
+
+        @selectPortView.show()
