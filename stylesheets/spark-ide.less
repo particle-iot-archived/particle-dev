@@ -8,16 +8,17 @@
 #spark-ide-status-bar-view {
   margin-right: 10px;
 
+  > span {
+    margin-left: 10px;
+  }
+
   #spark-icon {
     width: 16px;
     height: 16px;
-    margin-right: 5px;
     margin-top: -2px;
   }
 
   #spark-current-core {
-    margin-left: 10px;
-
     &:before {
       .core-dot();
       content: " ";

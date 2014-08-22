@@ -9,9 +9,9 @@ class StatusBarView extends View
     @div class: 'inline-block', id: 'spark-ide-status-bar-view', =>
       @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
       @span id: 'spark-login-status'
-      @span id: 'spark-log'
       @span id: 'spark-current-core', class: 'hidden', =>
         @a click: 'selectCore'
+      @span id: 'spark-log'
 
   initialize: (serializeState) ->
     $ = require('atom').$
@@ -109,7 +109,8 @@ class StatusBarView extends View
     atom.workspaceView.trigger 'spark-ide:update-menu'
 
   setStatus: (text, type = null) ->
-      el = this.find('.spark-log')
+      el = this.find('#spark-log')
+      console.log el
       el.text(text)
         .removeClass()
 
@@ -117,7 +118,7 @@ class StatusBarView extends View
         el.addClass('text-' + type)
 
   clear: ->
-    el = this.find('.spark-log')
+    el = this.find('#spark-log')
     self = @
     el.fadeOut ->
       self.setStatus ''
