@@ -110,7 +110,6 @@ class StatusBarView extends View
 
   setStatus: (text, type = null) ->
       el = this.find('#spark-log')
-      console.log el
       el.text(text)
         .removeClass()
 
@@ -123,3 +122,8 @@ class StatusBarView extends View
     el.fadeOut ->
       self.setStatus ''
       el.show()
+
+  clearAfter: (delay) ->
+    setTimeout =>
+      @clear()
+    , delay
