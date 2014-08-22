@@ -1,10 +1,12 @@
 SettingsHelper = null
 MenuManager = null
+SerialHelper = null
 StatusView = null
 LoginView = null
 CoresView = null
 RenameCoreView = null
 ClaimCoreManuallyView = null
+ListeningModeView = null
 
 module.exports =
   statusView: null
@@ -12,6 +14,7 @@ module.exports =
   coresView: null
   renameCoreView: null
   claimCoreManuallyView: null
+  listeningModeView: null
 
   removePromise: null
 
@@ -126,7 +129,19 @@ module.exports =
     @claimCoreManuallyView.attach()
 
   claimCoreUsb: ->
-    ListeningModeView = require './views/listening-mode-view'
+    ListeningModeView ?= require './views/listening-mode-view'
+    SerialHelper ?= require './utils/serial-helper'
 
-    @listeningModeView = new ListeningModeView()
-    @listeningModeView.show()
+    if !SettingsHelper.isLoggedIn()
+      return
+
+    promise = SerialHelper.listPorts()
+    promise.done (ports) =>
+      console.log ports
+      if ports.length == 0
+        @listeningModeView = new ListeningModeView()
+        @listeningModeView.show()
+      else if ports.length == 1
+        # TODO: Only one core
+      else
+        # TODO: Show list with cores
