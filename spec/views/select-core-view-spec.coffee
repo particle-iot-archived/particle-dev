@@ -4,13 +4,13 @@ SettingsHelper = require '../../lib/utils/settings-helper'
 
 describe 'Select Core View', ->
   activationPromise = null
-  coresView = null
+  selectCoreView = null
   originalProfile = null
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
-      coresView = mainModule.coresView
+      selectCoreView = mainModule.selectCoreView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -51,15 +51,15 @@ describe 'Select Core View', ->
       atom.workspaceView.trigger 'spark-ide:select-core'
 
       expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
-      expect(coresView.find('div.loading').css('display')).toEqual('block')
-      expect(coresView.find('span.loading-message').text()).toEqual('Loading cores...')
-      expect(coresView.find('ol.list-group li').length).toEqual(0)
+      expect(selectCoreView.find('div.loading').css('display')).toEqual('block')
+      expect(selectCoreView.find('span.loading-message').text()).toEqual('Loading cores...')
+      expect(selectCoreView.find('ol.list-group li').length).toEqual(0)
 
       waitsFor ->
-        !coresView.listDevicesPromise
+        !selectCoreView.listDevicesPromise
 
       runs ->
-        devices = coresView.find('ol.list-group li')
+        devices = selectCoreView.find('ol.list-group li')
         expect(devices.length).toEqual(2)
         expect(devices.eq(0).find('.primary-line').hasClass('core-online')).toEqual(true)
         expect(devices.eq(1).find('.primary-line').hasClass('core-offline')).toEqual(true)

@@ -99,7 +99,7 @@ module.exports =
 
     buttons['Remove ' + SettingsHelper.get('current_core_name')] = =>
       workspace = atom.workspaceView
-      ApiClient ?= require './vendor/ApiClient'
+      ApiClient = require './vendor/ApiClient'
       client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
       @removePromise = client.removeCore SettingsHelper.get('current_core')
       @removePromise.done (e) =>
@@ -150,7 +150,7 @@ module.exports =
         @statusView.setStatus 'Claiming core on port ' + port + '...'
         promise = SerialHelper.askForCoreID port
         promise.done (coreID) =>
-          ApiClient ?= require './vendor/ApiClient'
+          ApiClient = require './vendor/ApiClient'
           client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
           workspace = atom.workspaceView
           @claimPromise = client.claimCore coreID
