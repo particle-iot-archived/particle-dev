@@ -19,7 +19,7 @@ describe 'Select Port View', ->
 
     # Mock serial
     require 'serialport'
-    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-cores'
+    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-ports'
 
     waitsForPromise ->
       activationPromise

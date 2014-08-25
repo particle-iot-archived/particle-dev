@@ -14,7 +14,7 @@ describe 'Serial helper tests', ->
       expect(status.value.length).toBe(1)
 
   it 'tests listing multiple ports', ->
-    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-cores'
+    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-ports'
     promise = SerialHelper.listPorts()
 
     waitsFor ->
