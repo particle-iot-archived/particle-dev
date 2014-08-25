@@ -38,11 +38,11 @@ module.exports =
       ideMenu.submenu = ideMenu.submenu.concat [{
         type: 'separator'
       },{
-        label: 'Claim Core manually...',
-        command: 'spark-ide:claim-core-manually'
+        label: 'Claim Core...',
+        command: 'spark-ide:claim-core'
       },{
-        label: 'Claim Core via USB...',
-        command: 'spark-ide:claim-core-usb'
+        label: 'Identify Core...',
+        command: 'spark-ide:identify-core'
       }]
     else
       ideMenu.submenu = [{

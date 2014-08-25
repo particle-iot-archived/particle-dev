@@ -54,11 +54,11 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[3].type).toBe('separator')
 
-      expect(ideMenu.submenu[4].label).toBe('Claim Core manually...')
-      expect(ideMenu.submenu[4].command).toBe('spark-ide:claim-core-manually')
+      expect(ideMenu.submenu[4].label).toBe('Claim Core...')
+      expect(ideMenu.submenu[4].command).toBe('spark-ide:claim-core')
 
-      expect(ideMenu.submenu[5].label).toBe('Claim Core via USB...')
-      expect(ideMenu.submenu[5].command).toBe('spark-ide:claim-core-usb')
+      expect(ideMenu.submenu[5].label).toBe('Identify Core...')
+      expect(ideMenu.submenu[5].command).toBe('spark-ide:identify-core')
 
       SettingsHelper.clearCredentials()
 

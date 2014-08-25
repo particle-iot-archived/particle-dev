@@ -3,7 +3,7 @@ SettingsHelper = null
 _s = null
 
 module.exports =
-class ClaimCoreManuallyView extends Dialog
+class ClaimCoreView extends Dialog
   constructor: ->
     super
       prompt: 'Enter device ID (hex string)'
@@ -13,7 +13,7 @@ class ClaimCoreManuallyView extends Dialog
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', 'spark-ide-claim-core-manually-view'
+    @prop 'id', 'spark-ide-claim-core-view'
 
   onConfirm: (deviceID) ->
 

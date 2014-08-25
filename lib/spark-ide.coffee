@@ -5,7 +5,7 @@ StatusView = null
 LoginView = null
 SelectCoreView = null
 RenameCoreView = null
-ClaimCoreManuallyView = null
+ClaimCoreView = null
 ListeningModeView = null
 SelectPortView = null
 ApiClient = null
@@ -15,7 +15,7 @@ module.exports =
   loginView: null
   selectCoreView: null
   renameCoreView: null
-  claimCoreManuallyView: null
+  claimCoreView: null
   listeningModeView: null
   selectPortView: null
 
@@ -36,8 +36,8 @@ module.exports =
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
     atom.workspaceView.command 'spark-ide:rename-core', => @renameCore()
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
-    atom.workspaceView.command 'spark-ide:claim-core-manually', => @claimCoreManually()
-    atom.workspaceView.command 'spark-ide:claim-core-usb', (event, port) => @claimCoreUsb(port)
+    atom.workspaceView.command 'spark-ide:claim-core', => @claimCore()
+    atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -122,16 +122,16 @@ module.exports =
       detailedMessage: 'Do you really want to remove ' + SettingsHelper.get('current_core_name') + '?'
       buttons: buttons
 
-  claimCoreManually: ->
-    ClaimCoreManuallyView ?= require './views/claim-core-manually-view'
+  claimCore: ->
+    ClaimCoreView ?= require './views/claim-core-view'
 
     if !SettingsHelper.isLoggedIn()
       return
 
-    @claimCoreManuallyView = new ClaimCoreManuallyView()
-    @claimCoreManuallyView.attach()
+    @claimCoreView = new ClaimCoreView()
+    @claimCoreView.attach()
 
-  claimCoreUsb: (port=null) ->
+  identifyCore: (port=null) ->
     ListeningModeView ?= require './views/listening-mode-view'
     SerialHelper ?= require './utils/serial-helper'
 
@@ -150,26 +150,8 @@ module.exports =
         @statusView.setStatus 'Claiming core on port ' + port + '...'
         promise = SerialHelper.askForCoreID port
         promise.done (coreID) =>
-          ApiClient = require './vendor/ApiClient'
-          client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-          workspace = atom.workspaceView
-          @claimPromise = client.claimCore coreID
-          @claimPromise.done (e) =>
-            if !@claimPromise
-              return
-
-            SettingsHelper.setCurrentCore e.id, e.id
-
-            atom.workspaceView.trigger 'spark-ide:update-core-status'
-            atom.workspaceView.trigger 'spark-ide:update-menu'
-
-            @claimPromise = null
-
-            @statusView.setStatus 'Core claimed!'
-            @statusView.clearAfter 5000
-          , (e) =>
-            @statusView.setStatus e.errors, 'error'
-            @statusView.clearAfter 5000
+          # TODO: Show coreID
+          console.log coreID
         , (e) =>
           @statusView.setStatus e, 'error'
           @statusView.clearAfter 5000

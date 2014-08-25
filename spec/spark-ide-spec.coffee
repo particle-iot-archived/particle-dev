@@ -136,17 +136,17 @@ describe 'Main Tests', ->
         jasmine.unspy atom, 'confirm'
 
 
-  describe 'when the spark-ide:claim-core-manually event is triggered', ->
-    it 'calls claimCoreManually() method', ->
-      spyOn sparkIde, 'claimCoreManually'
-      atom.workspaceView.trigger 'spark-ide:claim-core-manually'
-      expect(sparkIde.claimCoreManually).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'claimCoreManually'
+  describe 'when the spark-ide:claim-core event is triggered', ->
+    it 'calls claimCore() method', ->
+      spyOn sparkIde, 'claimCore'
+      atom.workspaceView.trigger 'spark-ide:claim-core'
+      expect(sparkIde.claimCore).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'claimCore'
 
 
-  describe 'when the spark-ide:claim-core-usb event is triggered', ->
-    it 'calls claimCoreUsb() method', ->
-      spyOn sparkIde, 'claimCoreUsb'
-      atom.workspaceView.trigger 'spark-ide:claim-core-usb'
-      expect(sparkIde.claimCoreUsb).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'claimCoreUsb'
+  describe 'when the spark-ide:identify-core event is triggered', ->
+    it 'calls identifyCore() method', ->
+      spyOn sparkIde, 'identifyCore'
+      atom.workspaceView.trigger 'spark-ide:identify-core'
+      expect(sparkIde.identifyCore).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'identifyCore'
