@@ -6,6 +6,7 @@ LoginView = null
 SelectCoreView = null
 RenameCoreView = null
 ClaimCoreView = null
+IdentifyCoreView = null
 ListeningModeView = null
 SelectPortView = null
 ApiClient = null
@@ -16,6 +17,7 @@ module.exports =
   selectCoreView: null
   renameCoreView: null
   claimCoreView: null
+  identifyCoreView: null
   listeningModeView: null
   selectPortView: null
 
@@ -147,11 +149,11 @@ module.exports =
         if !port
           port = ports[0].comName
 
-        @statusView.setStatus 'Claiming core on port ' + port + '...'
         promise = SerialHelper.askForCoreID port
         promise.done (coreID) =>
-          # TODO: Show coreID
-          console.log coreID
+          IdentifyCoreView ?= require './views/identify-core-view'
+          @identifyCoreView = new IdentifyCoreView coreID
+          @identifyCoreView.attach()
         , (e) =>
           @statusView.setStatus e, 'error'
           @statusView.clearAfter 5000

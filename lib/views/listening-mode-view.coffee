@@ -24,7 +24,7 @@ class ListeningModeView extends View
       promise.done (ports) =>
         if ports.length > 0
           atom.workspaceView.trigger 'core:cancel'
-          atom.workspaceView.trigger 'spark-ide:claim-core-usb'
+          atom.workspaceView.trigger 'spark-ide:identify-core'
     , 1000
 
     @subscriber = new Subscriber()
