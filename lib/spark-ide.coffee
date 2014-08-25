@@ -8,6 +8,7 @@ RenameCoreView = null
 ClaimCoreManuallyView = null
 ListeningModeView = null
 SelectPortView = null
+ApiClient = null
 
 module.exports =
   statusView: null
@@ -98,7 +99,7 @@ module.exports =
 
     buttons['Remove ' + SettingsHelper.get('current_core_name')] = =>
       workspace = atom.workspaceView
-      ApiClient = require './vendor/ApiClient'
+      ApiClient ?= require './vendor/ApiClient'
       client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
       @removePromise = client.removeCore SettingsHelper.get('current_core')
       @removePromise.done (e) =>
@@ -139,18 +140,40 @@ module.exports =
 
     promise = SerialHelper.listPorts()
     promise.done (ports) =>
-      console.log ports
       if ports.length == 0
         @listeningModeView = new ListeningModeView()
         @listeningModeView.show()
       else if (ports.length == 1) || (!!port)
-        # TODO: Only one core or it was selected
         if !port
           port = ports[0].comName
 
-        console.log 'Will claim core on port ' + port
+        @statusView.setStatus 'Claiming core on port ' + port + '...'
+        promise = SerialHelper.askForCoreID port
+        promise.done (coreID) =>
+          ApiClient ?= require './vendor/ApiClient'
+          client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+          workspace = atom.workspaceView
+          @claimPromise = client.claimCore coreID
+          @claimPromise.done (e) =>
+            if !@claimPromise
+              return
+
+            SettingsHelper.setCurrentCore e.id, e.id
+
+            atom.workspaceView.trigger 'spark-ide:update-core-status'
+            atom.workspaceView.trigger 'spark-ide:update-menu'
+
+            @claimPromise = null
+
+            @statusView.setStatus 'Core claimed!'
+            @statusView.clearAfter 5000
+          , (e) =>
+            @statusView.setStatus e.errors, 'error'
+            @statusView.clearAfter 5000
+        , (e) =>
+          @statusView.setStatus e, 'error'
+          @statusView.clearAfter 5000
       else
-        # TODO: Show list with cores
         SelectPortView ?= require './views/select-port-view'
         @selectPortView ?= new SelectPortView()
 
