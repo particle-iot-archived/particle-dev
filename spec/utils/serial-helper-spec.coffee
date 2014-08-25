@@ -2,7 +2,7 @@ require 'serialport'
 require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-success'
 SerialHelper = require '../../lib/utils/serial-helper'
 
-describe 'Serial helper tests', ->
+fdescribe 'Serial helper tests', ->
   it 'tests listing ports', ->
     promise = SerialHelper.listPorts()
 
@@ -23,6 +23,17 @@ describe 'Serial helper tests', ->
     runs ->
       status = promise.inspect()
       expect(status.value.length).toBe(2)
+
+  it 'tests listing no ports', ->
+    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-no-ports'
+    promise = SerialHelper.listPorts()
+
+    waitsFor ->
+      promise.inspect().state == 'fulfilled'
+
+    runs ->
+      status = promise.inspect()
+      expect(status.value.length).toBe(0)
 
   it 'tests retreiving core ID', ->
     promise = SerialHelper.askForCoreID('foo')
