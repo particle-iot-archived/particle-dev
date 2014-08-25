@@ -150,3 +150,5 @@ describe 'Main Tests', ->
       atom.workspaceView.trigger 'spark-ide:identify-core'
       expect(sparkIde.identifyCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'identifyCore'
+
+  # TODO: Tests for identifying core

@@ -22,6 +22,7 @@ module.exports =
   selectPortView: null
 
   removePromise: null
+  listPortsPromise: null
 
   activate: (state) ->
     # Require modules on activation
@@ -140,8 +141,8 @@ module.exports =
     if !SettingsHelper.isLoggedIn()
       return
 
-    promise = SerialHelper.listPorts()
-    promise.done (ports) =>
+    @listPortsPromise = SerialHelper.listPorts()
+    @listPortsPromise.done (ports) =>
       if ports.length == 0
         @listeningModeView = new ListeningModeView()
         @listeningModeView.show()
@@ -162,3 +163,5 @@ module.exports =
         @selectPortView ?= new SelectPortView()
 
         @selectPortView.show()
+
+      @listPortsPromise = null
