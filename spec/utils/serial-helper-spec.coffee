@@ -13,6 +13,17 @@ describe 'Serial helper tests', ->
       status = promise.inspect()
       expect(status.value.length).toBe(1)
 
+  it 'tests listing multiple ports', ->
+    require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-cores'
+    promise = SerialHelper.listPorts()
+
+    waitsFor ->
+      promise.inspect().state == 'fulfilled'
+
+    runs ->
+      status = promise.inspect()
+      expect(status.value.length).toBe(2)
+
   it 'tests retreiving core ID', ->
     promise = SerialHelper.askForCoreID('foo')
 
