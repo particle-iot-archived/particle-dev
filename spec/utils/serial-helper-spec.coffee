@@ -2,7 +2,7 @@ require 'serialport'
 require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-success'
 SerialHelper = require '../../lib/utils/serial-helper'
 
-fdescribe 'Serial helper tests', ->
+xdescribe 'Serial helper tests', ->
   it 'tests listing ports', ->
     promise = SerialHelper.listPorts()
 

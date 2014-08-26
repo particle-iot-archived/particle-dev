@@ -31,8 +31,8 @@ describe 'Claim Core View', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
 
     afterEach ->
-      SettingsHelper.clearCredentials()
       SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
       atom.workspaceView.trigger 'spark-ide:claim-core'

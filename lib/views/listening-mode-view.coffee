@@ -15,18 +15,22 @@ class ListeningModeView extends View
 
   initialize: (serializeState) ->
     {Subscriber} = require 'emissary'
-    SerialHelper ?= require '../utils/serial-helper'
+    SerialHelper = require '../utils/serial-helper'
 
     @prop 'id', 'spark-ide-listening-mode-view'
 
+    # Interval for automatic dialog dismissal
     @interval = setInterval =>
       promise = SerialHelper.listPorts()
       promise.done (ports) =>
         if ports.length > 0
+          # Hide dialog
           atom.workspaceView.trigger 'core:cancel'
+          # Try to identify found ports
           atom.workspaceView.trigger 'spark-ide:identify-core'
     , 1000
 
+    # Subscribe to Atom's core:cancel core:close events
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
       clearInterval @interval

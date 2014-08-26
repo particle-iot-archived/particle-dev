@@ -72,8 +72,8 @@ describe 'Status Bar Tests', ->
       expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
       expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
-      SettingsHelper.clearCredentials()
       SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
       jasmine.unspy statusView, 'getCurrentCoreStatus'
 
 

@@ -2,7 +2,7 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-describe 'Select Port View', ->
+xdescribe 'Select Port View', ->
   activationPromise = null
   sparkIde = null
   selectPortView = null
@@ -18,7 +18,6 @@ describe 'Select Port View', ->
     SettingsHelper.setProfile 'spark-ide-test'
 
     # Mock serial
-    require 'serialport'
     require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-ports'
 
     waitsForPromise ->

@@ -131,8 +131,8 @@ describe 'Main Tests', ->
 
         jasmine.unspy SettingsHelper, 'clearCurrentCore'
         jasmine.unspy(atom.workspaceView, 'trigger')
-        SettingsHelper.clearCredentials()
         SettingsHelper.clearCurrentCore()
+        SettingsHelper.clearCredentials()        
         jasmine.unspy atom, 'confirm'
 
 

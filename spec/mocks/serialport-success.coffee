@@ -3,6 +3,7 @@ stream = require 'stream'
 
 module.exports =
   list: (callback) ->
+    console.log 'Success'
     callback(null, [{
       comName: "/dev/cu.usbmodemfa1234"
       locationId: "0xfa532000"

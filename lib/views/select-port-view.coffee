@@ -51,7 +51,7 @@ class SelectPortView extends SelectListView
     'comName'
 
   listPorts: ->
-    SerialHelper ?= require '../utils/serial-helper'
+    SerialHelper = require '../utils/serial-helper'
     @listPortsPromise = SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
       @setItems ports
