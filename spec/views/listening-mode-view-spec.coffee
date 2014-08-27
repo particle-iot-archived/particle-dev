@@ -4,7 +4,7 @@ SettingsHelper = require '../../lib/utils/settings-helper'
 SerialHelper = require '../../lib/utils/serial-helper'
 require 'serialport'
 
-xdescribe 'Listening Mode View', ->
+describe 'Listening Mode View', ->
   activationPromise = null
   sparkIde = null
   listeningModeView = null
@@ -83,25 +83,3 @@ xdescribe 'Listening Mode View', ->
 
         jasmine.unspy SerialHelper, 'listPorts'
         atom.workspaceView.trigger 'core:cancel'
-
-    it 'test loading multiple mocks', ->
-      delete require.cache[require.resolve('serialport')]
-      console.log require 'serialport'
-      #
-      # promise = SerialHelper.listPorts()
-      # promise.done (e) ->
-      #   console.log e
-      delete require.cache[require.resolve('../../lib/utils/serial-helper')]
-      console.log require.cache[require.resolve('serialport')]
-      require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-multiple-ports'
-      console.log require.cache[require.resolve('serialport')]
-      # console.log require 'serialport'
-      promise = SerialHelper.listPorts()
-      promise.done (e) ->
-        console.log e
-      #
-      # require.cache[require.resolve('serialport')].exports = require '../mocks/serialport-no-ports'
-      # console.log require 'serialport'
-      # promise = SerialHelper.listPorts()
-      # promise.done (e) ->
-      #   console.log e

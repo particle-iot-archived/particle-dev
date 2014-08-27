@@ -4,7 +4,6 @@ serialport = require './serialport-success'
 
 module.exports =
   list: (callback) ->
-    console.log 'Multiple'
     callback(null, [{
       comName: "/dev/cu.usbmodemfa1234"
       locationId: "0xfa532000"

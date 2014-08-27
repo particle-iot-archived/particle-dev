@@ -143,7 +143,6 @@ module.exports =
 
     @listPortsPromise = SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
-      console.log ports, require 'serialport'
       if ports.length == 0
         @listeningModeView = new ListeningModeView()
         @listeningModeView.show()

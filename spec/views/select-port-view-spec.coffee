@@ -2,7 +2,7 @@
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 
-xdescribe 'Select Port View', ->
+describe 'Select Port View', ->
   activationPromise = null
   sparkIde = null
   selectPortView = null

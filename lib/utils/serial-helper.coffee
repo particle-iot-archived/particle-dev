@@ -1,16 +1,16 @@
 whenjs = require 'when'
 pipeline = require 'when/pipeline'
-SerialPortLib = require 'serialport'
-SerialPort = SerialPortLib.SerialPort
+serialport = null
 utilities = require '../vendor/utilities.js'
 SerialBoredParser = require '../vendor/SerialBoredParser'
 
 module.exports =
   listPorts: ->
+    serialport = require 'serialport'
     dfd = whenjs.defer()
 
     cores = []
-    SerialPortLib.list (err, ports) ->
+    serialport.list (err, ports) ->
       for port in ports
         if (port.manufacturer && port.manufacturer.indexOf("Spark") >= 0) ||
             (port.pnpId && port.pnpId.indexOf("Spark_Core") >= 0)
@@ -27,6 +27,7 @@ module.exports =
     dfd.promise
 
   askForCoreID: (comPort) ->
+    serialport = require 'serialport'
     failDelay = 5000
     dfd = whenjs.defer()
 
@@ -35,7 +36,7 @@ module.exports =
       boredTimer = []
       chunks = []
 
-      serialPort = new SerialPort comPort, {
+      serialPort = new serialport.SerialPort comPort, {
         baudrate: 9600,
         parser: SerialBoredParser.MakeParser 250
       }, false
@@ -75,6 +76,7 @@ module.exports =
       serialPort.close()
 
   serialPromptDfd: (serialPort, prompt, answer, timeout, alwaysResolve) ->
+    serialport = require 'serialport'
     dfd = whenjs.defer()
     failTimer = true
     showTraffic = true
@@ -127,9 +129,10 @@ module.exports =
     dfd.promise
 
   serialWifiConfig: (comPort, ssid, password, securityType, failDelay) ->
+    serialport = require 'serialport'
     dfd = whenjs.defer()
 
-    serialPort = new SerialPort comPort, {
+    serialPort = new serialport.SerialPort comPort, {
       baudrate: 9600,
       parser: SerialBoredParser.MakeParser 250
     }, false
