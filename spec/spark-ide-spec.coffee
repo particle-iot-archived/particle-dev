@@ -1,5 +1,6 @@
 {WorkspaceView} = require 'atom'
 SettingsHelper = require '../lib/utils/settings-helper'
+SerialHelper = require '../lib/utils/serial-helper'
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -132,7 +133,7 @@ describe 'Main Tests', ->
         jasmine.unspy SettingsHelper, 'clearCurrentCore'
         jasmine.unspy(atom.workspaceView, 'trigger')
         SettingsHelper.clearCurrentCore()
-        SettingsHelper.clearCredentials()        
+        SettingsHelper.clearCredentials()
         jasmine.unspy atom, 'confirm'
 
 
@@ -151,4 +152,21 @@ describe 'Main Tests', ->
       expect(sparkIde.identifyCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'identifyCore'
 
-  # TODO: Tests for identifying core
+  describe 'when identifyCore() method is called and there is only one core', ->
+    it 'checks if it is identified', ->
+      require 'serialport'
+      require.cache[require.resolve('serialport')].exports = require './mocks/serialport-success'
+
+      spyOn SerialHelper, 'askForCoreID'
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+
+      atom.workspaceView.trigger 'spark-ide:identify-core'
+
+      waitsFor ->
+        !sparkIde.listPortsPromise
+
+      runs ->
+        expect(SerialHelper.askForCoreID).toHaveBeenCalled()
+        expect(SerialHelper.askForCoreID).toHaveBeenCalledWith('/dev/cu.usbmodemfa1234')
+        SettingsHelper.clearCredentials()
+        jasmine.unspy SerialHelper, 'askForCoreID'

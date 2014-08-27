@@ -143,6 +143,7 @@ module.exports =
 
     @listPortsPromise = SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
+      @listPortsPromise = null
       if ports.length == 0
         @listeningModeView = new ListeningModeView()
         @listeningModeView.show()
@@ -163,5 +164,3 @@ module.exports =
         @selectPortView ?= new SelectPortView()
 
         @selectPortView.show()
-
-      @listPortsPromise = null
