@@ -124,6 +124,20 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.ok).toBe(true)
       expect(status.value.sizeInfo).toBe("   text	   data	    bss	    dec	    hex	filename\n  74960	   1236	  11876	  88072	  15808	build/foo.elf\n")
 
+  it 'downloads binary', ->
+    promise = client.downloadBinary('/v1/binaries/53fdb4b3a7ce5fe43d3cf079', 'foo.bin')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+      expect(status.value).toBe('CONTENTS OF A FILE')
+
+
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
   promise = null
@@ -236,6 +250,20 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
       expect(status.reason.errors instanceof Array).toBe(true)
       expect(status.reason.errors.length).toBe(1)
       expect(status.reason.errors[0]).toBe('make: *** No rule to make target `license.o\'')
+
+  it 'downloads binary', ->
+    promise = client.downloadBinary('/v1/binaries/53fdb4b3a7ce5fe43d3cf079', 'foo.bin')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value).toBe('Binary not found')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->

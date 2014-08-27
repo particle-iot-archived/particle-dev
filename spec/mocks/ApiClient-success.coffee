@@ -94,4 +94,11 @@ class ApiClientSuccess
     , 1
     dfd.promise
 
+  downloadBinary: (url, filename) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve 'CONTENTS OF A FILE'
+    , 1
+    dfd.promise
+
 module.exports = ApiClientSuccess

@@ -80,4 +80,11 @@ class ApiClientFail
     , 1
     dfd.promise
 
+  downloadBinary: (url, filename) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve 'Binary not found'
+    , 1
+    dfd.promise
+
 module.exports = ApiClientFail
