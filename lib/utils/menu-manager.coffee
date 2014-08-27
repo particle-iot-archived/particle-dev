@@ -43,6 +43,11 @@ module.exports =
       },{
         label: 'Identify Core...',
         command: 'spark-ide:identify-core'
+      },{
+        type: 'separator'
+      },{
+        label: 'Compile in the cloud...',
+        command: 'spark-ide:compile-cloud'
       }]
     else
       ideMenu.submenu = [{

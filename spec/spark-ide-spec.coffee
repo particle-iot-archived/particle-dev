@@ -170,3 +170,10 @@ describe 'Main Tests', ->
         expect(SerialHelper.askForCoreID).toHaveBeenCalledWith('/dev/cu.usbmodemfa1234')
         SettingsHelper.clearCredentials()
         jasmine.unspy SerialHelper, 'askForCoreID'
+
+  describe 'when the spark-ide:compile-cloud event is triggered', ->
+    it 'calls compileCloud() method', ->
+      spyOn sparkIde, 'compileCloud'
+      atom.workspaceView.trigger 'spark-ide:compile-cloud'
+      expect(sparkIde.compileCloud).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'compileCloud'

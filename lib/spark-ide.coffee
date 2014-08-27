@@ -41,6 +41,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
     atom.workspaceView.command 'spark-ide:claim-core', => @claimCore()
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
+    atom.workspaceView.command 'spark-ide:compile-cloud', => @compileCloud()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -164,3 +165,6 @@ module.exports =
         @selectPortView ?= new SelectPortView()
 
         @selectPortView.show()
+
+  compileCloud: ->
+    # TODO: Implement compiling
