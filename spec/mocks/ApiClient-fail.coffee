@@ -66,5 +66,18 @@ class ApiClientFail
     , 1
     dfd.promise
 
+  compileCode: (files) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.reject {
+        "ok": false,
+        "errors": [
+          "make: *** No rule to make target `license.o'"
+        ],
+        "output": "App code was invalid",
+        "stdout": "Nothing to be done for `all'"
+      }
+    , 1
+    dfd.promise
 
 module.exports = ApiClientFail

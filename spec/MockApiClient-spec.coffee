@@ -106,6 +106,23 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.connected).toBe(true)
       expect(status.value.ok).toBe(true)
 
+  it 'compiles a file', ->
+    promise = client.compileCode(['foo.ino'])
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+
+      expect(status.value.binary_id).toBe('53fdb4b3a7ce5fe43d3cf079')
+      expect(status.value.binary_url).toBe('/v1/binaries/53fdb4b3a7ce5fe43d3cf079')
+      expect(status.value.expires_at).toBe('2014-08-28T10:36:35.183Z')
+      expect(status.value.ok).toBe(true)
+      expect(status.value.sizeInfo).toBe("   text	   data	    bss	    dec	    hex	filename\n  74960	   1236	  11876	  88072	  15808	build/foo.elf\n")
 
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
@@ -200,6 +217,25 @@ describe 'Tests for mocked ApiClient library which functions should fail', ->
       expect(status.reason.errors instanceof Array).toBe(true)
       expect(status.reason.errors.length).toBe(1)
       expect(status.reason.errors[0]).toBe('That belongs to someone else')
+
+  it 'compiles a file', ->
+    promise = client.compileCode(['foo.ino'])
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('rejected')
+      expect(status.reason).not.toBe(null)
+
+      expect(status.reason.ok).toBe(false)
+      expect(status.reason.output).toBe('App code was invalid')
+      expect(status.reason.stdout).toBe('Nothing to be done for `all\'')
+      expect(status.reason.errors instanceof Array).toBe(true)
+      expect(status.reason.errors.length).toBe(1)
+      expect(status.reason.errors[0]).toBe('make: *** No rule to make target `license.o\'')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->

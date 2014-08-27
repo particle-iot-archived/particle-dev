@@ -81,4 +81,17 @@ class ApiClientSuccess
     , 1
     dfd.promise
 
+  compileCode: (files) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        "ok": true,
+        "binary_id": "53fdb4b3a7ce5fe43d3cf079"
+        "binary_url": "/v1/binaries/53fdb4b3a7ce5fe43d3cf079"
+        "expires_at": "2014-08-28T10:36:35.183Z"
+        "sizeInfo": "   text	   data	    bss	    dec	    hex	filename\n  74960	   1236	  11876	  88072	  15808	build/foo.elf\n"
+      }
+    , 1
+    dfd.promise
+
 module.exports = ApiClientSuccess
