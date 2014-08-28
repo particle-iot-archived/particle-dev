@@ -179,5 +179,7 @@ module.exports =
     @compileCloudPromise = client.compileCode []
     @compileCloudPromise.done (e) =>
       # Handle success
+      console.log e
     , (e) =>
       # Handle errors
+      console.log e
