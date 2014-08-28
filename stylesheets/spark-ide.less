@@ -4,12 +4,17 @@
 // for a full listing of what's available.
 @import "ui-variables";
 @import "progress";
+@import "octicons";
 
 #spark-ide-status-bar-view {
   margin-right: 10px;
 
   > span {
     margin-left: 10px;
+
+    &:first-child {
+      margin-left: 5px;
+    }
   }
 
   #spark-icon {
@@ -33,6 +38,26 @@
     &.core-online {
       &:before {
         .breathing-cyan();
+      }
+    }
+  }
+
+  #spark-compile-status {
+    #spark-compile-working .loading {
+      width: 16px;
+      height: 16px;
+      margin-top: -2px;
+      margin-right: 5px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    #spark-compile-failed {
+      color: @text-color-error;
+
+      &:before {
+        margin-right: 5px;
+        top: 0;
       }
     }
   }

@@ -11,6 +11,12 @@ class StatusBarView extends View
       @span id: 'spark-login-status'
       @span id: 'spark-current-core', class: 'hidden', =>
         @a click: 'selectCore'
+      @span id: 'spark-compile-status', class: 'hidden', =>
+        @span id: 'spark-compile-working', =>
+          @span class: 'loading loading-spinner-tiny'
+          @a 'Compiling in the cloud...'
+        @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
+        @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'
       @span id: 'spark-log'
 
   initialize: (serializeState) ->
@@ -28,6 +34,7 @@ class StatusBarView extends View
 
     atom.workspaceView.command 'spark-ide:update-login-status', => @updateLoginStatus()
     atom.workspaceView.command 'spark-ide:update-core-status', => @updateCoreStatus()
+    atom.workspaceView.command 'spark-ide:update-compile-status', => @updateCompileStatus()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -42,6 +49,12 @@ class StatusBarView extends View
 
   selectCore: ->
     atom.workspaceView.trigger 'spark-ide:select-core'
+
+  showErrors: =>
+    # TODO: Implement showing errors
+
+  showFile: =>
+    # TODO: Implement opening file in Finder/Explorer
 
   getCurrentCoreStatus: ->
     if !SettingsHelper.hasCurrentCore()
@@ -107,6 +120,29 @@ class StatusBarView extends View
       this.find('#spark-current-core').addClass 'hidden'
 
     atom.workspaceView.trigger 'spark-ide:update-menu'
+
+  updateCompileStatus: ->
+    statusElement = this.find('#spark-compile-status')
+    statusElement.addClass 'hidden'
+    compileStatus = JSON.parse localStorage.getItem('compile-status')
+
+    if !!compileStatus
+      statusElement.removeClass 'hidden'
+      statusElement.find('>').hide()
+
+      if !!compileStatus.working
+        statusElement.find('#spark-compile-working').show()
+      else if !!compileStatus.errors
+        subElement = statusElement.find('#spark-compile-failed')
+        if compileStatus.errors.length == 1
+          subElement.text('One error')
+        else
+          subElement.text(compileStatus.errors.length + ' errors')
+        subElement.show()
+      else
+        statusElement.find('#spark-compile-success')
+                     .text('Success! Firmware saved to ' + compileStatus.filename)
+                     .show()
 
   setStatus: (text, type = null) ->
       el = this.find('#spark-log')
