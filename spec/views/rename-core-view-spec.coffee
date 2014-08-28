@@ -43,9 +43,9 @@ describe 'Rename Core View', ->
 
       editor.setText ''
       spyOn renameCoreView, 'close'
-      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
       renameCoreView.trigger 'core:confirm'
-      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(renameCoreView.close).not.toHaveBeenCalled()
 
       atom.workspaceView.trigger 'core:cancel'

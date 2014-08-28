@@ -53,26 +53,26 @@ describe 'Login View', ->
 
     it 'tests empty values', ->
       context = atom.workspaceView.find('#spark-ide-login-view')
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
 
       loginView.login()
 
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
+      expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(true)
 
 
     it 'tests invalid values', ->
       context = atom.workspaceView.find('#spark-ide-login-view')
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
 
       loginView.emailEditor.getEditor().setText 'foobarbaz'
       loginView.passwordEditor.originalText = ' '
       loginView.login()
 
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(true)
+      expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(true)
 
 
     it 'tests valid values', ->
@@ -80,8 +80,8 @@ describe 'Login View', ->
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
 
       context = atom.workspaceView.find('#spark-ide-login-view')
-      expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
-      expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
       expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
       loginView.emailEditor.getEditor().setText 'foo@bar.baz'
@@ -95,8 +95,8 @@ describe 'Login View', ->
 
       runs ->
         context = atom.workspaceView.find('#spark-ide-login-view')
-        expect(context.find('.editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
-        expect(context.find('.editor.mini:eq(1)').hasClass('editor-error')).toBe(false)
+        expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
+        expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
         expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
         expect(SettingsHelper.get('username')).toEqual('foo@bar.baz')

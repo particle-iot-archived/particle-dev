@@ -42,9 +42,10 @@ describe 'Claim Core View', ->
 
       editor.setText ''
       spyOn claimCoreView, 'close'
-      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(false)
+
+      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
       claimCoreView.trigger 'core:confirm'
-      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor.mini:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(claimCoreView.close).not.toHaveBeenCalled()
 
       atom.workspaceView.trigger 'core:cancel'

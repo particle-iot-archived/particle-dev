@@ -22,7 +22,8 @@ class ClaimCoreView extends Dialog
 
     @miniEditor.removeClass 'editor-error'
     deviceID = _s.trim(deviceID)
-    if deviceID == ''
+
+    if deviceID == ''      
       @miniEditor.addClass 'editor-error'
     else
       @miniEditor.hiddenInput.attr 'disabled', 'disabled'
