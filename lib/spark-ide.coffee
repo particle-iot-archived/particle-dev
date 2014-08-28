@@ -9,6 +9,7 @@ ClaimCoreView = null
 IdentifyCoreView = null
 ListeningModeView = null
 SelectPortView = null
+CompileCloudView = null
 ApiClient = null
 
 module.exports =
@@ -20,6 +21,7 @@ module.exports =
   identifyCoreView: null
   listeningModeView: null
   selectPortView: null
+  compileCloudView: null
 
   removePromise: null
   listPortsPromise: null
@@ -168,3 +170,11 @@ module.exports =
 
   compileCloud: ->
     # TODO: Implement compiling
+    CompileCloudView ?= require './views/compile-cloud-view'
+
+    if !SettingsHelper.isLoggedIn()
+      return
+
+    @compileCloudView = new CompileCloudView()
+    console.log @compileCloudView
+    @compileCloudView.show()
