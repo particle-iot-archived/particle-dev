@@ -170,3 +170,14 @@ module.exports =
     # TODO: Implement compiling
     if !SettingsHelper.isLoggedIn()
       return
+
+    if !!@compileCloudPromise
+      return
+
+    ApiClient = require './vendor/ApiClient'
+    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    @compileCloudPromise = client.compileCode []
+    @compileCloudPromise.done (e) =>
+      # Handle success
+    , (e) =>
+      # Handle errors
