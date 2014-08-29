@@ -1,3 +1,7 @@
+fs = null
+settings = null
+utilities = null
+
 SettingsHelper = null
 MenuManager = null
 SerialHelper = null
@@ -174,9 +178,22 @@ module.exports =
     if !!@compileCloudPromise
       return
 
+    if !atom.project.getRootDirectory()
+      return
+
     ApiClient = require './vendor/ApiClient'
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-    @compileCloudPromise = client.compileCode []
+
+    # Including files
+    fs ?= require 'fs-plus'
+    settings ?= require './vendor/settings'
+    utilities ?= require './vendor/utilities'
+
+    files = fs.listSync(atom.project.getRootDirectory().getPath())
+    files = files.filter (file) ->
+      return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
+
+    @compileCloudPromise = client.compileCode files
     @compileCloudPromise.done (e) =>
       # Handle success
       console.log e

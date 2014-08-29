@@ -15,6 +15,7 @@
     "underscore.string": "*",
     "emissary": "1.x",
     "validator": "*",
-    "serialport": "*"
+    "serialport": "*",
+    "fs-plus": "^2.0.4"
   }
 }
