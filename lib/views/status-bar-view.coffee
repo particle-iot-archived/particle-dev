@@ -13,7 +13,7 @@ class StatusBarView extends View
         @a click: 'selectCore'
       @span id: 'spark-compile-status', class: 'hidden', =>
         @span id: 'spark-compile-working', =>
-          @span class: 'loading loading-spinner-tiny'
+          @span class: 'three-quarters'
           @a 'Compiling in the cloud...'
         @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
         @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'

@@ -23,7 +23,7 @@ class LoginView extends View
       @div class: 'block', =>
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
         @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
-        @span class: 'loading loading-spinner-tiny inline-block hidden', outlet: 'spinner'
+        @span class: 'three-quarters inline-block hidden', outlet: 'spinner'
         @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
   initialize: (serializeState) ->

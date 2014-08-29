@@ -1,0 +1,48 @@
+@import "ui-variables";
+
+/* Three quarters */
+@-webkit-keyframes three-quarters {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes three-quarters {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.three-quarters {
+  -webkit-animation: three-quarters 1250ms infinite linear;
+  border: 5px solid @text-color;
+  border-right-color: transparent;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  width: 20px;
+  height: 20px;
+}
+
+
+/* Flashing core dot */
+@-webkit-keyframes breathingCyan {
+  0% { background-color: rgba(0, 255, 255, 1); }
+  50% { background-color: rgba(0, 255, 255, 0); }
+  100% { background-color: rgba(0, 255, 255, 1); }
+}
+
+.breathing-cyan {
+  -webkit-animation: breathingCyan 4s ease-in-out infinite;
+}

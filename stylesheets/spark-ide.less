@@ -5,6 +5,8 @@
 @import "ui-variables";
 @import "progress";
 @import "octicons";
+@import "animations";
+
 
 #spark-ide-status-bar-view {
   margin-right: 10px;
@@ -43,9 +45,11 @@
   }
 
   #spark-compile-status {
-    #spark-compile-working .loading {
+    #spark-compile-working .three-quarters {
       width: 16px;
       height: 16px;
+      border-size: 4px;
+      border-radius: 8px;
       margin-top: -2px;
       margin-right: 5px;
       vertical-align: middle;
@@ -94,11 +98,6 @@
 
 
 /* Flashing core dot */
-@-webkit-keyframes breathingCyan {
-	0% { background-color: rgba(0, 255, 255, 1); }
-	50% { background-color: rgba(0, 255, 255, 0); }
-  100% { background-color: rgba(0, 255, 255, 1); }
-}
 
 .core-dot {
   width: 10px;
@@ -106,10 +105,6 @@
   border-radius: 5px;
   background-color: @text-color-subtle;
   display: inline-block;
-}
-
-.breathing-cyan {
-  -webkit-animation: breathingCyan 4s ease-in-out infinite;
 }
 
 .core-line .primary-line {
@@ -129,7 +124,7 @@
 /* Dialog */
 .spark-ide-dialog {
   .editor.loading:after {
-    .loading-spinner-tiny();
+    .three-quarters();
 
     content: " ";
     display: inline-block;
