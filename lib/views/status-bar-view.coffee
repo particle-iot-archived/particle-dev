@@ -1,4 +1,5 @@
 View = require('atom').View
+shell = null
 $ = null
 SettingsHelper = null
 ApiClient = null
@@ -54,7 +55,11 @@ class StatusBarView extends View
     # TODO: Implement showing errors
 
   showFile: =>
-    # TODO: Implement opening file in Finder/Explorer
+    # Opening file in Finder/Explorer
+    shell ?= require 'shell'
+    rootPath = atom.project.getRootDirectory().getPath()
+    compileStatus = JSON.parse localStorage.getItem('compile-status')
+    shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
   getCurrentCoreStatus: ->
     if !SettingsHelper.hasCurrentCore()
@@ -69,6 +74,7 @@ class StatusBarView extends View
     @getAttributesPromise.done (e) =>
       if !e
         return
+
       # Check if current core is still available
       if e.error
         SettingsHelper.clearCurrentCore()
