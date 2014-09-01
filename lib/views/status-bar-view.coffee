@@ -67,6 +67,8 @@ class StatusBarView extends View
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
     @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
+      if !e
+        return
       # Check if current core is still available
       if e.error
         SettingsHelper.clearCurrentCore()
