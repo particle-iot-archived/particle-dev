@@ -170,8 +170,47 @@ module.exports =
 
         @selectPortView.show()
 
+  parseErrors: (raw) ->
+    lines = raw.split "\n"
+    errors = []
+    for line in lines
+      result = line.match /^([^:]+):(\d+):(\d+):\s(\w+):(.*)$/
+      if result and result[4] == 'error'
+        errors.push {
+          file: result[1],
+          row: result[2],
+          col: result[3],
+          type: result[4],
+          message: result[5]
+        }
+    errors
+
   compileCloud: ->
-    # TODO: Implement compiling
+#     raw = "In file included from ../inc/spark_wiring.h:30:0,\n\
+#                  from ../inc/application.h:29,\n\
+#                  from Blink.cpp:2:\n\
+# ../../core-common-lib/SPARK_Firmware_Driver/inc/config.h:12:2: warning: #warning \"Defaulting to Release Build\" [-Wcpp]\n\
+#  #warning  \"Defaulting to Release Build\"\n\
+#   ^\n\
+# Blink.cpp: In function 'void setup()':\n\
+# Blink.cpp:11:17: error: 'OUTPUTz' was not declared in this scope\n\
+#  void setup() {\n\
+#                  ^\n\
+# Blink.cpp:12:7: error: 'meh' was not declared in this scope\n\
+#    // Initialize D0 + D7 pin as output\n\
+#        ^\n\
+# Blink.cpp:13:6: error: lvalue required as left operand of assignment\n\
+#    // It's important you do this here, inside the setup() function rather than\n\
+#       ^\n\
+# Blink.cpp: In function 'void loop()':\n\
+# Blink.cpp:22:21: error: 'HIGHz' was not declared in this scope\n\
+#  // Spark firmware interleaves background CPU activity associated with WiFi +\n\
+#                      ^\n\
+# make: *** [Blink.o] Error 1\n\
+# "
+#     console.log @parseErrors(raw)
+#     return
+
     if !SettingsHelper.isLoggedIn()
       return
 
@@ -199,17 +238,20 @@ module.exports =
 
     @compileCloudPromise = client.compileCode files
     @compileCloudPromise.done (e) =>
-      # Download binary
-      @compileCloudPromise = null
-      filename = 'firmware_' + (new Date()).getTime() + '.bin';
-      @downloadBinaryPromise = client.downloadBinary e.binary_url, rootPath + '/' + filename
-      @downloadBinaryPromise.done (e) =>
-        localStorage.setItem('compile-status', JSON.stringify({filename: filename}))
+      if !e
+        return
+
+      if e.ok
+        # Download binary
+        @compileCloudPromise = null
+        filename = 'firmware_' + (new Date()).getTime() + '.bin';
+        @downloadBinaryPromise = client.downloadBinary e.binary_url, rootPath + '/' + filename
+        @downloadBinaryPromise.done (e) =>
+          localStorage.setItem('compile-status', JSON.stringify({filename: filename}))
+          atom.workspaceView.trigger 'spark-ide:update-compile-status'
+          @downloadBinaryPromise = null
+      else
+        # Handle errors
+        localStorage.setItem('compile-status', JSON.stringify({errors: @parseErrors(e.errors[0])}))
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
-        @downloadBinaryPromise = null
-    , (e) =>
-      # Handle errors
-      console.log e
-      localStorage.setItem('compile-status', JSON.stringify({errors: []}))
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
-      compileCloudPromise = null
+        compileCloudPromise = null
