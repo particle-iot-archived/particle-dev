@@ -4,6 +4,7 @@ $ = null
 $$ = null
 Subscriber = null
 SerialHelper = null
+fs = null
 
 module.exports =
 class CompileErrorsView extends SelectListView
@@ -42,7 +43,15 @@ class CompileErrorsView extends SelectListView
         @div class: 'secondary-line', item.file + ':' + item.row + ':' + item.col
 
   confirmed: (item) ->
+    fs ?= require 'fs-plus'
+    if fs.existsSync item.file
+      filename = item.file
+    else
+      filename = item.file.replace '.cpp', '.ino'
 
+    opening = atom.workspaceView.open filename, { searchAllPanes: true }
+    opening.done (editor) =>
+      editor.setCursorBufferPosition [item.row-1, item.col-1],
     @cancel()
 
   getFilterKey: ->
