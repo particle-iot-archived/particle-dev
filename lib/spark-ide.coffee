@@ -13,6 +13,7 @@ ClaimCoreView = null
 IdentifyCoreView = null
 ListeningModeView = null
 SelectPortView = null
+CompileErrorsView = null
 ApiClient = null
 
 module.exports =
@@ -24,6 +25,7 @@ module.exports =
   identifyCoreView: null
   listeningModeView: null
   selectPortView: null
+  compileErrorsView: null
 
   removePromise: null
   listPortsPromise: null
@@ -46,6 +48,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:claim-core', => @claimCore()
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
     atom.workspaceView.command 'spark-ide:compile-cloud', => @compileCloud()
+    atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -186,31 +189,6 @@ module.exports =
     errors
 
   compileCloud: ->
-#     raw = "In file included from ../inc/spark_wiring.h:30:0,\n\
-#                  from ../inc/application.h:29,\n\
-#                  from Blink.cpp:2:\n\
-# ../../core-common-lib/SPARK_Firmware_Driver/inc/config.h:12:2: warning: #warning \"Defaulting to Release Build\" [-Wcpp]\n\
-#  #warning  \"Defaulting to Release Build\"\n\
-#   ^\n\
-# Blink.cpp: In function 'void setup()':\n\
-# Blink.cpp:11:17: error: 'OUTPUTz' was not declared in this scope\n\
-#  void setup() {\n\
-#                  ^\n\
-# Blink.cpp:12:7: error: 'meh' was not declared in this scope\n\
-#    // Initialize D0 + D7 pin as output\n\
-#        ^\n\
-# Blink.cpp:13:6: error: lvalue required as left operand of assignment\n\
-#    // It's important you do this here, inside the setup() function rather than\n\
-#       ^\n\
-# Blink.cpp: In function 'void loop()':\n\
-# Blink.cpp:22:21: error: 'HIGHz' was not declared in this scope\n\
-#  // Spark firmware interleaves background CPU activity associated with WiFi +\n\
-#                      ^\n\
-# make: *** [Blink.o] Error 1\n\
-# "
-#     console.log @parseErrors(raw)
-#     return
-
     if !SettingsHelper.isLoggedIn()
       return
 
@@ -254,4 +232,10 @@ module.exports =
         # Handle errors
         localStorage.setItem('compile-status', JSON.stringify({errors: @parseErrors(e.errors[0])}))
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
-        compileCloudPromise = null
+        @compileCloudPromise = null
+        atom.workspaceView.trigger 'spark-ide:show-compile-errors'
+
+  showCompileErrors: ->
+    CompileErrorsView ?= require './views/compile-errors-view'
+    @compileErrorsView = new CompileErrorsView
+    @compileErrorsView.show()

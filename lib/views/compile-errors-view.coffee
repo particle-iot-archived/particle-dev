@@ -1,0 +1,49 @@
+SelectListView = require('atom').SelectListView
+
+$ = null
+$$ = null
+Subscriber = null
+SerialHelper = null
+
+module.exports =
+class CompileErrorsView extends SelectListView
+  initialize: ->
+    super
+
+    {$, $$} = require 'atom'
+    {Subscriber} = require 'emissary'
+
+    @subscriber = new Subscriber()
+    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+
+    @addClass 'overlay from-top'
+    @prop 'id', 'spark-ide-compile-errors-view'
+
+
+  destroy: ->
+    @remove()
+
+  show: =>
+    if !@hasParent()
+      atom.workspaceView.append(this)
+
+      compileStatus = JSON.parse localStorage.getItem('compile-status')
+      @setItems compileStatus.errors
+      @focusFilterEditor()
+
+  hide: ->
+    if @hasParent()
+      @detach()
+
+  viewForItem: (item) ->
+    $$ ->
+      @li class: 'two-lines', =>
+        @div class: 'primary-line', item.message
+        @div class: 'secondary-line', item.file + ':' + item.row + ':' + item.col
+
+  confirmed: (item) ->
+
+    @cancel()
+
+  getFilterKey: ->
+    'message'

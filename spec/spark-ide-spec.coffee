@@ -177,3 +177,10 @@ describe 'Main Tests', ->
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(sparkIde.compileCloud).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'compileCloud'
+
+  describe 'when the spark-ide:show-compile-errors event is triggered', ->
+    it 'calls showCompileErrors() method', ->
+      spyOn sparkIde, 'showCompileErrors'
+      atom.workspaceView.trigger 'spark-ide:show-compile-errors'
+      expect(sparkIde.showCompileErrors).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'showCompileErrors'

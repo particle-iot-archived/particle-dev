@@ -52,7 +52,7 @@ class StatusBarView extends View
     atom.workspaceView.trigger 'spark-ide:select-core'
 
   showErrors: =>
-    # TODO: Implement showing errors
+    atom.workspaceView.trigger 'spark-ide:show-compile-errors'
 
   showFile: =>
     # Opening file in Finder/Explorer
