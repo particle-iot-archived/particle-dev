@@ -209,11 +209,13 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
+    # TODO: Replace all getRootDirectory().getPath() with just .getPath()
     rootPath = atom.project.getRootDirectory().getPath()
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
 
+    workspace = atom.workspaceView
     @compileCloudPromise = client.compileCode files
     @compileCloudPromise.done (e) =>
       if !e
@@ -224,7 +226,9 @@ module.exports =
         @compileCloudPromise = null
         filename = 'firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = client.downloadBinary e.binary_url, rootPath + '/' + filename
+
         @downloadBinaryPromise.done (e) =>
+          atom.workspaceView = workspace
           localStorage.setItem('compile-status', JSON.stringify({filename: filename}))
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
