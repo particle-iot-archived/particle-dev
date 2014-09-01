@@ -181,6 +181,9 @@ module.exports =
     if !atom.project.getRootDirectory()
       return
 
+    localStorage.setItem('compile-status', JSON.stringify({working: true}))
+    atom.workspaceView.trigger 'spark-ide:update-compile-status'
+
     ApiClient = require './vendor/ApiClient'
     client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
 
@@ -189,14 +192,24 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
-    files = fs.listSync(atom.project.getRootDirectory().getPath())
+    rootPath = atom.project.getRootDirectory().getPath()
+    files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
 
     @compileCloudPromise = client.compileCode files
     @compileCloudPromise.done (e) =>
-      # Handle success
-      console.log e
+      # Download binary
+      @compileCloudPromise = null
+      filename = 'firmware_' + (new Date()).getTime() + '.bin';
+      @downloadBinaryPromise = client.downloadBinary e.binary_url, rootPath + '/' + filename
+      @downloadBinaryPromise.done (e) =>
+        localStorage.setItem('compile-status', JSON.stringify({filename: filename}))
+        atom.workspaceView.trigger 'spark-ide:update-compile-status'
+        @downloadBinaryPromise = null
     , (e) =>
       # Handle errors
       console.log e
+      localStorage.setItem('compile-status', JSON.stringify({errors: []}))
+      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      compileCloudPromise = null
