@@ -69,10 +69,14 @@ class ApiClientFail
   compileCode: (files) ->
     dfd = whenjs.defer()
     setTimeout ->
-      dfd.reject {
+      dfd.resolve {
         "ok": false,
         "errors": [
-          "make: *** No rule to make target `license.o'"
+          "Blink.cpp: In function 'void setup()':\n\
+Blink.cpp:11:17: error: 'OUTPUTz' was not declared in this scope\n\
+ void setup() {\n\
+                 ^\n\
+make: *** [Blink.o] Error 1"
         ],
         "output": "App code was invalid",
         "stdout": "Nothing to be done for `all'"

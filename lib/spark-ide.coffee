@@ -236,8 +236,8 @@ module.exports =
         # Handle errors
         localStorage.setItem('compile-status', JSON.stringify({errors: @parseErrors(e.errors[0])}))
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
-        @compileCloudPromise = null
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
+        @compileCloudPromise = null
 
   showCompileErrors: ->
     CompileErrorsView ?= require './views/compile-errors-view'

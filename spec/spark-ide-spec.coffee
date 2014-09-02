@@ -1,6 +1,8 @@
 {WorkspaceView} = require 'atom'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
+SpecHelper = require '../lib/utils/spec-helper'
+_s = require 'underscore.string'
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -197,6 +199,7 @@ describe 'Main Tests', ->
       expect(localStorage.setItem).not.toHaveBeenCalled()
 
       # Cleanup
+      localStorage.removeItem 'compile-status'
       jasmine.unspy localStorage, 'setItem'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
       jasmine.unspy atom.project, 'getRootDirectory'
@@ -206,22 +209,70 @@ describe 'Main Tests', ->
       oldPath = atom.project.getRootDirectory().getPath()
       atom.project.setPath __dirname + '/mocks/sampleproject'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-spy'
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       # Check if local storage is set to working
       expect(localStorage.getItem('compile-status')).toEqual('{"working":true}')
 
-      # expect(sparkIde.client.compileCode).toHaveBeenCalled()
-      # expect(sparkIde.client.compileCode).toHaveBeenCalledWith([])
+      compileCodeSpy = SpecHelper.getSpyByIdentity 'compileCode'
+      expect(compileCodeSpy).toHaveBeenCalled()
 
+      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h'].map (value)->
+        return __dirname + '/mocks/sampleproject/' + value
+
+      expect(compileCodeSpy).toHaveBeenCalledWith(expectedFiles)
+
+      localStorage.removeItem 'compile-status'
       SettingsHelper.clearCredentials()
       atom.project.setPath oldPath
-      # jasmine.unspy spyOn sparkIde.client, 'compileCode'
 
     it 'checks successful compile', ->
-      expect(true).toEqual(true)
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
+
+      atom.workspaceView.trigger 'spark-ide:compile-cloud'
+      spyOn atom.workspaceView, 'trigger'
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      waitsFor ->
+        !sparkIde.downloadBinaryPromise
+
+      runs ->
+        compileStatus = JSON.parse localStorage.getItem('compile-status')
+        expect(compileStatus.filename).not.toBeUndefined()
+        expect(_s.startsWith(compileStatus.filename, 'firmware')).toBe(true)
+        expect(_s.endsWith(compileStatus.filename, '.bin')).toBe(true)
+        expect(atom.workspaceView.trigger).toHaveBeenCalled()
+        expect(atom.workspaceView.trigger.calls.length).toEqual(1)
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
+
+        localStorage.removeItem 'compile-status'
+        jasmine.unspy atom.workspaceView, 'trigger'
+        SettingsHelper.clearCredentials()
 
     it 'checks failed compile', ->
-      expect(true).toEqual(true)
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
+
+      atom.workspaceView.trigger 'spark-ide:compile-cloud'
+      spyOn atom.workspaceView, 'trigger'
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      runs ->
+        compileStatus = JSON.parse localStorage.getItem('compile-status')
+        expect(compileStatus.errors).not.toBeUndefined()
+        expect(compileStatus.errors.length).toEqual(1)
+
+        expect(atom.workspaceView.trigger).toHaveBeenCalled()
+        expect(atom.workspaceView.trigger.calls.length).toEqual(2)
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:show-compile-errors')
+
+        localStorage.removeItem 'compile-status'
+        jasmine.unspy atom.workspaceView, 'trigger'
+        SettingsHelper.clearCredentials()
