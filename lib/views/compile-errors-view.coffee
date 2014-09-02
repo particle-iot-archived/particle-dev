@@ -29,7 +29,10 @@ class CompileErrorsView extends SelectListView
       atom.workspaceView.append(this)
 
       compileStatus = JSON.parse localStorage.getItem('compile-status')
-      @setItems compileStatus.errors
+      if compileStatus?.errors
+        @setItems compileStatus.errors
+      else
+        @setLoading 'There were no compile errors'
       @focusFilterEditor()
 
   hide: ->

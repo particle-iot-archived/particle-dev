@@ -5,7 +5,7 @@ class ApiClientSpy
     if setTimeout.isSpy
       jasmine.unspy window, 'setTimeout'
 
-    @compileCode = jasmine.createSpy('compileCode')
+    @compileCode = jasmine.createSpy 'compileCode'
     @compileCode.plan = ->
       dfd = whenjs.defer()
       setTimeout ->
@@ -23,7 +23,7 @@ class ApiClientSpy
     @compileCode.originalValue = ->
     jasmine.getEnv().currentSpec.spies_.push @compileCode
 
-    @downloadBinary = jasmine.createSpy('downloadBinary')
+    @downloadBinary = jasmine.createSpy 'downloadBinary'
     @downloadBinary.plan = ->
       dfd = whenjs.defer()
       setTimeout ->

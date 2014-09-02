@@ -72,3 +72,6 @@ describe 'Select Core View', ->
 
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
+
+    it 'tests choosing core', ->
+      # TODO: Implement
