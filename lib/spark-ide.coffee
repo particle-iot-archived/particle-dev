@@ -248,6 +248,13 @@ module.exports =
     @compileErrorsView.show()
 
   toggleCloudVariablesAndFunctions: ->
-    # TODO: Implement
     @CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
+
+    if !@SettingsHelper.isLoggedIn()
+      return
+
+    if !@SettingsHelper.hasCurrentCore()
+      return
+
     @cloudVariablesAndFunctions ?= new @CloudVariablesAndFunctions
+    @cloudVariablesAndFunctions.toggle()
