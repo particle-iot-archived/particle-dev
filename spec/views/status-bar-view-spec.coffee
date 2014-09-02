@@ -5,6 +5,7 @@ describe 'Status Bar Tests', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null
+  sparkIde = null
   statusView = null
 
   beforeEach ->
@@ -22,7 +23,8 @@ describe 'Status Bar Tests', ->
 
     runs ->
       activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
-        statusView = mainModule.statusView
+        sparkIde = mainModule
+        statusView = sparkIde.statusView
 
     waitsForPromise ->
       activationPromise

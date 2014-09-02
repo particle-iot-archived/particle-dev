@@ -27,7 +27,6 @@ class StatusBarView extends View
 
     @getAttributesPromise = null
     @interval = null
-
     if atom.workspaceView.statusBar
       @attach()
     else

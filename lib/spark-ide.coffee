@@ -113,7 +113,7 @@ module.exports =
 
     buttons['Remove ' + @SettingsHelper.get('current_core_name')] = =>
       workspace = atom.workspaceView
-      @ApiClient = require './vendor/ApiClient'
+      @ApiClient ?= require './vendor/ApiClient'
       client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
       @removePromise = client.removeCore @SettingsHelper.get('current_core')
       @removePromise.done (e) =>
@@ -147,7 +147,7 @@ module.exports =
 
   identifyCore: (port=null) ->
     @ListeningModeView ?= require './views/listening-mode-view'
-    @SerialHelper = require './utils/serial-helper'
+    @SerialHelper ?= require './utils/serial-helper'
 
     if !@SettingsHelper.isLoggedIn()
       return
@@ -204,7 +204,7 @@ module.exports =
     localStorage.setItem('compile-status', JSON.stringify({working: true}))
     atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
-    @ApiClient = require './vendor/ApiClient'
+    @ApiClient ?= require './vendor/ApiClient'
     client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
 
     # Including files
@@ -243,7 +243,7 @@ module.exports =
         @compileCloudPromise = null
 
   showCompileErrors: ->
-    @CompileErrorsView = require './views/compile-errors-view'
+    @CompileErrorsView ?= require './views/compile-errors-view'
     @compileErrorsView ?= new @CompileErrorsView
     @compileErrorsView.show()
 

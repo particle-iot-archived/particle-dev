@@ -6,7 +6,6 @@ _s = require 'underscore.string'
 
 describe 'Main Tests', ->
   activationPromise = null
-  loginView = null
   sparkIde = null
   originalProfile = null
 
@@ -14,7 +13,7 @@ describe 'Main Tests', ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
-      loginView = mainModule.loginView
+      sparkIde.statusView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -139,6 +138,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
 
         # Test fail
+        sparkIde.ApiClient = null
         require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
         args.buttons['Remove Foo']()
 
@@ -216,6 +216,7 @@ describe 'Main Tests', ->
       atom.project.setPath __dirname + '/mocks/sampleproject'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-spy'
+      sparkIde.ApiClient = null
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       # Check if local storage is set to working
@@ -236,6 +237,7 @@ describe 'Main Tests', ->
     it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
+      sparkIde.ApiClient = null
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       spyOn atom.workspaceView, 'trigger'
@@ -262,6 +264,7 @@ describe 'Main Tests', ->
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
+      sparkIde.ApiClient = null
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       spyOn atom.workspaceView, 'trigger'
