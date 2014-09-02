@@ -2,22 +2,22 @@ fs = null
 settings = null
 utilities = null
 
-SettingsHelper = null
-MenuManager = null
-SerialHelper = null
-StatusView = null
-LoginView = null
-SelectCoreView = null
-RenameCoreView = null
-ClaimCoreView = null
-IdentifyCoreView = null
-ListeningModeView = null
-SelectPortView = null
-CompileErrorsView = null
-CloudVariablesAndFunctions = null
-ApiClient = null
-
 module.exports =
+  SettingsHelper: null
+  MenuManager: null
+  SerialHelper: null
+  StatusView: null
+  LoginView: null
+  SelectCoreView: null
+  RenameCoreView: null
+  ClaimCoreView: null
+  IdentifyCoreView: null
+  ListeningModeView: null
+  SelectPortView: null
+  CompileErrorsView: null
+  CloudVariablesAndFunctions: null
+  ApiClient: null
+
   statusView: null
   loginView: null
   selectCoreView: null
@@ -34,12 +34,12 @@ module.exports =
 
   activate: (state) ->
     # Require modules on activation
-    StatusView ?= require './views/status-bar-view'
-    SettingsHelper ?= require './utils/settings-helper'
-    MenuManager ?= require './utils/menu-manager'
+    @StatusView ?= require './views/status-bar-view'
+    @SettingsHelper ?= require './utils/settings-helper'
+    @MenuManager ?= require './utils/menu-manager'
 
     # Initialize views
-    @statusView = new StatusView()
+    @statusView = new @StatusView()
 
     # Hooking up commands
     atom.workspaceView.command 'spark-ide:login', => @login()
@@ -53,9 +53,9 @@ module.exports =
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
 
-    atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
+    atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
-    MenuManager.update()
+    @MenuManager.update()
 
   deactivate: ->
     @statusView?.destroy()
@@ -63,64 +63,64 @@ module.exports =
   serialize: ->
 
   login: ->
-    LoginView ?= require './views/login-view'
-    @loginView ?= new LoginView()
+    @LoginView ?= require './views/login-view'
+    @loginView ?= new @LoginView()
     # You may ask why this isn't in LoginView? This way, we don't need to
     # require/initialize login view until it's needed.
     atom.workspaceView.command 'spark-ide:cancel-login', => @loginView.cancelCommand()
     @loginView.show()
 
   logout: ->
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
-    LoginView ?= require './views/login-view'
-    @loginView ?= new LoginView()
+    @LoginView ?= require './views/login-view'
+    @loginView ?= new @LoginView()
 
     @loginView.logout()
 
   selectCore: ->
-    SelectCoreView ?= require './views/select-core-view'
-    @selectCoreView ?= new SelectCoreView()
+    @SelectCoreView ?= require './views/select-core-view'
+    @selectCoreView ?= new @SelectCoreView()
 
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
     @selectCoreView.show()
 
   renameCore: ->
-    RenameCoreView ?= require './views/rename-core-view'
+    @RenameCoreView ?= require './views/rename-core-view'
 
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
-    if !SettingsHelper.hasCurrentCore()
+    if !@SettingsHelper.hasCurrentCore()
       return
 
-    @renameCoreView ?= new RenameCoreView(SettingsHelper.get 'current_core_name')
+    @renameCoreView ?= new @RenameCoreView(@SettingsHelper.get 'current_core_name')
     @renameCoreView.attach()
 
   removeCore: ->
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
-    if !SettingsHelper.hasCurrentCore()
+    if !@SettingsHelper.hasCurrentCore()
       return
 
-    removeButton = 'Remove ' + SettingsHelper.get('current_core_name')
+    removeButton = 'Remove ' + @SettingsHelper.get('current_core_name')
     buttons = {}
     buttons['Cancel'] = ->
 
-    buttons['Remove ' + SettingsHelper.get('current_core_name')] = =>
+    buttons['Remove ' + @SettingsHelper.get('current_core_name')] = =>
       workspace = atom.workspaceView
-      ApiClient = require './vendor/ApiClient'
-      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-      @removePromise = client.removeCore SettingsHelper.get('current_core')
+      @ApiClient = require './vendor/ApiClient'
+      client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
+      @removePromise = client.removeCore @SettingsHelper.get('current_core')
       @removePromise.done (e) =>
         if !@removePromise
           return
         atom.workspaceView = workspace
-        SettingsHelper.clearCurrentCore()
+        @SettingsHelper.clearCurrentCore()
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         atom.workspaceView.trigger 'spark-ide:update-menu'
 
@@ -133,46 +133,46 @@ module.exports =
 
     atom.confirm
       message: 'Removal confirmation'
-      detailedMessage: 'Do you really want to remove ' + SettingsHelper.get('current_core_name') + '?'
+      detailedMessage: 'Do you really want to remove ' + @SettingsHelper.get('current_core_name') + '?'
       buttons: buttons
 
   claimCore: ->
-    ClaimCoreView ?= require './views/claim-core-view'
+    @ClaimCoreView ?= require './views/claim-core-view'
 
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
-    @claimCoreView ?= new ClaimCoreView()
+    @claimCoreView ?= new @ClaimCoreView()
     @claimCoreView.attach()
 
   identifyCore: (port=null) ->
-    ListeningModeView ?= require './views/listening-mode-view'
-    SerialHelper = require './utils/serial-helper'
+    @ListeningModeView ?= require './views/listening-mode-view'
+    @SerialHelper = require './utils/serial-helper'
 
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
-    @listPortsPromise = SerialHelper.listPorts()
+    @listPortsPromise = @SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
       @listPortsPromise = null
       if ports.length == 0
-        @listeningModeView ?= new ListeningModeView()
+        @listeningModeView ?= new @ListeningModeView()
         @listeningModeView.show()
       else if (ports.length == 1) || (!!port)
         if !port
           port = ports[0].comName
 
-        promise = SerialHelper.askForCoreID port
+        promise = @SerialHelper.askForCoreID port
         promise.done (coreID) =>
-          IdentifyCoreView ?= require './views/identify-core-view'
-          @identifyCoreView ?= new IdentifyCoreView coreID
+          @IdentifyCoreView ?= require './views/identify-core-view'
+          @identifyCoreView ?= new @IdentifyCoreView coreID
           @identifyCoreView.attach()
         , (e) =>
           @statusView.setStatus e, 'error'
           @statusView.clearAfter 5000
       else
-        SelectPortView ?= require './views/select-port-view'
-        @selectPortView ?= new SelectPortView()
+        @SelectPortView ?= require './views/select-port-view'
+        @selectPortView ?= new @SelectPortView()
 
         @selectPortView.show()
 
@@ -192,7 +192,7 @@ module.exports =
     errors
 
   compileCloud: ->
-    if !SettingsHelper.isLoggedIn()
+    if !@SettingsHelper.isLoggedIn()
       return
 
     if !!@compileCloudPromise
@@ -204,8 +204,8 @@ module.exports =
     localStorage.setItem('compile-status', JSON.stringify({working: true}))
     atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
-    ApiClient = require './vendor/ApiClient'
-    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    @ApiClient = require './vendor/ApiClient'
+    client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
 
     # Including files
     fs ?= require 'fs-plus'
@@ -243,11 +243,11 @@ module.exports =
         @compileCloudPromise = null
 
   showCompileErrors: ->
-    CompileErrorsView = require './views/compile-errors-view'
-    @compileErrorsView ?= new CompileErrorsView
+    @CompileErrorsView = require './views/compile-errors-view'
+    @compileErrorsView ?= new @CompileErrorsView
     @compileErrorsView.show()
 
   toggleCloudVariablesAndFunctions: ->
     # TODO: Implement
-    CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
-    @cloudVariablesAndFunctions ?= new CloudVariablesAndFunctions
+    @CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
+    @cloudVariablesAndFunctions ?= new @CloudVariablesAndFunctions
