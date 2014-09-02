@@ -33,6 +33,9 @@ module.exports =
         },{
           label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
           command: 'spark-ide:remove-core'
+        },{
+          label: 'Toggle cloud variables and functions',
+          command: 'spark-ide:toggle-cloud-variables-and-functions'
         }]
 
       ideMenu.submenu = ideMenu.submenu.concat [{
@@ -48,11 +51,6 @@ module.exports =
       },{
         label: 'Compile in the cloud',
         command: 'spark-ide:compile-cloud'
-      },{
-        type: 'separator'
-      },{
-        label: 'Toggle cloud variables & functions',
-        command: 'spark-ide:toggle-cloud-variables-and-functions'
       }]
     else
       ideMenu.submenu = [{
