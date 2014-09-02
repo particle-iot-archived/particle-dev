@@ -46,8 +46,13 @@ module.exports =
       },{
         type: 'separator'
       },{
-        label: 'Compile in the cloud...',
+        label: 'Compile in the cloud',
         command: 'spark-ide:compile-cloud'
+      },{
+        type: 'separator'
+      },{
+        label: 'Toggle cloud variables & functions',
+        command: 'spark-ide:toggle-cloud-variables-and-functions'
       }]
     else
       ideMenu.submenu = [{

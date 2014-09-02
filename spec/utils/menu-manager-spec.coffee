@@ -42,7 +42,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(8)
+      expect(ideMenu.submenu.length).toBe(10)
 
       expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
       expect(ideMenu.submenu[0].command).toBe('spark-ide:logout')
@@ -62,8 +62,13 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[6].type).toBe('separator')
 
-      expect(ideMenu.submenu[7].label).toBe('Compile in the cloud...')
+      expect(ideMenu.submenu[7].label).toBe('Compile in the cloud')
       expect(ideMenu.submenu[7].command).toBe('spark-ide:compile-cloud')
+
+      expect(ideMenu.submenu[8].type).toBe('separator')
+
+      expect(ideMenu.submenu[9].label).toBe('Toggle cloud variables & functions')
+      expect(ideMenu.submenu[9].command).toBe('spark-ide:toggle-cloud-variables-and-functions')
 
       SettingsHelper.clearCredentials()
 
@@ -82,7 +87,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(10)
+      expect(ideMenu.submenu.length).toBe(12)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')

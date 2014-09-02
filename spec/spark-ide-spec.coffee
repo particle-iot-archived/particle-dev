@@ -82,6 +82,12 @@ describe 'Main Tests', ->
       expect(sparkIde.showCompileErrors).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'showCompileErrors'
 
+    it 'calls toggleCloudVariablesAndFunctions() method for spark-ide:toggle-cloud-variables-and-functions event', ->
+      spyOn sparkIde, 'toggleCloudVariablesAndFunctions'
+      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      expect(sparkIde.toggleCloudVariablesAndFunctions).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'toggleCloudVariablesAndFunctions'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-ide:remove-core', ->

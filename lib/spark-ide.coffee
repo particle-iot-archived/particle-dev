@@ -49,6 +49,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
     atom.workspaceView.command 'spark-ide:compile-cloud', => @compileCloud()
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
+    atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
 
     atom.workspaceView.command 'spark-ide:update-menu', => MenuManager.update()
 
@@ -243,3 +244,6 @@ module.exports =
     CompileErrorsView ?= require './views/compile-errors-view'
     @compileErrorsView = new CompileErrorsView
     @compileErrorsView.show()
+
+  toggleCloudVariablesAndFunctions: ->
+    # TODO: Implement
