@@ -14,6 +14,7 @@ describe 'Rename Core View', ->
 
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
+      sparkIde.renameCoreView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...

@@ -14,6 +14,7 @@ IdentifyCoreView = null
 ListeningModeView = null
 SelectPortView = null
 CompileErrorsView = null
+CloudVariablesAndFunctions = null
 ApiClient = null
 
 module.exports =
@@ -26,6 +27,7 @@ module.exports =
   listeningModeView: null
   selectPortView: null
   compileErrorsView: null
+  cloudVariablesAndFunctions: null
 
   removePromise: null
   listPortsPromise: null
@@ -95,7 +97,7 @@ module.exports =
     if !SettingsHelper.hasCurrentCore()
       return
 
-    @renameCoreView = new RenameCoreView(SettingsHelper.get 'current_core_name')
+    @renameCoreView ?= new RenameCoreView(SettingsHelper.get 'current_core_name')
     @renameCoreView.attach()
 
   removeCore: ->
@@ -140,7 +142,7 @@ module.exports =
     if !SettingsHelper.isLoggedIn()
       return
 
-    @claimCoreView = new ClaimCoreView()
+    @claimCoreView ?= new ClaimCoreView()
     @claimCoreView.attach()
 
   identifyCore: (port=null) ->
@@ -154,7 +156,7 @@ module.exports =
     @listPortsPromise.done (ports) =>
       @listPortsPromise = null
       if ports.length == 0
-        @listeningModeView = new ListeningModeView()
+        @listeningModeView ?= new ListeningModeView()
         @listeningModeView.show()
       else if (ports.length == 1) || (!!port)
         if !port
@@ -163,7 +165,7 @@ module.exports =
         promise = SerialHelper.askForCoreID port
         promise.done (coreID) =>
           IdentifyCoreView ?= require './views/identify-core-view'
-          @identifyCoreView = new IdentifyCoreView coreID
+          @identifyCoreView ?= new IdentifyCoreView coreID
           @identifyCoreView.attach()
         , (e) =>
           @statusView.setStatus e, 'error'
@@ -241,9 +243,11 @@ module.exports =
         @compileCloudPromise = null
 
   showCompileErrors: ->
-    CompileErrorsView ?= require './views/compile-errors-view'
-    @compileErrorsView = new CompileErrorsView
+    CompileErrorsView = require './views/compile-errors-view'
+    @compileErrorsView ?= new CompileErrorsView
     @compileErrorsView.show()
 
   toggleCloudVariablesAndFunctions: ->
     # TODO: Implement
+    CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
+    @cloudVariablesAndFunctions ?= new CloudVariablesAndFunctions

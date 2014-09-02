@@ -11,6 +11,7 @@ describe 'Compile Errors View', ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
+      sparkIde.compileErrorsView = null
 
     waitsForPromise ->
       activationPromise
