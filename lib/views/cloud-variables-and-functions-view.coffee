@@ -2,6 +2,7 @@
 $ = null
 $$ = null
 SettingsHelper = null
+ApiClient = null
 
 module.exports =
 class CloudVariablesAndFunctions extends View
@@ -17,6 +18,10 @@ class CloudVariablesAndFunctions extends View
   initialize: (serializeState) ->
     {$, $$} = require 'atom'
     SettingsHelper = require '../utils/settings-helper'
+    ApiClient = require '../vendor/ApiClient'
+
+    @client = null
+
     # TODO: Hook on changing core/logging out
     @listVariables()
     @listFunctions()
@@ -55,19 +60,36 @@ class CloudVariablesAndFunctions extends View
       for variable in Object.keys(variables)
         row = $$ ->
           @table =>
-            @tr =>
+            @tr 'data-id': variable, =>
               @td variable
               @td variables[variable]
               @td class: 'loading'
               @td =>
                 @button class: 'btn btn-sm icon icon-sync'
 
+        row.find('button').on 'click', (event) =>
+          @refreshVariable $(event.target).parent().parent().attr('data-id')
+
         table.find('tbody').append row.find('tbody >')
 
       @variables.append table
+
+      # Get initial values
+      for variable in Object.keys(variables)
+        @refreshVariable variable
 
   listFunctions: ->
     @functions.empty()
     @functions.append $$ ->
       @ul class: 'background-message', =>
         @li 'No functions registered'
+
+  refreshVariable: (variableName) ->
+    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+
+    cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
+    cell.addClass 'loading'
+    promise = @client.getVariable SettingsHelper.get('current_core'), variableName
+    promise.done (e) =>
+      cell.removeClass 'loading'
+      cell.text e.result
