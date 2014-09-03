@@ -43,8 +43,8 @@ class ApiClientSuccess
         "id": coreID,
         "name": "Online Core",
         "connected": true,
-        "variables": {},
-        "functions": [],
+        "variables": { i: 'int32' },
+        "functions": [ 'foo' ],
         "cc3000_patch_version": "1.28"
       }
     , 1

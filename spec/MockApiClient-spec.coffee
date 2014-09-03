@@ -1,7 +1,7 @@
 ApiClient = require '../lib/vendor/ApiClient'
 apiUrl = 'http://example.com'
 
-describe 'Tests for mocked ApiClient library which functions should succeed', ->
+fdescribe 'Tests for mocked ApiClient library which functions should succeed', ->
   client = null
   promise = null
 
@@ -55,9 +55,11 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.connected).toBe(true)
 
       expect(typeof status.value.variables).toBe('object')
-      expect(Object.keys(status.value.variables).length).toBe(0)
+      expect(Object.keys(status.value.variables).length).toBe(1)
+      expect(status.value.variables.i).toBe('int32')
       expect(status.value.functions instanceof Array).toBe(true)
-      expect(status.value.functions.length).toBe(0)
+      expect(status.value.functions.length).toBe(1)
+      expect(status.value.functions[0]).toBe('foo')
 
 
   it 'renames core', ->
