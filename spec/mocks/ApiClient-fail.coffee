@@ -91,4 +91,14 @@ make: *** [Blink.o] Error 1"
     , 1
     dfd.promise
 
+  getVariable: (coreID, name) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        ok: false,
+        error: 'Variable not found'
+      }
+    , 1
+    dfd.promise
+
 module.exports = ApiClientFail

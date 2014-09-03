@@ -43,8 +43,8 @@ class ApiClientSuccess
         "id": coreID,
         "name": "Online Core",
         "connected": true,
-        "variables": { i: 'int32' },
-        "functions": [ 'foo' ],
+        "variables": { foo: 'int32' },
+        "functions": [ 'bar' ],
         "cc3000_patch_version": "1.28"
       }
     , 1
@@ -98,6 +98,21 @@ class ApiClientSuccess
     dfd = whenjs.defer()
     setTimeout ->
       dfd.resolve 'CONTENTS OF A FILE'
+    , 1
+    dfd.promise
+
+  getVariable: (coreID, name) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        cmd: 'VarReturn',
+        name: 'foo',
+        result: 1,
+        coreInfo: {
+          last_handshake_at: '2014-09-03T08:59:17.850Z',
+          connected: true
+        }
+      }
     , 1
     dfd.promise
 

@@ -1,7 +1,7 @@
 ApiClient = require '../lib/vendor/ApiClient'
 apiUrl = 'http://example.com'
 
-fdescribe 'Tests for mocked ApiClient library which functions should succeed', ->
+describe 'Tests for mocked ApiClient library which functions should succeed', ->
   client = null
   promise = null
 
@@ -56,10 +56,10 @@ fdescribe 'Tests for mocked ApiClient library which functions should succeed', -
 
       expect(typeof status.value.variables).toBe('object')
       expect(Object.keys(status.value.variables).length).toBe(1)
-      expect(status.value.variables.i).toBe('int32')
+      expect(status.value.variables.foo).toBe('int32')
       expect(status.value.functions instanceof Array).toBe(true)
       expect(status.value.functions.length).toBe(1)
-      expect(status.value.functions[0]).toBe('foo')
+      expect(status.value.functions[0]).toBe('bar')
 
 
   it 'renames core', ->
@@ -138,6 +138,23 @@ fdescribe 'Tests for mocked ApiClient library which functions should succeed', -
       expect(status.state).toBe('fulfilled')
       expect(status.value).not.toBe(null)
       expect(status.value).toBe('CONTENTS OF A FILE')
+
+  it 'gets variable value', ->
+    promise = client.getVariable('51ff6e065067545724680187', 'foo')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value.cmd).toBe('VarReturn')
+      expect(status.value.name).toBe('foo')
+      expect(status.value.result).toEqual(1)
+      expect(status.value.coreInfo).not.toBe(null)
+      expect(status.value.coreInfo.last_handshake_at).toBe('2014-09-03T08:59:17.850Z')
+      expect(status.value.coreInfo.connected).toBe(true)
 
 
 describe 'Tests for mocked ApiClient library which functions should fail', ->
@@ -270,6 +287,20 @@ make: *** [Blink.o] Error 1")
       expect(status.value).not.toBe(null)
 
       expect(status.value).toBe('Binary not found')
+
+  it 'gets variable value', ->
+    promise = client.getVariable('51ff6e065067545724680187', 'foo')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+      expect(status.value.ok).toBe(false)
+      expect(status.value.error).toBe('Variable not found')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->
