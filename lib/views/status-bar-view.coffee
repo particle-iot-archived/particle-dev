@@ -88,6 +88,8 @@ class StatusBarView extends View
         statusElement.text e.name
 
         # TODO: Test it!
+        SettingsHelper.set 'variables', e.variables
+        SettingsHelper.set 'functions', e.functions
 
         # Periodically check if core is online
         if !@interval

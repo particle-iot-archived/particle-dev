@@ -89,13 +89,50 @@
 }
 
 #spark-ide-cloud-variables-and-functions {
+  display: table;
+  width: 100%;
+  color: @text-color;
+
   .panel {
     width: 50%;
-    float: left;
     margin-bottom: 0;
+    display: table-cell;
 
     &:first-child {
       border-right: 1px solid @overlay-border-color;
+    }
+  }
+}
+
+#spark-ide-cloud-variables {
+  table {
+    width: 100%;
+  }
+
+  tr > th, tr > td {
+    &:nth-child(1) {
+      width: 20%;
+    }
+
+    &:nth-child(2) {
+      width: 10%;
+    }
+
+    &:nth-child(3) {
+      width: 50%;
+    }
+
+    &:nth-child(4) {
+      width: 10%;
+    }
+
+    &.loading {
+      .three-quarters();
+      width: 16px;
+      height: 16px;
+      border-size: 4px;
+      border-radius: 8px;
+      margin-top: 3px;
     }
   }
 }
