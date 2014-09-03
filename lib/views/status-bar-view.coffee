@@ -57,7 +57,7 @@ class StatusBarView extends View
     # Opening file in Finder/Explorer
     shell ?= require 'shell'
     rootPath = atom.project.getRootDirectory().getPath()
-    compileStatus = JSON.parse localStorage.getItem('compile-status')
+    compileStatus = SettingsHelper.get 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
   getCurrentCoreStatus: ->
@@ -86,6 +86,8 @@ class StatusBarView extends View
 
         SettingsHelper.set 'current_core_name', e.name
         statusElement.text e.name
+
+        # TODO: Test it!
 
         # Periodically check if core is online
         if !@interval
@@ -131,7 +133,7 @@ class StatusBarView extends View
   updateCompileStatus: ->
     statusElement = this.find('#spark-compile-status')
     statusElement.addClass 'hidden'
-    compileStatus = JSON.parse localStorage.getItem('compile-status')
+    compileStatus = SettingsHelper.get 'compile-status'
 
     if !!compileStatus
       statusElement.removeClass 'hidden'

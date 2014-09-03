@@ -201,7 +201,7 @@ module.exports =
     if !atom.project.getRootDirectory()
       return
 
-    localStorage.setItem('compile-status', JSON.stringify({working: true}))
+    @SettingsHelper.set 'compile-status', {working: true}
     atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
     @ApiClient ?= require './vendor/ApiClient'
@@ -232,12 +232,12 @@ module.exports =
 
         @downloadBinaryPromise.done (e) =>
           atom.workspaceView = workspace
-          localStorage.setItem('compile-status', JSON.stringify({filename: filename}))
+          @SettingsHelper.set 'compile-status', {filename: filename}
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
       else
         # Handle errors
-        localStorage.setItem('compile-status', JSON.stringify({errors: @parseErrors(e.errors[0])}))
+        @SettingsHelper.set 'compile-status', {errors: @parseErrors(e.errors[0])}
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
         @compileCloudPromise = null

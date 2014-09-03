@@ -42,7 +42,7 @@ describe 'Compile Errors View', ->
       expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).not.toExist()
 
     it 'tests loading and selecting items', ->
-      localStorage.setItem('compile-status', JSON.stringify({errors: [
+      SettingsHelper.set 'compile-status', {errors: [
         {
           message: 'Foo',
           file: 'foo.ino',
@@ -54,7 +54,7 @@ describe 'Compile Errors View', ->
           row: 3,
           col: 4
         }
-      ]}))
+      ]}
       atom.workspaceView.trigger 'spark-ide:show-compile-errors'
       compileErrorsView = sparkIde.compileErrorsView
 
@@ -92,4 +92,4 @@ describe 'Compile Errors View', ->
 
       jasmine.unspy compileErrorsView, 'cancel'
       jasmine.unspy atom.workspaceView, 'open'
-      localStorage.removeItem 'compile-status'
+      SettingsHelper.set 'compile-status', null

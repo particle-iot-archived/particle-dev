@@ -112,8 +112,6 @@ describe 'Status Bar Tests', ->
 
     it 'checks compile status', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      originalCompileStatus = localStorage.getItem 'compile-status'
-      localStorage.removeItem 'compile-status'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
       statusBarView = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').data 'view'
 
@@ -121,7 +119,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.hasClass('hidden')).toBe(true)
 
       # Test compiling in progress
-      localStorage.setItem 'compile-status', JSON.stringify({working:true})
+      SettingsHelper.set 'compile-status', {working:true}
       atom.workspaceView.trigger 'spark-ide:update-compile-status'
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).not.toBe('none')
@@ -129,7 +127,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-success').css('display')).toBe('none')
 
       # Test errors
-      localStorage.setItem 'compile-status', JSON.stringify({errors:[1]})
+      SettingsHelper.set 'compile-status', {errors:[1]}
       atom.workspaceView.trigger 'spark-ide:update-compile-status'
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
@@ -138,7 +136,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('One error')
 
       # Test multiple errors
-      localStorage.setItem 'compile-status', JSON.stringify({errors:[1,2]})
+      SettingsHelper.set 'compile-status', {errors:[1,2]}
       atom.workspaceView.trigger 'spark-ide:update-compile-status'
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('2 errors')
 
@@ -150,7 +148,7 @@ describe 'Status Bar Tests', ->
       jasmine.unspy statusBarView, 'showErrors'
 
       # Test complete
-      localStorage.setItem 'compile-status', JSON.stringify({filename:'foo.bin'})
+      SettingsHelper.set 'compile-status', {filename:'foo.bin'}
       atom.workspaceView.trigger 'spark-ide:update-compile-status'
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
@@ -165,5 +163,5 @@ describe 'Status Bar Tests', ->
       expect(statusBarView.showFile).toHaveBeenCalled()
       jasmine.unspy statusBarView, 'showFile'
 
-      localStorage.setItem 'compile-status', originalCompileStatus
+      SettingsHelper.set 'compile-status', null
       SettingsHelper.clearCredentials()

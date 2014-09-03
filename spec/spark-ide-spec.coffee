@@ -198,15 +198,15 @@ describe 'Main Tests', ->
 
       # Empty root directory
       sparkIde.compileCloudPromise = null
-      spyOn localStorage, 'setItem'
+      spyOn SettingsHelper, 'set'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
       expect(atom.project.getRootDirectory).toHaveBeenCalled()
-      expect(localStorage.setItem).not.toHaveBeenCalled()
+      expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
-      localStorage.removeItem 'compile-status'
-      jasmine.unspy localStorage, 'setItem'
+      SettingsHelper.set 'compile-status', null
+      jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
       jasmine.unspy atom.project, 'getRootDirectory'
       SettingsHelper.clearCredentials()
@@ -220,7 +220,7 @@ describe 'Main Tests', ->
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       # Check if local storage is set to working
-      expect(localStorage.getItem('compile-status')).toEqual('{"working":true}')
+      expect(SettingsHelper.get('compile-status')).toEqual({working:true})
 
       compileCodeSpy = SpecHelper.getSpyByIdentity 'compileCode'
       expect(compileCodeSpy).toHaveBeenCalled()
@@ -230,7 +230,7 @@ describe 'Main Tests', ->
 
       expect(compileCodeSpy).toHaveBeenCalledWith(expectedFiles)
 
-      localStorage.removeItem 'compile-status'
+      SettingsHelper.set 'compile-status', null
       SettingsHelper.clearCredentials()
       atom.project.setPath oldPath
 
@@ -249,7 +249,7 @@ describe 'Main Tests', ->
         !sparkIde.downloadBinaryPromise
 
       runs ->
-        compileStatus = JSON.parse localStorage.getItem('compile-status')
+        compileStatus = SettingsHelper.get 'compile-status'
         expect(compileStatus.filename).not.toBeUndefined()
         expect(_s.startsWith(compileStatus.filename, 'firmware')).toBe(true)
         expect(_s.endsWith(compileStatus.filename, '.bin')).toBe(true)
@@ -257,7 +257,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger.calls.length).toEqual(1)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
 
-        localStorage.removeItem 'compile-status'
+        SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
 
@@ -273,7 +273,7 @@ describe 'Main Tests', ->
         !sparkIde.compileCloudPromise
 
       runs ->
-        compileStatus = JSON.parse localStorage.getItem('compile-status')
+        compileStatus = SettingsHelper.get 'compile-status'
         expect(compileStatus.errors).not.toBeUndefined()
         expect(compileStatus.errors.length).toEqual(1)
 
@@ -282,6 +282,6 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:show-compile-errors')
 
-        localStorage.removeItem 'compile-status'
+        SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()

@@ -4,6 +4,7 @@ $ = null
 $$ = null
 Subscriber = null
 SerialHelper = null
+SettingsHelper = null
 fs = null
 
 module.exports =
@@ -26,9 +27,11 @@ class CompileErrorsView extends SelectListView
 
   show: =>
     if !@hasParent()
+      SettingsHelper ?= require '../utils/settings-helper'
+
       atom.workspaceView.append(this)
 
-      compileStatus = JSON.parse localStorage.getItem('compile-status')
+      compileStatus = SettingsHelper.get 'compile-status'
       if compileStatus?.errors
         @setItems compileStatus.errors
       else
