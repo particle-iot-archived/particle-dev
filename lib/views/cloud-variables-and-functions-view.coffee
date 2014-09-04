@@ -76,7 +76,7 @@ class CloudVariablesAndFunctions extends View
                 @button class: 'btn btn-sm icon icon-sync'
 
         row.find('button').on 'click', (event) =>
-          @refreshVariable $(event.target).parent().parent().attr('data-id')
+          @refreshVariable $(event.currentTarget).parent().parent().attr('data-id')
 
         table.find('tbody').append row.find('tbody >')
 
@@ -85,27 +85,6 @@ class CloudVariablesAndFunctions extends View
       # Get initial values
       for variable in Object.keys(variables)
         @refreshVariable variable
-
-  listFunctions: ->
-    functions = SettingsHelper.get 'functions'
-
-    @functions.empty()
-    if functions.length == 0
-      @functions.append $$ ->
-        @ul class: 'background-message', =>
-          @li 'No functions registered'
-    else
-      console.log functions
-      for func in functions
-
-        console.log func
-        @functions.append $$ ->
-          @div =>
-            @button class: 'btn icon icon-zap', func
-            @span '('
-            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
-            @span ') == '
-            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
 
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
@@ -122,3 +101,38 @@ class CloudVariablesAndFunctions extends View
         cell.text e.result
         dfd.resolve e.result
     dfd.promise
+
+  listFunctions: ->
+    functions = SettingsHelper.get 'functions'
+
+    @functions.empty()
+    if functions.length == 0
+      @functions.append $$ ->
+        @ul class: 'background-message', =>
+          @li 'No functions registered'
+    else
+      for func in functions
+        row = $$ ->
+          @div 'data-id': func, =>
+            @button class: 'btn icon icon-zap', func
+            @span '('
+            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
+            @span ') == '
+            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
+            @span class: 'three-quarters inline-block hidden'
+        row.find('button').on 'click', (event) =>
+          @callFunction $(event.currentTarget).parent().attr('data-id')
+        row.find('.editor:eq(0)').data('view').on 'core:confirm', (event) =>
+          @callFunction $(event.currentTarget).parent().attr('data-id')
+        row.find('.editor:eq(1)').data('view').hiddenInput.attr 'disabled', 'disabled'
+        @functions.append row
+
+  callFunction: (functionName) ->
+    dfd = whenjs.defer()
+    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+
+    row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')
+    row.find('button').attr 'disabled', 'disabled'
+    row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
+    row.find('.editor:eq(1)').data('view').setText ' '
+    row.find('.three-quarters').removeClass 'hidden'
