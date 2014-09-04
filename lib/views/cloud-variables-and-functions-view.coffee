@@ -1,6 +1,7 @@
 {View} = require 'atom'
 $ = null
 $$ = null
+whenjs = require 'when'
 SettingsHelper = null
 ApiClient = null
 
@@ -29,7 +30,7 @@ class CloudVariablesAndFunctions extends View
       @listVariables()
       @listFunctions()
 
-    atom.workspaceView.command 'spark-ide:spark-ide:logout', =>
+    atom.workspaceView.command 'spark-ide:logout', =>
       if @hasParent()
         @detach()
 
@@ -92,11 +93,17 @@ class CloudVariablesAndFunctions extends View
         @li 'No functions registered'
 
   refreshVariable: (variableName) ->
+    dfd = whenjs.defer()
     @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
 
     cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
     cell.addClass 'loading'
     promise = @client.getVariable SettingsHelper.get('current_core'), variableName
     promise.done (e) =>
-      cell.removeClass 'loading'
-      cell.text e.result
+      if !!e.ok
+        dfd.reject()
+      else
+        cell.removeClass 'loading'
+        cell.text e.result
+        dfd.resolve e.result
+    dfd.promise
