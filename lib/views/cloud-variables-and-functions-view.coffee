@@ -22,9 +22,16 @@ class CloudVariablesAndFunctions extends View
 
     @client = null
 
-    # TODO: Hook on changing core/logging out
     @listVariables()
     @listFunctions()
+
+    atom.workspaceView.command 'spark-ide:update-core-status', =>
+      @listVariables()
+      @listFunctions()
+
+    atom.workspaceView.command 'spark-ide:spark-ide:logout', =>
+      if @hasParent()
+        @detach()
 
   serialize: ->
 
