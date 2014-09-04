@@ -137,6 +137,32 @@
   }
 }
 
+#spark-ide-cloud-functions {
+  .panel-body > div {
+    > * {
+      float: left;
+      margin-bottom: 10px;
+      :after {
+        clear: both;
+      }
+    }
+
+    > :nth-child(3) {
+      width: ~"calc(100% - 250px)";
+    }
+
+    > :nth-child(5) {
+      width: 60px;
+    }
+
+    > span {
+      line-height: 24px;
+      font-size: 18px;
+      margin: 0 5px;
+    }
+  }
+}
+
 .editor.editor-error {
   border-color: @background-color-error;
 

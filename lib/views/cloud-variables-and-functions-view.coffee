@@ -1,4 +1,4 @@
-{View} = require 'atom'
+{View, EditorView} = require 'atom'
 $ = null
 $$ = null
 whenjs = require 'when'
@@ -87,10 +87,25 @@ class CloudVariablesAndFunctions extends View
         @refreshVariable variable
 
   listFunctions: ->
+    functions = SettingsHelper.get 'functions'
+
     @functions.empty()
-    @functions.append $$ ->
-      @ul class: 'background-message', =>
-        @li 'No functions registered'
+    if functions.length == 0
+      @functions.append $$ ->
+        @ul class: 'background-message', =>
+          @li 'No functions registered'
+    else
+      console.log functions
+      for func in functions
+
+        console.log func
+        @functions.append $$ ->
+          @div =>
+            @button class: 'btn icon icon-zap', func
+            @span '('
+            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
+            @span ') == '
+            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
 
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
