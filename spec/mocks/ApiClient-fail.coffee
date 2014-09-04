@@ -101,4 +101,14 @@ make: *** [Blink.o] Error 1"
     , 1
     dfd.promise
 
+  callFunction: (coreID, functionName, funcParam) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        ok: false,
+        error: 'Function not found'
+      }
+    , 1
+    dfd.promise
+
 module.exports = ApiClientFail

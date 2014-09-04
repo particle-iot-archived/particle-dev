@@ -156,6 +156,22 @@ describe 'Tests for mocked ApiClient library which functions should succeed', ->
       expect(status.value.coreInfo.last_handshake_at).toBe('2014-09-03T08:59:17.850Z')
       expect(status.value.coreInfo.connected).toBe(true)
 
+  it 'calls a function', ->
+    promise = client.callFunction('51ff6e065067545724680187', 'bar', 'baz')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value.id).toBe('51ff6e065067545724680187')
+      expect(status.value.name).toBe('Online Core')
+      expect(status.value.last_app).toBe(null)
+      expect(status.value.connected).toBe(true)
+      expect(status.value.return_value).toEqual(200)
+
 
 describe 'Tests for mocked ApiClient library which functions should fail', ->
   client = null
@@ -301,6 +317,20 @@ make: *** [Blink.o] Error 1")
       expect(status.value).not.toBe(null)
       expect(status.value.ok).toBe(false)
       expect(status.value.error).toBe('Variable not found')
+
+  it 'calls a function', ->
+    promise = client.callFunction('51ff6e065067545724680187', 'bar', 'baz')
+
+    waitsFor ->
+      (promise != null) && (promise.inspect().state != 'pending')
+
+    runs ->
+      expect(promise).not.toBe(null)
+      status = promise.inspect()
+      expect(status.state).toBe('fulfilled')
+      expect(status.value).not.toBe(null)
+      expect(status.value.ok).toBe(false)
+      expect(status.value.error).toBe('Function not found')
 
 
 describe 'Tests for mocked ApiClient library with devices which should be offline', ->

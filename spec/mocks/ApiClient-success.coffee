@@ -116,4 +116,17 @@ class ApiClientSuccess
     , 1
     dfd.promise
 
+  callFunction: (coreID, functionName, funcParam) ->
+    dfd = whenjs.defer()
+    setTimeout ->
+      dfd.resolve {
+        id: '51ff6e065067545724680187',
+        name: 'Online Core',
+        last_app: null,
+        connected: true,
+        return_value: 200
+      }
+    , 1
+    dfd.promise
+
 module.exports = ApiClientSuccess
