@@ -94,6 +94,16 @@ describe 'Status Bar Tests', ->
         statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
         expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(true)
 
+        variables = SettingsHelper.get('variables')
+        expect(variables).not.toBe(null)
+        expect(Object.keys(variables).length).toEqual(1)
+        expect(variables.foo).toEqual('int32')
+
+        functions = SettingsHelper.get('functions')
+        expect(functions).not.toBe(null)
+        expect(functions.length).toEqual(1)
+        expect(functions[0]).toEqual('bar')
+
         require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-offline'
 
         statusView.getCurrentCoreStatus()
