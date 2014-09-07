@@ -136,3 +136,16 @@ class CloudVariablesAndFunctions extends View
     row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
     row.find('.editor:eq(1)').data('view').setText ' '
     row.find('.three-quarters').removeClass 'hidden'
+    params = row.find('.editor:eq(0)').data('view').getText()
+    promise = @client.callFunction SettingsHelper.get('current_core'), functionName, params
+    promise.done (e) =>
+      if !!e.ok
+        dfd.reject()
+      else
+        row.find('button').removeAttr 'disabled'
+        row.find('.editor:eq(0)').data('view').hiddenInput.removeAttr 'disabled'
+        row.find('.editor:eq(1)').data('view').setText e.return_value.toString()
+        row.find('.three-quarters').addClass 'hidden'
+
+        dfd.resolve e.return_value
+    dfd.promise
