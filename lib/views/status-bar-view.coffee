@@ -87,7 +87,6 @@ class StatusBarView extends View
         SettingsHelper.set 'current_core_name', e.name
         statusElement.text e.name
 
-        # TODO: Test it!
         SettingsHelper.set 'variables', e.variables
         SettingsHelper.set 'functions', e.functions
 
