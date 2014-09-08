@@ -181,38 +181,38 @@ describe 'Main Tests', ->
 
   describe 'cloud compile tests', ->
     it 'checks if nothing is done', ->
-      spyOn(atom.project, 'getRootDirectory').andReturn null
+      spyOn(atom.project, 'getPath').andReturn null
 
       # For logged out user
       spyOn(SettingsHelper, 'isLoggedIn').andCallThrough()
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn).toHaveBeenCalled()
-      expect(atom.project.getRootDirectory).not.toHaveBeenCalled()
+      expect(atom.project.getPath).not.toHaveBeenCalled()
 
       # Not null compileCloudPromise
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       sparkIde.compileCloudPromise = 'foo'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(2)
-      expect(atom.project.getRootDirectory).not.toHaveBeenCalled()
+      expect(atom.project.getPath).not.toHaveBeenCalled()
 
       # Empty root directory
       sparkIde.compileCloudPromise = null
       spyOn SettingsHelper, 'set'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
-      expect(atom.project.getRootDirectory).toHaveBeenCalled()
+      expect(atom.project.getPath).toHaveBeenCalled()
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
       SettingsHelper.set 'compile-status', null
       jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
-      jasmine.unspy atom.project, 'getRootDirectory'
+      jasmine.unspy atom.project, 'getPath'
       SettingsHelper.clearCredentials()
 
     it 'checks if correct files are included', ->
-      oldPath = atom.project.getRootDirectory().getPath()
+      oldPath = atom.project.getPath()
       atom.project.setPath __dirname + '/mocks/sampleproject'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-spy'

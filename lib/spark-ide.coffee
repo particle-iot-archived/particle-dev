@@ -198,7 +198,7 @@ module.exports =
     if !!@compileCloudPromise
       return
 
-    if !atom.project.getRootDirectory()
+    if !atom.project.getPath()
       return
 
     @SettingsHelper.set 'compile-status', {working: true}
@@ -212,8 +212,7 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
-    # TODO: Replace all getRootDirectory().getPath() with just .getPath()
-    rootPath = atom.project.getRootDirectory().getPath()
+    rootPath = atom.project.getPath()
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)

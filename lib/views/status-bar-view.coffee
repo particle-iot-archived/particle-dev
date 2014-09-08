@@ -56,7 +56,7 @@ class StatusBarView extends View
   showFile: =>
     # Opening file in Finder/Explorer
     shell ?= require 'shell'
-    rootPath = atom.project.getRootDirectory().getPath()
+    rootPath = atom.project.getPath()
     compileStatus = SettingsHelper.get 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
