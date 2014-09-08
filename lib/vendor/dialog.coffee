@@ -29,7 +29,7 @@ class Dialog extends View
     @hideOthers()
     atom.workspaceView.append(this)
     @miniEditor.focus()
-    @miniEditor.scrollToCursorPosition()
+    @miniEditor.getModel().scrollToCursorPosition()
 
   hideOthers: ->
     $('.spark-ide-dialog').each (idx, item) ->
