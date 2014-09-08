@@ -15,7 +15,7 @@ class Dialog extends View
     @on 'core:confirm', => @onConfirm(@miniEditor.getText())
     @on 'core:cancel', => @cancel()
 
-    @miniEditor.getEditor().getBuffer().on 'changed', => @showError()
+    @miniEditor.getEditor().getBuffer().onDidChange => @showError()
 
     @miniEditor.setText(initialText)
 
