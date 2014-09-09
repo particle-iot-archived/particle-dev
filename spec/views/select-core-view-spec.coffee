@@ -37,7 +37,7 @@ describe 'Select Core View', ->
       atom.workspaceView.trigger 'core:cancel'
       expect(atom.workspaceView.find('#spark-ide-select-core-view')).not.toExist()
 
-      # Test core:close
+      # # Test core:close
       atom.workspaceView.trigger 'spark-ide:select-core'
       expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:close'
@@ -72,10 +72,10 @@ describe 'Select Core View', ->
         expect(devices.eq(0).find('.secondary-line').text()).toEqual('51ff6e065067545724680187')
         expect(devices.eq(1).find('.secondary-line').text()).toEqual('51ff67258067545724380687')
 
+        selectCoreView.hide()
         SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'
 
-    fit 'tests choosing core', ->
+    it 'tests choosing core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       atom.workspaceView.trigger 'spark-ide:select-core'
       selectCoreView = sparkIde.selectCoreView
