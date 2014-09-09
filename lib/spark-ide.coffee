@@ -1,6 +1,7 @@
 fs = null
 settings = null
 utilities = null
+path = null
 
 module.exports =
   SettingsHelper: null
@@ -177,6 +178,8 @@ module.exports =
         @selectPortView.show()
 
   parseErrors: (raw) ->
+    path ?= require 'path'
+
     lines = raw.split "\n"
     errors = []
     for line in lines
@@ -189,6 +192,17 @@ module.exports =
           type: result[4],
           message: result[5]
         }
+      else
+        result = line.match /^([^:]+):(\d+):\s(.*)$/
+        if result
+          # This is probably "undefined" error
+          errors.push {
+            file: path.basename(result[1]),
+            row: result[2],
+            col: 0,
+            type: 'error',
+            message: result[3]
+          }
     errors
 
   compileCloud: ->
@@ -236,6 +250,7 @@ module.exports =
           @downloadBinaryPromise = null
       else
         # Handle errors
+        console.error e
         @SettingsHelper.set 'compile-status', {errors: @parseErrors(e.errors[0])}
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
