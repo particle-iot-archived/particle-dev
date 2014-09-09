@@ -39,13 +39,38 @@
               </a>
             
               
+              <a class="source" href="spec-helper.html">
+                spec-helper.coffee
+              </a>
+            
+              
               <a class="source" href="dialog.html">
                 dialog.coffee
               </a>
             
               
-              <a class="source" href="claim-core-manually-view.html">
-                claim-core-manually-view.coffee
+              <a class="source" href="claim-core-view.html">
+                claim-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="cloud-variables-and-functions-view.html">
+                cloud-variables-and-functions-view.coffee
+              </a>
+            
+              
+              <a class="source" href="compile-errors-view.html">
+                compile-errors-view.coffee
+              </a>
+            
+              
+              <a class="source" href="identify-core-view.html">
+                identify-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="listening-mode-view.html">
+                listening-mode-view.coffee
               </a>
             
               
@@ -61,6 +86,11 @@
               
               <a class="source" href="select-core-view.html">
                 select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-port-view.html">
+                select-port-view.coffee
               </a>
             
               
@@ -126,16 +156,24 @@
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
           <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:remove-core'</span>
+        },{
+          <span class="hljs-attribute">label</span>: <span class="hljs-string">'Toggle cloud variables and functions'</span>,
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:toggle-cloud-variables-and-functions'</span>
         }]
 
       ideMenu.submenu = ideMenu.submenu.concat [{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim Core manually...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:claim-core-manually'</span>
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim Core...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:claim-core'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim Core via USB...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:claim-core-usb'</span>
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Identify Core...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:identify-core'</span>
+      },{
+        <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
+      },{
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Compile in the cloud'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:compile-cloud'</span>
       }]
     <span class="hljs-keyword">else</span>
       ideMenu.submenu = [{

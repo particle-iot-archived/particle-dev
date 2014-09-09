@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>dialog.coffee</title>
+  <title>spec-helper.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -106,7 +106,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>dialog.coffee</h1>
+                  <h1>spec-helper.coffee</h1>
               </div>
           </li>
         
@@ -118,61 +118,15 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Forked dialog from tree-view package: <a href="https://github.com/atom/tree-view/blob/master/lib/dialog.coffee">https://github.com/atom/tree-view/blob/master/lib/dialog.coffee</a></p>
-
+              
             </div>
             
-            <div class="content"><div class='highlight'><pre>{$, EditorView, View} = require 'atom'
-path = require 'path'
-
-module.exports =
-class Dialog extends View
-  @content: ({prompt} = {}) -&gt;
-    @div class: 'spark-ide-dialog overlay from-top', =&gt;
-      @label prompt, class: 'icon', outlet: 'promptText'
-      @subview 'miniEditor', new EditorView(mini: true)
-      @div class: 'error-message', outlet: 'errorMessage'
-
-  initialize: ({initialText, select, iconClass, hideOnBlur} = {}) -&gt;
-    @promptText.addClass(iconClass) if iconClass
-    @on 'core:confirm', =&gt; @onConfirm(@miniEditor.getText())
-    @on 'core:cancel', =&gt; @cancel()
-
-    @miniEditor.getEditor().getBuffer().onDidChange =&gt; @showError()
-
-    @miniEditor.setText(initialText)
-
-    if hideOnBlur
-      @miniEditor.hiddenInput.on 'focusout', =&gt; @remove()
-
-    if select
-      @miniEditor.getEditor().setSelectedBufferRange([[0, 0], [0, initialText.length]])
-
-  attach: -&gt;
-    @hideOthers()
-    atom.workspaceView.append(this)
-    @miniEditor.focus()
-    @miniEditor.getModel().scrollToCursorPosition()
-
-  hideOthers: -&gt;
-    $('.spark-ide-dialog').each (idx, item) -&gt;
-      $(item).data('view').close()
-
-  close: -&gt;
-    @remove()
-    atom.workspaceView.focus()
-
-  cancel: -&gt;
-    @remove()
-
-  showError: (message='') -&gt;
-    @errorMessage.text(message)
-    @flashError() if message
-
-  setLoading: (isLoading=false) -&gt;
-    @miniEditor.removeClass 'loading'
-    if isLoading
-      @miniEditor.addClass 'loading'</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports =
+  <span class="hljs-attribute">getSpyByIdentity</span>: <span class="hljs-function"><span class="hljs-params">(identity)</span> -&gt;</span>
+    <span class="hljs-keyword">for</span> spy <span class="hljs-keyword">in</span> jasmine.getEnv().currentSpec.spies_
+      <span class="hljs-keyword">if</span> spy.identity == identity
+        <span class="hljs-keyword">return</span> spy
+    <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         

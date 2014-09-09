@@ -39,13 +39,38 @@
               </a>
             
               
+              <a class="source" href="spec-helper.html">
+                spec-helper.coffee
+              </a>
+            
+              
               <a class="source" href="dialog.html">
                 dialog.coffee
               </a>
             
               
-              <a class="source" href="claim-core-manually-view.html">
-                claim-core-manually-view.coffee
+              <a class="source" href="claim-core-view.html">
+                claim-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="cloud-variables-and-functions-view.html">
+                cloud-variables-and-functions-view.coffee
+              </a>
+            
+              
+              <a class="source" href="compile-errors-view.html">
+                compile-errors-view.coffee
+              </a>
+            
+              
+              <a class="source" href="identify-core-view.html">
+                identify-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="listening-mode-view.html">
+                listening-mode-view.coffee
               </a>
             
               
@@ -61,6 +86,11 @@
               
               <a class="source" href="select-core-view.html">
                 select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-port-view.html">
+                select-port-view.coffee
               </a>
             
               
@@ -116,7 +146,7 @@ class LoginView extends View
       @div class: 'block', =&gt;
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
         @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
-        @span class: 'loading loading-spinner-tiny inline-block hidden', outlet: 'spinner'
+        @span class: 'three-quarters inline-block hidden', outlet: 'spinner'
         @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
   initialize: (serializeState) -&gt;

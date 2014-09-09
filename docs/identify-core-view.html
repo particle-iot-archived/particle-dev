@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>dialog.coffee</title>
+  <title>identify-core-view.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -106,7 +106,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>dialog.coffee</h1>
+                  <h1>identify-core-view.coffee</h1>
               </div>
           </li>
         
@@ -118,61 +118,26 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>Forked dialog from tree-view package: <a href="https://github.com/atom/tree-view/blob/master/lib/dialog.coffee">https://github.com/atom/tree-view/blob/master/lib/dialog.coffee</a></p>
-
+              
             </div>
             
-            <div class="content"><div class='highlight'><pre>{$, EditorView, View} = require 'atom'
-path = require 'path'
+            <div class="content"><div class='highlight'><pre>Dialog = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/dialog'</span>
+SettingsHelper = <span class="hljs-literal">null</span>
+_s = <span class="hljs-literal">null</span>
 
-module.exports =
-class Dialog extends View
-  @content: ({prompt} = {}) -&gt;
-    @div class: 'spark-ide-dialog overlay from-top', =&gt;
-      @label prompt, class: 'icon', outlet: 'promptText'
-      @subview 'miniEditor', new EditorView(mini: true)
-      @div class: 'error-message', outlet: 'errorMessage'
+<span class="hljs-built_in">module</span>.exports =
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IdentifyCoreView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Dialog</span></span>
+  <span class="hljs-attribute">constructor</span>: <span class="hljs-function"><span class="hljs-params">(coreID)</span> -&gt;</span>
+    <span class="hljs-keyword">super</span>
+      <span class="hljs-attribute">prompt</span>: <span class="hljs-string">'Your device ID is:'</span>
+      <span class="hljs-attribute">initialText</span>: coreID
+      <span class="hljs-attribute">select</span>: <span class="hljs-literal">true</span>
+      <span class="hljs-attribute">iconClass</span>: <span class="hljs-string">''</span>
+      <span class="hljs-attribute">hideOnBlur</span>: <span class="hljs-literal">false</span>
 
-  initialize: ({initialText, select, iconClass, hideOnBlur} = {}) -&gt;
-    @promptText.addClass(iconClass) if iconClass
-    @on 'core:confirm', =&gt; @onConfirm(@miniEditor.getText())
-    @on 'core:cancel', =&gt; @cancel()
-
-    @miniEditor.getEditor().getBuffer().onDidChange =&gt; @showError()
-
-    @miniEditor.setText(initialText)
-
-    if hideOnBlur
-      @miniEditor.hiddenInput.on 'focusout', =&gt; @remove()
-
-    if select
-      @miniEditor.getEditor().setSelectedBufferRange([[0, 0], [0, initialText.length]])
-
-  attach: -&gt;
-    @hideOthers()
-    atom.workspaceView.append(this)
-    @miniEditor.focus()
-    @miniEditor.getModel().scrollToCursorPosition()
-
-  hideOthers: -&gt;
-    $('.spark-ide-dialog').each (idx, item) -&gt;
-      $(item).data('view').close()
-
-  close: -&gt;
-    @remove()
-    atom.workspaceView.focus()
-
-  cancel: -&gt;
-    @remove()
-
-  showError: (message='') -&gt;
-    @errorMessage.text(message)
-    @flashError() if message
-
-  setLoading: (isLoading=false) -&gt;
-    @miniEditor.removeClass 'loading'
-    if isLoading
-      @miniEditor.addClass 'loading'</pre></div></div>
+    <span class="hljs-property">@claimPromise</span> = <span class="hljs-literal">null</span>
+    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-identify-core-view'</span>
+    <span class="hljs-property">@miniEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span></pre></div></div>
             
         </li>
         

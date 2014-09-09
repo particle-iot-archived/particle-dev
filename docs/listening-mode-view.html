@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>select-core-view.coffee</title>
+  <title>listening-mode-view.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -106,7 +106,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>select-core-view.coffee</h1>
+                  <h1>listening-mode-view.coffee</h1>
               </div>
           </li>
         
@@ -121,46 +121,26 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>SelectListView = <span class="hljs-built_in">require</span>(<span class="hljs-string">'atom'</span>).SelectListView
+            <div class="content"><div class='highlight'><pre>{View} = require 'atom'
+SerialHelper = null
+Subscriber = null
 
-$ = <span class="hljs-literal">null</span>
-$$ = <span class="hljs-literal">null</span>
-ApiClient = <span class="hljs-literal">null</span>
-Subscriber = <span class="hljs-literal">null</span>
-SettingsHelper = <span class="hljs-literal">null</span>
+module.exports =
+class ListeningModeView extends View
+  @content: -&gt;
+    @div class: 'overlay from-top', =&gt;
+      @h1 'Waiting for core...'
+      @p =&gt;
+        @img src: 'atom://spark-ide/images/listening.gif'
+      @p 'Check if your core is connected via USB and it\'s in listening mode (LED blinking blue).'
+      @div class: 'block', =&gt;
+        @button click: 'cancel', class: 'btn', 'Cancel'
 
-<span class="hljs-built_in">module</span>.exports =
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SelectCoreView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SelectListView</span></span>
-  <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">super</span>
+  initialize: (serializeState) -&gt;
+    {Subscriber} = require 'emissary'
+    SerialHelper = require '../utils/serial-helper'
 
-    {$, $$} = <span class="hljs-built_in">require</span> <span class="hljs-string">'atom'</span>
-    {Subscriber} = <span class="hljs-built_in">require</span> <span class="hljs-string">'emissary'</span>
-    SettingsHelper = <span class="hljs-built_in">require</span> <span class="hljs-string">'../utils/settings-helper'</span>
-
-    <span class="hljs-property">@subscriber</span> = <span class="hljs-keyword">new</span> Subscriber()
-    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'core:cancel core:close'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@hide</span>()
-
-    <span class="hljs-property">@addClass</span> <span class="hljs-string">'overlay from-top'</span>
-    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-select-core-view'</span>
-    <span class="hljs-property">@listDevicesPromise</span> = <span class="hljs-literal">null</span>
-
-
-  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@remove</span>()
-
-  <span class="hljs-attribute">show</span>:<span class="hljs-function"> =&gt;</span>
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
-      atom.workspaceView.append(<span class="hljs-keyword">this</span>)
-
-      <span class="hljs-property">@setItems</span> []
-      <span class="hljs-property">@setLoading</span> <span class="hljs-string">'Loading cores...'</span>
-      <span class="hljs-property">@loadCores</span>()
-      <span class="hljs-property">@focusFilterEditor</span>()
-
-  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
-      <span class="hljs-property">@detach</span>()</pre></div></div>
+    @prop 'id', 'spark-ide-listening-mode-view'</pre></div></div>
             
         </li>
         
@@ -171,36 +151,14 @@ SettingsHelper = <span class="hljs-literal">null</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Here you specify the view for an item</p>
+              <p>Interval for automatic dialog dismissal</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  viewForItem: (item) -&gt;
-    $$ -&gt;
-      @li class: 'two-lines core-line', =&gt;
-        @div class: 'primary-line ' + (if item.connected then 'core-online' else 'core-offline'), item.name
-        @div class: 'secondary-line no-icon', item.id
-
-  confirmed: (item) -&gt;
-    SettingsHelper.setCurrentCore item.id, item.name
-
-    atom.workspaceView.trigger 'spark-ide:update-core-status'
-    atom.workspaceView.trigger 'spark-ide:update-menu'
-
-    @cancel()
-
-  getFilterKey: -&gt;
-    'name'
-
-  loadCores: -&gt;
-    ApiClient = require '../vendor/ApiClient'
-    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-
-    @listDevicesPromise = client.listDevices()
-    @listDevicesPromise.done (e) =&gt;
-      @setItems e
-      @listDevicesPromise = null
-    , (e) =&gt;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval <span class="hljs-function">=&gt;</span>
+      promise = SerialHelper.listPorts()
+      promise.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+        <span class="hljs-keyword">if</span> ports.length &gt; <span class="hljs-number">0</span></pre></div></div>
             
         </li>
         
@@ -211,11 +169,61 @@ SettingsHelper = <span class="hljs-literal">null</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>TODO: Error handling</p>
+              <p>Hide dialog</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@listDevicesPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>          atom.workspaceView.trigger <span class="hljs-string">'core:cancel'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Try to identify found ports</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          atom.workspaceView.trigger <span class="hljs-string">'spark-ide:identify-core'</span>
+    , <span class="hljs-number">1000</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Subscribe to Atom’s core:cancel core:close events</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@subscriber</span> = <span class="hljs-keyword">new</span> Subscriber()
+    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'core:cancel core:close'</span>, <span class="hljs-function"><span class="hljs-params">({target})</span> =&gt;</span>
+      clearInterval <span class="hljs-property">@interval</span>
+      <span class="hljs-property">@hide</span>()
+
+  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+
+  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@detach</span>()
+
+  <span class="hljs-attribute">show</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
+      atom.workspaceView.append(<span class="hljs-keyword">this</span>)
+
+  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
+      <span class="hljs-property">@detach</span>()
+
+  <span class="hljs-attribute">cancel</span>: <span class="hljs-function"><span class="hljs-params">(event, element)</span> -&gt;</span>
+    atom.workspaceView.trigger <span class="hljs-string">'core:cancel'</span></pre></div></div>
             
         </li>
         

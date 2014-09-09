@@ -39,13 +39,38 @@
               </a>
             
               
+              <a class="source" href="spec-helper.html">
+                spec-helper.coffee
+              </a>
+            
+              
               <a class="source" href="dialog.html">
                 dialog.coffee
               </a>
             
               
-              <a class="source" href="claim-core-manually-view.html">
-                claim-core-manually-view.coffee
+              <a class="source" href="claim-core-view.html">
+                claim-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="cloud-variables-and-functions-view.html">
+                cloud-variables-and-functions-view.coffee
+              </a>
+            
+              
+              <a class="source" href="compile-errors-view.html">
+                compile-errors-view.coffee
+              </a>
+            
+              
+              <a class="source" href="identify-core-view.html">
+                identify-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="listening-mode-view.html">
+                listening-mode-view.coffee
               </a>
             
               
@@ -61,6 +86,11 @@
               
               <a class="source" href="select-core-view.html">
                 select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-port-view.html">
+                select-port-view.coffee
               </a>
             
               
@@ -92,6 +122,7 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>View = require('atom').View
+shell = null
 $ = null
 SettingsHelper = null
 ApiClient = null
@@ -102,9 +133,15 @@ class StatusBarView extends View
     @div class: 'inline-block', id: 'spark-ide-status-bar-view', =&gt;
       @img src: 'atom://spark-ide/images/spark.png', id: 'spark-icon'
       @span id: 'spark-login-status'
-      @span id: 'spark-log'
       @span id: 'spark-current-core', class: 'hidden', =&gt;
         @a click: 'selectCore'
+      @span id: 'spark-compile-status', class: 'hidden', =&gt;
+        @span id: 'spark-compile-working', =&gt;
+          @span class: 'three-quarters'
+          @a 'Compiling in the cloud...'
+        @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
+        @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'
+      @span id: 'spark-log'
 
   initialize: (serializeState) -&gt;
     $ = require('atom').$
@@ -113,14 +150,14 @@ class StatusBarView extends View
 
     @getAttributesPromise = null
     @interval = null
-
     if atom.workspaceView.statusBar
       @attach()
     else
       @subscribe atom.packages.once 'activated', @attach
 
     atom.workspaceView.command 'spark-ide:update-login-status', =&gt; @updateLoginStatus()
-    atom.workspaceView.command 'spark-ide:update-core-status', =&gt; @updateCoreStatus()</pre></div></div>
+    atom.workspaceView.command 'spark-ide:update-core-status', =&gt; @updateCoreStatus()
+    atom.workspaceView.command 'spark-ide:update-compile-status', =&gt; @updateCompileStatus()</pre></div></div>
             
         </li>
         
@@ -160,6 +197,29 @@ class StatusBarView extends View
   <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span>
     atom.workspaceView.trigger <span class="hljs-string">'spark-ide:select-core'</span>
 
+  <span class="hljs-attribute">showErrors</span>:<span class="hljs-function"> =&gt;</span>
+    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:show-compile-errors'</span>
+
+  <span class="hljs-attribute">showFile</span>:<span class="hljs-function"> =&gt;</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Opening file in Finder/Explorer</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    shell ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'shell'</span>
+    rootPath = atom.project.getPath()
+    compileStatus = SettingsHelper.get <span class="hljs-string">'compile-status'</span>
+    shell.showItemInFolder rootPath + <span class="hljs-string">'/'</span> + compileStatus.filename
+
   <span class="hljs-attribute">getCurrentCoreStatus</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">if</span> !SettingsHelper.hasCurrentCore()
       <span class="hljs-keyword">return</span>
@@ -170,16 +230,18 @@ class StatusBarView extends View
     ApiClient = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/ApiClient'</span>
     client = <span class="hljs-keyword">new</span> ApiClient SettingsHelper.get(<span class="hljs-string">'apiUrl'</span>), SettingsHelper.get(<span class="hljs-string">'access_token'</span>)
     <span class="hljs-property">@getAttributesPromise</span> = client.getAttributes SettingsHelper.get(<span class="hljs-string">'current_core'</span>)
-    <span class="hljs-property">@getAttributesPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span></pre></div></div>
+    <span class="hljs-property">@getAttributesPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-keyword">if</span> !e
+        <span class="hljs-keyword">return</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-4">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>Check if current core is still available</p>
 
@@ -195,16 +257,19 @@ class StatusBarView extends View
           statusElement.parent().addClass <span class="hljs-string">'online'</span>
 
         SettingsHelper.set <span class="hljs-string">'current_core_name'</span>, e.name
-        statusElement.text e.name</pre></div></div>
+        statusElement.text e.name
+
+        SettingsHelper.set <span class="hljs-string">'variables'</span>, e.variables
+        SettingsHelper.set <span class="hljs-string">'functions'</span>, e.functions</pre></div></div>
             
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Periodically check if core is online</p>
 
@@ -250,8 +315,31 @@ class StatusBarView extends View
 
     atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-menu'</span>
 
+  <span class="hljs-attribute">updateCompileStatus</span>:<span class="hljs-function"> -&gt;</span>
+    statusElement = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-compile-status'</span>)
+    statusElement.addClass <span class="hljs-string">'hidden'</span>
+    compileStatus = SettingsHelper.get <span class="hljs-string">'compile-status'</span>
+
+    <span class="hljs-keyword">if</span> !!compileStatus
+      statusElement.removeClass <span class="hljs-string">'hidden'</span>
+      statusElement.find(<span class="hljs-string">'&gt;'</span>).hide()
+
+      <span class="hljs-keyword">if</span> !!compileStatus.working
+        statusElement.find(<span class="hljs-string">'#spark-compile-working'</span>).show()
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !!compileStatus.errors
+        subElement = statusElement.find(<span class="hljs-string">'#spark-compile-failed'</span>)
+        <span class="hljs-keyword">if</span> compileStatus.errors.length == <span class="hljs-number">1</span>
+          subElement.text(<span class="hljs-string">'One error'</span>)
+        <span class="hljs-keyword">else</span>
+          subElement.text(compileStatus.errors.length + <span class="hljs-string">' errors'</span>)
+        subElement.show()
+      <span class="hljs-keyword">else</span>
+        statusElement.find(<span class="hljs-string">'#spark-compile-success'</span>)
+                     .text(<span class="hljs-string">'Success! Firmware saved to '</span> + compileStatus.filename)
+                     .show()
+
   <span class="hljs-attribute">setStatus</span>: <span class="hljs-function"><span class="hljs-params">(text, type = <span class="hljs-literal">null</span>)</span> -&gt;</span>
-      el = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'.spark-log'</span>)
+      el = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-log'</span>)
       el.text(text)
         .removeClass()
 
@@ -259,11 +347,16 @@ class StatusBarView extends View
         el.addClass(<span class="hljs-string">'text-'</span> + type)
 
   <span class="hljs-attribute">clear</span>:<span class="hljs-function"> -&gt;</span>
-    el = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'.spark-log'</span>)
+    el = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-log'</span>)
     self = @
     el.fadeOut <span class="hljs-function">-&gt;</span>
       self.setStatus <span class="hljs-string">''</span>
-      el.show()</pre></div></div>
+      el.show()
+
+  <span class="hljs-attribute">clearAfter</span>: <span class="hljs-function"><span class="hljs-params">(delay)</span> -&gt;</span>
+    setTimeout <span class="hljs-function">=&gt;</span>
+      <span class="hljs-property">@clear</span>()
+    , delay</pre></div></div>
             
         </li>
         
