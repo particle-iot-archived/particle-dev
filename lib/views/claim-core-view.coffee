@@ -1,4 +1,4 @@
-Dialog = require '../vendor/dialog'
+Dialog = require '../subviews/dialog'
 SettingsHelper = null
 _s = null
 
