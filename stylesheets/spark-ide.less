@@ -105,13 +105,26 @@
 }
 
 #spark-ide-cloud-variables {
+  .padded {
+    padding: 10px 0;
+  }
+
   table {
     width: 100%;
+  }
+
+  tr {
+    line-height: 25px;
+  }
+
+  tr:hover > td {
+    background-color: @panel-heading-background-color;
   }
 
   tr > th, tr > td {
     &:nth-child(1) {
       width: 100px;
+      padding-left: 10px;
     }
 
     &:nth-child(2) {
@@ -119,23 +132,29 @@
     }
 
     &:nth-child(3) {
-      width: ~"calc(100% - 100px - 60px - 60px - 60px)";
+      width: ~"calc(100% - 100px - 60px - 60px - 40px)";
+    }
+
+    &:nth-child(4), &:nth-child(5) {
+      text-align: center;
+
+      button {
+        padding: 2px;
+        vertical-align: baseline;
+
+        &:before {
+          margin-right: 0;
+        }
+      }
     }
 
     &:nth-child(4) {
       width: 60px;
-
-      button:before {
-        margin-right: 0;
-      }
     }
 
-    &:nth-child(5) {
-      width: 60px;
-
-      button:before {
-        margin-right: 0;
-      }
+    &:nth-child(5),  {
+      width: 40px;
+      padding-right: 10px;
     }
 
     &.loading {
