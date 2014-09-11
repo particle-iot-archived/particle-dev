@@ -83,6 +83,8 @@ describe 'Cloud Variables and Functions View', ->
         expect(body.find('table > tbody > tr:eq(0) > td:eq(3) > button')).toExist()
         expect(body.find('table > tbody > tr:eq(0) > td:eq(3) > button').hasClass('icon-sync')).toBe(true)
 
+        # TODO: Test for watch
+
         # Test refresh button
         spyOn @cloudVariablesAndFunctions, 'refreshVariable'
         body.find('table > tbody > tr:eq(0) > td:eq(3) > button').click()

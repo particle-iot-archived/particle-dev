@@ -157,8 +157,10 @@
       padding-right: 10px;
     }
 
-    &.loading {
+    &.loading:before {
       .three-quarters();
+      content: ' ';
+      vertical-align: sub;
       width: 16px;
       height: 16px;
       border-size: 4px;

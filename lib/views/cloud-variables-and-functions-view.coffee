@@ -78,7 +78,7 @@ class CloudVariablesAndFunctions extends View
               @td =>
                 @button class: 'btn btn-sm icon icon-eye'
 
-        row.find('button').on 'click', (event) =>
+        row.find('td:eq(3) button').on 'click', (event) =>
           @refreshVariable $(event.currentTarget).parent().parent().attr('data-id')
 
         table.find('tbody').append row.find('tbody >')
