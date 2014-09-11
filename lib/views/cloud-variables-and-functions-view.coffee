@@ -26,6 +26,8 @@ class CloudVariablesAndFunctions extends View
     @listVariables()
     @listFunctions()
 
+    # TODO: Stop all watchers when changed core/logged out
+
     atom.workspaceView.command 'spark-ide:update-core-status', =>
       @listVariables()
       @listFunctions()
@@ -33,6 +35,8 @@ class CloudVariablesAndFunctions extends View
     atom.workspaceView.command 'spark-ide:logout', =>
       if @hasParent()
         @detach()
+
+    @watchers = {}
 
   serialize: ->
 
@@ -81,6 +85,9 @@ class CloudVariablesAndFunctions extends View
         row.find('td:eq(3) button').on 'click', (event) =>
           @refreshVariable $(event.currentTarget).parent().parent().attr('data-id')
 
+        row.find('td:eq(4) button').on 'click', (event) =>
+          @toggleWatchVariable $(event.currentTarget).parent().parent().attr('data-id')
+
         table.find('tbody').append row.find('tbody >')
 
       @variables.append table
@@ -92,9 +99,9 @@ class CloudVariablesAndFunctions extends View
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
     @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-
     cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
     cell.addClass 'loading'
+    cell.text ''
     promise = @client.getVariable SettingsHelper.get('current_core'), variableName
     promise.done (e) =>
       if !!e.ok
@@ -104,6 +111,24 @@ class CloudVariablesAndFunctions extends View
         cell.text e.result
         dfd.resolve e.result
     dfd.promise
+
+  toggleWatchVariable: (variableName) ->
+    row = @find('#spark-ide-cloud-variables [data-id=' + variableName + ']')
+    watchButton = row.find('td:eq(4) button')
+    refreshButton = row.find('td:eq(3) button')
+    valueCell = row.find('td:eq(2)')
+
+    if watchButton.hasClass 'selected'
+      watchButton.removeClass 'selected'
+      refreshButton.removeAttr 'disabled'
+      clearInterval @watchers[variableName]
+      delete @watchers[variableName]
+    else
+      watchButton.addClass 'selected'
+      refreshButton.attr 'disabled', 'disabled'
+      @watchers[variableName] = setInterval =>
+        @refreshVariable variableName
+      , 5000
 
   listFunctions: ->
     functions = SettingsHelper.get 'functions'
