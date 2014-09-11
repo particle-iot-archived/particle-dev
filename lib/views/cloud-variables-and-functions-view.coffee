@@ -62,6 +62,7 @@ class CloudVariablesAndFunctions extends View
               @th 'Type'
               @th 'Value'
               @th 'Refresh'
+              @th 'Watch'
           @tbody =>
             @raw ''
 
@@ -74,6 +75,8 @@ class CloudVariablesAndFunctions extends View
               @td class: 'loading'
               @td =>
                 @button class: 'btn btn-sm icon icon-sync'
+              @td =>
+                @button class: 'btn btn-sm icon icon-eye'
 
         row.find('button').on 'click', (event) =>
           @refreshVariable $(event.currentTarget).parent().parent().attr('data-id')
