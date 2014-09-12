@@ -83,7 +83,8 @@ describe 'Cloud Variables and Functions View', ->
         expect(body.find('table > tbody > tr:eq(0) > td:eq(3) > button')).toExist()
         expect(body.find('table > tbody > tr:eq(0) > td:eq(3) > button').hasClass('icon-sync')).toBe(true)
 
-        # TODO: Test for watch
+        expect(body.find('table > tbody > tr:eq(0) > td:eq(4) > button')).toExist()
+        expect(body.find('table > tbody > tr:eq(0) > td:eq(4) > button').hasClass('icon-eye')).toBe(true)
 
         # Test refresh button
         spyOn @cloudVariablesAndFunctions, 'refreshVariable'
@@ -134,4 +135,58 @@ describe 'Cloud Variables and Functions View', ->
         atom.workspaceView.trigger 'spark-ide:logout'
         expect(@cloudVariablesAndFunctions.detach).toHaveBeenCalled()
         jasmine.unspy @cloudVariablesAndFunctions, 'detach'
+        @cloudVariablesAndFunctions.detach()
+
+    it 'check watching variable', ->
+      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+
+      waitsFor ->
+        !!sparkIde.cloudVariablesAndFunctions
+
+      runs ->
+        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+
+        row = @cloudVariablesAndFunctions.find('#spark-ide-cloud-variables > .panel-body table > tbody > tr:eq(0)')
+
+        watchButton = row.find('td:eq(4) > button')
+        refreshButton = row.find('td:eq(3) > button')
+
+        expect(refreshButton.attr('disabled')).not.toEqual('disabled')
+        expect(watchButton.hasClass('selected')).toBe(false)
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+
+        jasmine.Clock.useMock()
+        spyOn @cloudVariablesAndFunctions, 'refreshVariable'
+
+        watchButton.click()
+
+        expect(refreshButton.attr('disabled')).toEqual('disabled')
+        expect(watchButton.hasClass('selected')).toBe(true)
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(1)
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers)).toEqual(['foo'])
+        expect(@cloudVariablesAndFunctions.refreshVariable).not.toHaveBeenCalled()
+        watcher = @cloudVariablesAndFunctions.watchers['foo']
+
+        jasmine.Clock.tick(5001)
+
+        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalledWith('foo')
+
+        spyOn window, 'clearInterval'
+
+        expect(window.clearInterval).not.toHaveBeenCalled()
+
+        watchButton.click()
+
+        expect(refreshButton.attr('disabled')).not.toEqual('disabled')
+        expect(watchButton.hasClass('selected')).toBe(false)
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+        expect(window.clearInterval).toHaveBeenCalled()
+        expect(window.clearInterval).toHaveBeenCalledWith(watcher)
+
+        # TODO: Test cleating all watchers
+
+        jasmine.unspy window, 'clearInterval'
+        jasmine.unspy @cloudVariablesAndFunctions, 'refreshVariable'
         @cloudVariablesAndFunctions.detach()
