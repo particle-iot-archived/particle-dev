@@ -22,6 +22,7 @@ class CloudVariablesAndFunctions extends View
     ApiClient = require '../vendor/ApiClient'
 
     @client = null
+    @watchers = {}
 
     @listVariables()
     @listFunctions()
@@ -31,12 +32,12 @@ class CloudVariablesAndFunctions extends View
     atom.workspaceView.command 'spark-ide:update-core-status', =>
       @listVariables()
       @listFunctions()
+      @clearWatchers()
 
     atom.workspaceView.command 'spark-ide:logout', =>
+      @clearWatchers()
       if @hasParent()
         @detach()
-
-    @watchers = {}
 
   serialize: ->
 
@@ -129,6 +130,11 @@ class CloudVariablesAndFunctions extends View
       @watchers[variableName] = setInterval =>
         @refreshVariable variableName
       , 5000
+
+  clearWatchers: ->
+    for watcher in @watchers
+      clearInterval watcher
+    @watchers = {}
 
   listFunctions: ->
     functions = SettingsHelper.get 'functions'
