@@ -132,8 +132,8 @@ class CloudVariablesAndFunctions extends View
       , 5000
 
   clearWatchers: ->
-    for watcher in @watchers
-      clearInterval watcher
+    for key in Object.keys(@watchers)
+      clearInterval @watchers[key]
     @watchers = {}
 
   listFunctions: ->

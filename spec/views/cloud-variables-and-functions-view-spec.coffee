@@ -123,18 +123,24 @@ describe 'Cloud Variables and Functions View', ->
         # Tests spark-ide:update-core-status
         spyOn @cloudVariablesAndFunctions, 'listVariables'
         spyOn @cloudVariablesAndFunctions, 'listFunctions'
+        spyOn @cloudVariablesAndFunctions, 'clearWatchers'
         atom.workspaceView.trigger 'spark-ide:update-core-status'
         expect(@cloudVariablesAndFunctions.listVariables).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctions.listFunctions).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctions.clearWatchers).toHaveBeenCalled()
         jasmine.unspy @cloudVariablesAndFunctions, 'listVariables'
         jasmine.unspy @cloudVariablesAndFunctions, 'listFunctions'
+        jasmine.unspy @cloudVariablesAndFunctions, 'clearWatchers'
 
         # Tests spark-ide:spark-ide:logout
         SettingsHelper.clearCredentials()
         spyOn @cloudVariablesAndFunctions, 'detach'
+        spyOn @cloudVariablesAndFunctions, 'clearWatchers'
         atom.workspaceView.trigger 'spark-ide:logout'
         expect(@cloudVariablesAndFunctions.detach).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctions.clearWatchers).toHaveBeenCalled()
         jasmine.unspy @cloudVariablesAndFunctions, 'detach'
+        jasmine.unspy @cloudVariablesAndFunctions, 'clearWatchers'
         @cloudVariablesAndFunctions.detach()
 
     it 'check watching variable', ->
@@ -189,4 +195,26 @@ describe 'Cloud Variables and Functions View', ->
 
         jasmine.unspy window, 'clearInterval'
         jasmine.unspy @cloudVariablesAndFunctions, 'refreshVariable'
+        @cloudVariablesAndFunctions.detach()
+
+    it 'checks clearing watchers', ->
+      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+
+      waitsFor ->
+        !!sparkIde.cloudVariablesAndFunctions
+
+      runs ->
+        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+        @cloudVariablesAndFunctions.watchers['foo'] = 'bar'
+        spyOn window, 'clearInterval'
+        expect(window.clearInterval).not.toHaveBeenCalled()
+
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(1)
+        @cloudVariablesAndFunctions.clearWatchers()
+
+        expect(window.clearInterval).toHaveBeenCalled()
+        expect(window.clearInterval).toHaveBeenCalledWith('bar')
+        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+
+        jasmine.unspy window, 'clearInterval'
         @cloudVariablesAndFunctions.detach()
