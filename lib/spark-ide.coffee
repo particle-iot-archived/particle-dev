@@ -67,6 +67,9 @@ module.exports =
 
   serialize: ->
 
+  configDefaults:
+    deleteFirmwareAfterFlash: true
+
   initView: (name) ->
     _s ?= require 'underscore.string'
     className = ''
@@ -248,7 +251,6 @@ module.exports =
     fs ?= require 'fs-plus'
     utilities ?= require './vendor/utilities'
 
-    console.log 'Firmware', firmware
     rootPath = atom.project.getPath()
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
@@ -262,6 +264,9 @@ module.exports =
       if !firmware
         firmware = files[0]
       console.log 'Flash', firmware
+
+      if atom.config.get('spark-ide.deleteFirmwareAfterFlash')
+        fs.unlink firmware
     else
       # If multiple firmware, show select
       @initView 'select-firmware-view'
