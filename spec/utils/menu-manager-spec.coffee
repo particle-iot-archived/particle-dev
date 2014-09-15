@@ -82,7 +82,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(11)
+      expect(ideMenu.submenu.length).toBe(12)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')
@@ -92,6 +92,9 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[5].label).toBe('Toggle cloud variables and functions')
       expect(ideMenu.submenu[5].command).toBe('spark-ide:toggle-cloud-variables-and-functions')
+
+      expect(ideMenu.submenu[6].label).toBe('Flash Foo via cloud')
+      expect(ideMenu.submenu[6].command).toBe('spark-ide:flash-cloud')
 
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()

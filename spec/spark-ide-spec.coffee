@@ -87,6 +87,12 @@ describe 'Main Tests', ->
       expect(sparkIde.toggleCloudVariablesAndFunctions).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'toggleCloudVariablesAndFunctions'
 
+    it 'calls flashCloud() method for spark-ide:flash-cloud event', ->
+      spyOn sparkIde, 'flashCloud'
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.flashCloud).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'flashCloud'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-ide:remove-core', ->

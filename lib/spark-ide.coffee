@@ -53,6 +53,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:compile-cloud', => @compileCloud()
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
+    atom.workspaceView.command 'spark-ide:flash-cloud', => @flashCloud()
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -272,3 +273,8 @@ module.exports =
 
     @cloudVariablesAndFunctions ?= new @CloudVariablesAndFunctions
     @cloudVariablesAndFunctions.toggle()
+
+  flashCloud: ->
+    # TODO: If no firmware, compile
+    # TODO: If one firmware, flash
+    # TODO: If multiple firmware, show select
