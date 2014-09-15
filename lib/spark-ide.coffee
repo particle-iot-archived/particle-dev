@@ -18,6 +18,7 @@ module.exports =
   SelectPortView: null
   CompileErrorsView: null
   CloudVariablesAndFunctions: null
+  SelectFirmwareView: null
   ApiClient: null
 
   statusView: null
@@ -30,6 +31,7 @@ module.exports =
   selectPortView: null
   compileErrorsView: null
   cloudVariablesAndFunctionsView: null
+  selectFirmwareView: null
 
   removePromise: null
   listPortsPromise: null
@@ -51,10 +53,10 @@ module.exports =
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
     atom.workspaceView.command 'spark-ide:claim-core', => @claimCore()
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
-    atom.workspaceView.command 'spark-ide:compile-cloud', (event, andFlash) => @compileCloud(andFlash)
+    atom.workspaceView.command 'spark-ide:compile-cloud', (event, thenFlash) => @compileCloud(thenFlash)
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
-    atom.workspaceView.command 'spark-ide:flash-cloud', => @flashCloud()
+    atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -184,7 +186,7 @@ module.exports =
 
         @selectPortView.show()
 
-  compileCloud: (andFlash=null) -> @loginRequired => @projectRequired =>
+  compileCloud: (thenFlash=null) -> @loginRequired => @projectRequired =>
     if !!@compileCloudPromise
       return
 
@@ -221,6 +223,9 @@ module.exports =
           @SettingsHelper.set 'compile-status', {filename: filename}
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
+
+          if !!thenFlash
+            atom.workspaceView.trigger 'spark-ide:flash-cloud'
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
@@ -239,10 +244,11 @@ module.exports =
 
     @cloudVariablesAndFunctionsView.toggle()
 
-  flashCloud: (firmware=null) -> @coreRequired => @projectRequired() =>
+  flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>
     fs ?= require 'fs-plus'
     utilities ?= require './vendor/utilities'
 
+    console.log 'Firmware', firmware
     rootPath = atom.project.getPath()
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
@@ -255,6 +261,11 @@ module.exports =
       # TODO: If one firmware, flash
       if !firmware
         firmware = files[0]
+      console.log 'Flash', firmware
     else
-      # TODO: If multiple firmware, show select
-      console.log files.length
+      # If multiple firmware, show select
+      @initView 'select-firmware-view'
+
+      files.reverse()
+      @selectFirmwareView.setItems files
+      @selectFirmwareView.show()
