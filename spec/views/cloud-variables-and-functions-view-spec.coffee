@@ -6,7 +6,7 @@ describe 'Cloud Variables and Functions View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
-  cloudVariablesAndFunctions = null
+  cloudVariablesAndFunctionsView = null
 
   beforeEach ->
     require '../../lib/vendor/ApiClient'
@@ -14,7 +14,7 @@ describe 'Cloud Variables and Functions View', ->
 
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
-      sparkIde.cloudVariablesAndFunctions = null
+      sparkIde.cloudVariablesAndFunctionsView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -43,13 +43,13 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).toExist()
-        @cloudVariablesAndFunctions.toggle()
+        @cloudVariablesAndFunctionsView.toggle()
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
@@ -57,12 +57,12 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
-        body = @cloudVariablesAndFunctions.find('#spark-ide-cloud-variables > .panel-body')
+        body = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body')
 
         expect(body.find('table')).toExist()
 
@@ -87,22 +87,22 @@ describe 'Cloud Variables and Functions View', ->
         expect(body.find('table > tbody > tr:eq(0) > td:eq(4) > button').hasClass('icon-eye')).toBe(true)
 
         # Test refresh button
-        spyOn @cloudVariablesAndFunctions, 'refreshVariable'
+        spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
         body.find('table > tbody > tr:eq(0) > td:eq(3) > button').click()
-        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalled()
-        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalledWith('foo')
-        jasmine.unspy @cloudVariablesAndFunctions, 'refreshVariable'
+        expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalledWith('foo')
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'refreshVariable'
 
     it 'tests refreshing', ->
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
-        @body = @cloudVariablesAndFunctions.find('#spark-ide-cloud-variables > .panel-body')
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
+        @body = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body')
 
       waitsFor ->
         @body.find('table > tbody > tr:eq(0) > td:eq(2)').text() == '1'
@@ -115,69 +115,69 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
         # Tests spark-ide:update-core-status
-        spyOn @cloudVariablesAndFunctions, 'listVariables'
-        spyOn @cloudVariablesAndFunctions, 'listFunctions'
-        spyOn @cloudVariablesAndFunctions, 'clearWatchers'
+        spyOn @cloudVariablesAndFunctionsView, 'listVariables'
+        spyOn @cloudVariablesAndFunctionsView, 'listFunctions'
+        spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
         atom.workspaceView.trigger 'spark-ide:update-core-status'
-        expect(@cloudVariablesAndFunctions.listVariables).toHaveBeenCalled()
-        expect(@cloudVariablesAndFunctions.listFunctions).toHaveBeenCalled()
-        expect(@cloudVariablesAndFunctions.clearWatchers).toHaveBeenCalled()
-        jasmine.unspy @cloudVariablesAndFunctions, 'listVariables'
-        jasmine.unspy @cloudVariablesAndFunctions, 'listFunctions'
-        jasmine.unspy @cloudVariablesAndFunctions, 'clearWatchers'
+        expect(@cloudVariablesAndFunctionsView.listVariables).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.listFunctions).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'listVariables'
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'listFunctions'
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'clearWatchers'
 
         # Tests spark-ide:spark-ide:logout
         SettingsHelper.clearCredentials()
-        spyOn @cloudVariablesAndFunctions, 'detach'
-        spyOn @cloudVariablesAndFunctions, 'clearWatchers'
+        spyOn @cloudVariablesAndFunctionsView, 'detach'
+        spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
         atom.workspaceView.trigger 'spark-ide:logout'
-        expect(@cloudVariablesAndFunctions.detach).toHaveBeenCalled()
-        expect(@cloudVariablesAndFunctions.clearWatchers).toHaveBeenCalled()
-        jasmine.unspy @cloudVariablesAndFunctions, 'detach'
-        jasmine.unspy @cloudVariablesAndFunctions, 'clearWatchers'
-        @cloudVariablesAndFunctions.detach()
+        expect(@cloudVariablesAndFunctionsView.detach).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'detach'
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'clearWatchers'
+        @cloudVariablesAndFunctionsView.detach()
 
     it 'check watching variable', ->
       require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
-        row = @cloudVariablesAndFunctions.find('#spark-ide-cloud-variables > .panel-body table > tbody > tr:eq(0)')
+        row = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body table > tbody > tr:eq(0)')
 
         watchButton = row.find('td:eq(4) > button')
         refreshButton = row.find('td:eq(3) > button')
 
         expect(refreshButton.attr('disabled')).not.toEqual('disabled')
         expect(watchButton.hasClass('selected')).toBe(false)
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers).length).toEqual(0)
 
         jasmine.Clock.useMock()
-        spyOn @cloudVariablesAndFunctions, 'refreshVariable'
+        spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
 
         watchButton.click()
 
         expect(refreshButton.attr('disabled')).toEqual('disabled')
         expect(watchButton.hasClass('selected')).toBe(true)
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(1)
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers)).toEqual(['foo'])
-        expect(@cloudVariablesAndFunctions.refreshVariable).not.toHaveBeenCalled()
-        watcher = @cloudVariablesAndFunctions.watchers['foo']
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers).length).toEqual(1)
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers)).toEqual(['foo'])
+        expect(@cloudVariablesAndFunctionsView.refreshVariable).not.toHaveBeenCalled()
+        watcher = @cloudVariablesAndFunctionsView.watchers['foo']
 
         jasmine.Clock.tick(5001)
 
-        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalled()
-        expect(@cloudVariablesAndFunctions.refreshVariable).toHaveBeenCalledWith('foo')
+        expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalledWith('foo')
 
         spyOn window, 'clearInterval'
 
@@ -187,34 +187,34 @@ describe 'Cloud Variables and Functions View', ->
 
         expect(refreshButton.attr('disabled')).not.toEqual('disabled')
         expect(watchButton.hasClass('selected')).toBe(false)
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers).length).toEqual(0)
         expect(window.clearInterval).toHaveBeenCalled()
         expect(window.clearInterval).toHaveBeenCalledWith(watcher)
 
         # TODO: Test cleating all watchers
 
         jasmine.unspy window, 'clearInterval'
-        jasmine.unspy @cloudVariablesAndFunctions, 'refreshVariable'
-        @cloudVariablesAndFunctions.detach()
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'refreshVariable'
+        @cloudVariablesAndFunctionsView.detach()
 
     it 'checks clearing watchers', ->
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctions
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
-        @cloudVariablesAndFunctions = sparkIde.cloudVariablesAndFunctions
-        @cloudVariablesAndFunctions.watchers['foo'] = 'bar'
+        @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
+        @cloudVariablesAndFunctionsView.watchers['foo'] = 'bar'
         spyOn window, 'clearInterval'
         expect(window.clearInterval).not.toHaveBeenCalled()
 
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(1)
-        @cloudVariablesAndFunctions.clearWatchers()
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers).length).toEqual(1)
+        @cloudVariablesAndFunctionsView.clearWatchers()
 
         expect(window.clearInterval).toHaveBeenCalled()
         expect(window.clearInterval).toHaveBeenCalledWith('bar')
-        expect(Object.keys(@cloudVariablesAndFunctions.watchers).length).toEqual(0)
+        expect(Object.keys(@cloudVariablesAndFunctionsView.watchers).length).toEqual(0)
 
         jasmine.unspy window, 'clearInterval'
-        @cloudVariablesAndFunctions.detach()
+        @cloudVariablesAndFunctionsView.detach()

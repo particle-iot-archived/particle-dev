@@ -44,7 +44,8 @@ class SelectPortView extends SelectListView
         @div class: 'secondary-line', item.comName
 
   confirmed: (item) ->
-    atom.workspaceView.trigger 'spark-ide:claim-core-usb', [item.comName]
+    # TODO: Test this
+    atom.workspaceView.trigger 'spark-ide:identify-core', [item.comName]
     @cancel()
 
   getFilterKey: ->

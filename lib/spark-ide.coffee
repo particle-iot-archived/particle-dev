@@ -2,6 +2,7 @@ fs = null
 settings = null
 utilities = null
 path = null
+_s = null
 
 module.exports =
   SettingsHelper: null
@@ -28,7 +29,7 @@ module.exports =
   listeningModeView: null
   selectPortView: null
   compileErrorsView: null
-  cloudVariablesAndFunctions: null
+  cloudVariablesAndFunctionsView: null
 
   removePromise: null
   listPortsPromise: null
@@ -50,7 +51,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:remove-core', => @removeCore()
     atom.workspaceView.command 'spark-ide:claim-core', => @claimCore()
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
-    atom.workspaceView.command 'spark-ide:compile-cloud', => @compileCloud()
+    atom.workspaceView.command 'spark-ide:compile-cloud', (event, andFlash) => @compileCloud(andFlash)
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-ide:flash-cloud', => @flashCloud()
@@ -64,51 +65,63 @@ module.exports =
 
   serialize: ->
 
+  initView: (name) ->
+    _s ?= require 'underscore.string'
+    className = ''
+    for part in name.split '-'
+      className += _s.capitalize part
+
+    @[className] ?= require './views/' + name
+    @[className.charAt(0).toLowerCase() + className.slice(1)] ?= new @[className]()
+
+  # "Decorator" which runs callback only when user is logged in
+  loginRequired: (callback) ->
+    if !@SettingsHelper.isLoggedIn()
+      return
+
+    callback()
+
+  # "Decorator" which runs callback only when user is logged in and has core selected
+  coreRequired: (callback) ->
+    if !@SettingsHelper.isLoggedIn()
+      return
+
+    if !@SettingsHelper.hasCurrentCore()
+      return
+
+    callback()
+
+  # "Decorator" which runs callback only when there's project set
+  projectRequired: (callback) ->
+    if !atom.project.getPath()
+      return
+
+    callback()
+
   login: ->
-    @LoginView ?= require './views/login-view'
-    @loginView ?= new @LoginView()
+    @initView 'login-view'
     # You may ask why this isn't in LoginView? This way, we don't need to
     # require/initialize login view until it's needed.
     atom.workspaceView.command 'spark-ide:cancel-login', => @loginView.cancelCommand()
     @loginView.show()
 
-  logout: ->
-    if !@SettingsHelper.isLoggedIn()
-      return
-
-    @LoginView ?= require './views/login-view'
-    @loginView ?= new @LoginView()
+  logout: -> @loginRequired =>
+    @initView 'login-view'
 
     @loginView.logout()
 
-  selectCore: ->
-    @SelectCoreView ?= require './views/select-core-view'
-    @selectCoreView ?= new @SelectCoreView()
-
-    if !@SettingsHelper.isLoggedIn()
-      return
+  selectCore: -> @loginRequired =>
+    @initView 'select-core-view'
 
     @selectCoreView.show()
 
-  renameCore: ->
+  renameCore: -> @coreRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
-
-    if !@SettingsHelper.isLoggedIn()
-      return
-
-    if !@SettingsHelper.hasCurrentCore()
-      return
-
     @renameCoreView ?= new @RenameCoreView(@SettingsHelper.get 'current_core_name')
+
     @renameCoreView.attach()
 
-  removeCore: ->
-    if !@SettingsHelper.isLoggedIn()
-      return
-
-    if !@SettingsHelper.hasCurrentCore()
-      return
-
+  removeCore: -> @coreRequired =>
     removeButton = 'Remove ' + @SettingsHelper.get('current_core_name')
     buttons = {}
     buttons['Cancel'] = ->
@@ -138,21 +151,14 @@ module.exports =
       detailedMessage: 'Do you really want to remove ' + @SettingsHelper.get('current_core_name') + '?'
       buttons: buttons
 
-  claimCore: ->
-    @ClaimCoreView ?= require './views/claim-core-view'
+  claimCore: -> @loginRequired =>
+    @initView 'claim-core-view'
 
-    if !@SettingsHelper.isLoggedIn()
-      return
-
-    @claimCoreView ?= new @ClaimCoreView()
     @claimCoreView.attach()
 
-  identifyCore: (port=null) ->
+  identifyCore: (port=null) -> @loginRequired =>
     @ListeningModeView ?= require './views/listening-mode-view'
     @SerialHelper ?= require './utils/serial-helper'
-
-    if !@SettingsHelper.isLoggedIn()
-      return
 
     @listPortsPromise = @SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
@@ -167,7 +173,7 @@ module.exports =
         promise = @SerialHelper.askForCoreID port
         promise.done (coreID) =>
           @IdentifyCoreView ?= require './views/identify-core-view'
-          @identifyCoreView ?= new @IdentifyCoreView coreID
+          @identifyCoreView = new @IdentifyCoreView coreID
           @identifyCoreView.attach()
         , (e) =>
           @statusView.setStatus e, 'error'
@@ -178,14 +184,8 @@ module.exports =
 
         @selectPortView.show()
 
-  compileCloud: ->
-    if !@SettingsHelper.isLoggedIn()
-      return
-
+  compileCloud: (andFlash=null) -> @loginRequired => @projectRequired =>
     if !!@compileCloudPromise
-      return
-
-    if !atom.project.getPath()
       return
 
     @SettingsHelper.set 'compile-status', {working: true}
@@ -230,23 +230,31 @@ module.exports =
         @compileCloudPromise = null
 
   showCompileErrors: ->
-    @CompileErrorsView ?= require './views/compile-errors-view'
-    @compileErrorsView ?= new @CompileErrorsView
+    @initView 'compile-errors-view'
+
     @compileErrorsView.show()
 
-  toggleCloudVariablesAndFunctions: ->
-    @CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
+  toggleCloudVariablesAndFunctions: -> @coreRequired =>
+    @initView 'cloud-variables-and-functions-view'
 
-    if !@SettingsHelper.isLoggedIn()
-      return
+    @cloudVariablesAndFunctionsView.toggle()
 
-    if !@SettingsHelper.hasCurrentCore()
-      return
+  flashCloud: (firmware=null) -> @coreRequired => @projectRequired() =>
+    fs ?= require 'fs-plus'
+    utilities ?= require './vendor/utilities'
 
-    @cloudVariablesAndFunctions ?= new @CloudVariablesAndFunctions
-    @cloudVariablesAndFunctions.toggle()
+    rootPath = atom.project.getPath()
+    files = fs.listSync(rootPath)
+    files = files.filter (file) ->
+      return (utilities.getFilenameExt(file).toLowerCase() == '.bin')
 
-  flashCloud: ->
-    # TODO: If no firmware, compile
-    # TODO: If one firmware, flash
-    # TODO: If multiple firmware, show select
+    if files.length == 0
+      # If no firmware, compile
+      atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
+    else if (files.length == 1) || (!!firmware)
+      # TODO: If one firmware, flash
+      if !firmware
+        firmware = files[0]
+    else
+      # TODO: If multiple firmware, show select
+      console.log files.length

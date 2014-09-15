@@ -12,6 +12,7 @@ describe 'Select Core View', ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
+      sparkIde.initView 'select-core-view'
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...

@@ -197,14 +197,14 @@ describe 'Main Tests', ->
 
       # Not null compileCloudPromise
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      spyOn SettingsHelper, 'set'
       sparkIde.compileCloudPromise = 'foo'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(2)
-      expect(atom.project.getPath).not.toHaveBeenCalled()
+      expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Empty root directory
       sparkIde.compileCloudPromise = null
-      spyOn SettingsHelper, 'set'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
       expect(atom.project.getPath).toHaveBeenCalled()
