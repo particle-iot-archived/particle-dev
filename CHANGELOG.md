@@ -1,3 +1,5 @@
+## 0.0.8 - Added variables and functions panel
+
 ## 0.0.7 - Added claiming via USB and compiling via cloud
 
 ## 0.0.6 - Added manually claiming core
