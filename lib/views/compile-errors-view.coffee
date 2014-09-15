@@ -6,6 +6,7 @@ Subscriber = null
 SerialHelper = null
 SettingsHelper = null
 fs = null
+path = null
 
 module.exports =
 class CompileErrorsView extends SelectListView
@@ -21,6 +22,33 @@ class CompileErrorsView extends SelectListView
     @addClass 'overlay from-top'
     @prop 'id', 'spark-ide-compile-errors-view'
 
+  @parseErrors: (raw) ->
+    path ?= require 'path'
+
+    lines = raw.split "\n"
+    errors = []
+    for line in lines
+      result = line.match /^([^:]+):(\d+):(\d+):\s(\w+):(.*)$/
+      if result and result[4] == 'error'
+        errors.push {
+          file: result[1],
+          row: result[2],
+          col: result[3],
+          type: result[4],
+          message: result[5]
+        }
+      else
+        result = line.match /^([^:]+):(\d+):\s(.*)$/
+        if result
+          # This is probably "undefined" error
+          errors.push {
+            file: path.basename(result[1]),
+            row: result[2],
+            col: 0,
+            type: 'error',
+            message: result[3]
+          }
+    errors
 
   destroy: ->
     @remove()
