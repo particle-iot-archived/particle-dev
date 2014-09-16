@@ -219,7 +219,7 @@ describe 'Main Tests', ->
 
     it 'checks if correct files are included', ->
       oldPath = atom.project.getPath()
-      atom.project.setPath __dirname + '/mocks/sampleproject'
+      atom.project.setPath __dirname + '/data/sampleproject'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-spy'
       sparkIde.ApiClient = null
@@ -232,7 +232,7 @@ describe 'Main Tests', ->
       expect(compileCodeSpy).toHaveBeenCalled()
 
       expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h'].map (value)->
-        return __dirname + '/mocks/sampleproject/' + value
+        return __dirname + '/mocks/data/' + value
 
       expect(compileCodeSpy).toHaveBeenCalledWith(expectedFiles)
 
