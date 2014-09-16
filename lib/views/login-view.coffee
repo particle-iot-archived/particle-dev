@@ -3,7 +3,7 @@
 $ = null
 _s = null
 Subscriber = null
-ApiClient = null
+spark = null
 SettingsHelper = null
 validator = null
 
