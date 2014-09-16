@@ -2,7 +2,7 @@ View = require('atom').View
 shell = null
 $ = null
 SettingsHelper = null
-ApiClient = null
+spark = null
 
 module.exports =
 class StatusBarView extends View
@@ -67,9 +67,9 @@ class StatusBarView extends View
     statusElement = this.find('#spark-current-core a')
     statusElement.parent().removeClass 'online'
 
-    ApiClient = require '../vendor/ApiClient'
-    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-    @getAttributesPromise = client.getAttributes SettingsHelper.get('current_core')
+    spark ?= require 'spark'
+    spark.login { accessToken: SettingsHelper.get('access_token') }
+    @getAttributesPromise = spark.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
       if !e
         return

@@ -133,17 +133,14 @@ class LoginView extends View
     if !@validateInputs()
       return false
 
-    # It should be ?= instead of = to save time but then the tests won't work
-    # as ApiClient could be set in one of the previous tests
-    ApiClient = require '../vendor/ApiClient'
     @emailEditor.hiddenInput.attr 'disabled', 'disabled'
     @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
     @loginButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
     @errorLabel.hide()
 
-    client = new ApiClient SettingsHelper.get 'apiUrl'
-    @loginPromise = client.login 'spark-ide', @email, @password
+    spark = require 'spark'
+    @loginPromise = spark.login { username:@email, password:@password }
     @loginPromise.done (e) =>
       @spinner.addClass 'hidden'
       if !@loginPromise

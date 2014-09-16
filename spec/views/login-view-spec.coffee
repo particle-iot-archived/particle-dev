@@ -1,17 +1,20 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
+SparkStub = require '../stubs/spark'
 
 describe 'Login View', ->
   activationPromise = null
+  sparkIde = null
   loginView = null
   originalProfile = null
 
   beforeEach ->
-    require '../../lib/vendor/ApiClient'
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
-        loginView = mainModule.loginView
+      sparkIde = mainModule
+      sparkIde.initView 'login-view'
+      loginView = sparkIde.loginView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -76,8 +79,7 @@ describe 'Login View', ->
 
 
     it 'tests valid values', ->
-      # Mock ApiClient
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'login'
 
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
@@ -106,8 +108,7 @@ describe 'Login View', ->
 
 
     it 'tests wrong credentials', ->
-      # Mock ApiClient
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-fail'
+      SparkStub.stubFail 'login'
 
       context = atom.workspaceView.find('#spark-ide-login-view')
       expect(context.find('.text-error').css 'display').toEqual('none')

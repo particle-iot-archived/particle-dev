@@ -19,7 +19,6 @@ module.exports =
   CompileErrorsView: null
   CloudVariablesAndFunctions: null
   SelectFirmwareView: null
-  ApiClient: null
 
   statusView: null
   loginView: null
@@ -32,6 +31,7 @@ module.exports =
   compileErrorsView: null
   cloudVariablesAndFunctionsView: null
   selectFirmwareView: null
+  spark: null
 
   removePromise: null
   listPortsPromise: null
@@ -86,17 +86,18 @@ module.exports =
     if !@SettingsHelper.isLoggedIn()
       return
 
+    @spark ?= require 'spark'
+    @spark.login { accessToken: @SettingsHelper.get('access_token') }
+
     callback()
 
   # "Decorator" which runs callback only when user is logged in and has core selected
   coreRequired: (callback) ->
-    if !@SettingsHelper.isLoggedIn()
-      return
+    @loginRequired =>
+      if !@SettingsHelper.hasCurrentCore()
+        return
 
-    if !@SettingsHelper.hasCurrentCore()
-      return
-
-    callback()
+      callback()
 
   # "Decorator" which runs callback only when there's project set
   projectRequired: (callback) ->
@@ -135,9 +136,7 @@ module.exports =
 
     buttons['Remove ' + @SettingsHelper.get('current_core_name')] = =>
       workspace = atom.workspaceView
-      @ApiClient ?= require './vendor/ApiClient'
-      client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
-      @removePromise = client.removeCore @SettingsHelper.get('current_core')
+      @removePromise = @spark.removeCore @SettingsHelper.get('current_core')
       @removePromise.done (e) =>
         if !@removePromise
           return
@@ -198,9 +197,6 @@ module.exports =
     @SettingsHelper.set 'compile-status', {working: true}
     atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
-    @ApiClient ?= require './vendor/ApiClient'
-    client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
-
     # Including files
     fs ?= require 'fs-plus'
     settings ?= require './vendor/settings'
@@ -212,7 +208,7 @@ module.exports =
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
 
     workspace = atom.workspaceView
-    @compileCloudPromise = client.compileCode files
+    @compileCloudPromise = @spark.compileCode files
     @compileCloudPromise.done (e) =>
       if !e
         return
@@ -221,7 +217,7 @@ module.exports =
         # Download binary
         @compileCloudPromise = null
         filename = 'firmware_' + (new Date()).getTime() + '.bin';
-        @downloadBinaryPromise = client.downloadBinary e.binary_url, rootPath + '/' + filename
+        @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
         @downloadBinaryPromise.done (e) =>
           atom.workspaceView = workspace

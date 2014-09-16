@@ -32,11 +32,11 @@ class ClaimCoreView extends Dialog
       # Unlock input
       @miniEditor.hiddenInput.attr 'disabled', 'disabled'
 
-      ApiClient = require '../vendor/ApiClient'
-      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+      spark = require 'spark'
+      spark.login { accessToken: SettingsHelper.get('access_token') }
       workspace = atom.workspaceView
       # Claim core via API
-      @claimPromise = client.claimCore deviceID
+      @claimPromise = spark.claimCore deviceID
       @setLoading true
       @claimPromise.done (e) =>
         if !@claimPromise

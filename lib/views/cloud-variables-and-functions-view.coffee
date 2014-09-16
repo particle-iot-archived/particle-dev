@@ -3,7 +3,7 @@ $ = null
 $$ = null
 whenjs = require 'when'
 SettingsHelper = null
-ApiClient = null
+spark = null
 
 module.exports =
 class CloudVariablesAndFunctions extends View
@@ -19,15 +19,14 @@ class CloudVariablesAndFunctions extends View
   initialize: (serializeState) ->
     {$, $$} = require 'atom'
     SettingsHelper = require '../utils/settings-helper'
-    ApiClient = require '../vendor/ApiClient'
+    spark = require 'spark'
+    spark.login { accessToken: SettingsHelper.get('access_token') }
 
     @client = null
     @watchers = {}
 
     @listVariables()
     @listFunctions()
-
-    # TODO: Stop all watchers when changed core/logged out
 
     atom.workspaceView.command 'spark-ide:update-core-status', =>
       @listVariables()
@@ -99,11 +98,11 @@ class CloudVariablesAndFunctions extends View
 
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
-    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+
     cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
     cell.addClass 'loading'
     cell.text ''
-    promise = @client.getVariable SettingsHelper.get('current_core'), variableName
+    promise = spark.getVariable SettingsHelper.get('current_core'), variableName
     promise.done (e) =>
       if !!e.ok
         dfd.reject()
@@ -163,15 +162,13 @@ class CloudVariablesAndFunctions extends View
 
   callFunction: (functionName) ->
     dfd = whenjs.defer()
-    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
-
     row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')
     row.find('button').attr 'disabled', 'disabled'
     row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
     row.find('.editor:eq(1)').data('view').setText ' '
     row.find('.three-quarters').removeClass 'hidden'
     params = row.find('.editor:eq(0)').data('view').getText()
-    promise = @client.callFunction SettingsHelper.get('current_core'), functionName, params
+    promise = spark.callFunction SettingsHelper.get('current_core'), functionName, params
     promise.done (e) =>
       if !!e.ok
         dfd.reject()

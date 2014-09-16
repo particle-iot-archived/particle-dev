@@ -1,6 +1,7 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
+SparkStub = require '../stubs/spark'
 
 describe 'Rename Core View', ->
   activationPromise = null
@@ -9,7 +10,6 @@ describe 'Rename Core View', ->
   renameCoreView = null
 
   beforeEach ->
-    require '../../lib/vendor/ApiClient'
     atom.workspaceView = new WorkspaceView
 
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
@@ -52,8 +52,8 @@ describe 'Rename Core View', ->
       atom.workspaceView.trigger 'core:cancel'
       jasmine.unspy renameCoreView, 'close'
 
-    it 'removes the core', ->
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+    it 'renames the core', ->
+      SparkStub.stubSuccess 'renameCore'
       atom.workspaceView.trigger 'spark-ide:rename-core'
       renameCoreView = sparkIde.renameCoreView
 

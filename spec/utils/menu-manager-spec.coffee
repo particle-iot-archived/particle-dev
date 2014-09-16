@@ -7,8 +7,6 @@ describe 'MenuManager tests', ->
   originalProfile = null
 
   beforeEach ->
-    require '../../lib/vendor/ApiClient'
-
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
@@ -18,7 +16,6 @@ describe 'MenuManager tests', ->
 
   afterEach ->
     SettingsHelper.setProfile originalProfile
-    delete require.cache[require.resolve('../../lib/vendor/ApiClient')]
 
   it 'checks menu for logged out user', ->
     waitsForPromise ->

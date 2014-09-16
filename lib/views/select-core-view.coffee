@@ -2,7 +2,7 @@ SelectListView = require('atom').SelectListView
 
 $ = null
 $$ = null
-ApiClient = null
+spark = null
 Subscriber = null
 SettingsHelper = null
 
@@ -58,10 +58,10 @@ class SelectCoreView extends SelectListView
     'name'
 
   loadCores: ->
-    ApiClient = require '../vendor/ApiClient'
-    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    spark ?= require 'spark'
+    spark.login { accessToken: SettingsHelper.get('access_token') }
 
-    @listDevicesPromise = client.listDevices()
+    @listDevicesPromise = spark.listDevices()
     @listDevicesPromise.done (e) =>
       @setItems e
       @listDevicesPromise = null

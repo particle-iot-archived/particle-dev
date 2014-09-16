@@ -1,6 +1,7 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
+SparkStub = require '../stubs/spark'
 
 describe 'Cloud Variables and Functions View', ->
   activationPromise = null
@@ -9,7 +10,6 @@ describe 'Cloud Variables and Functions View', ->
   cloudVariablesAndFunctionsView = null
 
   beforeEach ->
-    require '../../lib/vendor/ApiClient'
     atom.workspaceView = new WorkspaceView
 
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
@@ -40,6 +40,7 @@ describe 'Cloud Variables and Functions View', ->
       SettingsHelper.set 'functions', []
 
     it 'checks hiding and showing', ->
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -53,7 +54,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-fail'
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -94,7 +95,7 @@ describe 'Cloud Variables and Functions View', ->
         jasmine.unspy @cloudVariablesAndFunctionsView, 'refreshVariable'
 
     it 'tests refreshing', ->
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -111,7 +112,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(@body.find('table > tbody > tr:eq(0) > td:eq(2)').hasClass('loading')).toBe(false)
 
     it 'checks event hooks', ->
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -144,7 +145,7 @@ describe 'Cloud Variables and Functions View', ->
         @cloudVariablesAndFunctionsView.detach()
 
     it 'check watching variable', ->
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -191,13 +192,14 @@ describe 'Cloud Variables and Functions View', ->
         expect(window.clearInterval).toHaveBeenCalled()
         expect(window.clearInterval).toHaveBeenCalledWith(watcher)
 
-        # TODO: Test cleating all watchers
+        # TODO: Test clearing all watchers
 
         jasmine.unspy window, 'clearInterval'
         jasmine.unspy @cloudVariablesAndFunctionsView, 'refreshVariable'
         @cloudVariablesAndFunctionsView.detach()
 
     it 'checks clearing watchers', ->
+      SparkStub.stubSuccess 'getVariable'
       atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
 
       waitsFor ->
@@ -218,3 +220,5 @@ describe 'Cloud Variables and Functions View', ->
 
         jasmine.unspy window, 'clearInterval'
         @cloudVariablesAndFunctionsView.detach()
+
+    # TODO: Test functions

@@ -1,8 +1,10 @@
 {WorkspaceView} = require 'atom'
+_s = require 'underscore.string'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
 SpecHelper = require '../lib/utils/spec-helper'
-_s = require 'underscore.string'
+SparkStub = require './stubs/spark'
+spark = require 'spark'
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -128,10 +130,12 @@ describe 'Main Tests', ->
       expect('Remove Foo' of args.buttons).toEqual(true)
 
       # Test remove callback
-      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
+      SparkStub.stubSuccess 'removeCore'
+
       spyOn SettingsHelper, 'clearCurrentCore'
       spyOn atom.workspaceView, 'trigger'
       args.buttons['Remove Foo']()
+
 
       waitsFor ->
         !sparkIde.removePromise
@@ -144,8 +148,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
 
         # Test fail
-        sparkIde.ApiClient = null
-        require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
+        SparkStub.stubFail 'removeCore'
         args.buttons['Remove Foo']()
 
       waitsFor ->
@@ -168,7 +171,7 @@ describe 'Main Tests', ->
   describe 'when identifyCore() method is called and there is only one core', ->
     it 'checks if it is identified', ->
       require 'serialport'
-      require.cache[require.resolve('serialport')].exports = require './mocks/serialport-success'
+      require.cache[require.resolve('serialport')].exports = require './stubs/serialport-success'
 
       spyOn SerialHelper, 'askForCoreID'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -221,20 +224,18 @@ describe 'Main Tests', ->
       oldPath = atom.project.getPath()
       atom.project.setPath __dirname + '/data/sampleproject'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-spy'
-      sparkIde.ApiClient = null
 
+      SparkStub.stubSuccess 'compileCode'
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       # Check if local storage is set to working
       expect(SettingsHelper.get('compile-status')).toEqual({working:true})
 
-      compileCodeSpy = SpecHelper.getSpyByIdentity 'compileCode'
-      expect(compileCodeSpy).toHaveBeenCalled()
+      expect(spark.compileCode).toHaveBeenCalled()
 
       expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h'].map (value)->
-        return __dirname + '/mocks/data/' + value
+        return __dirname + '/data/sampleproject/' + value
 
-      expect(compileCodeSpy).toHaveBeenCalledWith(expectedFiles)
+      expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
       SettingsHelper.set 'compile-status', null
       SettingsHelper.clearCredentials()
@@ -242,8 +243,8 @@ describe 'Main Tests', ->
 
     it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-success'
-      sparkIde.ApiClient = null
+      SparkStub.stubSuccess 'compileCode'
+      SparkStub.stubSuccess 'downloadBinary'
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       spyOn atom.workspaceView, 'trigger'
@@ -269,8 +270,7 @@ describe 'Main Tests', ->
 
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      require.cache[require.resolve('../lib/vendor/ApiClient')].exports = require './mocks/ApiClient-fail'
-      sparkIde.ApiClient = null
+      SparkStub.stubFail 'compileCode'
 
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       spyOn atom.workspaceView, 'trigger'

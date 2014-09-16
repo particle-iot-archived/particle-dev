@@ -1,6 +1,7 @@
 Dialog = require '../subviews/dialog'
 SettingsHelper = null
 _s = null
+spark = null
 
 module.exports =
 class RenameCoreView extends Dialog
@@ -26,10 +27,10 @@ class RenameCoreView extends Dialog
     else
       @miniEditor.hiddenInput.attr 'disabled', 'disabled'
 
-      ApiClient = require '../vendor/ApiClient'
-      client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+      spark ?= require 'spark'
+      spark.login { accessToken: SettingsHelper.get('access_token') }
       workspace = atom.workspaceView
-      @renamePromise = client.renameCore SettingsHelper.get('current_core'), newName
+      @renamePromise = spark.renameCore SettingsHelper.get('current_core'), newName
       @setLoading true
       @renamePromise.done (e) =>
         if !@renamePromise

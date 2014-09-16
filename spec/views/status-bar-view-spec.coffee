@@ -1,5 +1,6 @@
 {WorkspaceView} = require 'atom'
 SettingsHelper = require '../../lib/utils/settings-helper'
+SparkStub = require '../stubs/spark'
 
 describe 'Status Bar Tests', ->
   activationPromise = null
@@ -12,8 +13,6 @@ describe 'Status Bar Tests', ->
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
-
-    require '../../lib/vendor/ApiClient'
 
     atom.workspaceView = new WorkspaceView
     statusBarPromise = atom.packages.activatePackage('status-bar')
@@ -67,7 +66,7 @@ describe 'Status Bar Tests', ->
 
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'getAttributes'
 
       spyOn statusView, 'getCurrentCoreStatus'
       atom.workspaceView.trigger 'spark-ide:update-core-status'
@@ -83,7 +82,7 @@ describe 'Status Bar Tests', ->
       # Check async core status checking
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-success'
+      SparkStub.stubSuccess 'getAttributes'
 
       statusView.getCurrentCoreStatus()
 
@@ -104,7 +103,7 @@ describe 'Status Bar Tests', ->
         expect(functions.length).toEqual(1)
         expect(functions[0]).toEqual('bar')
 
-        require.cache[require.resolve('../../lib/vendor/ApiClient')].exports = require '../mocks/ApiClient-offline'
+        SparkStub.stubOffline 'getAttributes'
 
         statusView.getCurrentCoreStatus()
 
