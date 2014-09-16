@@ -16,6 +16,9 @@ class StatusBarView extends View
         @span id: 'spark-compile-working', =>
           @span class: 'three-quarters'
           @a 'Compiling in the cloud...'
+        @span id: 'spark-flash-working', =>
+          @span class: 'three-quarters'
+          @a 'Flashing via the cloud...'
         @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
         @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'
       @span id: 'spark-log'
@@ -149,6 +152,8 @@ class StatusBarView extends View
         else
           subElement.text(compileStatus.errors.length + ' errors')
         subElement.show()
+      else if !!compileStatus.flashing
+        statusElement.find('#spark-flash-working').show()
       else
         statusElement.find('#spark-compile-success')
                      .text('Success! Firmware saved to ' + compileStatus.filename)

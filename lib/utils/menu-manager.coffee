@@ -37,7 +37,7 @@ module.exports =
           label: 'Toggle cloud variables and functions',
           command: 'spark-ide:toggle-cloud-variables-and-functions'
         },{
-          label: 'Flash ' + SettingsHelper.get('current_core_name') + ' via cloud',
+          label: 'Flash ' + SettingsHelper.get('current_core_name') + ' via the cloud',
           command: 'spark-ide:flash-cloud'
         }]
 
