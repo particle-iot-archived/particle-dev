@@ -93,7 +93,7 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu[5].label).toBe('Toggle cloud variables and functions')
       expect(ideMenu.submenu[5].command).toBe('spark-ide:toggle-cloud-variables-and-functions')
 
-      expect(ideMenu.submenu[6].label).toBe('Flash Foo via cloud')
+      expect(ideMenu.submenu[6].label).toBe('Flash Foo via the cloud')
       expect(ideMenu.submenu[6].command).toBe('spark-ide:flash-cloud')
 
       SettingsHelper.clearCurrentCore()

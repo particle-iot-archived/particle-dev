@@ -35,6 +35,8 @@ module.exports =
 
   removePromise: null
   listPortsPromise: null
+  compileCloudPromise: null
+  flashCorePromise: null
 
   activate: (state) ->
     # Require modules on activation
@@ -227,6 +229,7 @@ module.exports =
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
 
+          # TODO: Test it
           if !!thenFlash
             atom.workspaceView.trigger 'spark-ide:flash-cloud'
       else
@@ -260,13 +263,26 @@ module.exports =
       # If no firmware, compile
       atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
     else if (files.length == 1) || (!!firmware)
-      # TODO: If one firmware, flash
+      # If one firmware, flash
+      @ApiClient ?= require './vendor/ApiClient'
+      client = new @ApiClient @SettingsHelper.get('apiUrl'), @SettingsHelper.get('access_token')
+
       if !firmware
         firmware = files[0]
-      console.log 'Flash', firmware
 
-      if atom.config.get('spark-ide.deleteFirmwareAfterFlash')
-        fs.unlink firmware
+      @statusView.setStatus 'Flashing via the cloud...'
+
+      @flashCorePromise = client.flashCore @SettingsHelper.get('current_core'), {file: firmware}
+      @flashCorePromise.done (e) =>
+        console.log 'done', e
+        @statusView.setStatus 'Flashing via the cloud...'
+
+        if atom.config.get('spark-ide.deleteFirmwareAfterFlash')
+          fs.unlink firmware
+
+        @flashCorePromise = null
+      , (e) =>
+        console.error e
     else
       # If multiple firmware, show select
       @initView 'select-firmware-view'
