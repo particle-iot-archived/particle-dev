@@ -265,10 +265,10 @@ module.exports =
 
       @statusView.setStatus 'Flashing via the cloud...'
 
-      @flashCorePromise = @spark.flashCore @SettingsHelper.get('current_core'), {file: firmware}
+      @flashCorePromise = @spark.flashCore @SettingsHelper.get('current_core'), [firmware]
       @flashCorePromise.done (e) =>
-        console.log 'done', e
-        @statusView.setStatus 'Flashing via the cloud...'
+        @statusView.setStatus e.status + '...'
+        @statusView.clearAfter 5000
 
         if atom.config.get('spark-ide.deleteFirmwareAfterFlash')
           fs.unlink firmware
