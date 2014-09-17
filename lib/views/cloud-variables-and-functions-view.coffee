@@ -105,12 +105,17 @@ class CloudVariablesAndFunctions extends View
     cell.text ''
     promise = spark.getVariable SettingsHelper.get('current_core'), variableName
     promise.done (e) =>
+      cell.removeClass()
       if !!e.ok
+        cell.addClass 'icon icon-issue-opened text-error'
         dfd.reject()
       else
-        cell.removeClass 'loading'
         cell.text e.result
         dfd.resolve e.result
+    , (e) =>
+      cell.removeClass()
+      cell.addClass 'icon icon-issue-opened text-error'
+      dfd.reject()
     dfd.promise
 
   toggleWatchVariable: (variableName) ->
