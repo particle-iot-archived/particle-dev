@@ -1,10 +1,12 @@
 {WorkspaceView} = require 'atom'
 _s = require 'underscore.string'
+spark = require 'spark'
+fs = require 'fs-plus'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
 SpecHelper = require '../lib/utils/spec-helper'
+utilities = require '../lib/vendor/utilities'
 SparkStub = require './stubs/spark'
-spark = require 'spark'
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -246,8 +248,6 @@ describe 'Main Tests', ->
         atom.project.setPath oldPath
 
         # Remove firmware files
-        utilities = require '../lib/vendor/utilities'
-        fs = require 'fs-plus'
         for file in fs.listSync(__dirname + '/data/sampleproject')
           if utilities.getFilenameExt(file).toLowerCase() == '.bin'
             fs.unlinkSync file
@@ -336,5 +336,12 @@ describe 'Main Tests', ->
 
       jasmine.unspy sparkIde, 'compileCloud'
       jasmine.unspy atom.workspaceView, 'trigger'
+      SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
+
+    it 'tests one firmware file', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
