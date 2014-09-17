@@ -52,7 +52,7 @@ class CloudVariablesAndFunctions extends View
 
   listVariables: ->
     variables = SettingsHelper.get 'variables'
-
+    # TODO: Fix background message
     @variables.empty()
     if variables.length == 0
       @variables.append $$ ->
@@ -166,23 +166,37 @@ class CloudVariablesAndFunctions extends View
         row.find('.editor:eq(1)').data('view').hiddenInput.attr 'disabled', 'disabled'
         @functions.append row
 
+  setRowEnabled: (row, enabled) ->
+    if enabled
+      row.find('button').removeAttr 'disabled'
+      row.find('.editor:eq(0)').data('view').hiddenInput.removeAttr 'disabled'
+      row.find('.three-quarters').addClass 'hidden'
+    else
+      row.find('button').attr 'disabled', 'disabled'
+      row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
+      row.find('.three-quarters').removeClass 'hidden'
+      row.find('.editor:eq(1)').data('view').removeClass 'icon icon-issue-opened'
+
   callFunction: (functionName) ->
     dfd = whenjs.defer()
     row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')
-    row.find('button').attr 'disabled', 'disabled'
-    row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
+    @setRowEnabled row, false
     row.find('.editor:eq(1)').data('view').setText ' '
-    row.find('.three-quarters').removeClass 'hidden'
     params = row.find('.editor:eq(0)').data('view').getText()
     promise = spark.callFunction SettingsHelper.get('current_core'), functionName, params
     promise.done (e) =>
+      @setRowEnabled row, true
+
       if !!e.ok
+        row.find('.editor:eq(1)').data('view').addClass 'icon icon-issue-opened'
         dfd.reject()
       else
-        row.find('button').removeAttr 'disabled'
-        row.find('.editor:eq(0)').data('view').hiddenInput.removeAttr 'disabled'
         row.find('.editor:eq(1)').data('view').setText e.return_value.toString()
-        row.find('.three-quarters').addClass 'hidden'
 
         dfd.resolve e.return_value
+    , (e) =>
+      @setRowEnabled row, true
+      row.find('.editor:eq(1)').data('view').addClass 'icon icon-issue-opened'
+
+      dfd.reject()
     dfd.promise
