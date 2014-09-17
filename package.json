@@ -16,6 +16,7 @@
     "emissary": "1.x",
     "validator": "*",
     "serialport": "*",
-    "fs-plus": "^2.0.4"
+    "fs-plus": "^2.0.4",
+    "spark": "*"
   }
 }

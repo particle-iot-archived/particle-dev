@@ -125,7 +125,7 @@ module.exports =
 
   renameCore: -> @coreRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
-    @renameCoreView ?= new @RenameCoreView(@SettingsHelper.get 'current_core_name')
+    @renameCoreView = new @RenameCoreView(@SettingsHelper.get 'current_core_name')
 
     @renameCoreView.attach()
 
@@ -165,7 +165,6 @@ module.exports =
   identifyCore: (port=null) -> @loginRequired =>
     @ListeningModeView ?= require './views/listening-mode-view'
     @SerialHelper ?= require './utils/serial-helper'
-
     @listPortsPromise = @SerialHelper.listPorts()
     @listPortsPromise.done (ports) =>
       @listPortsPromise = null
