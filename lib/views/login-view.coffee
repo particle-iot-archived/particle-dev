@@ -145,7 +145,7 @@ class LoginView extends View
       @spinner.addClass 'hidden'
       if !@loginPromise
         return
-      SettingsHelper.setCredentials @email, e
+      SettingsHelper.setCredentials @email, e.access_token
       atom.workspaceView.trigger 'spark-ide:update-login-status'
       @loginPromise = null
 

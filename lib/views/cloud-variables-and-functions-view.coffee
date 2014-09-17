@@ -25,6 +25,7 @@ class CloudVariablesAndFunctions extends View
     @client = null
     @watchers = {}
 
+    # TODO: Support empty variables/functions lists
     @listVariables()
     @listFunctions()
 

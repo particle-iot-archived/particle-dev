@@ -19,8 +19,11 @@ module.exports =
         @stubMethod method, (client_id, user, pass) ->
           dfd = whenjs.defer()
           setTimeout ->
-            this._access_token = '0123456789abcdef0123456789abcdef'
-            dfd.resolve this._access_token
+            dfd.resolve {
+              access_token: "0123456789abcdef0123456789abcdef",
+              token_type: "bearer",
+              expires_in: 7776000
+            } 
           , 1
           dfd.promise
 
