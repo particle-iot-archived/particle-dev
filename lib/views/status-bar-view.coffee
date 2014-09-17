@@ -30,7 +30,7 @@ class StatusBarView extends View
     if atom.workspaceView.statusBar
       @attach()
     else
-      @subscribe atom.packages.once 'activated', @attach
+      atom.packages.onDidActivateAll => @attach
 
     atom.workspaceView.command 'spark-ide:update-login-status', => @updateLoginStatus()
     atom.workspaceView.command 'spark-ide:update-core-status', => @updateCoreStatus()
