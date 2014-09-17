@@ -41,7 +41,6 @@ class StatusBarView extends View
   serialize: ->
 
   attach: =>
-    console.log 'attach'
     atom.workspaceView.statusBar.appendLeft(this)
     @updateLoginStatus()
 

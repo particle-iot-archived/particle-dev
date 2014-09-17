@@ -54,7 +54,8 @@ class CloudVariablesAndFunctions extends View
     variables = SettingsHelper.get 'variables'
     # TODO: Fix background message
     @variables.empty()
-    if variables.length == 0
+
+    if !variables || variables.length == 0
       @variables.append $$ ->
         @ul class: 'background-message', =>
           @li 'No variables registered'
@@ -145,7 +146,7 @@ class CloudVariablesAndFunctions extends View
     functions = SettingsHelper.get 'functions'
 
     @functions.empty()
-    if functions.length == 0
+    if !functions || functions.length == 0
       @functions.append $$ ->
         @ul class: 'background-message', =>
           @li 'No functions registered'
