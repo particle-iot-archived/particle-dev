@@ -237,9 +237,20 @@ describe 'Main Tests', ->
 
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
-      SettingsHelper.set 'compile-status', null
-      SettingsHelper.clearCredentials()
-      atom.project.setPath oldPath
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      runs ->
+        SettingsHelper.set 'compile-status', null
+        SettingsHelper.clearCredentials()
+        atom.project.setPath oldPath
+
+        # Remove firmware files
+        utilities = require '../lib/vendor/utilities'
+        fs = require 'fs-plus'
+        for file in fs.listSync(__dirname + '/data/sampleproject')
+          if utilities.getFilenameExt(file).toLowerCase() == '.bin'
+            fs.unlinkSync file
 
     it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -291,3 +302,39 @@ describe 'Main Tests', ->
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
+
+  describe 'cloud flash tests', ->
+    it 'checks decorators', ->
+      spyOn(sparkIde, 'coreRequired').andCallThrough()
+      spyOn sparkIde, 'projectRequired'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.coreRequired).toHaveBeenCalled()
+      expect(sparkIde.projectRequired).not.toHaveBeenCalled()
+
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.projectRequired).toHaveBeenCalled()
+
+      # Cleanup
+      jasmine.unspy sparkIde, 'coreRequired'
+      jasmine.unspy sparkIde, 'projectRequired'
+      SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
+
+    it 'tests no firmware files', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      spyOn(atom.workspaceView, 'trigger').andCallThrough()
+      spyOn sparkIde, 'compileCloud'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(atom.workspaceView.trigger).toHaveBeenCalled()
+      expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:compile-cloud', [true])
+
+      jasmine.unspy sparkIde, 'compileCloud'
+      jasmine.unspy atom.workspaceView, 'trigger'
+      SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
