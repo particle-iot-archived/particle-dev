@@ -17,7 +17,7 @@ describe 'Main Tests', ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
-      sparkIde.statusView = null
+      # sparkIde.statusView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -342,6 +342,75 @@ describe 'Main Tests', ->
     it 'tests one firmware file', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      originalDeleteFirmwareAfterFlash = atom.config.get 'spark-ide.deleteFirmwareAfterFlash'
+      atom.config.set 'spark-ide.deleteFirmwareAfterFlash', false
 
+      atom.config.get('spark-ide.deleteFirmwareAfterFlash')
+      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
+      spyOn sparkIde.statusView, 'setStatus'
+      spyOn sparkIde.statusView, 'clearAfter'
+      SparkStub.stubSuccess 'flashCore'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.statusView.setStatus).toHaveBeenCalled()
+      expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Flashing via the cloud...')
+
+      waitsFor ->
+        !sparkIde.flashCorePromise
+
+      runs ->
+        expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Update started...')
+        expect(sparkIde.statusView.clearAfter).toHaveBeenCalled()
+        expect(sparkIde.statusView.clearAfter).toHaveBeenCalledWith(5000)
+
+        # Test removing firmware
+        atom.config.set 'spark-ide.deleteFirmwareAfterFlash', false
+        atom.workspaceView.trigger 'spark-ide:flash-cloud'
+        expect(fs.existsSync(atom.project.getPath() + '/firmware.bin')).toBe(true)
+
+        jasmine.unspy sparkIde.statusView, 'clearAfter'
+        jasmine.unspy sparkIde.statusView, 'setStatus'
+        SettingsHelper.clearCurrentCore()
+        SettingsHelper.clearCredentials()
+        atom.config.set 'spark-ide.deleteFirmwareAfterFlash', originalDeleteFirmwareAfterFlash
+
+    it 'tests passing firmware', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      SparkStub.stubSuccess 'flashCore'
+      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud', ['firmware2.bin']
+      expect(sparkIde.spark.flashCore).toHaveBeenCalled()
+      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['firmware2.bin'])
+
+      fs.unlinkSync atom.project.getPath() + '/firmware.bin'
+      SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
+
+    it 'tests more than one firmware file', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      SparkStub.stubSuccess 'flashCore'
+
+      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
+      fs.openSync atom.project.getPath() + '/firmware2.bin', 'w'
+
+      sparkIde.initView 'select-firmware-view'
+      spyOn sparkIde.selectFirmwareView, 'setItems'
+      spyOn sparkIde.selectFirmwareView, 'show'
+
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalled()
+      expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalledWith([
+          atom.project.getPath() + '/firmware2.bin',
+          atom.project.getPath() + '/firmware.bin'
+        ])
+      expect(sparkIde.selectFirmwareView.show).toHaveBeenCalled()
+
+      fs.unlinkSync atom.project.getPath() + '/firmware.bin'
+      fs.unlinkSync atom.project.getPath() + '/firmware2.bin'
+      jasmine.unspy sparkIde.selectFirmwareView, 'setItems'
+      jasmine.unspy sparkIde.selectFirmwareView, 'show'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()

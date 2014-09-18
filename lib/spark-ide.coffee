@@ -253,7 +253,7 @@ module.exports =
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin')
-
+    
     if files.length == 0
       # If no firmware, compile
       atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
@@ -270,12 +270,13 @@ module.exports =
         @statusView.setStatus e.status + '...'
         @statusView.clearAfter 5000
 
-        if atom.config.get('spark-ide.deleteFirmwareAfterFlash')
+        if atom.config.get 'spark-ide.deleteFirmwareAfterFlash'
           fs.unlink firmware
 
         @flashCorePromise = null
       , (e) =>
-        console.error e
+        @statusView.setStatus e.message, 'error'
+        @statusView.clearAfter 5000
     else
       # If multiple firmware, show select
       @initView 'select-firmware-view'
