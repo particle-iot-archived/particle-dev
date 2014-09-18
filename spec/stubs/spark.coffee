@@ -23,7 +23,7 @@ module.exports =
               access_token: "0123456789abcdef0123456789abcdef",
               token_type: "bearer",
               expires_in: 7776000
-            } 
+            }
           , 1
           dfd.promise
 
@@ -152,6 +152,17 @@ module.exports =
           , 1
           dfd.promise
 
+      when 'flashCore'
+        @stubMethod method, (coreID, functionName, funcParam) ->
+          dfd = whenjs.defer()
+          setTimeout ->
+            dfd.resolve {
+              id: '51ff67065067545724380687',
+              status: 'Update started'
+            }
+          , 1
+          dfd.promise
+
   stubFail: (method) ->
     @unspyTimers()
 
@@ -268,6 +279,16 @@ module.exports =
             dfd.resolve {
               ok: false,
               error: 'Function not found'
+            }
+          , 1
+          dfd.promise
+
+      when 'flashCore'
+        @stubMethod method, (coreID, functionName, funcParam) ->
+          dfd = whenjs.defer()
+          setTimeout ->
+            dfd.resolve {
+              error: 'Permission Denied'
             }
           , 1
           dfd.promise
