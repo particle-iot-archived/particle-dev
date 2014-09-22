@@ -3,13 +3,13 @@ SettingsHelper = require './settings-helper'
 module.exports =
   getMenu: ->
     ideMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark IDE'
+      value.label == 'Spark Core'
 
     ideMenu[0]
 
   update: ->
     ideMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark IDE'
+      value.label == 'Spark Core'
 
     ideMenu = @getMenu()
 
