@@ -1,0 +1,11 @@
+--- atom-original.coffee	2014-09-22 12:37:04.000000000 +0200
++++ atom.coffee	2014-09-22 11:24:33.000000000 +0200
+@@ -74,7 +74,7 @@
+   #
+   # Returns the absolute path to ~/.atom
+   @getConfigDirPath: ->
+-    @configDirPath ?= fs.absolute('~/.atom')
++    @configDirPath ?= fs.absolute('~/.sparkide')
+
+   # Get the path to Atom's storage directory.
+   #

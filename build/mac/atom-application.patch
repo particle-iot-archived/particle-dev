@@ -1,0 +1,14 @@
+--- atom-application-original.coffee	2014-09-22 11:24:33.000000000 +0200
++++ atom-application.coffee	2014-09-22 11:45:18.000000000 +0200
+@@ -16,9 +16,9 @@
+ 
+ socketPath =
+   if process.platform is 'win32'
+-    '\\\\.\\pipe\\atom-sock'
++    '\\\\.\\pipe\\sparkide-sock'
+   else
+-    path.join(os.tmpdir(), 'atom.sock')
++    path.join(os.tmpdir(), 'sparkide.sock')
+ 
+ # The application's singleton class.
+ #
