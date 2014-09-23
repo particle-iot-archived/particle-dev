@@ -8,7 +8,7 @@
 +    "language-yaml": "0.17.0",
 +    "language-arduino": "0.2.0",
 +    "file-type-icons": "0.4.3",
-+    "switch-header-source": "0.8.0",
++    "switch-header-source": "0.8.0"
    },
    "private": true,
    "scripts": {
