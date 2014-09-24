@@ -1,19 +1,19 @@
 SettingsHelper = require './settings-helper'
 
 module.exports =
+  # Get root menu
   getMenu: ->
     ideMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark Core'
 
     ideMenu[0]
 
+  # Update menu
   update: ->
-    ideMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark Core'
-
     ideMenu = @getMenu()
 
     if SettingsHelper.isLoggedIn()
+      # Menu items for logged in user
       username = SettingsHelper.get('username')
 
       ideMenu.submenu = [{
@@ -27,6 +27,7 @@ module.exports =
       }]
 
       if SettingsHelper.hasCurrentCore()
+        # Menu items depending on current core
         ideMenu.submenu = ideMenu.submenu.concat [{
           label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
           command: 'spark-ide:rename-core'
@@ -56,9 +57,11 @@ module.exports =
         command: 'spark-ide:compile-cloud'
       }]
     else
+      # Logged out user can only log in
       ideMenu.submenu = [{
         label: 'Log in to Spark Cloud...',
         command: 'spark-ide:login'
       }]
 
+    # Refresh UI
     atom.menu.update()

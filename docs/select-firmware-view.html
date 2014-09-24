@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>spec-helper.coffee</title>
+  <title>select-firmware-view.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -106,7 +111,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>spec-helper.coffee</h1>
+                  <h1>select-firmware-view.coffee</h1>
               </div>
           </li>
         
@@ -121,12 +126,54 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports =
-  <span class="hljs-attribute">getSpyByIdentity</span>: <span class="hljs-function"><span class="hljs-params">(identity)</span> -&gt;</span>
-    <span class="hljs-keyword">for</span> spy <span class="hljs-keyword">in</span> jasmine.getEnv().currentSpec.spies_
-      <span class="hljs-keyword">if</span> spy.identity == identity
-        <span class="hljs-keyword">return</span> spy
-    <span class="hljs-literal">null</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>SelectListView = require('atom').SelectListView
+
+$ = null
+$$ = null
+Subscriber = null
+SerialHelper = null
+SettingsHelper = null
+fs = null
+path = null
+
+module.exports =
+class SelectFirmwareView extends SelectListView
+  initialize: -&gt;
+    super
+
+    {$, $$} = require 'atom'
+    {Subscriber} = require 'emissary'
+    path ?= require 'path'
+    fs ?= require 'fs-plus'
+
+    @subscriber = new Subscriber()
+    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', =&gt; @hide()
+
+    @addClass 'overlay from-top'
+    @prop 'id', 'spark-ide-select-firmware-view'
+
+  destroy: -&gt;
+    @remove()
+
+  show: =&gt;
+    if !@hasParent()
+      atom.workspaceView.append(this)
+      @focusFilterEditor()
+
+  hide: -&gt;
+    if @hasParent()
+      @detach()
+
+  viewForItem: (item) -&gt;
+    $$ -&gt;
+      stats = fs.statSync item
+      @li class: 'two-lines', =&gt;
+        @div class: 'primary-line', path.basename(item)
+        @div class: 'secondary-line', stats.ctime.toLocaleString()
+
+  confirmed: (item) -&gt;
+    atom.workspaceView.trigger 'spark-ide:flash-cloud', [item]
+    @cancel()</pre></div></div>
             
         </li>
         

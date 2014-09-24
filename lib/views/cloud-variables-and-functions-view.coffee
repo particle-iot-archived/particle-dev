@@ -29,11 +29,13 @@ class CloudVariablesAndFunctions extends View
     @listVariables()
     @listFunctions()
 
+    # Refresh UI and watchers when current core changes
     atom.workspaceView.command 'spark-ide:update-core-status', =>
       @listVariables()
       @listFunctions()
       @clearWatchers()
 
+    # Clear watchers and hide when user logs out
     atom.workspaceView.command 'spark-ide:logout', =>
       @clearWatchers()
       if @hasParent()
@@ -50,6 +52,7 @@ class CloudVariablesAndFunctions extends View
     else
       atom.workspaceView.prependToBottom(this)
 
+  # Propagate table with variables
   listVariables: ->
     variables = SettingsHelper.get 'variables'
     # TODO: Fix background message
@@ -98,6 +101,7 @@ class CloudVariablesAndFunctions extends View
       for variable in Object.keys(variables)
         @refreshVariable variable
 
+  # Get variable value from the cloud
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
 
@@ -119,6 +123,7 @@ class CloudVariablesAndFunctions extends View
       dfd.reject()
     dfd.promise
 
+  # Toggle watching variable
   toggleWatchVariable: (variableName) ->
     row = @find('#spark-ide-cloud-variables [data-id=' + variableName + ']')
     watchButton = row.find('td:eq(4) button')
@@ -133,15 +138,18 @@ class CloudVariablesAndFunctions extends View
     else
       watchButton.addClass 'selected'
       refreshButton.attr 'disabled', 'disabled'
+      # Gget variable every 5 seconds (empirical value)
       @watchers[variableName] = setInterval =>
         @refreshVariable variableName
       , 5000
 
+  # Remove all variable watchers
   clearWatchers: ->
     for key in Object.keys(@watchers)
       clearInterval @watchers[key]
     @watchers = {}
 
+  # Propagate table with functions
   listFunctions: ->
     functions = SettingsHelper.get 'functions'
 
@@ -167,6 +175,7 @@ class CloudVariablesAndFunctions extends View
         row.find('.editor:eq(1)').data('view').hiddenInput.attr 'disabled', 'disabled'
         @functions.append row
 
+  # Lock/unlock row
   setRowEnabled: (row, enabled) ->
     if enabled
       row.find('button').removeAttr 'disabled'
@@ -178,6 +187,7 @@ class CloudVariablesAndFunctions extends View
       row.find('.three-quarters').removeClass 'hidden'
       row.find('.editor:eq(1)').data('view').removeClass 'icon icon-issue-opened'
 
+  # Call function via cloud
   callFunction: (functionName) ->
     dfd = whenjs.defer()
     row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')

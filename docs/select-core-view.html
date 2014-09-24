@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -125,7 +130,7 @@
 
 $ = <span class="hljs-literal">null</span>
 $$ = <span class="hljs-literal">null</span>
-ApiClient = <span class="hljs-literal">null</span>
+spark = <span class="hljs-literal">null</span>
 Subscriber = <span class="hljs-literal">null</span>
 SettingsHelper = <span class="hljs-literal">null</span>
 
@@ -193,10 +198,10 @@ SettingsHelper = <span class="hljs-literal">null</span>
     'name'
 
   loadCores: -&gt;
-    ApiClient = require '../vendor/ApiClient'
-    client = new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    spark ?= require 'spark'
+    spark.login { accessToken: SettingsHelper.get('access_token') }
 
-    @listDevicesPromise = client.listDevices()
+    @listDevicesPromise = spark.listDevices()
     @listDevicesPromise.done (e) =&gt;
       @setItems e
       @listDevicesPromise = null

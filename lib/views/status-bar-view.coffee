@@ -48,19 +48,22 @@ class StatusBarView extends View
   destroy: ->
     @remove()
 
+  # Callback triggering selecting core command
   selectCore: ->
     atom.workspaceView.trigger 'spark-ide:select-core'
 
+  # Callback triggering showing compile errors command
   showErrors: =>
     atom.workspaceView.trigger 'spark-ide:show-compile-errors'
 
+  # Opening file in Finder/Explorer
   showFile: =>
-    # Opening file in Finder/Explorer
     shell ?= require 'shell'
     rootPath = atom.project.getPath()
     compileStatus = SettingsHelper.get 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
+  # Get current core's status from the cloud
   getCurrentCoreStatus: ->
     if !SettingsHelper.hasCurrentCore()
       return
@@ -98,6 +101,7 @@ class StatusBarView extends View
           , 30000
       @getAttributesPromise = null
 
+  # Update current core's status
   updateCoreStatus: ->
     statusElement = this.find('#spark-current-core a')
 
@@ -109,6 +113,7 @@ class StatusBarView extends View
       statusElement.parent().removeClass 'online'
       statusElement.text 'No cores selected'
 
+  # Update login status
   updateLoginStatus: ->
     statusElement = this.find('#spark-login-status')
     statusElement.empty()

@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -86,6 +86,11 @@
               
               <a class="source" href="select-core-view.html">
                 select-core-view.coffee
+              </a>
+            
+              
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
               </a>
             
               
@@ -166,19 +171,33 @@ class SelectPortView extends SelectListView
         @div class: 'primary-line', item.serialNumber
         @div class: 'secondary-line', item.comName
 
-  confirmed: (item) -&gt;
-    atom.workspaceView.trigger 'spark-ide:claim-core-usb', [item.comName]
-    @cancel()
+  confirmed: (item) -&gt;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>TODO: Test this</p>
 
-  getFilterKey: -&gt;
-    'comName'
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:identify-core'</span>, [item.comName]
+    <span class="hljs-property">@cancel</span>()
 
-  listPorts: -&gt;
-    SerialHelper = require '../utils/serial-helper'
-    @listPortsPromise = SerialHelper.listPorts()
-    @listPortsPromise.done (ports) =&gt;
-      @setItems ports
-      @listPortsPromise = null</pre></div></div>
+  <span class="hljs-attribute">getFilterKey</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-string">'comName'</span>
+
+  <span class="hljs-attribute">listPorts</span>:<span class="hljs-function"> -&gt;</span>
+    SerialHelper = <span class="hljs-built_in">require</span> <span class="hljs-string">'../utils/serial-helper'</span>
+    <span class="hljs-property">@listPortsPromise</span> = SerialHelper.listPorts()
+    <span class="hljs-property">@listPortsPromise</span>.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+      <span class="hljs-property">@setItems</span> ports
+      <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
         

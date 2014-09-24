@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -126,7 +131,7 @@ $ = null
 $$ = null
 whenjs = require 'when'
 SettingsHelper = null
-ApiClient = null
+spark = null
 
 module.exports =
 class CloudVariablesAndFunctions extends View
@@ -142,37 +147,107 @@ class CloudVariablesAndFunctions extends View
   initialize: (serializeState) -&gt;
     {$, $$} = require 'atom'
     SettingsHelper = require '../utils/settings-helper'
-    ApiClient = require '../vendor/ApiClient'
+    spark = require 'spark'
+    spark.login { accessToken: SettingsHelper.get('access_token') }
 
     @client = null
+    @watchers = {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>TODO: Support empty variables/functions lists</p>
 
-    @listVariables()
-    @listFunctions()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@listVariables</span>()
+    <span class="hljs-property">@listFunctions</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Refresh UI and watchers when current core changes</p>
 
-    atom.workspaceView.command 'spark-ide:update-core-status', =&gt;
-      @listVariables()
-      @listFunctions()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-core-status'</span>,<span class="hljs-function"> =&gt;</span>
+      <span class="hljs-property">@listVariables</span>()
+      <span class="hljs-property">@listFunctions</span>()
+      <span class="hljs-property">@clearWatchers</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Clear watchers and hide when user logs out</p>
 
-    atom.workspaceView.command 'spark-ide:logout', =&gt;
-      if @hasParent()
-        @detach()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>,<span class="hljs-function"> =&gt;</span>
+      <span class="hljs-property">@clearWatchers</span>()
+      <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
+        <span class="hljs-property">@detach</span>()
 
-  serialize: -&gt;
+  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
 
-  destroy: -&gt;
-    @detach()
+  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@detach</span>()
 
-  toggle: -&gt;
-    if @hasParent()
-      @detach()
-    else
-      atom.workspaceView.prependToBottom(this)
+  <span class="hljs-attribute">toggle</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
+      <span class="hljs-property">@detach</span>()
+    <span class="hljs-keyword">else</span>
+      atom.workspaceView.prependToBottom(<span class="hljs-keyword">this</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Propagate table with variables</p>
 
-  listVariables: -&gt;
-    variables = SettingsHelper.get 'variables'
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">listVariables</span>:<span class="hljs-function"> -&gt;</span>
+    variables = SettingsHelper.get <span class="hljs-string">'variables'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>TODO: Fix background message</p>
 
-    @variables.empty()
-    if variables.length == 0
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    @variables.empty()
+
+    if !variables || variables.length == 0
       @variables.append $$ -&gt;
         @ul class: 'background-message', =&gt;
           @li 'No variables registered'
@@ -185,6 +260,7 @@ class CloudVariablesAndFunctions extends View
               @th 'Type'
               @th 'Value'
               @th 'Refresh'
+              @th 'Watch'
           @tbody =&gt;
             @raw ''
 
@@ -197,9 +273,14 @@ class CloudVariablesAndFunctions extends View
               @td class: 'loading'
               @td =&gt;
                 @button class: 'btn btn-sm icon icon-sync'
+              @td =&gt;
+                @button class: 'btn btn-sm icon icon-eye'
 
-        row.find('button').on 'click', (event) =&gt;
+        row.find('td:eq(3) button').on 'click', (event) =&gt;
           @refreshVariable $(event.currentTarget).parent().parent().attr('data-id')
+
+        row.find('td:eq(4) button').on 'click', (event) =&gt;
+          @toggleWatchVariable $(event.currentTarget).parent().parent().attr('data-id')
 
         table.find('tbody').append row.find('tbody &gt;')
 
@@ -208,40 +289,134 @@ class CloudVariablesAndFunctions extends View
         </li>
         
         
-        <li id="section-2">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Get initial values</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      for variable in Object.keys(variables)
-        @refreshVariable variable
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">for</span> variable <span class="hljs-keyword">in</span> Object.keys(variables)
+        <span class="hljs-property">@refreshVariable</span> variable</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Get variable value from the cloud</p>
 
-  refreshVariable: (variableName) -&gt;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">refreshVariable</span>: <span class="hljs-function"><span class="hljs-params">(variableName)</span> -&gt;</span>
     dfd = whenjs.defer()
-    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
 
-    cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
-    cell.addClass 'loading'
-    promise = @client.getVariable SettingsHelper.get('current_core'), variableName
-    promise.done (e) =&gt;
-      if !!e.ok
+    cell = <span class="hljs-property">@find</span>(<span class="hljs-string">'#spark-ide-cloud-variables [data-id='</span> + variableName + <span class="hljs-string">'] td:eq(2)'</span>)
+    cell.addClass <span class="hljs-string">'loading'</span>
+    cell.text <span class="hljs-string">''</span>
+    promise = spark.getVariable SettingsHelper.get(<span class="hljs-string">'current_core'</span>), variableName
+    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      cell.removeClass()
+      <span class="hljs-keyword">if</span> !!e.ok
+        cell.addClass <span class="hljs-string">'icon icon-issue-opened text-error'</span>
         dfd.reject()
-      else
-        cell.removeClass 'loading'
+      <span class="hljs-keyword">else</span>
         cell.text e.result
         dfd.resolve e.result
-    dfd.promise
+    , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      cell.removeClass()
+      cell.addClass <span class="hljs-string">'icon icon-issue-opened text-error'</span>
+      dfd.reject()
+    dfd.promise</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Toggle watching variable</p>
 
-  listFunctions: -&gt;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toggleWatchVariable</span>: <span class="hljs-function"><span class="hljs-params">(variableName)</span> -&gt;</span>
+    row = <span class="hljs-property">@find</span>(<span class="hljs-string">'#spark-ide-cloud-variables [data-id='</span> + variableName + <span class="hljs-string">']'</span>)
+    watchButton = row.find(<span class="hljs-string">'td:eq(4) button'</span>)
+    refreshButton = row.find(<span class="hljs-string">'td:eq(3) button'</span>)
+    valueCell = row.find(<span class="hljs-string">'td:eq(2)'</span>)
+
+    <span class="hljs-keyword">if</span> watchButton.hasClass <span class="hljs-string">'selected'</span>
+      watchButton.removeClass <span class="hljs-string">'selected'</span>
+      refreshButton.removeAttr <span class="hljs-string">'disabled'</span>
+      clearInterval <span class="hljs-property">@watchers</span>[variableName]
+      <span class="hljs-keyword">delete</span> <span class="hljs-property">@watchers</span>[variableName]
+    <span class="hljs-keyword">else</span>
+      watchButton.addClass <span class="hljs-string">'selected'</span>
+      refreshButton.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Gget variable every 5 seconds (empirical value)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@watchers</span>[variableName] = setInterval <span class="hljs-function">=&gt;</span>
+        <span class="hljs-property">@refreshVariable</span> variableName
+      , <span class="hljs-number">5000</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Remove all variable watchers</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearWatchers</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> Object.keys(<span class="hljs-property">@watchers</span>)
+      clearInterval <span class="hljs-property">@watchers</span>[key]
+    <span class="hljs-property">@watchers</span> = {}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Propagate table with functions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  listFunctions: -&gt;
     functions = SettingsHelper.get 'functions'
 
     @functions.empty()
-    if functions.length == 0
+    if !functions || functions.length == 0
       @functions.append $$ -&gt;
         @ul class: 'background-message', =&gt;
           @li 'No functions registered'
@@ -260,29 +435,67 @@ class CloudVariablesAndFunctions extends View
         row.find('.editor:eq(0)').data('view').on 'core:confirm', (event) =&gt;
           @callFunction $(event.currentTarget).parent().attr('data-id')
         row.find('.editor:eq(1)').data('view').hiddenInput.attr 'disabled', 'disabled'
-        @functions.append row
+        @functions.append row</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Lock/unlock row</p>
 
-  callFunction: (functionName) -&gt;
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setRowEnabled</span>: <span class="hljs-function"><span class="hljs-params">(row, enabled)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> enabled
+      row.find(<span class="hljs-string">'button'</span>).removeAttr <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.three-quarters'</span>).addClass <span class="hljs-string">'hidden'</span>
+    <span class="hljs-keyword">else</span>
+      row.find(<span class="hljs-string">'button'</span>).attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.three-quarters'</span>).removeClass <span class="hljs-string">'hidden'</span>
+      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).removeClass <span class="hljs-string">'icon icon-issue-opened'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Call function via cloud</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">callFunction</span>: <span class="hljs-function"><span class="hljs-params">(functionName)</span> -&gt;</span>
     dfd = whenjs.defer()
-    @client ?= new ApiClient SettingsHelper.get('apiUrl'), SettingsHelper.get('access_token')
+    row = <span class="hljs-property">@find</span>(<span class="hljs-string">'#spark-ide-cloud-functions [data-id='</span> + functionName + <span class="hljs-string">']'</span>)
+    <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">false</span>
+    row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).setText <span class="hljs-string">' '</span>
+    params = row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).getText()
+    promise = spark.callFunction SettingsHelper.get(<span class="hljs-string">'current_core'</span>), functionName, params
+    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">true</span>
 
-    row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')
-    row.find('button').attr 'disabled', 'disabled'
-    row.find('.editor:eq(0)').data('view').hiddenInput.attr 'disabled', 'disabled'
-    row.find('.editor:eq(1)').data('view').setText ' '
-    row.find('.three-quarters').removeClass 'hidden'
-    params = row.find('.editor:eq(0)').data('view').getText()
-    promise = @client.callFunction SettingsHelper.get('current_core'), functionName, params
-    promise.done (e) =&gt;
-      if !!e.ok
+      <span class="hljs-keyword">if</span> !!e.ok
+        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).addClass <span class="hljs-string">'icon icon-issue-opened'</span>
         dfd.reject()
-      else
-        row.find('button').removeAttr 'disabled'
-        row.find('.editor:eq(0)').data('view').hiddenInput.removeAttr 'disabled'
-        row.find('.editor:eq(1)').data('view').setText e.return_value.toString()
-        row.find('.three-quarters').addClass 'hidden'
+      <span class="hljs-keyword">else</span>
+        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).setText e.return_value.toString()
 
         dfd.resolve e.return_value
+    , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">true</span>
+      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).addClass <span class="hljs-string">'icon icon-issue-opened'</span>
+
+      dfd.reject()
     dfd.promise</pre></div></div>
             
         </li>

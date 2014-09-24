@@ -4,8 +4,11 @@ serialport = null
 utilities = require '../vendor/utilities.js'
 SerialBoredParser = require '../vendor/SerialBoredParser'
 
+# CoffeeScript port of SerialCommand.js functions from spark-cli
+
 module.exports =
   listPorts: ->
+    # Return promise with core's serial ports
     serialport = require 'serialport'
     dfd = whenjs.defer()
 
@@ -27,6 +30,7 @@ module.exports =
     dfd.promise
 
   askForCoreID: (comPort) ->
+    # Return promise with core's ID
     serialport = require 'serialport'
     failDelay = 5000
     dfd = whenjs.defer()
@@ -76,6 +80,7 @@ module.exports =
       serialPort.close()
 
   serialPromptDfd: (serialPort, prompt, answer, timeout, alwaysResolve) ->
+    # Return promise of serial prompt and answer
     serialport = require 'serialport'
     dfd = whenjs.defer()
     failTimer = true
@@ -129,6 +134,7 @@ module.exports =
     dfd.promise
 
   serialWifiConfig: (comPort, ssid, password, securityType, failDelay) ->
+    # Return prmise of setting WiFi credentials
     serialport = require 'serialport'
     dfd = whenjs.defer()
 

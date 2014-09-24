@@ -5,6 +5,7 @@ path = null
 _s = null
 
 module.exports =
+  # Local modules for JIT require
   SettingsHelper: null
   MenuManager: null
   SerialHelper: null
@@ -44,10 +45,10 @@ module.exports =
     @SettingsHelper ?= require './utils/settings-helper'
     @MenuManager ?= require './utils/menu-manager'
 
-    # Initialize views
+    # Initialize status bar view
     @statusView = new @StatusView()
 
-    # Hooking up commands
+    # Hook up commands
     atom.workspaceView.command 'spark-ide:login', => @login()
     atom.workspaceView.command 'spark-ide:logout', => @logout()
     atom.workspaceView.command 'spark-ide:select-core', => @selectCore()
@@ -62,6 +63,7 @@ module.exports =
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
+    # Update menu (default one in CSON file is empty)
     @MenuManager.update()
 
   deactivate: ->
@@ -70,8 +72,10 @@ module.exports =
   serialize: ->
 
   configDefaults:
+    # Delete .bin file after flash
     deleteFirmwareAfterFlash: true
 
+  # Require view's module and initialize it
   initView: (name) ->
     _s ?= require 'underscore.string'
     className = ''
@@ -106,29 +110,34 @@ module.exports =
 
     callback()
 
+  # Show login dialog
   login: ->
     @initView 'login-view'
-    # You may ask why this isn't in LoginView? This way, we don't need to
-    # require/initialize login view until it's needed.
+    # You may ask why commands aren't registered in LoginView?
+    # This way, we don't need to require/initialize login view until it's needed.
     atom.workspaceView.command 'spark-ide:cancel-login', => @loginView.cancelCommand()
     @loginView.show()
 
+  # Log out current user
   logout: -> @loginRequired =>
     @initView 'login-view'
 
     @loginView.logout()
 
+  # Show user's cores list
   selectCore: -> @loginRequired =>
     @initView 'select-core-view'
 
     @selectCoreView.show()
 
+  # Show rename core dialog
   renameCore: -> @coreRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
     @renameCoreView = new @RenameCoreView(@SettingsHelper.get 'current_core_name')
 
     @renameCoreView.attach()
 
+  # Remove current core from user's account
   removeCore: -> @coreRequired =>
     removeButton = 'Remove ' + @SettingsHelper.get('current_core_name')
     buttons = {}
@@ -157,11 +166,13 @@ module.exports =
       detailedMessage: 'Do you really want to remove ' + @SettingsHelper.get('current_core_name') + '?'
       buttons: buttons
 
+  # Show core claiming dialog
   claimCore: -> @loginRequired =>
     @initView 'claim-core-view'
 
     @claimCoreView.attach()
 
+  # Identify core via serial
   identifyCore: (port=null) -> @loginRequired =>
     @ListeningModeView ?= require './views/listening-mode-view'
     @SerialHelper ?= require './utils/serial-helper'
@@ -169,9 +180,11 @@ module.exports =
     @listPortsPromise.done (ports) =>
       @listPortsPromise = null
       if ports.length == 0
+        # If there are no ports, show dialog with animation how to enter listening mode
         @listeningModeView ?= new @ListeningModeView()
         @listeningModeView.show()
       else if (ports.length == 1) || (!!port)
+        # If there's one port or one was specified in param, identify it
         if !port
           port = ports[0].comName
 
@@ -184,11 +197,13 @@ module.exports =
           @statusView.setStatus e, 'error'
           @statusView.clearAfter 5000
       else
+        # There are at least two ports so show them and ask user to choose
         @SelectPortView ?= require './views/select-port-view'
         @selectPortView ?= new @SelectPortView()
 
         @selectPortView.show()
 
+  # Compile current project in the cloud
   compileCloud: (thenFlash=null) -> @loginRequired => @projectRequired =>
     if !!@compileCloudPromise
       return
@@ -235,16 +250,19 @@ module.exports =
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
         @compileCloudPromise = null
 
+  # Show compile errors list
   showCompileErrors: ->
     @initView 'compile-errors-view'
 
     @compileErrorsView.show()
 
+  # Toggle cloud variables and functions panel
   toggleCloudVariablesAndFunctions: -> @coreRequired =>
     @initView 'cloud-variables-and-functions-view'
 
     @cloudVariablesAndFunctionsView.toggle()
 
+  # Flash core via the cloud
   flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>
     fs ?= require 'fs-plus'
     utilities ?= require './vendor/utilities'
@@ -253,12 +271,12 @@ module.exports =
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin')
-    
+
     if files.length == 0
-      # If no firmware, compile
+      # If no firmware file, compile
       atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
     else if (files.length == 1) || (!!firmware)
-      # If one firmware, flash
+      # If one firmware file, flash
 
       if !firmware
         firmware = files[0]
@@ -278,7 +296,7 @@ module.exports =
         @statusView.setStatus e.message, 'error'
         @statusView.clearAfter 5000
     else
-      # If multiple firmware, show select
+      # If multiple firmware files, show select
       @initView 'select-firmware-view'
 
       files.reverse()

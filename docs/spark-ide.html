@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -124,9 +129,25 @@
             <div class="content"><div class='highlight'><pre>fs = <span class="hljs-literal">null</span>
 settings = <span class="hljs-literal">null</span>
 utilities = <span class="hljs-literal">null</span>
+path = <span class="hljs-literal">null</span>
+_s = <span class="hljs-literal">null</span>
 
-<span class="hljs-built_in">module</span>.exports =
-  <span class="hljs-attribute">SettingsHelper</span>: <span class="hljs-literal">null</span>
+<span class="hljs-built_in">module</span>.exports =</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Local modules for JIT require</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">SettingsHelper</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">MenuManager</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">SerialHelper</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">StatusView</span>: <span class="hljs-literal">null</span>
@@ -139,7 +160,7 @@ utilities = <span class="hljs-literal">null</span>
   <span class="hljs-attribute">SelectPortView</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">CompileErrorsView</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">CloudVariablesAndFunctions</span>: <span class="hljs-literal">null</span>
-  <span class="hljs-attribute">ApiClient</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">SelectFirmwareView</span>: <span class="hljs-literal">null</span>
 
   <span class="hljs-attribute">statusView</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">loginView</span>: <span class="hljs-literal">null</span>
@@ -150,21 +171,25 @@ utilities = <span class="hljs-literal">null</span>
   <span class="hljs-attribute">listeningModeView</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">selectPortView</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">compileErrorsView</span>: <span class="hljs-literal">null</span>
-  <span class="hljs-attribute">cloudVariablesAndFunctions</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">cloudVariablesAndFunctionsView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">selectFirmwareView</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">spark</span>: <span class="hljs-literal">null</span>
 
   <span class="hljs-attribute">removePromise</span>: <span class="hljs-literal">null</span>
   <span class="hljs-attribute">listPortsPromise</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">compileCloudPromise</span>: <span class="hljs-literal">null</span>
+  <span class="hljs-attribute">flashCorePromise</span>: <span class="hljs-literal">null</span>
 
   <span class="hljs-attribute">activate</span>: <span class="hljs-function"><span class="hljs-params">(state)</span> -&gt;</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-2">
+        <li id="section-3">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-2">&#182;</a>
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>Require modules on activation</p>
 
@@ -177,54 +202,17 @@ utilities = <span class="hljs-literal">null</span>
         </li>
         
         
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>Initialize views</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@statusView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@StatusView</span>()</pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Hooking up commands</p>
+              <p>Initialize status bar view</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@login</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@logout</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:select-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@selectCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:rename-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@renameCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:remove-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@removeCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:claim-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@claimCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:identify-core'</span>, <span class="hljs-function"><span class="hljs-params">(event, port)</span> =&gt;</span> <span class="hljs-property">@identifyCore</span>(port)
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:compile-cloud'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@compileCloud</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:show-compile-errors'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@showCompileErrors</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:toggle-cloud-variables-and-functions'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@toggleCloudVariablesAndFunctions</span>()
-
-    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-menu'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@MenuManager</span>.update()
-
-    <span class="hljs-property">@MenuManager</span>.update()
-
-  <span class="hljs-attribute">deactivate</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@statusView</span>?.destroy()
-
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
-
-  <span class="hljs-attribute">login</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@LoginView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/login-view'</span>
-    <span class="hljs-property">@loginView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@LoginView</span>()</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@statusView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@StatusView</span>()</pre></div></div>
             
         </li>
         
@@ -235,60 +223,253 @@ utilities = <span class="hljs-literal">null</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>You may ask why this isn’t in LoginView? This way, we don’t need to
-require/initialize login view until it’s needed.</p>
+              <p>Hook up commands</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@login</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@logout</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:select-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@selectCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:rename-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@renameCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:remove-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@removeCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:claim-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@claimCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:identify-core'</span>, <span class="hljs-function"><span class="hljs-params">(event, port)</span> =&gt;</span> <span class="hljs-property">@identifyCore</span>(port)
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:compile-cloud'</span>, <span class="hljs-function"><span class="hljs-params">(event, thenFlash)</span> =&gt;</span> <span class="hljs-property">@compileCloud</span>(thenFlash)
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:show-compile-errors'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@showCompileErrors</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:toggle-cloud-variables-and-functions'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@toggleCloudVariablesAndFunctions</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:flash-cloud'</span>, <span class="hljs-function"><span class="hljs-params">(event, firmware)</span> =&gt;</span> <span class="hljs-property">@flashCloud</span>(firmware)
+
+    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-menu'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@MenuManager</span>.update()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Update menu (default one in CSON file is empty)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@MenuManager</span>.update()
+
+  <span class="hljs-attribute">deactivate</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@statusView</span>?.destroy()
+
+  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+
+  <span class="hljs-attribute">configDefaults</span>:</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Delete .bin file after flash</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-attribute">deleteFirmwareAfterFlash</span>: <span class="hljs-literal">true</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Require view’s module and initialize it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">initView</span>: <span class="hljs-function"><span class="hljs-params">(name)</span> -&gt;</span>
+    _s ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'underscore.string'</span>
+    className = <span class="hljs-string">''</span>
+    <span class="hljs-keyword">for</span> part <span class="hljs-keyword">in</span> name.split <span class="hljs-string">'-'</span>
+      className += _s.capitalize part
+
+    @[className] ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/'</span> + name
+    @[className.charAt(<span class="hljs-number">0</span>).toLowerCase() + className.slice(<span class="hljs-number">1</span>)] ?= <span class="hljs-keyword">new</span> @[className]()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>“Decorator” which runs callback only when user is logged in</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">loginRequired</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-property">@spark</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'spark'</span>
+    <span class="hljs-property">@spark</span>.login { <span class="hljs-attribute">accessToken</span>: <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'access_token'</span>) }
+
+    callback()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>“Decorator” which runs callback only when user is logged in and has core selected</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">coreRequired</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+      <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.hasCurrentCore()
+        <span class="hljs-keyword">return</span>
+
+      callback()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>“Decorator” which runs callback only when there’s project set</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">projectRequired</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    <span class="hljs-keyword">if</span> !atom.project.getPath()
+      <span class="hljs-keyword">return</span>
+
+    callback()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Show login dialog</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">login</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'login-view'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>You may ask why commands aren’t registered in LoginView?
+This way, we don’t need to require/initialize login view until it’s needed.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:cancel-login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@loginView</span>.cancelCommand()
-    <span class="hljs-property">@loginView</span>.show()
+    <span class="hljs-property">@loginView</span>.show()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Log out current user</p>
 
-  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'login-view'</span>
 
-    <span class="hljs-property">@LoginView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/login-view'</span>
-    <span class="hljs-property">@loginView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@LoginView</span>()
+    <span class="hljs-property">@loginView</span>.logout()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Show user’s cores list</p>
 
-    <span class="hljs-property">@loginView</span>.logout()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'select-core-view'</span>
 
-  <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@SelectCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/select-core-view'</span>
-    <span class="hljs-property">@selectCoreView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@SelectCoreView</span>()
+    <span class="hljs-property">@selectCoreView</span>.show()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Show rename core dialog</p>
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-property">@selectCoreView</span>.show()
-
-  <span class="hljs-attribute">renameCore</span>:<span class="hljs-function"> -&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">renameCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
     <span class="hljs-property">@RenameCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/rename-core-view'</span>
+    <span class="hljs-property">@renameCoreView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@RenameCoreView</span>(<span class="hljs-property">@SettingsHelper</span>.get <span class="hljs-string">'current_core_name'</span>)
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
+    <span class="hljs-property">@renameCoreView</span>.attach()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Remove current core from user’s account</p>
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.hasCurrentCore()
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-property">@renameCoreView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@RenameCoreView</span>(<span class="hljs-property">@SettingsHelper</span>.get <span class="hljs-string">'current_core_name'</span>)
-    <span class="hljs-property">@renameCoreView</span>.attach()
-
-  <span class="hljs-attribute">removeCore</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.hasCurrentCore()
-      <span class="hljs-keyword">return</span>
-
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
     removeButton = <span class="hljs-string">'Remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>)
     buttons = {}
     buttons[<span class="hljs-string">'Cancel'</span>] =<span class="hljs-function"> -&gt;</span>
 
     buttons[<span class="hljs-string">'Remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>)] =<span class="hljs-function"> =&gt;</span>
       workspace = atom.workspaceView
-      <span class="hljs-property">@ApiClient</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/ApiClient'</span>
-      client = <span class="hljs-keyword">new</span> <span class="hljs-property">@ApiClient</span> <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'apiUrl'</span>), <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'access_token'</span>)
-      <span class="hljs-property">@removePromise</span> = client.removeCore <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core'</span>)
+      <span class="hljs-property">@removePromise</span> = <span class="hljs-property">@spark</span>.removeCore <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core'</span>)
       <span class="hljs-property">@removePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@removePromise</span>
           <span class="hljs-keyword">return</span>
@@ -307,87 +488,136 @@ require/initialize login view until it’s needed.</p>
     atom.confirm
       <span class="hljs-attribute">message</span>: <span class="hljs-string">'Removal confirmation'</span>
       <span class="hljs-attribute">detailedMessage</span>: <span class="hljs-string">'Do you really want to remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'?'</span>
-      <span class="hljs-attribute">buttons</span>: buttons
+      <span class="hljs-attribute">buttons</span>: buttons</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Show core claiming dialog</p>
 
-  <span class="hljs-attribute">claimCore</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@ClaimCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/claim-core-view'</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">claimCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'claim-core-view'</span>
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
+    <span class="hljs-property">@claimCoreView</span>.attach()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Identify core via serial</p>
 
-    <span class="hljs-property">@claimCoreView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@ClaimCoreView</span>()
-    <span class="hljs-property">@claimCoreView</span>.attach()
-
-  <span class="hljs-attribute">identifyCore</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">identifyCore</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
     <span class="hljs-property">@ListeningModeView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/listening-mode-view'</span>
     <span class="hljs-property">@SerialHelper</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./utils/serial-helper'</span>
-
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
-
     <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-property">@SerialHelper</span>.listPorts()
     <span class="hljs-property">@listPortsPromise</span>.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
       <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-literal">null</span>
-      <span class="hljs-keyword">if</span> ports.length == <span class="hljs-number">0</span>
-        <span class="hljs-property">@listeningModeView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@ListeningModeView</span>()
+      <span class="hljs-keyword">if</span> ports.length == <span class="hljs-number">0</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>If there are no ports, show dialog with animation how to enter listening mode</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@listeningModeView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@ListeningModeView</span>()
         <span class="hljs-property">@listeningModeView</span>.show()
-      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ports.length == <span class="hljs-number">1</span>) || (!!port)
-        <span class="hljs-keyword">if</span> !port
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ports.length == <span class="hljs-number">1</span>) || (!!port)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>If there’s one port or one was specified in param, identify it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> !port
           port = ports[<span class="hljs-number">0</span>].comName
 
         promise = <span class="hljs-property">@SerialHelper</span>.askForCoreID port
         promise.done <span class="hljs-function"><span class="hljs-params">(coreID)</span> =&gt;</span>
           <span class="hljs-property">@IdentifyCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/identify-core-view'</span>
-          <span class="hljs-property">@identifyCoreView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@IdentifyCoreView</span> coreID
+          <span class="hljs-property">@identifyCoreView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@IdentifyCoreView</span> coreID
           <span class="hljs-property">@identifyCoreView</span>.attach()
         , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
           <span class="hljs-property">@statusView</span>.setStatus e, <span class="hljs-string">'error'</span>
           <span class="hljs-property">@statusView</span>.clearAfter <span class="hljs-number">5000</span>
-      <span class="hljs-keyword">else</span>
-        <span class="hljs-property">@SelectPortView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/select-port-view'</span>
-        <span class="hljs-property">@selectPortView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@SelectPortView</span>()
-
-        <span class="hljs-property">@selectPortView</span>.show()
-
-  <span class="hljs-attribute">parseErrors</span>: <span class="hljs-function"><span class="hljs-params">(raw)</span> -&gt;</span>
-    lines = raw.split <span class="hljs-string">"\n"</span>
-    errors = []
-    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines
-      result = line.match <span class="hljs-regexp">/^([^:]+):(\d+):(\d+):\s(\w+):(.*)$/</span>
-      <span class="hljs-keyword">if</span> result <span class="hljs-keyword">and</span> result[<span class="hljs-number">4</span>] == <span class="hljs-string">'error'</span>
-        errors.push {
-          <span class="hljs-attribute">file</span>: result[<span class="hljs-number">1</span>],
-          <span class="hljs-attribute">row</span>: result[<span class="hljs-number">2</span>],
-          <span class="hljs-attribute">col</span>: result[<span class="hljs-number">3</span>],
-          <span class="hljs-attribute">type</span>: result[<span class="hljs-number">4</span>],
-          <span class="hljs-attribute">message</span>: result[<span class="hljs-number">5</span>]
-        }
-    errors
-
-  <span class="hljs-attribute">compileCloud</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-keyword">if</span> !!<span class="hljs-property">@compileCloudPromise</span>
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-keyword">if</span> !atom.project.getPath()
-      <span class="hljs-keyword">return</span>
-
-    <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">working</span>: <span class="hljs-literal">true</span>}
-    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-compile-status'</span>
-
-    <span class="hljs-property">@ApiClient</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/ApiClient'</span>
-    client = <span class="hljs-keyword">new</span> <span class="hljs-property">@ApiClient</span> <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'apiUrl'</span>), <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'access_token'</span>)</pre></div></div>
+      <span class="hljs-keyword">else</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-6">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>There are at least two ports so show them and ask user to choose</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@SelectPortView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/select-port-view'</span>
+        <span class="hljs-property">@selectPortView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@SelectPortView</span>()
+
+        <span class="hljs-property">@selectPortView</span>.show()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Compile current project in the cloud</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">compileCloud</span>: <span class="hljs-function"><span class="hljs-params">(thenFlash=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span> <span class="hljs-property">@projectRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-keyword">if</span> !!<span class="hljs-property">@compileCloudPromise</span>
+      <span class="hljs-keyword">return</span>
+
+    <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">working</span>: <span class="hljs-literal">true</span>}
+    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-compile-status'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Including files</p>
 
@@ -403,7 +633,7 @@ require/initialize login view until it’s needed.</p>
       <span class="hljs-keyword">return</span> !(utilities.getFilenameExt(file).toLowerCase() <span class="hljs-keyword">in</span> settings.notSourceExtensions)
 
     workspace = atom.workspaceView
-    <span class="hljs-property">@compileCloudPromise</span> = client.compileCode files
+    <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-property">@spark</span>.compileCode files
     <span class="hljs-property">@compileCloudPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
       <span class="hljs-keyword">if</span> !e
         <span class="hljs-keyword">return</span>
@@ -413,11 +643,11 @@ require/initialize login view until it’s needed.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Download binary</p>
 
@@ -425,49 +655,177 @@ require/initialize login view until it’s needed.</p>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-literal">null</span>
         filename = <span class="hljs-string">'firmware_'</span> + (<span class="hljs-keyword">new</span> Date()).getTime() + <span class="hljs-string">'.bin'</span>;
-        <span class="hljs-property">@downloadBinaryPromise</span> = client.downloadBinary e.binary_url, rootPath + <span class="hljs-string">'/'</span> + filename
+        <span class="hljs-property">@downloadBinaryPromise</span> = <span class="hljs-property">@spark</span>.downloadBinary e.binary_url, rootPath + <span class="hljs-string">'/'</span> + filename
 
         <span class="hljs-property">@downloadBinaryPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
           atom.workspaceView = workspace
           <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">filename</span>: filename}
           atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-compile-status'</span>
-          <span class="hljs-property">@downloadBinaryPromise</span> = <span class="hljs-literal">null</span>
+          <span class="hljs-property">@downloadBinaryPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>TODO: Test it</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-keyword">if</span> !!thenFlash
+            atom.workspaceView.trigger <span class="hljs-string">'spark-ide:flash-cloud'</span>
       <span class="hljs-keyword">else</span></pre></div></div>
             
         </li>
         
         
-        <li id="section-8">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>Handle errors</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">errors</span>: <span class="hljs-property">@parseErrors</span>(e.errors[<span class="hljs-number">0</span>])}
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@CompileErrorsView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/compile-errors-view'</span>
+        <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">errors</span>: <span class="hljs-property">@CompileErrorsView</span>.parseErrors(e.errors[<span class="hljs-number">0</span>])}
         atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-compile-status'</span>
         atom.workspaceView.trigger <span class="hljs-string">'spark-ide:show-compile-errors'</span>
-        <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-literal">null</span>
+        <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Show compile errors list</p>
 
-  <span class="hljs-attribute">showCompileErrors</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@CompileErrorsView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/compile-errors-view'</span>
-    <span class="hljs-property">@compileErrorsView</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@CompileErrorsView</span>
-    <span class="hljs-property">@compileErrorsView</span>.show()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showCompileErrors</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'compile-errors-view'</span>
 
-  <span class="hljs-attribute">toggleCloudVariablesAndFunctions</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@CloudVariablesAndFunctions</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/cloud-variables-and-functions-view'</span>
+    <span class="hljs-property">@compileErrorsView</span>.show()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Toggle cloud variables and functions panel</p>
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
-      <span class="hljs-keyword">return</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">toggleCloudVariablesAndFunctions</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-property">@initView</span> <span class="hljs-string">'cloud-variables-and-functions-view'</span>
 
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.hasCurrentCore()
-      <span class="hljs-keyword">return</span>
+    <span class="hljs-property">@cloudVariablesAndFunctionsView</span>.toggle()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Flash core via the cloud</p>
 
-    <span class="hljs-property">@cloudVariablesAndFunctions</span> ?= <span class="hljs-keyword">new</span> <span class="hljs-property">@CloudVariablesAndFunctions</span>
-    <span class="hljs-property">@cloudVariablesAndFunctions</span>.toggle()</pre></div></div>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">flashCloud</span>: <span class="hljs-function"><span class="hljs-params">(firmware=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span> <span class="hljs-property">@projectRequired</span> <span class="hljs-function">=&gt;</span>
+    fs ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'fs-plus'</span>
+    utilities ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/utilities'</span>
+
+    rootPath = atom.project.getPath()
+    files = fs.listSync(rootPath)
+    files = files.filter <span class="hljs-function"><span class="hljs-params">(file)</span> -&gt;</span>
+      <span class="hljs-keyword">return</span> (utilities.getFilenameExt(file).toLowerCase() == <span class="hljs-string">'.bin'</span>)
+
+    <span class="hljs-keyword">if</span> files.length == <span class="hljs-number">0</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>If no firmware file, compile</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      atom.workspaceView.trigger <span class="hljs-string">'spark-ide:compile-cloud'</span>, [<span class="hljs-literal">true</span>]
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (files.length == <span class="hljs-number">1</span>) || (!!firmware)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>If one firmware file, flash</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+      <span class="hljs-keyword">if</span> !firmware
+        firmware = files[<span class="hljs-number">0</span>]
+
+      <span class="hljs-property">@statusView</span>.setStatus <span class="hljs-string">'Flashing via the cloud...'</span>
+
+      <span class="hljs-property">@flashCorePromise</span> = <span class="hljs-property">@spark</span>.flashCore <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core'</span>), [firmware]
+      <span class="hljs-property">@flashCorePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-property">@statusView</span>.setStatus e.status + <span class="hljs-string">'...'</span>
+        <span class="hljs-property">@statusView</span>.clearAfter <span class="hljs-number">5000</span>
+
+        <span class="hljs-keyword">if</span> atom.config.get <span class="hljs-string">'spark-ide.deleteFirmwareAfterFlash'</span>
+          fs.unlink firmware
+
+        <span class="hljs-property">@flashCorePromise</span> = <span class="hljs-literal">null</span>
+      , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-property">@statusView</span>.setStatus e.message, <span class="hljs-string">'error'</span>
+        <span class="hljs-property">@statusView</span>.clearAfter <span class="hljs-number">5000</span>
+    <span class="hljs-keyword">else</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>If multiple firmware files, show select</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@initView</span> <span class="hljs-string">'select-firmware-view'</span>
+
+      files.reverse()
+      <span class="hljs-property">@selectFirmwareView</span>.setItems files
+      <span class="hljs-property">@selectFirmwareView</span>.show()</pre></div></div>
             
         </li>
         

@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -121,29 +126,83 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>SelectListView = require('atom').SelectListView
+            <div class="content"><div class='highlight'><pre>SelectListView = <span class="hljs-built_in">require</span>(<span class="hljs-string">'atom'</span>).SelectListView
 
-$ = null
-$$ = null
-Subscriber = null
-SerialHelper = null
-SettingsHelper = null
-fs = null
+$ = <span class="hljs-literal">null</span>
+$$ = <span class="hljs-literal">null</span>
+Subscriber = <span class="hljs-literal">null</span>
+SerialHelper = <span class="hljs-literal">null</span>
+SettingsHelper = <span class="hljs-literal">null</span>
+fs = <span class="hljs-literal">null</span>
+path = <span class="hljs-literal">null</span>
 
-module.exports =
-class CompileErrorsView extends SelectListView
-  initialize: -&gt;
-    super
+<span class="hljs-built_in">module</span>.exports =
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CompileErrorsView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SelectListView</span></span>
+  <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-keyword">super</span>
 
-    {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
+    {$, $$} = <span class="hljs-built_in">require</span> <span class="hljs-string">'atom'</span>
+    {Subscriber} = <span class="hljs-built_in">require</span> <span class="hljs-string">'emissary'</span>
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', =&gt; @hide()
+    <span class="hljs-property">@subscriber</span> = <span class="hljs-keyword">new</span> Subscriber()
+    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'core:cancel core:close'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@hide</span>()
 
-    @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-compile-errors-view'
+    <span class="hljs-property">@addClass</span> <span class="hljs-string">'overlay from-top'</span>
+    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-compile-errors-view'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Parse gcc errors into array</p>
 
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-property">@parseErrors</span>: <span class="hljs-function"><span class="hljs-params">(raw)</span> -&gt;</span>
+    path ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
+
+    lines = raw.split <span class="hljs-string">"\n"</span>
+    errors = []
+    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> lines
+      result = line.match <span class="hljs-regexp">/^([^:]+):(\d+):(\d+):\s(\w+):(.*)$/</span>
+      <span class="hljs-keyword">if</span> result <span class="hljs-keyword">and</span> result[<span class="hljs-number">4</span>] == <span class="hljs-string">'error'</span>
+        errors.push {
+          <span class="hljs-attribute">file</span>: result[<span class="hljs-number">1</span>],
+          <span class="hljs-attribute">row</span>: result[<span class="hljs-number">2</span>],
+          <span class="hljs-attribute">col</span>: result[<span class="hljs-number">3</span>],
+          <span class="hljs-attribute">type</span>: result[<span class="hljs-number">4</span>],
+          <span class="hljs-attribute">message</span>: result[<span class="hljs-number">5</span>]
+        }
+      <span class="hljs-keyword">else</span>
+        result = line.match <span class="hljs-regexp">/^([^:]+):(\d+):\s(.*)$/</span>
+        <span class="hljs-keyword">if</span> result</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>This is probably “undefined” error</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          errors.push {
+            file: path.basename(result[1]),
+            row: result[2],
+            col: 0,
+            type: 'error',
+            message: result[3]
+          }
+    errors
 
   destroy: -&gt;
     @remove()
@@ -176,15 +235,28 @@ class CompileErrorsView extends SelectListView
     if fs.existsSync item.file
       filename = item.file
     else
-      filename = item.file.replace '.cpp', '.ino'
+      filename = item.file.replace '.cpp', '.ino'</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Open file with error in editor</p>
 
-    opening = atom.workspaceView.open filename, { searchAllPanes: true }
-    opening.done (editor) =&gt;
-      editor.setCursorBufferPosition [item.row-1, item.col-1],
-    @cancel()
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    opening = atom.workspaceView.open filename, { <span class="hljs-attribute">searchAllPanes</span>: <span class="hljs-literal">true</span> }
+    opening.done <span class="hljs-function"><span class="hljs-params">(editor)</span> =&gt;</span>
+      editor.setCursorBufferPosition [item.row-<span class="hljs-number">1</span>, item.col-<span class="hljs-number">1</span>],
+    <span class="hljs-property">@cancel</span>()
 
-  getFilterKey: -&gt;
-    'message'</pre></div></div>
+  <span class="hljs-attribute">getFilterKey</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-string">'message'</span></pre></div></div>
             
         </li>
         

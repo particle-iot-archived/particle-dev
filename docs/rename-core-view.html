@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -121,9 +126,10 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>Dialog = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/dialog'</span>
+            <div class="content"><div class='highlight'><pre>Dialog = <span class="hljs-built_in">require</span> <span class="hljs-string">'../subviews/dialog'</span>
 SettingsHelper = <span class="hljs-literal">null</span>
 _s = <span class="hljs-literal">null</span>
+spark = <span class="hljs-literal">null</span>
 
 <span class="hljs-built_in">module</span>.exports =
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RenameCoreView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Dialog</span></span>
@@ -149,10 +155,10 @@ _s = <span class="hljs-literal">null</span>
     <span class="hljs-keyword">else</span>
       <span class="hljs-property">@miniEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
 
-      ApiClient = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/ApiClient'</span>
-      client = <span class="hljs-keyword">new</span> ApiClient SettingsHelper.get(<span class="hljs-string">'apiUrl'</span>), SettingsHelper.get(<span class="hljs-string">'access_token'</span>)
+      spark ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'spark'</span>
+      spark.login { <span class="hljs-attribute">accessToken</span>: SettingsHelper.get(<span class="hljs-string">'access_token'</span>) }
       workspace = atom.workspaceView
-      <span class="hljs-property">@renamePromise</span> = client.renameCore SettingsHelper.get(<span class="hljs-string">'current_core'</span>), newName
+      <span class="hljs-property">@renamePromise</span> = spark.renameCore SettingsHelper.get(<span class="hljs-string">'current_core'</span>), newName
       <span class="hljs-property">@setLoading</span> <span class="hljs-literal">true</span>
       <span class="hljs-property">@renamePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@renamePromise</span>

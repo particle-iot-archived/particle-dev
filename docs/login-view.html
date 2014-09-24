@@ -24,6 +24,16 @@
               </a>
             
               
+              <a class="source" href="dialog.html">
+                dialog.coffee
+              </a>
+            
+              
+              <a class="source" href="password-editor.html">
+                password-editor.coffee
+              </a>
+            
+              
               <a class="source" href="menu-manager.html">
                 menu-manager.coffee
               </a>
@@ -36,16 +46,6 @@
               
               <a class="source" href="settings-helper.html">
                 settings-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="spec-helper.html">
-                spec-helper.coffee
-              </a>
-            
-              
-              <a class="source" href="dialog.html">
-                dialog.coffee
               </a>
             
               
@@ -89,6 +89,11 @@
               </a>
             
               
+              <a class="source" href="select-firmware-view.html">
+                select-firmware-view.coffee
+              </a>
+            
+              
               <a class="source" href="select-port-view.html">
                 select-port-view.coffee
               </a>
@@ -126,7 +131,7 @@
 $ = null
 _s = null
 Subscriber = null
-ApiClient = null
+spark = null
 SettingsHelper = null
 validator = null
 
@@ -258,13 +263,39 @@ class LoginView extends View
     <span class="hljs-property">@hide</span>()
 
   <span class="hljs-attribute">cancelCommand</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@cancel</span>()
+    <span class="hljs-property">@cancel</span>()</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Remove errors from inputs</p>
 
-  <span class="hljs-attribute">clearErrors</span>:<span class="hljs-function"> -&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearErrors</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@emailEditor</span>.removeClass <span class="hljs-string">'editor-error'</span>
-    <span class="hljs-property">@passwordEditor</span>.removeClass <span class="hljs-string">'editor-error'</span>
+    <span class="hljs-property">@passwordEditor</span>.removeClass <span class="hljs-string">'editor-error'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Test input’s values</p>
 
-  <span class="hljs-attribute">validateInputs</span>:<span class="hljs-function"> -&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">validateInputs</span>:<span class="hljs-function"> -&gt;</span>
     validator ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'validator'</span>
 
     <span class="hljs-property">@clearErrors</span>()
@@ -282,45 +313,56 @@ class LoginView extends View
       <span class="hljs-property">@passwordEditor</span>.addClass <span class="hljs-string">'editor-error'</span>
       isOk = <span class="hljs-literal">false</span>
 
-    isOk
-
-  <span class="hljs-attribute">unlockUi</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@emailEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
-    <span class="hljs-property">@passwordEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
-    <span class="hljs-property">@loginButton</span>.removeAttr <span class="hljs-string">'disabled'</span>
-
-  <span class="hljs-attribute">login</span>: <span class="hljs-function"><span class="hljs-params">(event, element)</span> =&gt;</span>
-    <span class="hljs-keyword">if</span> !<span class="hljs-property">@validateInputs</span>()
-      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span></pre></div></div>
+    isOk</pre></div></div>
             
         </li>
         
         
-        <li id="section-5">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>It should be ?= instead of = to save time but then the tests won’t work
-as ApiClient could be set in one of the previous tests</p>
+              <p>Unlock inputs and buttons</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    ApiClient = <span class="hljs-built_in">require</span> <span class="hljs-string">'../vendor/ApiClient'</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">unlockUi</span>:<span class="hljs-function"> -&gt;</span>
+    <span class="hljs-property">@emailEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@passwordEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+    <span class="hljs-property">@loginButton</span>.removeAttr <span class="hljs-string">'disabled'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Login via the cloud</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">login</span>: <span class="hljs-function"><span class="hljs-params">(event, element)</span> =&gt;</span>
+    <span class="hljs-keyword">if</span> !<span class="hljs-property">@validateInputs</span>()
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+
     <span class="hljs-property">@emailEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
     <span class="hljs-property">@passwordEditor</span>.hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
     <span class="hljs-property">@loginButton</span>.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
     <span class="hljs-property">@spinner</span>.removeClass <span class="hljs-string">'hidden'</span>
     <span class="hljs-property">@errorLabel</span>.hide()
 
-    client = <span class="hljs-keyword">new</span> ApiClient SettingsHelper.get <span class="hljs-string">'apiUrl'</span>
-    <span class="hljs-property">@loginPromise</span> = client.login <span class="hljs-string">'spark-ide'</span>, <span class="hljs-property">@email</span>, <span class="hljs-property">@password</span>
+    spark = <span class="hljs-built_in">require</span> <span class="hljs-string">'spark'</span>
+    <span class="hljs-property">@loginPromise</span> = spark.login { <span class="hljs-attribute">username</span>:<span class="hljs-property">@email</span>, <span class="hljs-attribute">password</span>:<span class="hljs-property">@password</span> }
     <span class="hljs-property">@loginPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
       <span class="hljs-property">@spinner</span>.addClass <span class="hljs-string">'hidden'</span>
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@loginPromise</span>
         <span class="hljs-keyword">return</span>
-      SettingsHelper.setCredentials <span class="hljs-property">@email</span>, e
+      SettingsHelper.setCredentials <span class="hljs-property">@email</span>, e.access_token
       atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span>
       <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
 
@@ -332,9 +374,22 @@ as ApiClient could be set in one of the previous tests</p>
         <span class="hljs-keyword">return</span>
       <span class="hljs-property">@unlockUi</span>()
       <span class="hljs-property">@errorLabel</span>.text(e).show()
-      <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
+      <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Logout</p>
 
-  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> =&gt;</span>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> =&gt;</span>
     SettingsHelper.clearCredentials()
     atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span></pre></div></div>
             

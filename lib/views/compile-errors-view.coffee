@@ -22,6 +22,7 @@ class CompileErrorsView extends SelectListView
     @addClass 'overlay from-top'
     @prop 'id', 'spark-ide-compile-errors-view'
 
+  # Parse gcc errors into array
   @parseErrors: (raw) ->
     path ?= require 'path'
 
@@ -83,6 +84,7 @@ class CompileErrorsView extends SelectListView
     else
       filename = item.file.replace '.cpp', '.ino'
 
+    # Open file with error in editor
     opening = atom.workspaceView.open filename, { searchAllPanes: true }
     opening.done (editor) =>
       editor.setCursorBufferPosition [item.row-1, item.col-1],

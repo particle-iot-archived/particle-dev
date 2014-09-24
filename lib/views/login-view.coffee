@@ -100,10 +100,12 @@ class LoginView extends View
   cancelCommand: ->
     @cancel()
 
+  # Remove errors from inputs
   clearErrors: ->
     @emailEditor.removeClass 'editor-error'
     @passwordEditor.removeClass 'editor-error'
 
+  # Test input's values
   validateInputs: ->
     validator ?= require 'validator'
 
@@ -124,11 +126,13 @@ class LoginView extends View
 
     isOk
 
+  # Unlock inputs and buttons
   unlockUi: ->
     @emailEditor.hiddenInput.removeAttr 'disabled'
     @passwordEditor.hiddenInput.removeAttr 'disabled'
     @loginButton.removeAttr 'disabled'
 
+  # Login via the cloud
   login: (event, element) =>
     if !@validateInputs()
       return false
@@ -159,6 +163,7 @@ class LoginView extends View
       @errorLabel.text(e).show()
       @loginPromise = null
 
+  # Logout
   logout: =>
     SettingsHelper.clearCredentials()
     atom.workspaceView.trigger 'spark-ide:update-login-status'

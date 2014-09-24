@@ -31,6 +31,7 @@ class Dialog extends View
     @miniEditor.focus()
     @miniEditor.getModel().scrollToCursorPosition()
 
+  # Close other dialogs
   hideOthers: ->
     $('.spark-ide-dialog').each (idx, item) ->
       $(item).data('view').close()
@@ -46,6 +47,7 @@ class Dialog extends View
     @errorMessage.text(message)
     @flashError() if message
 
+  # Show/hide loading spinner
   setLoading: (isLoading=false) ->
     @miniEditor.removeClass 'loading'
     if isLoading
