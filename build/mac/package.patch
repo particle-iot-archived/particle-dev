@@ -7,7 +7,7 @@
 -    "language-yaml": "0.17.0"
 +    "language-yaml": "0.17.0",
 +    "language-arduino": "0.2.0",
-+    "file-type-icons": "0.4.3",
++    "file-type-icons": "0.4.4",
 +    "switch-header-source": "0.8.0"
    },
    "private": true,
