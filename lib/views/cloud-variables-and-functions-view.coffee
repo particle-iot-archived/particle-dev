@@ -43,6 +43,9 @@ class CloudVariablesAndFunctions extends View
 
   serialize: ->
 
+  getTitle: ->
+    return 'Cloud variables & functions'
+
   destroy: ->
     @detach()
 

@@ -3,6 +3,7 @@ settings = null
 utilities = null
 path = null
 _s = null
+url = null
 
 module.exports =
   # Local modules for JIT require
@@ -58,13 +59,28 @@ module.exports =
     atom.workspaceView.command 'spark-ide:identify-core', (event, port) => @identifyCore(port)
     atom.workspaceView.command 'spark-ide:compile-cloud', (event, thenFlash) => @compileCloud(thenFlash)
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
-    atom.workspaceView.command 'spark-ide:toggle-cloud-variables-and-functions', => @toggleCloudVariablesAndFunctions()
+    atom.workspaceView.command 'spark-ide:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
     # Update menu (default one in CSON file is empty)
     @MenuManager.update()
+
+    url = require 'url'
+    atom.workspace.registerOpener (uriToOpen) ->
+      try
+        {protocol, host, pathname} = url.parse(uriToOpen)
+      catch error
+        return
+
+      return unless protocol is 'spark-ide:'
+
+      if pathname == '/cloud-variables-and-functions'
+        @CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
+        @cloudVariablesAndFunctionsView = new @CloudVariablesAndFunctions()
+
+        return @cloudVariablesAndFunctionsView
 
   deactivate: ->
     @statusView?.destroy()
@@ -109,6 +125,23 @@ module.exports =
       return
 
     callback()
+
+  # Open view in bottom panel
+  openPane: (uri) ->
+    uri = 'spark-ide://editor/' + uri
+    pane = atom.workspace.paneForUri uri
+
+    if pane?
+      pane.activateItemForUri uri
+    else
+      if atom.workspaceView.getPaneViews().length == 1
+        pane = atom.workspaceView.getActivePaneView().splitDown()
+      else
+        paneViews = atom.workspaceView.getPaneViews()
+        pane = paneViews[paneViews.length]
+
+      pane.activate()
+      atom.workspace.open(uri, searchAllPanes: true)
 
   # Show login dialog
   login: ->
@@ -257,10 +290,8 @@ module.exports =
     @compileErrorsView.show()
 
   # Toggle cloud variables and functions panel
-  toggleCloudVariablesAndFunctions: -> @coreRequired =>
-    @initView 'cloud-variables-and-functions-view'
-
-    @cloudVariablesAndFunctionsView.toggle()
+  showCloudVariablesAndFunctions: -> @coreRequired =>
+    @openPane 'cloud-variables-and-functions'
 
   # Flash core via the cloud
   flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>

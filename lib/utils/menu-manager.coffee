@@ -35,8 +35,8 @@ module.exports =
           label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
           command: 'spark-ide:remove-core'
         },{
-          label: 'Toggle cloud variables and functions',
-          command: 'spark-ide:toggle-cloud-variables-and-functions'
+          label: 'Show cloud variables and functions',
+          command: 'spark-ide:show-cloud-variables-and-functions'
         },{
           label: 'Flash ' + SettingsHelper.get('current_core_name') + ' via the cloud',
           command: 'spark-ide:flash-cloud'

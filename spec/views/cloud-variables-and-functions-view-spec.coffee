@@ -3,7 +3,7 @@ $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require '../stubs/spark'
 
-describe 'Cloud Variables and Functions View', ->
+fdescribe 'Cloud Variables and Functions View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
@@ -41,7 +41,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks hiding and showing', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -55,7 +55,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks listing variables', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -96,7 +96,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'tests refreshing', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -113,7 +113,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks event hooks', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -146,7 +146,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'check watching variable', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -200,7 +200,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks clearing watchers', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView

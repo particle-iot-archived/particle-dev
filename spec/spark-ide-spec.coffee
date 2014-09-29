@@ -4,7 +4,6 @@ spark = require 'spark'
 fs = require 'fs-plus'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
-SpecHelper = require '../lib/utils/spec-helper'
 utilities = require '../lib/vendor/utilities'
 SparkStub = require './stubs/spark'
 
@@ -85,11 +84,11 @@ describe 'Main Tests', ->
       expect(sparkIde.showCompileErrors).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'showCompileErrors'
 
-    it 'calls toggleCloudVariablesAndFunctions() method for spark-ide:toggle-cloud-variables-and-functions event', ->
-      spyOn sparkIde, 'toggleCloudVariablesAndFunctions'
-      atom.workspaceView.trigger 'spark-ide:toggle-cloud-variables-and-functions'
-      expect(sparkIde.toggleCloudVariablesAndFunctions).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'toggleCloudVariablesAndFunctions'
+    it 'calls showCloudVariablesAndFunctions() method for spark-ide:show-cloud-variables-and-functions event', ->
+      spyOn sparkIde, 'showCloudVariablesAndFunctions'
+      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      expect(sparkIde.showCloudVariablesAndFunctions).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'showCloudVariablesAndFunctions'
 
     it 'calls flashCloud() method for spark-ide:flash-cloud event', ->
       spyOn sparkIde, 'flashCloud'
