@@ -77,12 +77,8 @@ module.exports =
 
       return unless protocol is 'spark-ide:'
 
-      if pathname == '/cloud-variables-and-functions'
-        @CloudVariablesAndFunctions ?= require './views/cloud-variables-and-functions-view'
-        @cloudVariablesAndFunctionsView = new @CloudVariablesAndFunctions()
-
-        return @cloudVariablesAndFunctionsView
-
+      @initView pathname.substr(1) + '-view'
+      
   deactivate: ->
     @statusView?.destroy()
 
@@ -100,7 +96,9 @@ module.exports =
       className += _s.capitalize part
 
     @[className] ?= require './views/' + name
-    @[className.charAt(0).toLowerCase() + className.slice(1)] ?= new @[className]()
+    key = className.charAt(0).toLowerCase() + className.slice(1)
+    @[key] ?= new @[className]()
+    @[key]
 
   # "Decorator" which runs callback only when user is logged in
   loginRequired: (callback) ->
@@ -140,7 +138,7 @@ module.exports =
         pane = atom.workspaceView.getActivePaneView().splitDown()
       else
         paneViews = atom.workspaceView.getPaneViews()
-        pane = paneViews[paneViews.length]
+        pane = paneViews[paneViews.length - 1]
 
       pane.activate()
       atom.workspace.open(uri, searchAllPanes: true)
