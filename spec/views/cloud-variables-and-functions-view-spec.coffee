@@ -3,7 +3,7 @@ $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require '../stubs/spark'
 
-fdescribe 'Cloud Variables and Functions View', ->
+describe 'Cloud Variables and Functions View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
@@ -50,7 +50,7 @@ fdescribe 'Cloud Variables and Functions View', ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).toExist()
-        @cloudVariablesAndFunctionsView.toggle()
+        @cloudVariablesAndFunctionsView.close()
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
@@ -135,12 +135,12 @@ fdescribe 'Cloud Variables and Functions View', ->
 
         # Tests spark-ide:spark-ide:logout
         SettingsHelper.clearCredentials()
-        spyOn @cloudVariablesAndFunctionsView, 'detach'
+        spyOn @cloudVariablesAndFunctionsView, 'close'
         spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
         atom.workspaceView.trigger 'spark-ide:logout'
-        expect(@cloudVariablesAndFunctionsView.detach).toHaveBeenCalled()
+        expect(@cloudVariablesAndFunctionsView.close).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()
-        jasmine.unspy @cloudVariablesAndFunctionsView, 'detach'
+        jasmine.unspy @cloudVariablesAndFunctionsView, 'close'
         jasmine.unspy @cloudVariablesAndFunctionsView, 'clearWatchers'
         @cloudVariablesAndFunctionsView.detach()
 

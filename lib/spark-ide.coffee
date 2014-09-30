@@ -68,7 +68,7 @@ module.exports =
     @MenuManager.update()
 
     url = require 'url'
-    atom.workspace.registerOpener (uriToOpen) ->
+    atom.workspace.registerOpener (uriToOpen) =>
       try
         {protocol, host, pathname} = url.parse(uriToOpen)
       catch error
@@ -289,7 +289,7 @@ module.exports =
 
     @compileErrorsView.show()
 
-  # Toggle cloud variables and functions panel
+  # Show cloud variables and functions panel
   showCloudVariablesAndFunctions: -> @coreRequired =>
     @openPane 'cloud-variables-and-functions'
 

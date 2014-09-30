@@ -1,4 +1,5 @@
 {View, EditorView} = require 'atom'
+{Emitter} = require 'event-kit'
 $ = null
 $$ = null
 whenjs = require 'when'
@@ -22,6 +23,8 @@ class CloudVariablesAndFunctions extends View
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
 
+    @emitter = new Emitter
+
     @client = null
     @watchers = {}
 
@@ -38,22 +41,25 @@ class CloudVariablesAndFunctions extends View
     # Clear watchers and hide when user logs out
     atom.workspaceView.command 'spark-ide:logout', =>
       @clearWatchers()
-      if @hasParent()
-        @detach()
+      @close()
 
   serialize: ->
 
   getTitle: ->
-    return 'Cloud variables & functions'
+    'Cloud variables & functions'
 
-  destroy: ->
-    @detach()
+  onDidChangeTitle: (callback) ->
+    @emitter.on 'did-change-title', callback
 
-  toggle: ->
-    if @hasParent()
-      @detach()
-    else
-      atom.workspaceView.prependToBottom(this)
+  onDidChangeModified: (callback) ->
+    @emitter.on 'did-change-modified', callback
+
+  getUri: ->
+    'spark-ide://editor/cloud-variables-and-functions'
+
+  close: ->
+    pane = atom.workspace.paneForUri @getUri()
+    pane.destroy()
 
   # Propagate table with variables
   listVariables: ->

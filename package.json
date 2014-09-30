@@ -17,6 +17,7 @@
     "validator": "*",
     "serialport": "*",
     "fs-plus": "^2.0.4",
-    "spark": "*"
+    "spark": "*",
+    "event-kit": "0.7.2"
   }
 }
