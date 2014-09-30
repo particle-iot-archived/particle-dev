@@ -61,6 +61,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-ide:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
+    atom.workspaceView.command 'spark-ide:show-serial-monitor', => @showSerialMonitor()
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -128,6 +129,7 @@ module.exports =
 
   # Open view in bottom panel
   openPane: (uri) ->
+    # TODO: Test it
     uri = 'spark-ide://editor/' + uri
     pane = atom.workspace.paneForUri uri
 
@@ -333,3 +335,7 @@ module.exports =
       files.reverse()
       @selectFirmwareView.setItems files
       @selectFirmwareView.show()
+
+  # Show serial monitor panel
+  showSerialMonitor: ->
+    @openPane 'serial-monitor'

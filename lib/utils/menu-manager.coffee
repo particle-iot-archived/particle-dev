@@ -63,5 +63,12 @@ module.exports =
         command: 'spark-ide:login'
       }]
 
+    ideMenu.submenu = ideMenu.submenu.concat [{
+      type: 'separator'
+    },{
+      label: 'Show serial monitor',
+      command: 'spark-ide:show-serial-monitor'
+    }]
+
     # Refresh UI
     atom.menu.update()

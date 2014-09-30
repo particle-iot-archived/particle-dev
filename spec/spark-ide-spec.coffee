@@ -96,6 +96,18 @@ describe 'Main Tests', ->
       expect(sparkIde.flashCloud).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'flashCloud'
 
+    it 'calls flashCloud() method for spark-ide:flash-cloud event', ->
+      spyOn sparkIde, 'flashCloud'
+      atom.workspaceView.trigger 'spark-ide:flash-cloud'
+      expect(sparkIde.flashCloud).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'flashCloud'
+
+    it 'calls showSerialMonitor() method for spark-ide:show-serial-monitor event', ->
+      spyOn sparkIde, 'showSerialMonitor'
+      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      expect(sparkIde.showSerialMonitor).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'showSerialMonitor'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-ide:remove-core', ->

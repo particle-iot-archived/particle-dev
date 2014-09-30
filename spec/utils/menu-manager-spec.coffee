@@ -23,8 +23,16 @@ describe 'MenuManager tests', ->
 
     runs ->
       ideMenu = MenuManager.getMenu()
+
+      expect(ideMenu.submenu.length).toBe(3)
+
       expect(ideMenu.submenu[0].label).toBe('Log in to Spark Cloud...')
       expect(ideMenu.submenu[0].command).toBe('spark-ide:login')
+
+      expect(ideMenu.submenu[1].type).toBe('separator')
+
+      expect(ideMenu.submenu[2].label).toBe('Show serial monitor')
+      expect(ideMenu.submenu[2].command).toBe('spark-ide:show-serial-monitor')
 
 
   it 'checks menu for logged in user', ->
@@ -39,7 +47,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(8)
+      expect(ideMenu.submenu.length).toBe(10)
 
       expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
       expect(ideMenu.submenu[0].command).toBe('spark-ide:logout')
@@ -62,6 +70,11 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu[7].label).toBe('Compile in the cloud')
       expect(ideMenu.submenu[7].command).toBe('spark-ide:compile-cloud')
 
+      expect(ideMenu.submenu[8].type).toBe('separator')
+
+      expect(ideMenu.submenu[9].label).toBe('Show serial monitor')
+      expect(ideMenu.submenu[9].command).toBe('spark-ide:show-serial-monitor')
+
       SettingsHelper.clearCredentials()
 
   it 'checks menu for selected core', ->
@@ -79,7 +92,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(12)
+      expect(ideMenu.submenu.length).toBe(14)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')
