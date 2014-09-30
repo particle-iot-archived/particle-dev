@@ -7,7 +7,7 @@ SettingsHelper = null
 spark = null
 
 module.exports =
-class CloudVariablesAndFunctions extends View
+class CloudVariablesAndFunctionsView extends View
   @content: ->
     @div id: 'spark-ide-cloud-variables-and-functions', =>
       @div id: 'spark-ide-cloud-variables', class: 'panel', =>
