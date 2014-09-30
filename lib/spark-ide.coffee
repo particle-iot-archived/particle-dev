@@ -78,7 +78,7 @@ module.exports =
       return unless protocol is 'spark-ide:'
 
       @initView pathname.substr(1) + '-view'
-      
+
   deactivate: ->
     @statusView?.destroy()
 
@@ -139,6 +139,7 @@ module.exports =
       else
         paneViews = atom.workspaceView.getPaneViews()
         pane = paneViews[paneViews.length - 1]
+        pane = pane.splitRight()
 
       pane.activate()
       atom.workspace.open(uri, searchAllPanes: true)
