@@ -14,7 +14,8 @@ class SerialMonitorView extends View
           @option value: '', 'No port selected'
         @span '@'
         @select outlet: 'baudratesSelect', change: 'baudrateSelected'
-        @button class: 'btn icon icon-plug', outlet: 'connectButton', click: 'toggleConnect', 'Connect'
+        @button class: 'btn', outlet: 'connectButton', click: 'toggleConnect', 'Connect'
+        @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
         @subview 'input', new EditorView(mini: true, placeholderText: 'Enter string to send')
@@ -121,4 +122,8 @@ class SerialMonitorView extends View
     @baudratesSelect.removeAttr 'disabled'
     @connectButton.text 'Connect'
 
-    @port.close()
+    if @port.fd && parseInt(@port.fd) >= 0
+      @port.close()
+
+  clearOutput: ->
+    @output.html ''
