@@ -14,7 +14,7 @@ class SerialMonitorView extends View
           @option value: '', 'No port selected'
         @span '@'
         @select outlet: 'baudratesSelect', change: 'baudrateSelected'
-        @button class: 'btn icon icon-plug', outlet: 'connectButton', 'Connect'
+        @button class: 'btn icon icon-plug', outlet: 'connectButton', click: 'toggleConnect', 'Connect'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
         @subview 'input', new EditorView(mini: true, placeholderText: 'Enter string to send')
@@ -28,7 +28,7 @@ class SerialMonitorView extends View
     @currentPort = null
     @refreshSerialPorts()
 
-    @currentBaudrate = SettingsHelper.get 'serial_baudrate'
+    @currentBaudrate = parseInt(SettingsHelper.get 'serial_baudrate')
     @currentBaudrate ?= 9600
     @baudratesList = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
     for baudrate in @baudratesList
@@ -38,25 +38,9 @@ class SerialMonitorView extends View
         option.attr 'selected', 'selected'
       @baudratesSelect.append option
 
+    @port = null
+
   serialize: ->
-
-  refreshSerialPorts: ->
-    serialport ?= require 'serialport'
-    serialport.list (err, ports) =>
-      @portsSelect.find('>').remove()
-      @currentPort = SettingsHelper.get 'serial_port'
-      for port in ports
-        option = $$ ->
-          @option value:port.comName, port.comName
-        if @currentPort == port.comName
-          option.attr 'selected', 'selected'
-        @portsSelect.append option
-
-  portSelected: ->
-    SettingsHelper.set 'serial_port', @portsSelect.val()
-
-  baudrateSelected: ->
-    SettingsHelper.set 'serial_baudrate', @baudratesSelect.val()
 
   getTitle: ->
     'Serial monitor'
@@ -83,3 +67,58 @@ class SerialMonitorView extends View
 
     if at_bottom
       @output.scrollTop(@output[0].scrollHeight)
+
+  refreshSerialPorts: ->
+    serialport ?= require 'serialport'
+    serialport.list (err, ports) =>
+      @portsSelect.find('>').remove()
+      @currentPort = SettingsHelper.get 'serial_port'
+      for port in ports
+        option = $$ ->
+          @option value:port.comName, port.comName
+        if @currentPort == port.comName
+          option.attr 'selected', 'selected'
+        @portsSelect.append option
+
+  portSelected: ->
+    @currentPort = @portsSelect.val()
+    SettingsHelper.set 'serial_port', @currentPort
+
+  baudrateSelected: ->
+    @currentBaudrate = @baudratesSelect.val()
+    SettingsHelper.set 'serial_baudrate', @currentBaudrate
+
+  toggleConnect: ->
+    if !!@portsSelect.attr 'disabled'
+      @disconnect()
+    else
+      @connect()
+
+  connect: ->
+    @portsSelect.attr 'disabled', 'disabled'
+    @baudratesSelect.attr 'disabled', 'disabled'
+    @connectButton.text 'Disconnect'
+
+    @port = new serialport.SerialPort @currentPort, {
+      baudrate: @currentBaudrate
+    }, false
+
+    @port.on 'close', =>
+      @disconnect()
+
+    @port.on 'error', (e) =>
+      # FIXME: Connecting first time throws an error. Check if this is caused by node-pre-gyp
+      console.log 'error', e
+      @disconnect()
+
+    @port.on 'data', (data) =>
+      @appendText data.toString(), false
+
+    @port.open()
+
+  disconnect: ->
+    @portsSelect.removeAttr 'disabled'
+    @baudratesSelect.removeAttr 'disabled'
+    @connectButton.text 'Connect'
+
+    @port.close()
