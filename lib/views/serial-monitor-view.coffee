@@ -10,11 +10,11 @@ class SerialMonitorView extends View
   @content: ->
     @div id: 'spark-ide-serial-monitor', class: 'panel', =>
       @div class: 'panel-heading', =>
-        @select outlet: 'ports', mousedown: 'refreshSerialPorts', change: 'portSelected', =>
+        @select outlet: 'portsSelect', mousedown: 'refreshSerialPorts', change: 'portSelected', =>
           @option value: '', 'No port selected'
         @span '@'
-        @select outlet: 'baudrates', change: 'baudrateSelected'
-        @button class: 'btn icon icon-plug', 'Connect'
+        @select outlet: 'baudratesSelect', change: 'baudrateSelected'
+        @button class: 'btn icon icon-plug', outlet: 'connectButton', 'Connect'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
         @subview 'input', new EditorView(mini: true, placeholderText: 'Enter string to send')
@@ -36,27 +36,27 @@ class SerialMonitorView extends View
         @option value:baudrate, baudrate
       if baudrate == @currentBaudrate
         option.attr 'selected', 'selected'
-      @baudrates.append option
+      @baudratesSelect.append option
 
   serialize: ->
 
   refreshSerialPorts: ->
     serialport ?= require 'serialport'
     serialport.list (err, ports) =>
-      @ports.find('>').remove()
+      @portsSelect.find('>').remove()
       @currentPort = SettingsHelper.get 'serial_port'
       for port in ports
         option = $$ ->
           @option value:port.comName, port.comName
         if @currentPort == port.comName
           option.attr 'selected', 'selected'
-        @ports.append option
+        @portsSelect.append option
 
   portSelected: ->
-    SettingsHelper.set 'serial_port', @ports.val()
+    SettingsHelper.set 'serial_port', @portsSelect.val()
 
   baudrateSelected: ->
-    SettingsHelper.set 'serial_baudrate', @baudrates.val()
+    SettingsHelper.set 'serial_baudrate', @baudratesSelect.val()
 
   getTitle: ->
     'Serial monitor'
