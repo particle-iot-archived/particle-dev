@@ -212,8 +212,30 @@
 }
 
 #spark-ide-serial-monitor {
+  margin-bottom: 0;
+
+  .panel-heading {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    button {
+      margin: 5px 0 6px;
+      top: 0;
+    }
+
+    select, span {
+      margin-right: 10px;
+    }
+  }
+
+  .panel-body {
+    padding: 0;
+    height: ~"calc(100% - 33px)";
+  }
+
   pre {
     height: ~"calc(100% - 27px)";
+    overflow-y: scroll;
   }
 }
 
