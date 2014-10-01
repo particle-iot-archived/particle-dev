@@ -41,6 +41,14 @@ class SerialMonitorView extends View
 
     @port = null
 
+    @input.hiddenInput.on 'keydown', (e) =>
+      if e.which == 13
+        if @isPortOpen()
+          @port.write @input.getText() + "\n"
+          @input.setText ''
+      true
+    @input.hiddenInput.attr 'disabled', 'disabled'
+
   serialize: ->
 
   getTitle: ->
@@ -95,10 +103,14 @@ class SerialMonitorView extends View
     else
       @connect()
 
+  isPortOpen: ->
+    @port.fd && parseInt(@port.fd) >= 0
+
   connect: ->
     @portsSelect.attr 'disabled', 'disabled'
     @baudratesSelect.attr 'disabled', 'disabled'
     @connectButton.text 'Disconnect'
+    @input.hiddenInput.removeAttr 'disabled'
 
     @port = new serialport.SerialPort @currentPort, {
       baudrate: @currentBaudrate
@@ -116,13 +128,15 @@ class SerialMonitorView extends View
       @appendText data.toString(), false
 
     @port.open()
+    @input.hiddenInput.focus()
 
   disconnect: ->
     @portsSelect.removeAttr 'disabled'
     @baudratesSelect.removeAttr 'disabled'
     @connectButton.text 'Connect'
+    @input.hiddenInput.attr 'disabled', 'disabled'
 
-    if @port.fd && parseInt(@port.fd) >= 0
+    if @isPortOpen()
       @port.close()
 
   clearOutput: ->
