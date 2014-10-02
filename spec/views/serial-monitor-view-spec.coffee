@@ -46,7 +46,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.close()
         expect(atom.workspaceView.find('#spark-ide-serial-monitor')).not.toExist()
 
-    fit 'checks listing ports and baudrates', ->
+    it 'checks listing ports and baudrates', ->
       atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
 
       waitsFor ->
@@ -63,3 +63,13 @@ describe 'Serial Monitor View', ->
 
         expect(options[1].text).toEqual('/dev/cu.usbmodemfab1234')
         expect(options[1].value).toEqual('/dev/cu.usbmodemfab1234')
+
+        # Test baudrates
+        options = @serialMonitorView.baudratesSelect.find 'option'
+        expect(options.length).toEqual(12)
+
+        idx = 0
+        for baudrate in [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
+          expect(options[idx].text).toEqual(baudrate.toString())
+          expect(options[idx].value).toEqual(baudrate.toString())
+          idx++
