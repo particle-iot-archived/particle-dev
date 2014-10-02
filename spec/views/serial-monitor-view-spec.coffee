@@ -73,3 +73,32 @@ describe 'Serial Monitor View', ->
           expect(options[idx].text).toEqual(baudrate.toString())
           expect(options[idx].value).toEqual(baudrate.toString())
           idx++
+
+        @serialMonitorView.close()
+
+    it 'checks blocking UI on connection', ->
+      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+
+      waitsFor ->
+        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+
+      runs ->
+        @serialMonitorView = sparkIde.serialMonitorView
+
+        expect(@serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
+        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toEqual('disabled')
+
+        @serialMonitorView.connectButton.click()
+
+        expect(@serialMonitorView.portsSelect.attr('disabled')).toEqual('disabled')
+        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toEqual('disabled')
+        expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
+        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toBeUndefined()
+
+        @serialMonitorView.port.emit 'error'
+
+        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
+
+        @serialMonitorView.close()
