@@ -102,3 +102,32 @@ describe 'Serial Monitor View', ->
         expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
 
         @serialMonitorView.close()
+
+    it 'checks serial communication', ->
+      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+
+      waitsFor ->
+        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+
+      runs ->
+        @serialMonitorView = sparkIde.serialMonitorView
+
+        @serialMonitorView.connectButton.click()
+
+        # Test receiving data
+        @serialMonitorView.port.emit 'data', 'foo'
+        expect(@serialMonitorView.output.text()).toEqual('foo')
+
+        # Test sending data
+        spyOn @serialMonitorView.port, 'write'
+        spyOn(@serialMonitorView, 'isPortOpen').andReturn true
+
+        @serialMonitorView.input.setText 'foo'
+        event = $.Event 'keydown'
+        event.which = 13
+        @serialMonitorView.input.hiddenInput.trigger event
+        expect(@serialMonitorView.port.write).toHaveBeenCalled()
+
+        jasmine.unspy @serialMonitorView.port, 'write'
+        jasmine.unspy @serialMonitorView, 'isPortOpen'
+        @serialMonitorView.close()
