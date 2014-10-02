@@ -292,6 +292,7 @@ module.exports =
 
   # Show cloud variables and functions panel
   showCloudVariablesAndFunctions: -> @coreRequired =>
+    @cloudVariablesAndFunctionsView = null
     @openPane 'cloud-variables-and-functions'
 
   # Flash core via the cloud
@@ -337,4 +338,5 @@ module.exports =
 
   # Show serial monitor panel
   showSerialMonitor: ->
+    @serialMonitorView = null
     @openPane 'serial-monitor'
