@@ -62,7 +62,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
     atom.workspaceView.command 'spark-ide:show-serial-monitor', => @showSerialMonitor()
-    atom.workspaceView.command 'spark-ide:setup-wifi', => @setupWifi()
+    atom.workspaceView.command 'spark-ide:setup-wifi', (event, port) => @setupWifi(port)
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -145,6 +145,26 @@ module.exports =
       pane.activate()
       atom.workspace.open(uri, searchAllPanes: true)
 
+  # Function for selecting port or showing Listen dialog
+  choosePort: (delegate) ->
+    @ListeningModeView ?= require './views/listening-mode-view'
+    @SerialHelper ?= require './utils/serial-helper'
+    @listPortsPromise = @SerialHelper.listPorts()
+    @listPortsPromise.done (ports) =>
+      @listPortsPromise = null
+      if ports.length == 0
+        # If there are no ports, show dialog with animation how to enter listening mode
+        @listeningModeView = new @ListeningModeView(delegate)
+        @listeningModeView.show()
+      else if ports.length == 1
+        atom.workspaceView.trigger delegate, [ports[0].comName]
+      else
+        # There are at least two ports so show them and ask user to choose
+        @SelectPortView ?= require './views/select-port-view'
+        @selectPortView = new @SelectPortView(delegate)
+
+        @selectPortView.show()
+
   # Show login dialog
   login: ->
     @initView 'login-view'
@@ -209,34 +229,17 @@ module.exports =
 
   # Identify core via serial
   identifyCore: (port=null) -> @loginRequired =>
-    @ListeningModeView ?= require './views/listening-mode-view'
-    @SerialHelper ?= require './utils/serial-helper'
-    @listPortsPromise = @SerialHelper.listPorts()
-    @listPortsPromise.done (ports) =>
-      @listPortsPromise = null
-      if ports.length == 0
-        # If there are no ports, show dialog with animation how to enter listening mode
-        @listeningModeView ?= new @ListeningModeView()
-        @listeningModeView.show()
-      else if (ports.length == 1) || (!!port)
-        # If there's one port or one was specified in param, identify it
-        if !port
-          port = ports[0].comName
-
-        promise = @SerialHelper.askForCoreID port
-        promise.done (coreID) =>
-          @IdentifyCoreView ?= require './views/identify-core-view'
-          @identifyCoreView = new @IdentifyCoreView coreID
-          @identifyCoreView.attach()
-        , (e) =>
-          @statusView.setStatus e, 'error'
-          @statusView.clearAfter 5000
-      else
-        # There are at least two ports so show them and ask user to choose
-        @SelectPortView ?= require './views/select-port-view'
-        @selectPortView ?= new @SelectPortView()
-
-        @selectPortView.show()
+    if !port
+      @choosePort('spark-ide:identify-core')
+    else
+      promise = @SerialHelper.askForCoreID port
+      promise.done (coreID) =>
+        @IdentifyCoreView ?= require './views/identify-core-view'
+        @identifyCoreView = new @IdentifyCoreView coreID
+        @identifyCoreView.attach()
+      , (e) =>
+        @statusView.setStatus e, 'error'
+        @statusView.clearAfter 5000
 
   # Compile current project in the cloud
   compileCloud: (thenFlash=null) -> @loginRequired => @projectRequired =>
@@ -343,4 +346,8 @@ module.exports =
     @openPane 'serial-monitor'
 
   # Set up core's WiFi
-  setupWifi: ->
+  setupWifi: (port=null) -> @loginRequired =>
+    if !port
+      @choosePort 'spark-ide:setup-wifi'
+    else
+      

@@ -7,7 +7,7 @@ SerialHelper = null
 
 module.exports =
 class SelectPortView extends SelectListView
-  initialize: ->
+  initialize: (delegate) ->
     super
 
     {$, $$} = require 'atom'
@@ -20,6 +20,7 @@ class SelectPortView extends SelectListView
     @prop 'id', 'spark-ide-select-port-view'
     @listPortsPromise = null
 
+    @delegate = delegate
 
   destroy: ->
     @remove()
@@ -45,7 +46,7 @@ class SelectPortView extends SelectListView
 
   confirmed: (item) ->
     # TODO: Test this
-    atom.workspaceView.trigger 'spark-ide:identify-core', [item.comName]
+    atom.workspaceView.trigger @delegate, [item.comName]
     @cancel()
 
   getFilterKey: ->

@@ -13,7 +13,7 @@ class ListeningModeView extends View
       @div class: 'block', =>
         @button click: 'cancel', class: 'btn', 'Cancel'
 
-  initialize: (serializeState) ->
+  initialize: (delegate) ->
     {Subscriber} = require 'emissary'
     SerialHelper = require '../utils/serial-helper'
 
@@ -27,7 +27,8 @@ class ListeningModeView extends View
           # Hide dialog
           atom.workspaceView.trigger 'core:cancel'
           # Try to identify found ports
-          atom.workspaceView.trigger 'spark-ide:identify-core'
+          console.log 'deleg', delegate
+          atom.workspaceView.trigger delegate
     , 1000
 
     # Subscribe to Atom's core:cancel core:close events
