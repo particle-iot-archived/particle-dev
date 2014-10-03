@@ -350,4 +350,8 @@ module.exports =
     if !port
       @choosePort 'spark-ide:setup-wifi'
     else
-      
+      switch process.platform
+        when 'darwin'
+          @initView 'select-wifi-view'
+          @selectWifiView.show()
+        else console.error 'Current platform not supported'
