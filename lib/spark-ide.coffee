@@ -62,6 +62,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
     atom.workspaceView.command 'spark-ide:show-serial-monitor', => @showSerialMonitor()
+    atom.workspaceView.command 'spark-ide:setup-wifi', => @setupWifi()
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -340,3 +341,6 @@ module.exports =
   showSerialMonitor: ->
     @serialMonitorView = null
     @openPane 'serial-monitor'
+
+  # Set up core's WiFi
+  setupWifi: ->

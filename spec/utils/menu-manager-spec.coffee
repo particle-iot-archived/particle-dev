@@ -47,7 +47,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(10)
+      expect(ideMenu.submenu.length).toBe(11)
 
       expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
       expect(ideMenu.submenu[0].command).toBe('spark-ide:logout')
@@ -65,15 +65,18 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu[5].label).toBe('Identify Core...')
       expect(ideMenu.submenu[5].command).toBe('spark-ide:identify-core')
 
-      expect(ideMenu.submenu[6].type).toBe('separator')
+      expect(ideMenu.submenu[6].label).toBe('Setup Core\'s WiFi...')
+      expect(ideMenu.submenu[6].command).toBe('spark-ide:setup-wifi')
 
-      expect(ideMenu.submenu[7].label).toBe('Compile in the cloud')
-      expect(ideMenu.submenu[7].command).toBe('spark-ide:compile-cloud')
+      expect(ideMenu.submenu[7].type).toBe('separator')
 
-      expect(ideMenu.submenu[8].type).toBe('separator')
+      expect(ideMenu.submenu[8].label).toBe('Compile in the cloud')
+      expect(ideMenu.submenu[8].command).toBe('spark-ide:compile-cloud')
 
-      expect(ideMenu.submenu[9].label).toBe('Show serial monitor')
-      expect(ideMenu.submenu[9].command).toBe('spark-ide:show-serial-monitor')
+      expect(ideMenu.submenu[9].type).toBe('separator')
+
+      expect(ideMenu.submenu[10].label).toBe('Show serial monitor')
+      expect(ideMenu.submenu[10].command).toBe('spark-ide:show-serial-monitor')
 
       SettingsHelper.clearCredentials()
 
@@ -92,7 +95,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(14)
+      expect(ideMenu.submenu.length).toBe(15)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
       expect(ideMenu.submenu[3].command).toBe('spark-ide:rename-core')

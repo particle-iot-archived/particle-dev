@@ -108,6 +108,12 @@ describe 'Main Tests', ->
       expect(sparkIde.showSerialMonitor).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'showSerialMonitor'
 
+    it 'calls setupWifi() method for spark-ide:setup-wifi event', ->
+      spyOn sparkIde, 'setupWifi'
+      atom.workspaceView.trigger 'spark-ide:setup-wifi'
+      expect(sparkIde.setupWifi).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'setupWifi'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-ide:remove-core', ->

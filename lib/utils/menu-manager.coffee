@@ -51,6 +51,9 @@ module.exports =
         label: 'Identify Core...',
         command: 'spark-ide:identify-core'
       },{
+        label: 'Setup Core\'s WiFi...',
+        command: 'spark-ide:setup-wifi'
+      },{
         type: 'separator'
       },{
         label: 'Compile in the cloud',
