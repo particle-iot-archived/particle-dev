@@ -65,6 +65,11 @@ class WifiCredentialsView extends View
       atom.workspaceView.append(this)
       @ssidEditor.getEditor().setText ssid
 
+      if security
+        input = @find 'input[name=security][value=' + security + ']'
+        input.attr 'checked', 'checked'
+        input.change()
+
       @errorLabel.hide()
       if !ssid
         @ssidEditor.focus()
@@ -95,6 +100,7 @@ class WifiCredentialsView extends View
       @passwordEditor.addClass 'hidden'
     else
       @passwordEditor.removeClass 'hidden'
+      @passwordEditor.focus()
 
   # Test input's values
   validateInputs: ->
