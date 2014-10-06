@@ -3,6 +3,7 @@
 # Installing
 
 ```
+npm install -g node-gyp
 git clone git@github.com:spark/spark-ide.git
 apm link ./spark-ide
 cd spark-ide
