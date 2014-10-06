@@ -361,6 +361,7 @@ module.exports =
         else console.error 'Current platform not supported'
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
+    @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port
-    @wifiCredentialsView(ssid, security)
+    @wifiCredentialsView.show(ssid, security)
