@@ -413,7 +413,7 @@ describe 'Main Tests', ->
       fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
       fs.openSync atom.project.getPath() + '/firmware2.bin', 'w'
 
-      sparkIde.initView 'select-firmware-view'
+      sparkIde.initView 'select-firmware'
       spyOn sparkIde.selectFirmwareView, 'setItems'
       spyOn sparkIde.selectFirmwareView, 'show'
 

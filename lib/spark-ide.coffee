@@ -63,6 +63,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:flash-cloud', (event, firmware) => @flashCloud(firmware)
     atom.workspaceView.command 'spark-ide:show-serial-monitor', => @showSerialMonitor()
     atom.workspaceView.command 'spark-ide:setup-wifi', (event, port) => @setupWifi(port)
+    atom.workspaceView.command 'spark-ide:enter-wifi-credentials', (event, port, ssid, security) => @enterWifiCredentials(port, ssid, security)
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -78,7 +79,7 @@ module.exports =
 
       return unless protocol is 'spark-ide:'
 
-      @initView pathname.substr(1) + '-view'
+      @initView pathname.substr(1)
 
   deactivate: ->
     @statusView?.destroy()
@@ -92,6 +93,8 @@ module.exports =
   # Require view's module and initialize it
   initView: (name) ->
     _s ?= require 'underscore.string'
+
+    name += '-view'
     className = ''
     for part in name.split '-'
       className += _s.capitalize part
@@ -167,7 +170,7 @@ module.exports =
 
   # Show login dialog
   login: ->
-    @initView 'login-view'
+    @initView 'login'
     # You may ask why commands aren't registered in LoginView?
     # This way, we don't need to require/initialize login view until it's needed.
     atom.workspaceView.command 'spark-ide:cancel-login', => @loginView.cancelCommand()
@@ -175,13 +178,13 @@ module.exports =
 
   # Log out current user
   logout: -> @loginRequired =>
-    @initView 'login-view'
+    @initView 'login'
 
     @loginView.logout()
 
   # Show user's cores list
   selectCore: -> @loginRequired =>
-    @initView 'select-core-view'
+    @initView 'select-core'
 
     @selectCoreView.show()
 
@@ -223,7 +226,7 @@ module.exports =
 
   # Show core claiming dialog
   claimCore: -> @loginRequired =>
-    @initView 'claim-core-view'
+    @initView 'claim-core'
 
     @claimCoreView.attach()
 
@@ -290,7 +293,7 @@ module.exports =
 
   # Show compile errors list
   showCompileErrors: ->
-    @initView 'compile-errors-view'
+    @initView 'compile-errors'
 
     @compileErrorsView.show()
 
@@ -334,7 +337,7 @@ module.exports =
         @statusView.clearAfter 5000
     else
       # If multiple firmware files, show select
-      @initView 'select-firmware-view'
+      @initView 'select-firmware'
 
       files.reverse()
       @selectFirmwareView.setItems files
@@ -352,6 +355,10 @@ module.exports =
     else
       switch process.platform
         when 'darwin'
-          @initView 'select-wifi-view'
+          @initView 'select-wifi'
+          @selectWifiView.port = port
           @selectWifiView.show()
         else console.error 'Current platform not supported'
+
+  enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
+    @initView 'wifi-credentials'

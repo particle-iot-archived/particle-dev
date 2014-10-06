@@ -13,7 +13,7 @@ describe 'Login View', ->
     atom.workspaceView = new WorkspaceView
     activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
       sparkIde = mainModule
-      sparkIde.initView 'login-view'
+      sparkIde.initView 'login'
       loginView = sparkIde.loginView
 
     originalProfile = SettingsHelper.getProfile()
