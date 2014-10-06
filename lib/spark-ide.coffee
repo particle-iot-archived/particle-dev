@@ -362,3 +362,5 @@ module.exports =
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
     @initView 'wifi-credentials'
+    @wifiCredentialsView.port = port
+    @wifiCredentialsView(ssid, security)
