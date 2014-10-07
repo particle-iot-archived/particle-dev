@@ -149,13 +149,11 @@ class WifiCredentialsView extends View
 
     @serialWifiConfigPromise = SerialHelper.serialWifiConfig @port, @ssid, @password, @security
     @serialWifiConfigPromise.done (e) =>
-      console.log 'done!', e
       @spinner.addClass 'hidden'
 
       @cancel()
       @serialWifiConfigPromise = null
     , (e) =>
-      console.error e
       @spinner.addClass 'hidden'
       @unlockUi()
       @errorLabel.text(e).show()
