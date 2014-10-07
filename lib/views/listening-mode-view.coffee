@@ -27,7 +27,6 @@ class ListeningModeView extends View
           # Hide dialog
           atom.workspaceView.trigger 'core:cancel'
           # Try to identify found ports
-          console.log 'deleg', delegate
           atom.workspaceView.trigger delegate
     , 1000
 
