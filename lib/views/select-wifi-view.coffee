@@ -42,18 +42,29 @@ class SelectWifiView extends SelectListView
       @detach()
 
   viewForItem: (item) ->
+    security = null
+
+    switch item.security
+      when 0
+        security = 'Unsecured'
+      when 1
+        security = 'WEP'
+      when 2
+        security = 'WPA'
+      when 3
+        security = 'WPA2'
+
     $$ ->
       @li class: 'two-lines', =>
-        @div class: 'primary-line', item.ssid
-        @div class: 'secondary-line', item.security
+        if !!security
+          @div class: 'pull-right', =>
+            @kbd class: 'key-binding pull-right', security
+        @div item.ssid
 
   confirmed: (item) ->
     # TODO: Test this
-    atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.value, item.security]
+    atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
     @cancel()
-
-  getFilterKey: ->
-    'comName'
 
   listNetworks: ->
     cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
@@ -105,8 +116,7 @@ class SelectWifiView extends SelectListView
 
         networks.push {
           ssid: 'Enter SSID manually',
-          security: '',
-          value: ''
+          security: null,
         }
 
         @setItems networks
