@@ -3,9 +3,9 @@
 $ = null
 _s = null
 Subscriber = null
-spark = null
 SettingsHelper = null
 validator = null
+SerialHelper = null
 
 module.exports =
 class WifiCredentialsView extends View
@@ -20,16 +20,16 @@ class WifiCredentialsView extends View
       @subview 'ssidEditor', new EditorView(mini: true, placeholderText: 'SSID')
       @div class: 'security', =>
         @label =>
-          @input type: 'radio', name: 'security', value: 'unsecured', checked: 'checked', change: 'change'
+          @input type: 'radio', name: 'security', value: '0', checked: 'checked', change: 'change'
           @span 'Unsecured'
         @label =>
-          @input type: 'radio', name: 'security', value: 'wep', change: 'change'
+          @input type: 'radio', name: 'security', value: '1', change: 'change'
           @span 'WEP'
         @label =>
-          @input type: 'radio', name: 'security', value: 'wpa', change: 'change'
+          @input type: 'radio', name: 'security', value: '2', change: 'change'
           @span 'WPA'
         @label =>
-          @input type: 'radio', name: 'security', value: 'wpa2', change: 'change'
+          @input type: 'radio', name: 'security', value: '3', change: 'change'
           @span 'WPA2'
       @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
@@ -44,13 +44,16 @@ class WifiCredentialsView extends View
 
     _s ?= require 'underscore.string'
     SettingsHelper = require '../utils/settings-helper'
+    SerialHelper = require '../utils/serial-helper'
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
       @remove()
 
-    @security = 'unsecured'
+    @security = '0'
     @passwordEditor.addClass 'hidden'
+
+    @serialWifiConfigPromise = null
 
 
   # Returns an object that can be retrieved when package is activated
@@ -96,7 +99,7 @@ class WifiCredentialsView extends View
   change: ->
     @security = @find('input[name=security]:checked').val()
 
-    if @security == 'unsecured'
+    if @security == '0'
       @passwordEditor.addClass 'hidden'
     else
       @passwordEditor.removeClass 'hidden'
@@ -114,10 +117,13 @@ class WifiCredentialsView extends View
     isOk = true
 
     if @ssid == ''
+      console.log 'ssid'
       @ssidEditor.addClass 'editor-error'
       isOk = false
 
-    if @password == ''
+    console.log 'secu', @security
+    if (@security != '0') && (@password == '')
+      console.log 'sec'
       @passwordEditor.addClass 'editor-error'
       isOk = false
 
@@ -126,5 +132,31 @@ class WifiCredentialsView extends View
   # Unlock inputs and buttons
   unlockUi: ->
     @ssidEditor.hiddenInput.removeAttr 'disabled'
+    @find('input[name=security]').removeAttr 'disabled'
     @passwordEditor.hiddenInput.removeAttr 'disabled'
     @saveButton.removeAttr 'disabled'
+
+  save: ->
+    if !@validateInputs()
+      return false
+
+    @ssidEditor.hiddenInput.attr 'disabled', 'disabled'
+    @find('input[name=security]').attr 'disabled', 'disabled'
+    @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
+    @saveButton.attr 'disabled', 'disabled'
+    @spinner.removeClass 'hidden'
+    @errorLabel.hide()
+
+    @serialWifiConfigPromise = SerialHelper.serialWifiConfig @port, @ssid, @password, @security
+    @serialWifiConfigPromise.done (e) =>
+      console.log 'done!', e
+      @spinner.addClass 'hidden'
+
+      @cancel()
+      @serialWifiConfigPromise = null
+    , (e) =>
+      console.error e
+      @spinner.addClass 'hidden'
+      @unlockUi()
+      @errorLabel.text(e).show()
+      @serialWifiConfigPromise = null
