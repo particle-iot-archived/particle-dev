@@ -15,7 +15,7 @@
     "underscore.string": "*",
     "emissary": "1.x",
     "validator": "*",
-    "serialport": "*",
+    "serialport": "git://github.com/suda/node-serialport.git",
     "fs-plus": "^2.0.4",
     "spark": "*",
     "event-kit": "0.7.2"
