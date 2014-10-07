@@ -69,26 +69,31 @@ class SelectWifiView extends SelectListView
         networks = []
         for line in stdout.split "\n"
           network = regex.exec line
-          if !!network
-            if network[7].indexOf 'WPA2' > -1
-              security = 3
-            else if network[7].indexOf 'WPA(' > -1
-              security = 2
-            else if network[7].indexOf 'WEP' > -1
-              security = 1
-            else
-              security = 0
 
-            networks.push {
-              ssid: network[1],
-              bssid: network[2],
-              rssi: network[3],
-              channel: network[4],
-              ht: network[5],
-              cc: network[6],
-              security_string: network[7],
-              security: security
-            }
+          if !!network
+            notAdded = (networks.length == 0) || networks.reduce (prev, current) ->
+              prev && (current.ssid != network[1])
+
+            if notAdded
+              if network[7].indexOf 'WPA2' > -1
+                security = 3
+              else if network[7].indexOf 'WPA(' > -1
+                security = 2
+              else if network[7].indexOf 'WEP' > -1
+                security = 1
+              else
+                security = 0
+
+              networks.push {
+                ssid: network[1],
+                bssid: network[2],
+                rssi: network[3],
+                channel: network[4],
+                ht: network[5],
+                cc: network[6],
+                security_string: network[7],
+                security: security
+              }
 
         networks.sort (a, b) ->
           if a.ssid == ssid
