@@ -65,23 +65,9 @@ class SelectWifiView extends SelectListView
     cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
       ssid = null
       if stdout != ''
-        # TODO: Get current WiFi
-        #     agrCtlRSSI: -59
-        #     agrExtRSSI: 0
-        #    agrCtlNoise: -92
-        #    agrExtNoise: 0
-        #          state: running
-        #        op mode: station
-        #     lastTxRate: 585
-        #        maxRate: 1300
-        # lastAssocStatus: 0
-        #    802.11 auth: open
-        #      link auth: wpa2-psk
-        #          BSSID: c8:d7:19:39:a6:75
-        #           SSID: ISSUESTAND
-        #            MCS: 7
-        #        channel: 36,80
-        console.log stdout
+        ssid = stdout.match(/\sSSID\:\s(.*)/)
+        if !!ssid
+          ssid = ssid[1]
 
       cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>
         # TODO: Parse networks list
