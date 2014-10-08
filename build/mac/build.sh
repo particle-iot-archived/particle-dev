@@ -31,30 +31,31 @@ patch ${TEMP_DIR}/src/atom.coffee < ${BUILD}/atom.patch
 patch ${TEMP_DIR}/.npmrc < ${BUILD}/npmrc.patch
 
 cd $TEMP_DIR
+
+# Append 3rd party packages to package.json
+${BUILD}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
+${BUILD}/append-package ${TEMP_DIR}/package.json file-type-icons "0.4.4"
+${BUILD}/append-package ${TEMP_DIR}/package.json switch-header-source "0.8.0"
+${BUILD}/append-package ${TEMP_DIR}/package.json resize-panes "0.1.0"
+${BUILD}/append-package ${TEMP_DIR}/package.json maximize-panes "0.1.0"
+${BUILD}/append-package ${TEMP_DIR}/package.json move-panes "0.1.2"
+${BUILD}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
+
 # Bootstrap Atom
 script/bootstrap
-
-echo "Installing 3rd party packages"
-export ATOM_HOME=$TEMP_DIR
-./apm/node_modules/atom-package-manager/bin/apm install language-arduino
-./apm/node_modules/atom-package-manager/bin/apm install file-type-icons
-./apm/node_modules/atom-package-manager/bin/apm install switch-header-source
-./apm/node_modules/atom-package-manager/bin/apm install resize-panes
-./apm/node_modules/atom-package-manager/bin/apm install maximize-panes
-./apm/node_modules/atom-package-manager/bin/apm install move-panes
-./apm/node_modules/atom-package-manager/bin/apm install swap-panes
-mv packages/* node_modules/
-unset ATOM_HOME
 
 echo "Installing Spark IDE package"
 git clone --depth=1 git@github.com:spark/spark-ide.git node_modules/spark-ide
 cd node_modules/spark-ide
-export ATOM_NODE_VERSION="0.17.1"
+ATOM_NODE_VERSION="0.17.1"
+export ATOM_NODE_VERSION
 ../../apm/node_modules/atom-package-manager/bin/apm install .
-unset ATOM_NODE_VERSION
+ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
+${BUILD}/append-package ${TEMP_DIR}/package.json spark-ide "0.0.7"
 
-script/build --install-dir="${TARGET}/${APP_NAME}.app"
+build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"
+
 # rm -rf $TEMP_DIR
 
 # Build DMG
