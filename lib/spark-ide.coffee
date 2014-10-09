@@ -71,7 +71,7 @@ module.exports =
     @MenuManager.update()
 
     url = require 'url'
-    atom.workspace.registerOpener (uriToOpen) =>
+    atom.workspace.addOpener (uriToOpen) =>
       try
         {protocol, host, pathname} = url.parse(uriToOpen)
       catch error
