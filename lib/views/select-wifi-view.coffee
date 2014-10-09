@@ -67,6 +67,18 @@ class SelectWifiView extends SelectListView
     @cancel()
 
   listNetworks: ->
+    switch process.platform
+      when 'darwin'
+        @listNetworksDarwin()
+      else
+        console.error 'Current platform not supported'
+
+        @setItems [{
+          ssid: 'Enter SSID manually',
+          security: null,
+        }]
+
+  listNetworksDarwin: ->
     cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
       ssid = null
       if stdout != ''

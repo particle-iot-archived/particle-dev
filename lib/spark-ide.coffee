@@ -353,12 +353,9 @@ module.exports =
     if !port
       @choosePort 'spark-ide:setup-wifi'
     else
-      switch process.platform
-        when 'darwin'
-          @initView 'select-wifi'
-          @selectWifiView.port = port
-          @selectWifiView.show()
-        else console.error 'Current platform not supported'
+      @initView 'select-wifi'
+      @selectWifiView.port = port
+      @selectWifiView.show()
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
     @wifiCredentialsView = null
