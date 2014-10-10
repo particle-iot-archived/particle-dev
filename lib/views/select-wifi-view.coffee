@@ -3,7 +3,6 @@ SelectListView = require('atom').SelectListView
 $ = null
 $$ = null
 Subscriber = null
-cp = null
 _s = null
 
 module.exports =
@@ -14,7 +13,7 @@ class SelectWifiView extends SelectListView
     {$, $$} = require 'atom'
     {Subscriber} = require 'emissary'
 
-    cp ?= require 'child_process'
+    @cp ?= require 'child_process'
     _s ?= require 'underscore.string'
 
     @subscriber = new Subscriber()
@@ -79,14 +78,14 @@ class SelectWifiView extends SelectListView
         }]
 
   listNetworksDarwin: ->
-    cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
+    @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
       ssid = null
       if stdout != ''
         ssid = stdout.match /\sSSID\:\s(.*)/
         if !!ssid
           ssid = ssid[1]
 
-      cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>
+      @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>
         regex = /\s+(.*)\s+([0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2})\s+([0-9\-]+)\s+([0-9\,\-\+]+)\s+([YN]+)\s+([A-Z\-]+)\s+(.*)\s/
 
         networks = []
