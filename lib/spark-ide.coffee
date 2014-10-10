@@ -351,11 +351,11 @@ module.exports =
     @openPane 'serial-monitor'
 
   # Set up core's WiFi
-  setupWifi: (port=null) -> @loginRequired =>
+  setupWifi: (port=null) -> @loginRequired =>    
     if !port
       @choosePort 'spark-ide:setup-wifi'
     else
-      @initView 'select-wifi'      
+      @initView 'select-wifi'
       @selectWifiView.port = port
       @selectWifiView.show()
 

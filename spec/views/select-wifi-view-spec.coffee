@@ -7,6 +7,7 @@ describe 'Select Wifi View', ->
   activationPromise = null
   sparkIde = null
   selectWifiView = null
+  originalProfile = null
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
@@ -14,12 +15,17 @@ describe 'Select Wifi View', ->
       sparkIde = mainModule
 
     originalProfile = SettingsHelper.getProfile()
+    # For tests not to mess up our profile, we have to switch to test one...
+    SettingsHelper.setProfile 'spark-ide-test'
 
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-success'
 
     waitsForPromise ->
       activationPromise
+
+  afterEach ->
+    SettingsHelper.setProfile originalProfile
 
   describe '', ->
     it 'tests hiding and showing', ->
@@ -68,6 +74,7 @@ describe 'Select Wifi View', ->
 
       process.platform = 'darwin'
 
+      sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
 
@@ -144,6 +151,7 @@ lastAssocStatus: 0\n\
     it 'tests selecting item', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
+      sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
 

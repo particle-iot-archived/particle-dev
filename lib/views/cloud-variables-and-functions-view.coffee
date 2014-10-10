@@ -59,7 +59,7 @@ class CloudVariablesAndFunctionsView extends View
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()
-    pane.destroy()
+    pane?.destroy()
 
   # Propagate table with variables
   listVariables: ->

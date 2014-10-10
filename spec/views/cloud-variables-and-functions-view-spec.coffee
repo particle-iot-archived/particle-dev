@@ -41,6 +41,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks hiding and showing', ->
       SparkStub.stubSuccess 'getVariable'
+      sparkIde.cloudVariablesAndFunctionsView = null
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -48,7 +49,6 @@ describe 'Cloud Variables and Functions View', ->
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
-
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).toExist()
         @cloudVariablesAndFunctionsView.close()
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
