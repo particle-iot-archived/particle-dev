@@ -3,4 +3,5 @@
     'label': 'Spark Core',
     'submenu': []
   }
-]
+],
+'context-menu': []
