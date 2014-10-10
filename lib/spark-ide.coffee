@@ -86,9 +86,11 @@ module.exports =
 
   serialize: ->
 
-  configDefaults:
+  config:
     # Delete .bin file after flash
-    deleteFirmwareAfterFlash: true
+    deleteFirmwareAfterFlash:
+      type: 'boolean'
+      default: true
 
   # Require view's module and initialize it
   initView: (name) ->
