@@ -355,11 +355,12 @@ module.exports =
     if !port
       @choosePort 'spark-ide:setup-wifi'
     else
-      @initView 'select-wifi'
+      @initView 'select-wifi'      
       @selectWifiView.port = port
       @selectWifiView.show()
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
+    # TODO: Require port
     @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port

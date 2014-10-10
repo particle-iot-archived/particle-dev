@@ -86,7 +86,7 @@ class SelectWifiView extends SelectListView
           ssid = ssid[1]
 
       @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>
-        regex = /\s+(.*)\s+([0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2}\:[0-9a-f]{2})\s+([0-9\-]+)\s+([0-9\,\-\+]+)\s+([YN]+)\s+([A-Z\-]+)\s+(.*)\s/
+        regex = /(.*)\s+([0-9a-f\:]{17})\s+([0-9\-]+)\s+([0-9\,\-\+]+)\s+([YN]+)\s+([A-Z\-]+)\s+(.*)/
 
         networks = []
         for line in stdout.split "\n"
@@ -97,11 +97,11 @@ class SelectWifiView extends SelectListView
               prev && (current.ssid != network[1])
 
             if notAdded
-              if network[7].indexOf 'WPA2' > -1
+              if network[7].indexOf('WPA2') > -1
                 security = 3
-              else if network[7].indexOf 'WPA(' > -1
+              else if network[7].indexOf('WPA(') > -1
                 security = 2
-              else if network[7].indexOf 'WEP' > -1
+              else if network[7].indexOf('WEP') > -1
                 security = 1
               else
                 security = 0
