@@ -72,7 +72,7 @@ describe 'Select Wifi View', ->
       selectWifiView = sparkIde.selectWifiView
 
       spyOn(selectWifiView, 'listNetworksDarwin').andCallThrough()
-      spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) =>
+      spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) ->
         if _s.endsWith(command) == '-I'
           stdout = "     agrCtlRSSI: -40\n\
      agrExtRSSI: 0\n\
@@ -110,9 +110,14 @@ lastAssocStatus: 0\n\
         expect(selectWifiView.listNetworksDarwin).toHaveBeenCalled()
 
         expect(selectWifiView.setItems).toHaveBeenCalled()
-        expect(selectWifiView.setItems.calls.length).toEqual(2)
+        expect(selectWifiView.setItems.calls.length).toEqual(3)
+
         args = selectWifiView.setItems.calls[1].args[0]
-        
+        expect(args.length).toEqual(1)
+        expect(args[0].ssid).toEqual('Enter SSID manually')
+        expect(args[0].security).toBe(null)
+
+        args = selectWifiView.setItems.calls[2].args[0]
         expect(args.length).toEqual(5)
         expect(args[0].ssid).toEqual('foo')
         expect(args[0].bssid).toEqual('fc:94:e3:21:92:d3')
@@ -133,5 +138,25 @@ lastAssocStatus: 0\n\
         jasmine.unspy selectWifiView, 'setItems'
         jasmine.unspy selectWifiView.cp, 'exec'
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
+        SettingsHelper.clearCredentials()
+        atom.workspaceView.trigger 'core:close'
+
+    it 'tests selecting item', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+
+      sparkIde.initView 'select-wifi'
+      selectWifiView = sparkIde.selectWifiView
+
+      spyOn(selectWifiView, 'listNetworksDarwin').andCallFake ->
+
+
+      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+
+      runs ->
+        expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
+        expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
+        expect(selectWifiView.listNetworks).toHaveBeenCalled()
+
+        jasmine.unspy selectWifiView, 'listNetworks'
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
