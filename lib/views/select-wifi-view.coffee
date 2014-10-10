@@ -13,7 +13,7 @@ class SelectWifiView extends SelectListView
     {$, $$} = require 'atom'
     {Subscriber} = require 'emissary'
 
-    @cp ?= require 'child_process'
+    @cp = require 'child_process'
     _s ?= require 'underscore.string'
 
     @subscriber = new Subscriber()
