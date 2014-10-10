@@ -61,7 +61,6 @@ class SelectWifiView extends SelectListView
         @div item.ssid
 
   confirmed: (item) ->
-    # TODO: Test this
     atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
     @cancel()
 
@@ -127,5 +126,5 @@ class SelectWifiView extends SelectListView
             return 1000
 
           parseInt(b.rssi) - parseInt(a.rssi)
-        
+
         @setItems(networks.concat @items)

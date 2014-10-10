@@ -63,7 +63,7 @@ describe 'Select Wifi View', ->
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
 
-    fit 'test listing networks on Darwin', ->
+    it 'test listing networks on Darwin', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       process.platform = 'darwin'
@@ -147,16 +147,22 @@ lastAssocStatus: 0\n\
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
 
-      spyOn(selectWifiView, 'listNetworksDarwin').andCallFake ->
-
+      spyOn selectWifiView, 'listNetworksDarwin'
 
       atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
-        expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
-        expect(selectWifiView.listNetworks).toHaveBeenCalled()
+        spyOn atom.workspaceView, 'trigger'
 
-        jasmine.unspy selectWifiView, 'listNetworks'
+        networks = selectWifiView.find('ol.list-group li')
+        networks.eq(0).addClass 'selected'
+        selectWifiView.trigger 'core:confirm'
+
+        expect(atom.workspaceView.trigger).toHaveBeenCalled()
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:enter-wifi-credentials', ['foo', 'Enter SSID manually', null])
+
+        jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy selectWifiView, 'listNetworksDarwin'
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
