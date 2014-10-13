@@ -7,14 +7,6 @@ APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
 
-install_package () {
-  cd ${TARGET}/node_modules
-  git clone --depth=1 $1 $2
-  cd $2
-  rm -rf .git
-  npm install
-}
-
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
 cd $TEMP_DIR
