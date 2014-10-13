@@ -5,14 +5,13 @@ set ROOT=%BUILD%\..\..\
 set TARGET=%ROOT%\dist\windows\
 set APP_NAME=Spark IDE
 call :GETTEMPDIR
-rem mkdir %TEMP_DIR%
-set TEMP_DIR=C:\Users\Wojtek\Documents\GitHub\spark-ide\build\windows\tmp-7856-25.tmp
+mkdir %TEMP_DIR%
 
-rem if exist "%TARGET%" DEL /Q %TARGET%
-rem mkdir %TARGET%
-rem cd %TEMP_DIR%
+if exist "%TARGET%" DEL /Q %TARGET%
+mkdir %TARGET%
+cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
-rem git clone --depth=1 https://github.com/atom/atom.git .
+git clone --depth=1 https://github.com/atom/atom.git .
 
 rem Copy resources
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
@@ -23,7 +22,29 @@ patch %TEMP_DIR%\src\atom.coffee < %BUILD%\..\mac\atom.patch
 patch %TEMP_DIR%\.npmrc < %BUILD%\..\mac\npmrc.patch
 
 cd %TEMP_DIR%
-rem script\build --install-dir="%TARGET%/%APP_NAME%.exe"
+
+rem Append 3rd party packages to package.json
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json language-arduino "0.2.0"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json file-type-icons "0.4.4"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json switch-header-source "0.8.0"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json resize-panes "0.1.0"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json maximize-panes "0.1.0"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
+
+rem Bootstrap Atom
+script/bootstrap
+
+echo "Installing Spark IDE package"
+rem git clone --depth=1 git@github.com:spark/spark-ide.git node_modules\spark-ide
+cd node_modules\spark-ide
+$env:ATOM_NODE_VERSION="0.17.1"
+..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
+rem ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
+cd ..\..
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json spark-ide "0.0.7"
+
+rem node build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%.exe"
 
 goto :EOF
 
