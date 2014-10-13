@@ -4,3 +4,4 @@ node_modules
 *.bin
 dist/*
 Thumbs.db
+build/windows/*.tmp
