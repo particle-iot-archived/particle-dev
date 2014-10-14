@@ -36,15 +36,17 @@ rem Bootstrap Atom
 script/bootstrap
 
 echo "Installing Spark IDE package"
-rem git clone --depth=1 git@github.com:spark/spark-ide.git node_modules\spark-ide
+git clone --depth=1 git@github.com:spark/spark-ide.git node_modules\spark-ide
 cd node_modules\spark-ide
 $env:ATOM_NODE_VERSION="0.17.1"
 ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
-rem ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
+ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
 cd ..\..
 node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json spark-ide "0.0.7"
 
-rem node build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%.exe"
+build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
+
+rem Build installer
 
 goto :EOF
 
