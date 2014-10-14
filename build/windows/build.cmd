@@ -15,6 +15,8 @@ git clone --depth=1 https://github.com/atom/atom.git .
 
 rem Copy resources
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
+rem TODO: replace with 1024px image
+copy %BUILD%\atom.png %TEMP_DIR%\resources\atom.png
 
 rem Patch code
 patch %TEMP_DIR%\src\browser\atom-application.coffee < %BUILD%\..\mac\atom-application.patch
