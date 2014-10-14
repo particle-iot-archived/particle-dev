@@ -76,16 +76,18 @@ class SelectWifiView extends SelectListView
     switch process.platform
       when 'darwin'
         @listNetworksDarwin()
+      when 'win32'
+        @listNetworksWindows()
       else
         console.error 'Current platform not supported'
 
   listNetworksDarwin: ->
     @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
-      ssid = null
+      currentSsid = null
       if stdout != ''
-        ssid = stdout.match /\sSSID\:\s(.*)/
-        if !!ssid
-          ssid = ssid[1]
+        currentSsid = stdout.match /\sSSID\:\s(.*)/
+        if !!currentSsid
+          currentSsid = currentSsid[1]
 
       @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>
         regex = /(.*)\s+([0-9a-f\:]{17})\s+([0-9\-]+)\s+([0-9\,\-\+]+)\s+([YN]+)\s+([A-Z\-]+)\s+(.*)/
@@ -120,11 +122,70 @@ class SelectWifiView extends SelectListView
               }
 
         networks.sort (a, b) ->
-          if a.ssid == ssid
+          if a.ssid == currentSsid
             return -1000
-          if b.ssid == ssid
+          if b.ssid == currentSsid
             return 1000
 
           parseInt(b.rssi) - parseInt(a.rssi)
+
+        @setItems(networks.concat @items)
+
+  listNetworksWindows: ->
+    fs = require 'fs-plus'
+    @cp.exec 'netsh wlan show interfaces', (error, stdout, stderr) =>
+      currentSsid = null
+      if stdout != ''
+        currentSsid = stdout.match /\sSSID\s+\:\s(.*)/
+        if !!currentSsid
+          currentSsid = currentSsid[1]
+
+      @cp.exec 'netsh wlan show networks mode=bssid', (error, stdout, stderr) =>
+        ssidRegex = /SSID [0-9]+ \: (.*)/
+        authenticationRegex = /Authentication\s+\: (.*)/
+        encryptionRegex = /Encryption\s+\: (.*)/
+        bssidRegex = /BSSID [0-9]+\s+\: (.*)/
+        rssiRegex = /Signal\s+\: ([0-9]+)/
+        channelRegex = /Channel\s+\: ([0-9]+)/
+
+        networks = []
+        for line in stdout.split "\r\n\r\n"
+          ssid = ssidRegex.exec line
+          if !!ssid && ssid[1] != ''
+            ssid = ssid[1]
+            authentications = authenticationRegex.exec line
+            authentication = authentications[1]
+            encryptions = encryptionRegex.exec line
+            encryption = encryptions[1]
+            bssids = bssidRegex.exec line
+            rssis = rssiRegex.exec line
+            channels = channelRegex.exec line
+
+            if authentication.indexOf('WPA2') > -1
+              security = 3
+            else if authentication.indexOf('WPA') > -1
+              security = 2
+            else if encryption.indexOf('WEP') > -1
+              security = 1
+            else
+              security = 0
+
+            networks.push {
+              ssid: ssid,
+              bssid: bssids[1],
+              rssi: rssis[1],
+              channel: channels[1],
+              authentication: authentication,
+              encryption: encryption,
+              security: security
+            }
+
+        networks.sort (a, b) ->
+          if a.ssid == currentSsid
+            return -1000
+          if b.ssid == currentSsid
+            return 1000
+
+          parseInt(a.rssi) - parseInt(b.rssi)
 
         @setItems(networks.concat @items)
