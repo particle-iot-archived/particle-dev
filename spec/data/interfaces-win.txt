@@ -1,1 +1,22 @@
-There is 1 interface on the system:    Name                   : Wi-Fi    Description            : 802.11n USB Wireless LAN Card    GUID                   : 30f7a1bf-877d-4e81-b881-57846d588f8b    Physical address       : 66:66:b3:1c:f7:94    State                  : connected    SSID                   : foo    BSSID                  : c1:d7:19:39:a6:74    Network type           : Infrastructure    Radio type             : 802.11n    Authentication         : WPA2-Personal    Cipher                 : CCMP    Connection mode        : Profile    Channel                : 3    Receive rate (Mbps)    : 130    Transmit rate (Mbps)   : 130    Signal                 : 82%    Profile                : foo    Hosted network status  : Not available
+
+There is 1 interface on the system:
+
+    Name                   : Wi-Fi
+    Description            : 802.11n USB Wireless LAN Card
+    GUID                   : 30f7a1bf-877d-4e81-b881-57846d588f8b
+    Physical address       : 66:66:b3:1c:f7:94
+    State                  : connected
+    SSID                   : foo
+    BSSID                  : c1:d7:19:39:a6:74
+    Network type           : Infrastructure
+    Radio type             : 802.11n
+    Authentication         : WPA2-Personal
+    Cipher                 : CCMP
+    Connection mode        : Profile
+    Channel                : 3
+    Receive rate (Mbps)    : 130
+    Transmit rate (Mbps)   : 130
+    Signal                 : 82%
+    Profile                : foo
+
+    Hosted network status  : Not available

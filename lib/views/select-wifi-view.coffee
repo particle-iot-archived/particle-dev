@@ -147,7 +147,6 @@ class SelectWifiView extends SelectListView
         bssidRegex = /BSSID [0-9]+\s+\: (.*)/
         rssiRegex = /Signal\s+\: ([0-9]+)/
         channelRegex = /Channel\s+\: ([0-9]+)/
-
         networks = []
         for line in stdout.split "\r\n\r\n"
           ssid = ssidRegex.exec line
@@ -186,6 +185,6 @@ class SelectWifiView extends SelectListView
           if b.ssid == currentSsid
             return 1000
 
-          parseInt(a.rssi) - parseInt(b.rssi)
+          parseInt(b.rssi) - parseInt(a.rssi)
 
         @setItems(networks.concat @items)

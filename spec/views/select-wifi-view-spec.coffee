@@ -148,6 +148,66 @@ lastAssocStatus: 0\n\
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
 
+    it 'test listing networks on Windows', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+
+      process.platform = 'win32'
+
+      sparkIde.selectWifiView = null
+      sparkIde.initView 'select-wifi'
+      selectWifiView = sparkIde.selectWifiView
+
+      spyOn(selectWifiView, 'listNetworksWindows').andCallThrough()
+      spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) ->
+        fs = require 'fs-plus'
+        if command.indexOf('show interfaces') > -1
+          stdout = fs.readFileSync __dirname + '/../data/interfaces-win.txt'
+        else
+          stdout = fs.readFileSync __dirname + '/../data/networks-win.txt'
+
+        callback '', stdout.toString()
+
+      spyOn selectWifiView, 'setItems'
+
+      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+
+      runs ->
+        expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
+        expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
+        expect(selectWifiView.listNetworksWindows).toHaveBeenCalled()
+
+        expect(selectWifiView.setItems).toHaveBeenCalled()
+        expect(selectWifiView.setItems.calls.length).toEqual(3)
+
+        args = selectWifiView.setItems.calls[1].args[0]
+        expect(args.length).toEqual(1)
+        expect(args[0].ssid).toEqual('Enter SSID manually')
+        expect(args[0].security).toBe(null)
+
+        args = selectWifiView.setItems.calls[2].args[0]
+        expect(args.length).toEqual(6)
+        expect(args[0].ssid).toEqual('foo')
+        expect(args[0].bssid).toEqual('c8:d7:19:39:a6:74')
+        expect(args[0].rssi).toEqual('96')
+        expect(args[0].channel).toEqual('3')
+        expect(args[0].authentication).toEqual('WPA2-Personal')
+        expect(args[0].encryption).toEqual('CCMP')
+        expect(args[0].security).toEqual(3)
+
+        expect(args[1].security).toEqual(2)
+        expect(args[2].security).toEqual(3)
+        expect(args[3].security).toEqual(0)
+        expect(args[4].security).toEqual(1)
+
+        expect(args[5].ssid).toEqual('Enter SSID manually')
+        expect(args[5].security).toBe(null)
+
+        jasmine.unspy selectWifiView, 'setItems'
+        jasmine.unspy selectWifiView.cp, 'exec'
+        jasmine.unspy selectWifiView, 'listNetworksWindows'
+        SettingsHelper.clearCredentials()
+        atom.workspaceView.trigger 'core:close'
+
     it 'tests selecting item', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
