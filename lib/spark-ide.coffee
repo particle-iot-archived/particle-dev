@@ -256,6 +256,7 @@ module.exports =
 
     # Including files
     fs ?= require 'fs-plus'
+    path ?= require 'path'
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
@@ -263,6 +264,9 @@ module.exports =
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
+
+    process.chdir rootPath
+    files = (path.relative(rootPath, file) for file in files)
 
     workspace = atom.workspaceView
     @compileCloudPromise = @spark.compileCode files
@@ -307,6 +311,7 @@ module.exports =
   # Flash core via the cloud
   flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>
     fs ?= require 'fs-plus'
+    path ?= require 'path'
     utilities ?= require './vendor/utilities'
 
     rootPath = atom.project.getPath()
@@ -322,6 +327,9 @@ module.exports =
 
       if !firmware
         firmware = files[0]
+
+      process.chdir rootPath
+      firmware = path.relative rootPath, firmware
 
       @statusView.setStatus 'Flashing via the cloud...'
 
@@ -351,7 +359,7 @@ module.exports =
     @openPane 'serial-monitor'
 
   # Set up core's WiFi
-  setupWifi: (port=null) -> @loginRequired =>    
+  setupWifi: (port=null) -> @loginRequired =>
     if !port
       @choosePort 'spark-ide:setup-wifi'
     else
