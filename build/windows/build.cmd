@@ -42,7 +42,7 @@ $env:ATOM_NODE_VERSION="0.17.1"
 ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
 ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
 cd ..\..
-node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json spark-ide "0.0.7"
+node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json spark-ide "0.0.9"
 
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
 

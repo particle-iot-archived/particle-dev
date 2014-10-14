@@ -1,3 +1,5 @@
+## 0.0.9 - Added setting up Wifi and build scripts
+
 ## 0.0.8 - Added variables and functions panel
 
 ## 0.0.7 - Added claiming via USB and compiling via cloud
