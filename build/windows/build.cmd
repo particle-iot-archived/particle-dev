@@ -49,6 +49,7 @@ node %BUILD%\..\mac\append-package %TEMP_DIR%\package.json spark-ide "0.0.9"
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
 
 rem Build installer
+makensis /DSOURCE="%TARGET%/%APP_NAME%" /DOUT_FILE="%TARGET%/install.exe" %BUILD%/installer.nsi
 
 goto :EOF
 
