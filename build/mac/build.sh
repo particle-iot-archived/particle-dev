@@ -1,6 +1,7 @@
 #!/bin/bash
 
 BUILD=$(cd "$(dirname "$0")"; pwd)
+COMMON=$(cd "$(dirname "$0")"; cd ../common; pwd)
 ROOT=$(cd "$(dirname "$0")"; cd ../..; pwd)
 TARGET="${ROOT}/dist/mac"
 APP_NAME="Spark IDE"
@@ -17,21 +18,21 @@ git clone --depth=1 https://github.com/atom/atom.git .
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
 
 # Patch code
-patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
-patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${BUILD}/atom-application.patch
+patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${COMMON}/atom-Info.patch
+patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
+patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
 patch ${TEMP_DIR}/src/atom.coffee < ${BUILD}/atom.patch
-patch ${TEMP_DIR}/.npmrc < ${BUILD}/npmrc.patch
 
 cd $TEMP_DIR
 
 # Append 3rd party packages to package.json
-${BUILD}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
-${BUILD}/append-package ${TEMP_DIR}/package.json file-type-icons "0.4.4"
-${BUILD}/append-package ${TEMP_DIR}/package.json switch-header-source "0.8.0"
-${BUILD}/append-package ${TEMP_DIR}/package.json resize-panes "0.1.0"
-${BUILD}/append-package ${TEMP_DIR}/package.json maximize-panes "0.1.0"
-${BUILD}/append-package ${TEMP_DIR}/package.json move-panes "0.1.2"
-${BUILD}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json file-type-icons "0.4.4"
+${COMMON}/append-package ${TEMP_DIR}/package.json switch-header-source "0.8.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json resize-panes "0.1.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json maximize-panes "0.1.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json move-panes "0.1.2"
+${COMMON}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
 
 # Bootstrap Atom
 script/bootstrap
@@ -44,7 +45,7 @@ export ATOM_NODE_VERSION
 ../../apm/node_modules/atom-package-manager/bin/apm install .
 ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
-${BUILD}/append-package ${TEMP_DIR}/package.json spark-ide "0.0.9"
+${COMMON}/append-package ${TEMP_DIR}/package.json spark-ide "0.0.9"
 
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"
 
