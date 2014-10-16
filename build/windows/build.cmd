@@ -1,7 +1,7 @@
 @ECHO OFF
 
 set BUILD=%CD%
-set COMMON=%BUILD%\..\mac
+set COMMON=%BUILD%\..\common
 set ROOT=%BUILD%\..\..
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark IDE
@@ -19,14 +19,14 @@ copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
 rem TODO: replace with 1024px image
 copy %BUILD%\atom.png %TEMP_DIR%\resources\atom.png
 
-rem Patch code
+echo "Patching code"
 patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
 patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
 patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
 
 cd %TEMP_DIR%
 
-rem Append 3rd party packages to package.json
+echo "Appending 3rd party packages to package.json"
 node %COMMON%\append-package %TEMP_DIR%\package.json language-arduino "0.2.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json file-type-icons "0.4.4"
 node %COMMON%\append-package %TEMP_DIR%\package.json switch-header-source "0.8.0"
@@ -35,7 +35,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json maximize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
 
-rem Bootstrap Atom
+echo "Bootstrap Atom"
 script/bootstrap
 
 echo "Installing Spark IDE package"
