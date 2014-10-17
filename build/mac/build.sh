@@ -40,8 +40,6 @@ script/bootstrap
 echo "Installing Spark IDE package"
 git clone --depth=1 git@github.com:spark/spark-ide.git node_modules/spark-ide
 cd node_modules/spark-ide
-ATOM_NODE_VERSION="0.17.1"
-export ATOM_NODE_VERSION
 ../../apm/node_modules/atom-package-manager/bin/apm install .
 ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
