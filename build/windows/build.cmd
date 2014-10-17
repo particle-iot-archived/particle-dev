@@ -5,6 +5,8 @@ set COMMON=%BUILD%\..\common
 set ROOT=%BUILD%\..\..
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark IDE
+set SPARK_IDE_VERSION=0.0.10
+
 call :GETTEMPDIR
 mkdir %TEMP_DIR%
 
@@ -38,13 +40,13 @@ echo "Bootstrap Atom"
 script/bootstrap
 
 echo "Installing Spark IDE package"
-git clone --depth=1 git@github.com:spark/spark-ide.git node_modules\spark-ide
+git clone git@github.com:spark/spark-ide.git node_modules\spark-ide
 cd node_modules\spark-ide
-$env:ATOM_NODE_VERSION="0.17.1"
+git checkout tags/%SPARK_IDE_VERSION%
 ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
 ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
 cd ..\..
-node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "0.0.9"
+node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
 
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
 

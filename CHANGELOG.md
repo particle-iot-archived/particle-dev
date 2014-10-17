@@ -1,3 +1,5 @@
+## 0.0.10 - Bug fixes
+
 ## 0.0.9 - Added setting up Wifi and build scripts
 
 ## 0.0.8 - Added variables and functions panel
