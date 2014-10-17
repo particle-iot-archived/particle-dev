@@ -18,10 +18,10 @@ git clone --depth=1 https://github.com/atom/atom.git .
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
 
 # Patch code
-patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${COMMON}/atom-Info.patch
+patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
 patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
-patch ${TEMP_DIR}/src/atom.coffee < ${BUILD}/atom.patch
+patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
 
 cd $TEMP_DIR
 
