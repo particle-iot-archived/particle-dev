@@ -29,8 +29,10 @@ class SerialMonitorView extends View
     @currentPort = null
     @refreshSerialPorts()
 
-    @currentBaudrate = parseInt(SettingsHelper.get 'serial_baudrate')
+    @currentBaudrate = SettingsHelper.get 'serial_baudrate'
     @currentBaudrate ?= 9600
+    @currentBaudrate = parseInt @currentBaudrate
+
     @baudratesList = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
     for baudrate in @baudratesList
       option = $$ ->
