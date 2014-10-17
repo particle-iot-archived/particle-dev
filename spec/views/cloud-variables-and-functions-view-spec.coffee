@@ -59,11 +59,16 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
+        !!sparkIde.cloudVariablesAndFunctionsView
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
+        spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
 
+      waitsFor ->
+        @cloudVariablesAndFunctionsView.hasParent()
+
+      runs ->
         body = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body')
 
         expect(body.find('table')).toExist()
@@ -89,7 +94,6 @@ describe 'Cloud Variables and Functions View', ->
         expect(body.find('table > tbody > tr:eq(0) > td:eq(4) > button').hasClass('icon-eye')).toBe(true)
 
         # Test refresh button
-        spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
         body.find('table > tbody > tr:eq(0) > td:eq(3) > button').click()
         expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.refreshVariable).toHaveBeenCalledWith('foo')
