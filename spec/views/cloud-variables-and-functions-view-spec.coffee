@@ -45,10 +45,11 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
+
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).toExist()
         @cloudVariablesAndFunctionsView.close()
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
@@ -58,7 +59,7 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
@@ -99,7 +100,7 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
@@ -116,7 +117,7 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
@@ -149,7 +150,7 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
@@ -203,7 +204,7 @@ describe 'Cloud Variables and Functions View', ->
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
-        !!sparkIde.cloudVariablesAndFunctionsView
+        !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView

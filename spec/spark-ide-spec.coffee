@@ -251,8 +251,7 @@ describe 'Main Tests', ->
 
       expect(spark.compileCode).toHaveBeenCalled()
 
-      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h'].map (value)->
-        return __dirname + '/data/sampleproject/' + value
+      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h']
 
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 

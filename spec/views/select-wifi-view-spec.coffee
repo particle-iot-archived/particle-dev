@@ -77,6 +77,7 @@ describe 'Select Wifi View', ->
       sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
+      spyOn(selectWifiView, 'getPlatform').andReturn('darwin')
 
       spyOn(selectWifiView, 'listNetworksDarwin').andCallThrough()
       spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) ->
@@ -145,17 +146,16 @@ lastAssocStatus: 0\n\
         jasmine.unspy selectWifiView, 'setItems'
         jasmine.unspy selectWifiView.cp, 'exec'
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
+        jasmine.unspy selectWifiView, 'getPlatform'
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
 
     it 'test listing networks on Windows', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-
-      process.platform = 'win32'
-
       sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
+      spyOn(selectWifiView, 'getPlatform').andReturn('win32')
 
       spyOn(selectWifiView, 'listNetworksWindows').andCallThrough()
       spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) ->
@@ -205,6 +205,7 @@ lastAssocStatus: 0\n\
         jasmine.unspy selectWifiView, 'setItems'
         jasmine.unspy selectWifiView.cp, 'exec'
         jasmine.unspy selectWifiView, 'listNetworksWindows'
+        jasmine.unspy selectWifiView, 'getPlatform'
         SettingsHelper.clearCredentials()
         atom.workspaceView.trigger 'core:close'
 

@@ -64,6 +64,9 @@ class SelectWifiView extends SelectListView
     atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
     @cancel()
 
+  getPlatform: ->
+    process.platform
+
   listNetworks: ->
 
     @items = [{
@@ -73,7 +76,7 @@ class SelectWifiView extends SelectListView
 
     @setItems @items
 
-    switch process.platform
+    switch @getPlatform()
       when 'darwin'
         @listNetworksDarwin()
       when 'win32'
