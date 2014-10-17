@@ -1,4 +1,4 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 {Emitter} = require 'event-kit'
 $ = null
 $$ = null
@@ -18,7 +18,7 @@ class SerialMonitorView extends View
         @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
-        @subview 'input', new EditorView(mini: true, placeholderText: 'Enter string to send')
+        @subview 'input', new TextEditorView(mini: true, placeholderText: 'Enter string to send')
 
   initialize: (serializeState) ->
     {$, $$} = require 'atom'

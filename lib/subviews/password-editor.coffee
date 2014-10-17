@@ -1,7 +1,7 @@
-{EditorView} = require 'atom'
+{TextEditorView} = require 'atom'
 
 module.exports =
-class PasswordView extends EditorView
+class PasswordView extends TextEditorView
   constructor: (editorOrParams, props) ->
     editorOrParams.mini = true
     super editorOrParams, props

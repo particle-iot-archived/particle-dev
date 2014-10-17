@@ -126,7 +126,7 @@ module.exports =
 
   # "Decorator" which runs callback only when there's project set
   projectRequired: (callback) ->
-    if !atom.project.getPath()
+    if atom.project.getPaths().length == 0
       return
 
     callback()
@@ -260,7 +260,7 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
-    rootPath = atom.project.getPath()
+    rootPath = atom.project.getPaths()[0]
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
@@ -314,7 +314,7 @@ module.exports =
     path ?= require 'path'
     utilities ?= require './vendor/utilities'
 
-    rootPath = atom.project.getPath()
+    rootPath = atom.project.getPaths()[0]
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin')

@@ -1,4 +1,4 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 {Emitter} = require 'event-kit'
 $ = null
 $$ = null
@@ -173,9 +173,9 @@ class CloudVariablesAndFunctionsView extends View
           @div 'data-id': func, =>
             @button class: 'btn icon icon-zap', func
             @span '('
-            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
+            @subview 'parameters', new TextEditorView(mini: true, placeholderText: 'Parameters')
             @span ') == '
-            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
+            @subview 'result', new TextEditorView(mini: true, placeholderText: 'Result')
             @span class: 'three-quarters inline-block hidden'
         row.find('button').on 'click', (event) =>
           @callFunction $(event.currentTarget).parent().attr('data-id')

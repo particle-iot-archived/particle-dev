@@ -1,4 +1,4 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 
 $ = null
 _s = null
@@ -17,8 +17,8 @@ class LoginView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'emailEditor', new EditorView(mini: true, placeholderText: 'Could I please have an email address?')
-      @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?')
+      @subview 'emailEditor', new TextEditorView(mini: true, placeholderText: 'Could I please have an email address?')
+      @subview 'passwordEditor', new TextEditorView(mini: true, placeholderText: 'and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
@@ -39,7 +39,7 @@ class LoginView extends View
 
     @loginPromise = null
 
-    # As Atom doesn't provide password input, we have to hack EditorView to act as one
+    # As Atom doesn't provide password input, we have to hack TextEditorView to act as one
     #
     # Known issues:
     # * doesn't support pasting (it will show plain text)
