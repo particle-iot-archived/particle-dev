@@ -71,18 +71,22 @@ class CompileErrorsView extends SelectListView
     if @hasParent()
       @detach()
 
+  fixInoFile: (filename) ->
+    fs ?= require 'fs-plus'
+    if fs.existsSync filename
+      return filename
+    else
+      return filename.replace '.cpp', '.ino'
+
   viewForItem: (item) ->
+    self = @
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', item.message
-        @div class: 'secondary-line', item.file + ':' + item.row + ':' + item.col
+        @div class: 'secondary-line', self.fixInoFile(item.file) + ':' + item.row + ':' + item.col
 
   confirmed: (item) ->
-    fs ?= require 'fs-plus'
-    if fs.existsSync item.file
-      filename = item.file
-    else
-      filename = item.file.replace '.cpp', '.ino'
+    filename = @fixInoFile item.file
 
     # Open file with error in editor
     opening = atom.workspaceView.open filename, { searchAllPanes: true }
