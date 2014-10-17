@@ -122,7 +122,6 @@ class SerialMonitorView extends View
       @disconnect()
 
     @port.on 'error', (e) =>
-      # FIXME: Connecting first time throws an error. Check if this is caused by node-pre-gyp
       console.log 'error', e
       @disconnect()
 
