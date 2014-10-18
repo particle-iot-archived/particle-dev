@@ -4,11 +4,3 @@ notifications:
     on_success: never
     on_failure: change
 script: curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh
-before_deploy: build/mac/build.sh
-deploy:
-  provider: releases
-  api_key:
-    secure: K7IcoYj8vtO7I8OKO8Yym+u0JWI4ifIAX4wafuZJJNqoskuWG/oqA7cCcr5OgT5aD9TGcBhECbeqJ4vn7uLkfmzXgBIFcfZUezO7TC5qK3cq3AS+pdDMl7wEVDDzstYXbJrzVlSAMxzr34x9owuO3UExmqkKhT2hbArNRKI5FVA=
-  file: dist/mac/Spark IDE.dmg
-  on:
-    repo: spark/spark-ide
