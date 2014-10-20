@@ -64,6 +64,7 @@ module.exports =
     atom.workspaceView.command 'spark-ide:show-serial-monitor', => @showSerialMonitor()
     atom.workspaceView.command 'spark-ide:setup-wifi', (event, port) => @setupWifi(port)
     atom.workspaceView.command 'spark-ide:enter-wifi-credentials', (event, port, ssid, security) => @enterWifiCredentials(port, ssid, security)
+    atom.workspaceView.command 'spark-ide:toggle-toolbar', => @toggleToolbar()
 
     atom.workspaceView.command 'spark-ide:update-menu', => @MenuManager.update()
 
@@ -373,3 +374,5 @@ module.exports =
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port
     @wifiCredentialsView.show(ssid, security)
+
+  toggleToolbar: ->

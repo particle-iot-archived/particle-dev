@@ -114,6 +114,12 @@ describe 'Main Tests', ->
       expect(sparkIde.setupWifi).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'setupWifi'
 
+    it 'calls toggleToolbar() method for spark-ide:toggle-toolbar event', ->
+      spyOn sparkIde, 'toggleToolbar'
+      atom.workspaceView.trigger 'spark-ide:toggle-toolbar'
+      expect(sparkIde.toggleToolbar).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'toggleToolbar'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-ide:remove-core', ->
