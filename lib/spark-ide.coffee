@@ -86,11 +86,23 @@ module.exports =
     atom.packages.activatePackage('toolbar')
       .then (pkg) =>
         @toolbar = pkg.mainModule
-        @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
-        @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
         @toolbar.appendSpacer()
-        @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
+        @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
+        @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
+
+        @toolbar.appendSpacer()
+
+        @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
         @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
+
+        @updateToolbarButtons()
+
+    atom.workspaceView.command 'spark-ide:update-login-status', =>
+      @updateToolbarButtons()
+
+    atom.workspaceView.command 'spark-ide:update-core-status', =>
+      @updateToolbarButtons()
+
   deactivate: ->
     @statusView?.destroy()
 
@@ -159,6 +171,20 @@ module.exports =
 
       pane.activate()
       atom.workspace.open(uri, searchAllPanes: true)
+
+  updateToolbarButtons: ->
+    if @SettingsHelper.isLoggedIn()
+      @compileButton.setEnabled true
+      @wifiButton.setEnabled true
+
+      if @SettingsHelper.hasCurrentCore()
+        @flashButton.setEnabled true
+      else
+        @flashButton.setEnabled false
+    else
+      @flashButton.setEnabled false
+      @compileButton.setEnabled false
+      @wifiButton.setEnabled false
 
   # Function for selecting port or showing Listen dialog
   choosePort: (delegate) ->
