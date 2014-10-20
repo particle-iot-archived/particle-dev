@@ -376,3 +376,5 @@ module.exports =
     @wifiCredentialsView.show(ssid, security)
 
   toggleToolbar: ->
+    @initView 'toolbar'
+    @toolbarView.toggle()
