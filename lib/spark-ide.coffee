@@ -34,6 +34,7 @@ module.exports =
   cloudVariablesAndFunctionsView: null
   selectFirmwareView: null
   spark: null
+  toolbar: null
 
   removePromise: null
   listPortsPromise: null
@@ -82,6 +83,14 @@ module.exports =
 
       @initView pathname.substr(1)
 
+    atom.packages.activatePackage('toolbar')
+      .then (pkg) =>
+        @toolbar = pkg.mainModule
+        @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
+        @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
+        @toolbar.appendSpacer()
+        @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
+        @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
   deactivate: ->
     @statusView?.destroy()
 
