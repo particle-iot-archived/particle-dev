@@ -1,3 +1,5 @@
+## 0.0.11 - Added toolbar
+
 ## 0.0.10 - Bug fixes
 
 ## 0.0.9 - Added setting up Wifi and build scripts
