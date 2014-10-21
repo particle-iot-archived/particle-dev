@@ -28,7 +28,6 @@ class CloudVariablesAndFunctionsView extends View
     @client = null
     @watchers = {}
 
-    # TODO: Support empty variables/functions lists
     @listVariables()
     @listFunctions()
 
@@ -64,10 +63,9 @@ class CloudVariablesAndFunctionsView extends View
   # Propagate table with variables
   listVariables: ->
     variables = SettingsHelper.get 'variables'
-    # TODO: Fix background message
     @variables.empty()
 
-    if !variables || variables.length == 0
+    if !variables || Object.keys(variables).length == 0
       @variables.append $$ ->
         @ul class: 'background-message', =>
           @li 'No variables registered'
