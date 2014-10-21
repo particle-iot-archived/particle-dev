@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>select-firmware-view.coffee</title>
+  <title>serial-monitor-view.coffee</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="docco.css" />
@@ -126,7 +126,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>select-firmware-view.coffee</h1>
+                  <h1>serial-monitor-view.coffee</h1>
               </div>
           </li>
         
@@ -141,54 +141,150 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>SelectListView = require('atom').SelectListView
-
+            <div class="content"><div class='highlight'><pre>{View, TextEditorView} = require 'atom'
+{Emitter} = require 'event-kit'
 $ = null
 $$ = null
-Subscriber = null
-SerialHelper = null
 SettingsHelper = null
-fs = null
-path = null
+serialport = null
 
 module.exports =
-class SelectFirmwareView extends SelectListView
-  initialize: -&gt;
-    super
+class SerialMonitorView extends View
+  @content: -&gt;
+    @div id: 'spark-ide-serial-monitor', class: 'panel', =&gt;
+      @div class: 'panel-heading', =&gt;
+        @select outlet: 'portsSelect', mousedown: 'refreshSerialPorts', change: 'portSelected', =&gt;
+          @option value: '', 'No port selected'
+        @span '@'
+        @select outlet: 'baudratesSelect', change: 'baudrateSelected'
+        @button class: 'btn', outlet: 'connectButton', click: 'toggleConnect', 'Connect'
+        @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
+      @div class: 'panel-body', outlet: 'variables', =&gt;
+        @pre outlet: 'output'
+        @subview 'input', new TextEditorView(mini: true, placeholderText: 'Enter string to send')
 
+  initialize: (serializeState) -&gt;
     {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
-    path ?= require 'path'
-    fs ?= require 'fs-plus'
+    SettingsHelper = require '../utils/settings-helper'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', =&gt; @hide()
+    @emitter = new Emitter
 
-    @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-firmware-view'
+    @currentPort = null
+    @refreshSerialPorts()
 
-  destroy: -&gt;
-    @remove()
+    @currentBaudrate = SettingsHelper.get 'serial_baudrate'
+    @currentBaudrate ?= 9600
+    @currentBaudrate = parseInt @currentBaudrate
 
-  show: =&gt;
-    if !@hasParent()
-      atom.workspaceView.append(this)
-      @focusFilterEditor()
+    @baudratesList = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
+    for baudrate in @baudratesList
+      option = $$ -&gt;
+        @option value:baudrate, baudrate
+      if baudrate == @currentBaudrate
+        option.attr 'selected', 'selected'
+      @baudratesSelect.append option
 
-  hide: -&gt;
-    if @hasParent()
-      @detach()
+    @port = null
 
-  viewForItem: (item) -&gt;
-    $$ -&gt;
-      stats = fs.statSync item
-      @li class: 'two-lines', =&gt;
-        @div class: 'primary-line', path.basename(item)
-        @div class: 'secondary-line', stats.ctime.toLocaleString()
+    @input.hiddenInput.on 'keydown', (e) =&gt;
+      if e.which == 13
+        if @isPortOpen()
+          @port.write @input.getText() + "\n"
+          @input.setText ''
+      true
+    @input.hiddenInput.attr 'disabled', 'disabled'
 
-  confirmed: (item) -&gt;
-    atom.workspaceView.trigger 'spark-ide:flash-cloud', [item]
-    @cancel()</pre></div></div>
+  serialize: -&gt;
+
+  getTitle: -&gt;
+    'Serial monitor'
+
+  onDidChangeTitle: (callback) -&gt;
+    @emitter.on 'did-change-title', callback
+
+  onDidChangeModified: (callback) -&gt;
+    @emitter.on 'did-change-modified', callback
+
+  getUri: -&gt;
+    'spark-ide://editor/serial-monitor'
+
+  close: -&gt;
+    pane = atom.workspace.paneForUri @getUri()
+    pane.destroy()
+
+  appendText: (text, appendNewline=true) -&gt;
+    at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 &gt; @output[0].scrollHeight)
+
+    if appendNewline
+      text += "\n"
+    @output.html(@output.html() + text)
+
+    if at_bottom
+      @output.scrollTop(@output[0].scrollHeight)
+
+  refreshSerialPorts: -&gt;
+    serialport ?= require 'serialport'
+    serialport.list (err, ports) =&gt;
+      @portsSelect.find('&gt;').remove()
+      @currentPort = SettingsHelper.get 'serial_port'
+      for port in ports
+        option = $$ -&gt;
+          @option value:port.comName, port.comName
+        if @currentPort == port.comName
+          option.attr 'selected', 'selected'
+        @portsSelect.append option
+
+  portSelected: -&gt;
+    @currentPort = @portsSelect.val()
+    SettingsHelper.set 'serial_port', @currentPort
+
+  baudrateSelected: -&gt;
+    @currentBaudrate = @baudratesSelect.val()
+    SettingsHelper.set 'serial_baudrate', @currentBaudrate
+
+  toggleConnect: -&gt;
+    if !!@portsSelect.attr 'disabled'
+      @disconnect()
+    else
+      @connect()
+
+  isPortOpen: -&gt;
+    @port.fd &amp;&amp; parseInt(@port.fd) &gt;= 0
+
+  connect: -&gt;
+    @portsSelect.attr 'disabled', 'disabled'
+    @baudratesSelect.attr 'disabled', 'disabled'
+    @connectButton.text 'Disconnect'
+    @input.hiddenInput.removeAttr 'disabled'
+
+    @port = new serialport.SerialPort @currentPort, {
+      baudrate: @currentBaudrate
+    }, false
+
+    @port.on 'close', =&gt;
+      @disconnect()
+
+    @port.on 'error', (e) =&gt;
+      console.error e
+      @disconnect()
+
+    @port.on 'data', (data) =&gt;
+      @appendText data.toString(), false
+
+    @port.open()
+    @input.hiddenInput.focus()
+
+  disconnect: -&gt;
+    @portsSelect.removeAttr 'disabled'
+    @baudratesSelect.removeAttr 'disabled'
+    @connectButton.text 'Connect'
+    @input.hiddenInput.attr 'disabled', 'disabled'
+
+    if @isPortOpen()
+      @port.close()
+
+  clearOutput: -&gt;
+    @output.html ''</pre></div></div>
             
         </li>
         

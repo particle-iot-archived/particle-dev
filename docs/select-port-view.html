@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -135,7 +150,7 @@ SerialHelper = null
 
 module.exports =
 class SelectPortView extends SelectListView
-  initialize: -&gt;
+  initialize: (delegate) -&gt;
     super
 
     {$, $$} = require 'atom'
@@ -148,6 +163,7 @@ class SelectPortView extends SelectListView
     @prop 'id', 'spark-ide-select-port-view'
     @listPortsPromise = null
 
+    @delegate = delegate
 
   destroy: -&gt;
     @remove()
@@ -186,16 +202,16 @@ class SelectPortView extends SelectListView
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:identify-core'</span>, [item.comName]
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.trigger <span class="hljs-property">@delegate</span>, [item.comName]
     <span class="hljs-property">@cancel</span>()
 
-  <span class="hljs-attribute">getFilterKey</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">getFilterKey</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-string">'comName'</span>
 
-  <span class="hljs-attribute">listPorts</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">listPorts</span>: <span class="hljs-function">-&gt;</span>
     SerialHelper = <span class="hljs-built_in">require</span> <span class="hljs-string">'../utils/serial-helper'</span>
     <span class="hljs-property">@listPortsPromise</span> = SerialHelper.listPorts()
-    <span class="hljs-property">@listPortsPromise</span>.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+    <span class="hljs-property">@listPortsPromise</span>.done (ports) =&gt;
       <span class="hljs-property">@setItems</span> ports
       <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
             

@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -138,14 +153,14 @@ path = <span class="hljs-literal">null</span>
 
 <span class="hljs-built_in">module</span>.exports =
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CompileErrorsView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SelectListView</span></span>
-  <span class="hljs-attribute">initialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">initialize</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">super</span>
 
     {$, $$} = <span class="hljs-built_in">require</span> <span class="hljs-string">'atom'</span>
     {Subscriber} = <span class="hljs-built_in">require</span> <span class="hljs-string">'emissary'</span>
 
     <span class="hljs-property">@subscriber</span> = <span class="hljs-keyword">new</span> Subscriber()
-    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'core:cancel core:close'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@hide</span>()
+    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'core:cancel core:close'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@hide</span>()
 
     <span class="hljs-property">@addClass</span> <span class="hljs-string">'overlay from-top'</span>
     <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-compile-errors-view'</span></pre></div></div>
@@ -224,18 +239,22 @@ path = <span class="hljs-literal">null</span>
     if @hasParent()
       @detach()
 
+  fixInoFile: (filename) -&gt;
+    fs ?= require 'fs-plus'
+    if fs.existsSync filename
+      return filename
+    else
+      return filename.replace '.cpp', '.ino'
+
   viewForItem: (item) -&gt;
+    self = @
     $$ -&gt;
       @li class: 'two-lines', =&gt;
         @div class: 'primary-line', item.message
-        @div class: 'secondary-line', item.file + ':' + item.row + ':' + item.col
+        @div class: 'secondary-line', self.fixInoFile(item.file) + ':' + item.row + ':' + item.col
 
   confirmed: (item) -&gt;
-    fs ?= require 'fs-plus'
-    if fs.existsSync item.file
-      filename = item.file
-    else
-      filename = item.file.replace '.cpp', '.ino'</pre></div></div>
+    filename = @fixInoFile item.file</pre></div></div>
             
         </li>
         
@@ -251,11 +270,11 @@ path = <span class="hljs-literal">null</span>
             </div>
             
             <div class="content"><div class='highlight'><pre>    opening = atom.workspaceView.open filename, { <span class="hljs-attribute">searchAllPanes</span>: <span class="hljs-literal">true</span> }
-    opening.done <span class="hljs-function"><span class="hljs-params">(editor)</span> =&gt;</span>
+    opening.done (editor) =&gt;
       editor.setCursorBufferPosition [item.row-<span class="hljs-number">1</span>, item.col-<span class="hljs-number">1</span>],
     <span class="hljs-property">@cancel</span>()
 
-  <span class="hljs-attribute">getFilterKey</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">getFilterKey</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-string">'message'</span></pre></div></div>
             
         </li>

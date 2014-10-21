@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -143,9 +158,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>:<span class="hljs-function"> -&gt;</span>
-    ideMenu = atom.menu.template.filter <span class="hljs-function"><span class="hljs-params">(value)</span> -&gt;</span>
-      value.label == <span class="hljs-string">'Spark Core'</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>: <span class="hljs-function">-&gt;</span>
+    ideMenu = atom.menu.template.filter (value) -&gt;
+      value.label == <span class="hljs-string">'Spark'</span>
 
     ideMenu[<span class="hljs-number">0</span>]</pre></div></div>
             
@@ -162,7 +177,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>: <span class="hljs-function">-&gt;</span>
     ideMenu = <span class="hljs-property">@getMenu</span>()
 
     <span class="hljs-keyword">if</span> SettingsHelper.isLoggedIn()</pre></div></div>
@@ -214,8 +229,8 @@
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
           <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:remove-core'</span>
         },{
-          <span class="hljs-attribute">label</span>: <span class="hljs-string">'Toggle cloud variables and functions'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:toggle-cloud-variables-and-functions'</span>
+          <span class="hljs-attribute">label</span>: <span class="hljs-string">'Show cloud variables and functions'</span>,
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:show-cloud-variables-and-functions'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Flash '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">' via the cloud'</span>,
           <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:flash-cloud'</span>
@@ -229,6 +244,9 @@
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Identify Core...'</span>,
         <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:identify-core'</span>
+      },{
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Setup Core\'s WiFi...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:setup-wifi'</span>
       },{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
@@ -253,7 +271,14 @@
             <div class="content"><div class='highlight'><pre>      ideMenu.submenu = [{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Log in to Spark Cloud...'</span>,
         <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:login'</span>
-      }]</pre></div></div>
+      }]
+
+    ideMenu.submenu = ideMenu.submenu.concat [{
+      <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
+    },{
+      <span class="hljs-attribute">label</span>: <span class="hljs-string">'Show serial monitor'</span>,
+      <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:show-serial-monitor'</span>
+    }]</pre></div></div>
             
         </li>
         
