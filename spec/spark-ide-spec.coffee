@@ -436,3 +436,67 @@ describe 'Main Tests', ->
       jasmine.unspy sparkIde.selectFirmwareView, 'show'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
+
+  describe 'open pane tests', ->
+    url = 'spark-ide://editor/foo'
+
+    describe 'when there already is open panel', ->
+      it 'switches to it', ->
+        activateItemForUriSpy = jasmine.createSpy 'activateItemForUri'
+        spyOn(atom.workspace, 'paneForUri').andReturn {
+          activateItemForUri: activateItemForUriSpy
+        }
+
+        sparkIde.openPane 'foo'
+
+        expect(atom.workspace.paneForUri).toHaveBeenCalled()
+        expect(atom.workspace.paneForUri).toHaveBeenCalledWith(url)
+        expect(activateItemForUriSpy).toHaveBeenCalled()
+        expect(activateItemForUriSpy).toHaveBeenCalledWith(url)
+
+        jasmine.unspy atom.workspace, 'paneForUri'
+
+    describe 'when there is no panel', ->
+      it 'opens new one', ->
+        spyOn(atom.workspace, 'paneForUri').andReturn null
+        spyOn atom.workspace, 'open'
+
+        # Without splitted panels, split
+        spyOn(atom.workspaceView, 'getPaneViews').andReturn ['foo']
+        activateSpy = jasmine.createSpy 'activateSpy'
+        splitDownSpy = jasmine.createSpy('splitDown').andReturn {
+          activate: activateSpy
+        }
+        spyOn(atom.workspaceView, 'getActivePaneView').andReturn {
+          splitDown: splitDownSpy
+        }
+
+        sparkIde.openPane 'foo'
+
+        expect(splitDownSpy).toHaveBeenCalled()
+        expect(activateSpy).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalledWith(url, {searchAllPanes: true})
+
+        # With splitted panels, use last one
+        jasmine.unspy atom.workspaceView, 'getPaneViews'
+        splitRightSpy = jasmine.createSpy('splitRight').andReturn {
+          activate: activateSpy
+        }
+        spyOn(atom.workspaceView, 'getPaneViews').andReturn ['foo', {
+          splitRight: splitRightSpy
+        }]
+        activateSpy.reset()
+        atom.workspace.open.reset()
+
+        sparkIde.openPane 'foo'
+
+        expect(splitRightSpy).toHaveBeenCalled()
+        expect(activateSpy).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalledWith(url, {searchAllPanes: true})
+
+        jasmine.unspy atom.workspaceView, 'getPaneViews'
+        jasmine.unspy atom.workspaceView, 'getActivePaneView'
+        jasmine.unspy atom.workspace, 'paneForUri'
+        jasmine.unspy atom.workspace, 'open'

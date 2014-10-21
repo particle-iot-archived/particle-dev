@@ -155,7 +155,6 @@ module.exports =
 
   # Open view in bottom panel
   openPane: (uri) ->
-    # TODO: Test it
     uri = 'spark-ide://editor/' + uri
     pane = atom.workspace.paneForUri uri
 
@@ -170,7 +169,7 @@ module.exports =
         pane = pane.splitRight()
 
       pane.activate()
-      atom.workspace.open(uri, searchAllPanes: true)
+      atom.workspace.open uri, searchAllPanes: true
 
   updateToolbarButtons: ->
     if @SettingsHelper.isLoggedIn()
