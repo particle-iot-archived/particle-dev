@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+
+configFile = fs.readFileSync(process.argv[2]).toString();
+configFile = configFile.replace('atom-dark-syntax', process.argv[3])
+fs.writeFileSync(process.argv[2], configFile);

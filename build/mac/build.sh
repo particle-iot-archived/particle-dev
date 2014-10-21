@@ -1,5 +1,12 @@
 #!/bin/bash
 
+COLOR_CLEAR="\x1B[0m"
+COLOR_BLUE="\x1B[1;34m"
+
+header () {
+  echo -e "${COLOR_BLUE}${1}${COLOR_CLEAR}"
+}
+
 BUILD=$(cd "$(dirname "$0")"; pwd)
 COMMON=$(cd "$(dirname "$0")"; cd ../common; pwd)
 ROOT=$(cd "$(dirname "$0")"; cd ../..; pwd)
@@ -7,18 +14,18 @@ TARGET="${ROOT}/dist/mac"
 APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
-SPARK_IDE_VERSION="0.0.10"
+SPARK_IDE_VERSION="0.0.11"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
 cd $TEMP_DIR
-echo "Working directory is ${TEMP_DIR}"
+header "Working directory is ${TEMP_DIR}"
 git clone --depth=1 https://github.com/atom/atom.git .
 
-# Copy resources
+header "Copy resources"
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
 
-# Patch code
+header "Patch code"
 patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
 patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
@@ -26,7 +33,7 @@ patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
 
 cd $TEMP_DIR
 
-# Append 3rd party packages to package.json
+header "Append 3rd party packages to package.json"
 ${COMMON}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json file-type-icons "0.4.4"
 ${COMMON}/append-package ${TEMP_DIR}/package.json switch-header-source "0.8.0"
@@ -37,10 +44,13 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json toolbar "0.0.3"
 ${COMMON}/append-package ${TEMP_DIR}/package.json monokai "0.8.0"
 
-# Bootstrap Atom
+header "Setting syntax theme"
+${COMMON}/set-syntax-theme ${TEMP_DIR}/dot-atom/config.cson monokai
+
+header "Bootstrap Atom"
 script/bootstrap
 
-echo "Installing Spark IDE package"
+header "Installing Spark IDE package"
 git clone git@github.com:spark/spark-ide.git node_modules/spark-ide
 cd node_modules/spark-ide
 git checkout tags/${SPARK_IDE_VERSION}
@@ -53,7 +63,7 @@ build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "
 
 # rm -rf $TEMP_DIR
 
-# Build DMG
+header "Build DMG"
 TEMPLATE="${HOME}/tmp/template.dmg"
 WC_DMG="${TARGET}/image.dmg"
 MASTER_DMG="${TARGET}/Spark IDE.dmg"

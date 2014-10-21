@@ -5,7 +5,7 @@ set COMMON=%BUILD%\..\common
 set ROOT=%BUILD%\..\..
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark IDE
-set SPARK_IDE_VERSION=0.0.10
+set SPARK_IDE_VERSION=0.0.11
 
 call :GETTEMPDIR
 mkdir %TEMP_DIR%
@@ -37,6 +37,9 @@ node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json toolbars "0.0.3"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
+
+echo "Setting syntax theme"
+node %COMMON%\set-syntax-theme %TEMP_DIR%\dot-atom\config.cson monokai
 
 echo "Bootstrap Atom"
 script/bootstrap
