@@ -402,7 +402,9 @@ module.exports =
       @selectWifiView.show()
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
-    # TODO: Require port
+    if !port
+      return
+      
     @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port
