@@ -114,7 +114,7 @@ class SelectWifiView extends SelectListView
                 security = 0
 
               networks.push {
-                ssid: network[1],
+                ssid: _s.trim(network[1]),
                 bssid: network[2],
                 rssi: network[3],
                 channel: network[4],
