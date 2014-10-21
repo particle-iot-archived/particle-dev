@@ -296,6 +296,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(1)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
+        expect(atom.workspaceView.trigger).not.toHaveBeenCalledWith('spark-ide:flash-cloud')
 
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
@@ -320,6 +321,27 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:show-compile-errors')
+
+        SettingsHelper.set 'compile-status', null
+        jasmine.unspy atom.workspaceView, 'trigger'
+        SettingsHelper.clearCredentials()
+
+    it 'checks flashing after compiling', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SparkStub.stubSuccess 'compileCode'
+      SparkStub.stubSuccess 'downloadBinary'
+
+      atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
+      spyOn atom.workspaceView, 'trigger'
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      waitsFor ->
+        !sparkIde.downloadBinaryPromise
+
+      runs ->
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:flash-cloud')
 
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'

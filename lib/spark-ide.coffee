@@ -321,7 +321,6 @@ module.exports =
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
 
-          # TODO: Test it
           if !!thenFlash
             atom.workspaceView.trigger 'spark-ide:flash-cloud'
       else
