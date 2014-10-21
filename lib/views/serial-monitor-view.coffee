@@ -122,7 +122,7 @@ class SerialMonitorView extends View
       @disconnect()
 
     @port.on 'error', (e) =>
-      console.log 'error', e
+      console.error e
       @disconnect()
 
     @port.on 'data', (data) =>

@@ -117,13 +117,10 @@ class WifiCredentialsView extends View
     isOk = true
 
     if @ssid == ''
-      console.log 'ssid'
       @ssidEditor.addClass 'editor-error'
       isOk = false
 
-    console.log 'secu', @security
     if (@security != '0') && (@password == '')
-      console.log 'sec'
       @passwordEditor.addClass 'editor-error'
       isOk = false
 
