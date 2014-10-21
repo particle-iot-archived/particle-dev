@@ -155,7 +155,6 @@ module.exports =
 
   # Open view in bottom panel
   openPane: (uri) ->
-    # TODO: Test it
     uri = 'spark-ide://editor/' + uri
     pane = atom.workspace.paneForUri uri
 
@@ -170,7 +169,7 @@ module.exports =
         pane = pane.splitRight()
 
       pane.activate()
-      atom.workspace.open(uri, searchAllPanes: true)
+      atom.workspace.open uri, searchAllPanes: true
 
   updateToolbarButtons: ->
     if @SettingsHelper.isLoggedIn()
@@ -322,7 +321,6 @@ module.exports =
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
 
-          # TODO: Test it
           if !!thenFlash
             atom.workspaceView.trigger 'spark-ide:flash-cloud'
       else
@@ -404,7 +402,9 @@ module.exports =
       @selectWifiView.show()
 
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
-    # TODO: Require port
+    if !port
+      return
+      
     @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port

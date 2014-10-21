@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -127,7 +142,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>{$, EditorView, View} = require 'atom'
+            <div class="content"><div class='highlight'><pre>{$, TextEditorView, View} = require 'atom'
 path = require 'path'
 
 module.exports =
@@ -135,7 +150,7 @@ class Dialog extends View
   @content: ({prompt} = {}) -&gt;
     @div class: 'spark-ide-dialog overlay from-top', =&gt;
       @label prompt, class: 'icon', outlet: 'promptText'
-      @subview 'miniEditor', new EditorView(mini: true)
+      @subview 'miniEditor', new TextEditorView(mini: true)
       @div class: 'error-message', outlet: 'errorMessage'
 
   initialize: ({initialText, select, iconClass, hideOnBlur} = {}) -&gt;
@@ -172,15 +187,15 @@ class Dialog extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hideOthers</span>:<span class="hljs-function"> -&gt;</span>
-    $<span class="hljs-function"><span class="hljs-params">(<span class="hljs-string">'.spark-ide-dialog'</span>)</span>.<span class="hljs-title">each</span> <span class="hljs-params">(idx, item)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hideOthers</span>: <span class="hljs-function">-&gt;</span>
+    $(<span class="hljs-string">'.spark-ide-dialog'</span>).each (idx, item) -&gt;
       $(item).data(<span class="hljs-string">'view'</span>).close()
 
-  <span class="hljs-attribute">close</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">close</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@remove</span>()
     atom.workspaceView.focus()
 
-  <span class="hljs-attribute">cancel</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">cancel</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@remove</span>()
 
   <span class="hljs-attribute">showError</span>: <span class="hljs-function"><span class="hljs-params">(message=<span class="hljs-string">''</span>)</span> -&gt;</span>
