@@ -35,6 +35,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json resize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json maximize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
+node %COMMON%\append-package %TEMP_DIR%\package.json toolbars "0.0.3"
 
 echo "Bootstrap Atom"
 script/bootstrap
