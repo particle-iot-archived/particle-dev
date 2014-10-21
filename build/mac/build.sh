@@ -35,6 +35,7 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json maximize-panes "0.1.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json move-panes "0.1.2"
 ${COMMON}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json toolbar "0.0.3"
+${COMMON}/append-package ${TEMP_DIR}/package.json monokai "0.8.0"
 
 # Bootstrap Atom
 script/bootstrap
