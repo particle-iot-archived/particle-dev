@@ -98,6 +98,32 @@
       border-right: 1px solid @overlay-border-color;
     }
   }
+
+  &.loading {
+    .panel-body {
+      padding: 0;
+
+      &:before {
+        .three-quarters();
+        width: 128px;
+        height: 128px;
+        border-radius: 64px;
+        border-width: 32px;
+        position: absolute;
+        top: 50%;
+        margin-top: -64px;
+        margin-left: -64px;
+      }
+    }
+
+    #spark-ide-cloud-variables .panel-body:before {
+      left: 25%;
+    }
+
+    #spark-ide-cloud-functions .panel-body:before {
+      left: 75%;
+    }
+  }
 }
 
 #spark-ide-cloud-variables {

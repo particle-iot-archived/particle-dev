@@ -75,6 +75,9 @@ class StatusBarView extends View
     spark.login { accessToken: SettingsHelper.get('access_token') }
     @getAttributesPromise = spark.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
+      SettingsHelper.set 'variables', {}
+      SettingsHelper.set 'functions', []
+
       if !e
         return
 
@@ -99,6 +102,8 @@ class StatusBarView extends View
           @interval = setInterval =>
             @updateCoreStatus()
           , 30000
+
+      atom.workspaceView.trigger 'spark-ide:core-status-updated'
       @getAttributesPromise = null
 
   # Update current core's status

@@ -4,6 +4,7 @@ $ = null
 $$ = null
 whenjs = require 'when'
 SettingsHelper = null
+Subscriber = null
 spark = null
 
 module.exports =
@@ -19,28 +20,36 @@ class CloudVariablesAndFunctionsView extends View
 
   initialize: (serializeState) ->
     {$, $$} = require 'atom'
+    {Subscriber} = require 'emissary'
     SettingsHelper = require '../utils/settings-helper'
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
 
     @emitter = new Emitter
+    @subscriber = new Subscriber()
+    # Show some progress when core's status is downloaded
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:update-core-status', =>
+      @variables.empty()
+      @functions.empty()
+      @addClass 'loading'
+
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:core-status-updated', =>
+      # Refresh UI and watchers when current core changes
+      @listVariables()
+      @listFunctions()
+      @clearWatchers()
+      @removeClass 'loading'
+
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:logout', =>
+      # Clear watchers and hide when user logs out
+      @clearWatchers()
+      @close()
 
     @client = null
     @watchers = {}
 
     @listVariables()
     @listFunctions()
-
-    # Refresh UI and watchers when current core changes
-    atom.workspaceView.command 'spark-ide:update-core-status', =>
-      @listVariables()
-      @listFunctions()
-      @clearWatchers()
-
-    # Clear watchers and hide when user logs out
-    atom.workspaceView.command 'spark-ide:logout', =>
-      @clearWatchers()
-      @close()
 
   serialize: ->
 
