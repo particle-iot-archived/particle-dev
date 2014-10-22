@@ -92,6 +92,7 @@ module.exports =
 
         @toolbar.appendSpacer()
 
+        @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select Core...', 'ion'
         @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
         @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
 
@@ -174,6 +175,7 @@ module.exports =
   updateToolbarButtons: ->
     if @SettingsHelper.isLoggedIn()
       @compileButton.setEnabled true
+      @coreButton.setEnabled true
       @wifiButton.setEnabled true
 
       if @SettingsHelper.hasCurrentCore()
@@ -183,6 +185,7 @@ module.exports =
     else
       @flashButton.setEnabled false
       @compileButton.setEnabled false
+      @coreButton.setEnabled false
       @wifiButton.setEnabled false
 
   # Function for selecting port or showing Listen dialog
@@ -404,7 +407,7 @@ module.exports =
   enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
     if !port
       return
-      
+
     @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port
