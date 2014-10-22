@@ -3,5 +3,9 @@
 var fs = require('fs');
 
 packages = JSON.parse(fs.readFileSync(process.argv[2]));
-packages.packageDependencies[process.argv[3]] = process.argv[4]
+if (process.argv.length == 5) {
+  packages.packageDependencies[process.argv[3]] = process.argv[4]
+} else {
+  delete packages.packageDependencies[process.argv[3]]
+}
 fs.writeFileSync(process.argv[2], JSON.stringify(packages, null, '  '));

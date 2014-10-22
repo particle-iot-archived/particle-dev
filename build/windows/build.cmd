@@ -37,9 +37,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json toolbars "0.0.3"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
-
-echo "Setting syntax theme"
-node %COMMON%\set-syntax-theme %TEMP_DIR%\dot-atom\config.cson monokai
+node %COMMON%\append-package %TEMP_DIR%\package.json welcome
 
 echo "Bootstrap Atom"
 script/bootstrap
@@ -53,9 +51,14 @@ ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
 cd ..\..
 node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
 
+echo "Installing Spark IDE welcome package"
+git clone git@github.com:suda/welcome-spark-ide.git node_modules/welcome-spark-ide
+node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
+
+echo "Building app"
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
 
-rem Build installer
+echo "Build installer"
 makensis /DSOURCE="%TARGET%/%APP_NAME%" /DOUT_FILE="%TARGET%/install.exe" %BUILD%/installer.nsi
 
 goto :EOF
