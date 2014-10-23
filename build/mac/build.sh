@@ -30,6 +30,7 @@ patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
 patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
 patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
+patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
 
 cd $TEMP_DIR
 
