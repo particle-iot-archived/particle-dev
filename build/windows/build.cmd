@@ -53,7 +53,7 @@ cd ..\..
 node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
 
 echo "Installing Spark IDE welcome package"
-git clone git@github.com:suda/welcome-spark-ide.git node_modules/welcome-spark-ide
+git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
 
 echo "Building app"
