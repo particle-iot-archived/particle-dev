@@ -25,20 +25,6 @@ git clone --depth=1 https://github.com/atom/atom.git .
 header "Copy resources"
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
 
-header "Patch code"
-patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
-patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
-patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
-patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
-patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
-# Window title
-patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
-patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
-# Menu items
-patch ${TEMP_DIR}/menus/darwin.cson < ${COMMON}/darwin.patch
-patch ${TEMP_DIR}/menus/linux.cson < ${COMMON}/linux.patch
-patch ${TEMP_DIR}/menus/win32.cson < ${COMMON}/win32.patch
-
 cd $TEMP_DIR
 
 header "Append 3rd party packages to package.json"
@@ -68,6 +54,20 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json spark-ide ${SPARK_IDE_VERSION}
 header "Installing Spark IDE welcome package"
 git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
+
+header "Patch code"
+patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
+patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-application.patch
+patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
+patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
+patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
+# Window title
+patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
+patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
+# Menu items
+patch ${TEMP_DIR}/menus/darwin.cson < ${COMMON}/darwin.patch
+patch ${TEMP_DIR}/menus/linux.cson < ${COMMON}/linux.patch
+patch ${TEMP_DIR}/menus/win32.cson < ${COMMON}/win32.patch
 
 header "Building app"
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"

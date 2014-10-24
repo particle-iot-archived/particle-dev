@@ -20,20 +20,6 @@ echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
 copy %BUILD%\atom.png %TEMP_DIR%\resources\atom.png
 
-echo "Patching code"
-patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
-patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
-patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
-patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-manager.patch
-:: Window title
-patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
-patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
-:: Menu items
-patch %TEMP_DIR%\menus\darwin.cson < %COMMON%\darwin.patch
-patch %TEMP_DIR%\menus\linux.cson < %COMMON%\linux.patch
-patch %TEMP_DIR%\menus\win32.cson < %COMMON%\win32.patch
-
-
 cd %TEMP_DIR%
 
 echo "Appending 3rd party packages to package.json"
@@ -63,6 +49,19 @@ node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSI
 echo "Installing Spark IDE welcome package"
 git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
+
+echo "Patching code"
+patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
+patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
+patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
+patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-manager.patch
+:: Window title
+patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
+patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
+:: Menu items
+patch %TEMP_DIR%\menus\darwin.cson < %COMMON%\darwin.patch
+patch %TEMP_DIR%\menus\linux.cson < %COMMON%\linux.patch
+patch %TEMP_DIR%\menus\win32.cson < %COMMON%\win32.patch
 
 echo "Building app"
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
