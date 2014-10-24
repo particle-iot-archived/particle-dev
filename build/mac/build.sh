@@ -34,6 +34,10 @@ patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update
 # Window title
 patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
 patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
+# Menu items
+patch ${TEMP_DIR}/menus/darwin.cson < ${COMMON}/darwin.patch
+patch ${TEMP_DIR}/menus/linux.cson < ${COMMON}/linux.patch
+patch ${TEMP_DIR}/menus/win32.cson < ${COMMON}/win32.patch
 
 cd $TEMP_DIR
 

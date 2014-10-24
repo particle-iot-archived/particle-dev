@@ -1,0 +1,11 @@
+--- win32.old.cson	2014-10-24 14:56:18.000000000 +0100
++++ win32.cson	2014-10-24 14:58:50.000000000 +0100
+@@ -116,7 +116,7 @@
+         label: 'Developer'
+         submenu: [
+           { label: 'Open In &Dev Mode...', command: 'application:open-dev' }
+-          { label: 'Run &Atom Specs', command: 'application:run-all-specs' }
++          { label: 'Run Sp&ark IDE Specs', command: 'application:run-all-specs' }
+           { label: 'Run Package &Specs', command: 'window:run-package-specs' }
+           { label: 'Toggle Developer &Tools', command: 'window:toggle-dev-tools' }
+         ]
