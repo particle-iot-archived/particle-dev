@@ -16,7 +16,7 @@ cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
 git clone --depth=1 https://github.com/atom/atom.git .
 
-rem Copy resources
+echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
 copy %BUILD%\atom.png %TEMP_DIR%\resources\atom.png
 
@@ -25,6 +25,9 @@ patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application
 patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
 patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
 patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-manager.patch
+:: Window title
+patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
+patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
 
 cd %TEMP_DIR%
 

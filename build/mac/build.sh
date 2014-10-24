@@ -31,6 +31,9 @@ patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-applicati
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
 patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
 patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
+# Window title
+patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
+patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
 
 cd $TEMP_DIR
 
