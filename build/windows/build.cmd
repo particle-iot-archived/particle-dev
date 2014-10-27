@@ -50,6 +50,10 @@ echo "Installing Spark IDE welcome package"
 git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
 
+echo "Installing Spark IDE feedback package"
+git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
+node %COMMON%\append-package %TEMP_DIR%\package.json feedback-spark-ide "0.33.0"
+
 echo "Patching code"
 patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
 patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch

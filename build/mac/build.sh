@@ -38,6 +38,7 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json toolbar "0.0.3"
 ${COMMON}/append-package ${TEMP_DIR}/package.json monokai "0.8.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback-view
 
 header "Bootstrap Atom"
 script/bootstrap
@@ -54,6 +55,10 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json spark-ide ${SPARK_IDE_VERSION}
 header "Installing Spark IDE welcome package"
 git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
+
+header "Installing Spark IDE feedback package"
+git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.33.0"
 
 header "Patch code"
 patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
