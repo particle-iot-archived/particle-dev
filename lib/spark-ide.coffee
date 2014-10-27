@@ -111,13 +111,9 @@ module.exports =
 
     # Monitoring changes in settings
     settings ?= require './vendor/settings'
+    fs ?= require 'fs-plus'
     # TODO: Watch for changing profile
-    # FIXME: Error when file doesn't exist
-    @watchSubscription ?= @PathWatcher.watch settings.findOverridesFile(), (eventType) =>
-      if eventType is 'change' and @watchSubscription?
-        @updateToolbarButtons()
-        @MenuManager.update()
-        atom.workspaceView.trigger 'spark-ide:update-login-status'
+    @watchConfig()
 
   deactivate: ->
     @statusView?.destroy()
@@ -187,6 +183,7 @@ module.exports =
       pane.activate()
       atom.workspace.open uri, searchAllPanes: true
 
+  # Enables/disables toolbar buttons based on log in state
   updateToolbarButtons: ->
     if @SettingsHelper.isLoggedIn()
       @compileButton.setEnabled true
@@ -202,6 +199,18 @@ module.exports =
       @compileButton.setEnabled false
       @coreButton.setEnabled false
       @wifiButton.setEnabled false
+
+  # Watch config file for changes
+  watchConfig: ->
+    settingsFile = settings.findOverridesFile()
+    if !fs.existsSync(settingsFile)
+      fs.writeFileSync settingsFile, '{}'
+
+    @watchSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
+      if eventType is 'change' and @watchSubscription?
+        @updateToolbarButtons()
+        @MenuManager.update()
+        atom.workspaceView.trigger 'spark-ide:update-login-status'
 
   # Function for selecting port or showing Listen dialog
   choosePort: (delegate) ->
