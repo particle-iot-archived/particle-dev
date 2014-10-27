@@ -1,5 +1,5 @@
---- atom-application-original.coffee	2014-09-22 11:24:33.000000000 +0200
-+++ atom-application.coffee	2014-09-22 11:45:18.000000000 +0200
+--- atom-application.coffee.1	2014-10-27 12:06:56.000000000 +0000
++++ atom-application.coffee	2014-10-27 12:05:48.000000000 +0000
 @@ -16,9 +16,9 @@
  
  socketPath =
@@ -12,3 +12,14 @@
  
  # The application's singleton class.
  #
+@@ -154,8 +154,8 @@
+       atomWindow ?= @focusedWindow()
+       atomWindow?.browserWindow.inspectElement(x, y)
+ 
+-    @on 'application:open-documentation', -> require('shell').openExternal('https://atom.io/docs/latest/?app')
+-    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://atom.io/terms')
++    @on 'application:open-documentation', -> require('shell').openExternal('http://docs.spark.io/ide/')
++    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://www.spark.io/tos')
+     @on 'application:install-update', -> @autoUpdateManager.install()
+     @on 'application:check-for-update', => @autoUpdateManager.check()
+ 
