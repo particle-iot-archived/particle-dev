@@ -83,26 +83,28 @@ module.exports =
 
       @initView pathname.substr(1)
 
-    atom.packages.activatePackage('toolbar')
-      .then (pkg) =>
-        @toolbar = pkg.mainModule
-        @toolbar.appendSpacer()
-        @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
-        @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
+    try
+      atom.packages.activatePackage('toolbar')
+        .then (pkg) =>
+          @toolbar = pkg.mainModule
+          @toolbar.appendSpacer()
+          @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
+          @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
 
-        @toolbar.appendSpacer()
+          @toolbar.appendSpacer()
 
-        @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select Core...', 'ion'
-        @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
-        @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
+          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select Core...', 'ion'
+          @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
+          @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
 
+          @updateToolbarButtons()
+
+      atom.workspaceView.command 'spark-ide:update-login-status', =>
         @updateToolbarButtons()
 
-    atom.workspaceView.command 'spark-ide:update-login-status', =>
-      @updateToolbarButtons()
-
-    atom.workspaceView.command 'spark-ide:update-core-status', =>
-      @updateToolbarButtons()
+      atom.workspaceView.command 'spark-ide:update-core-status', =>
+        @updateToolbarButtons()
+    catch
 
   deactivate: ->
     @statusView?.destroy()
