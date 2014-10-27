@@ -21,6 +21,6 @@
     "event-kit": "0.7.2"
   },
   "packageDependencies": {
-    "toolbar": "0.0.3"
+    "toolbar": "0.0.4"
   }
 }
