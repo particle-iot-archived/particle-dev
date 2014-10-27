@@ -14,6 +14,8 @@ describe 'Status Bar Tests', ->
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-ide-test'
 
+    SparkStub.stubSuccess 'getAttributes'
+
     atom.workspaceView = new WorkspaceView
     statusBarPromise = atom.packages.activatePackage('status-bar')
 
@@ -113,7 +115,6 @@ describe 'Status Bar Tests', ->
       runs ->
         statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
         expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(false)
-
         clearInterval statusView.interval
 
         SettingsHelper.clearCurrentCore()

@@ -71,7 +71,7 @@ class StatusBarView extends View
     statusElement = this.find('#spark-current-core a')
     statusElement.parent().removeClass 'online'
 
-    spark ?= require 'spark'
+    spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
     @getAttributesPromise = spark.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
@@ -102,6 +102,8 @@ class StatusBarView extends View
           @interval = setInterval =>
             @updateCoreStatus()
           , 30000
+      @getAttributesPromise = null
+      
     , (e) =>
       console.error e
 

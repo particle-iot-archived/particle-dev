@@ -177,7 +177,7 @@ describe 'Main Tests', ->
         expect(atom.confirm.calls.length).toEqual(2)
         expect(atom.confirm.calls[1].args.length).toEqual(1)
         alertArgs = atom.confirm.calls[1].args[0]
-        expect(alertArgs.message).toEqual('Permission Denied')
+        expect(alertArgs.message).toEqual('Error')
         expect(alertArgs.detailedMessage).toEqual('I didn\'t recognize that core name or ID')
 
         jasmine.unspy SettingsHelper, 'clearCurrentCore'

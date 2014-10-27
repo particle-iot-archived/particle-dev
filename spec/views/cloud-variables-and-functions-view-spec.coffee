@@ -130,7 +130,7 @@ describe 'Cloud Variables and Functions View', ->
         spyOn @cloudVariablesAndFunctionsView, 'listVariables'
         spyOn @cloudVariablesAndFunctionsView, 'listFunctions'
         spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
+        atom.workspaceView.trigger 'spark-ide:core-status-updated'
         expect(@cloudVariablesAndFunctionsView.listVariables).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.listFunctions).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()

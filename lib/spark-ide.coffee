@@ -259,7 +259,7 @@ module.exports =
         if e.code == 'ENOTFOUND'
           message = 'Error while connecting to ' + e.hostname
         else
-          message = e.message
+          message = e.info
         atom.confirm
           message: 'Error'
           detailedMessage: message
