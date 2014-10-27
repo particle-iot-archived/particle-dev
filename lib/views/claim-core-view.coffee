@@ -29,7 +29,7 @@ class ClaimCoreView extends Dialog
       # Empty deviceID is not allowed
       @miniEditor.addClass 'editor-error'
     else
-      # Unlock input
+      # Lock input
       @miniEditor.hiddenInput.attr 'disabled', 'disabled'
 
       spark = require 'spark'
@@ -55,6 +55,13 @@ class ClaimCoreView extends Dialog
       , (e) =>
         @setLoading false
         # Show error
-        @miniEditor.addClass 'editor-error'
-        @showError(e.errors)
+        @miniEditor.hiddenInput.removeAttr 'disabled'
+
+        if e.code == 'ENOTFOUND'
+          message = 'Error while connecting to ' + e.hostname
+          @showError message
+        else
+          @miniEditor.addClass 'editor-error'
+          @showError e.errors
+
         @claimPromise = null

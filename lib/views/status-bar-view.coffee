@@ -102,6 +102,8 @@ class StatusBarView extends View
           @interval = setInterval =>
             @updateCoreStatus()
           , 30000
+    , (e) =>
+      console.error e
 
       atom.workspaceView.trigger 'spark-ide:core-status-updated'
       @getAttributesPromise = null

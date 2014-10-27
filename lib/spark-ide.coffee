@@ -256,9 +256,13 @@ module.exports =
         @removePromise = null
       , (e) =>
         @removePromise = null
+        if e.code == 'ENOTFOUND'
+          message = 'Error while connecting to ' + e.hostname
+        else
+          message = e.message
         atom.confirm
-          message: e.error
-          detailedMessage: e.info
+          message: 'Error'
+          detailedMessage: message
 
     atom.confirm
       message: 'Removal confirmation'
@@ -267,6 +271,7 @@ module.exports =
 
   # Show core claiming dialog
   claimCore: -> @loginRequired =>
+    @claimCoreView = null
     @initView 'claim-core'
 
     @claimCoreView.attach()
@@ -334,6 +339,10 @@ module.exports =
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
         @compileCloudPromise = null
+    , (e) =>
+      console.error e
+      @SettingsHelper.set 'compile-status', null
+      atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
   # Show compile errors list
   showCompileErrors: ->

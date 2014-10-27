@@ -48,6 +48,11 @@ class RenameCoreView extends Dialog
         @setLoading false
         @renamePromise = null
         @miniEditor.hiddenInput.removeAttr 'disabled'
+        if e.code == 'ENOTFOUND'
+          message = 'Error while connecting to ' + e.hostname
+        else
+          message = e.message
+
         atom.confirm
           message: 'Error'
-          detailedMessage: e
+          detailedMessage: message

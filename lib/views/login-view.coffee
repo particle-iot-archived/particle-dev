@@ -156,11 +156,16 @@ class LoginView extends View
       @cancel()
 
     , (e) =>
-      @spinner.addClass 'hidden'
+      @spinner.addClass 'hidden'      
       if !@loginPromise
         return
       @unlockUi()
-      @errorLabel.text(e).show()
+      if e.code == 'ENOTFOUND'
+        @errorLabel.text 'Error while connecting to ' + e.hostname
+      else
+        @errorLabel.text e
+
+      @errorLabel.show()
       @loginPromise = null
 
   # Logout
