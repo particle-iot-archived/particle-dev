@@ -10,6 +10,7 @@ module.exports =
   SettingsHelper: null
   MenuManager: null
   SerialHelper: null
+  PathWatcher: null
   StatusView: null
   LoginView: null
   SelectCoreView: null
@@ -35,6 +36,7 @@ module.exports =
   selectFirmwareView: null
   spark: null
   toolbar: null
+  watchSubscription: null
 
   removePromise: null
   listPortsPromise: null
@@ -46,6 +48,7 @@ module.exports =
     @StatusView ?= require './views/status-bar-view'
     @SettingsHelper ?= require './utils/settings-helper'
     @MenuManager ?= require './utils/menu-manager'
+    @PathWatcher ?= require 'pathwatcher'
 
     # Initialize status bar view
     @statusView = new @StatusView()
@@ -82,6 +85,7 @@ module.exports =
 
       @initView pathname.substr(1)
 
+    # Updating toolbar
     try
       atom.packages.activatePackage('toolbar')
         .then (pkg) =>
@@ -104,6 +108,16 @@ module.exports =
       atom.workspaceView.command 'spark-ide:update-core-status', =>
         @updateToolbarButtons()
     catch
+
+    # Monitoring changes in settings
+    settings ?= require './vendor/settings'
+    # TODO: Watch for changing profile
+    # FIXME: Error when file doesn't exist
+    @watchSubscription ?= @PathWatcher.watch settings.findOverridesFile(), (eventType) =>
+      if eventType is 'change' and @watchSubscription?
+        @updateToolbarButtons()
+        @MenuManager.update()
+        atom.workspaceView.trigger 'spark-ide:update-login-status'
 
   deactivate: ->
     @statusView?.destroy()
