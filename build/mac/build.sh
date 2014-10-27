@@ -14,7 +14,7 @@ TARGET="${ROOT}/dist/mac"
 APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
-SPARK_IDE_VERSION="0.0.11"
+SPARK_IDE_VERSION="0.0.12"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
