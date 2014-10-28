@@ -4,4 +4,5 @@
     'submenu': []
   }
 ],
-'context-menu': []
+'context-menu':
+  'atom-workspace': []

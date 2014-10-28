@@ -7,7 +7,7 @@ SerialHelper = require '../lib/utils/serial-helper'
 utilities = require '../lib/vendor/utilities'
 SparkStub = require './stubs/spark'
 
-describe 'Main Tests', ->
+fdescribe 'Main Tests', ->
   activationPromise = null
   sparkIde = null
   originalProfile = null
