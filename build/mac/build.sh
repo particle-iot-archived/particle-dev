@@ -58,7 +58,7 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
 
 header "Installing Spark IDE feedback package"
 git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
-${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.33.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.34.0"
 
 header "Patch code"
 patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
