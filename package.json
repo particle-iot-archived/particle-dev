@@ -20,8 +20,5 @@
     "spark": "*",
     "event-kit": "0.7.2",
     "pathwatcher": "^2.1.3"
-  },
-  "packageDependencies": {
-    "toolbar": "0.0.5"
   }
 }

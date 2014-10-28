@@ -30,7 +30,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json resize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json maximize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
-node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.5"
+node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.6"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome
 node %COMMON%\append-package %TEMP_DIR%\package.json feedback-view
