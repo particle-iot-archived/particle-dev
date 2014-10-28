@@ -75,6 +75,7 @@ patch ${TEMP_DIR}/menus/linux.cson < ${COMMON}/linux.patch
 patch ${TEMP_DIR}/menus/win32.cson < ${COMMON}/win32.patch
 # Settings package
 patch ${TEMP_DIR}/node_modules/settings-view/lib/settings-view.coffee < ${COMMON}/settings-view.patch
+cp ${COMMON}/atom.png ${TEMP_DIR}/node_modules/settings-view/images/atom.png
 
 header "Building app"
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"
