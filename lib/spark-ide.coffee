@@ -112,7 +112,21 @@ module.exports =
     # Monitoring changes in settings
     settings ?= require './vendor/settings'
     fs ?= require 'fs-plus'
-    # TODO: Watch for changing profile
+    path ?= require 'path'
+
+    proFile = path.join settings.ensureFolder(), 'profile.json'
+    if !fs.existsSync(proFile)
+      fs.writeFileSync proFile, '{}'
+
+    @profileSubscription ?= @PathWatcher.watch proFile, (eventType) =>
+      if eventType is 'change' and @profileSubscription?
+        @configSubscription?.close()
+        @configSubscription = null
+        @watchConfig()
+        @updateToolbarButtons()
+        @MenuManager.update()
+        atom.workspaceView.trigger 'spark-ide:update-login-status'
+
     @watchConfig()
 
   deactivate: ->
@@ -202,12 +216,13 @@ module.exports =
 
   # Watch config file for changes
   watchConfig: ->
+    settings.whichProfile()
     settingsFile = settings.findOverridesFile()
     if !fs.existsSync(settingsFile)
       fs.writeFileSync settingsFile, '{}'
 
-    @watchSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
-      if eventType is 'change' and @watchSubscription?
+    @configSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
+      if eventType is 'change' and @configSubscription?
         @updateToolbarButtons()
         @MenuManager.update()
         atom.workspaceView.trigger 'spark-ide:update-login-status'
