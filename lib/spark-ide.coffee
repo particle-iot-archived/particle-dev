@@ -118,16 +118,18 @@ module.exports =
     if !fs.existsSync(proFile)
       fs.writeFileSync proFile, '{}'
 
-    @profileSubscription ?= @PathWatcher.watch proFile, (eventType) =>
-      if eventType is 'change' and @profileSubscription?
-        @configSubscription?.close()
-        @configSubscription = null
-        @watchConfig()
-        @updateToolbarButtons()
-        @MenuManager.update()
-        atom.workspaceView.trigger 'spark-ide:update-login-status'
+    if typeof(jasmine) == 'undefined'
+      # Don't watch settings during tests
+      @profileSubscription ?= @PathWatcher.watch proFile, (eventType) =>
+        if eventType is 'change' and @profileSubscription?
+          @configSubscription?.close()
+          @configSubscription = null
+          @watchConfig()
+          @updateToolbarButtons()
+          @MenuManager.update()
+          atom.workspaceView.trigger 'spark-ide:update-login-status'
 
-    @watchConfig()
+      @watchConfig()
 
   deactivate: ->
     @statusView?.destroy()
