@@ -55,7 +55,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubFail 'getVariable'
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -64,6 +64,7 @@ describe 'Cloud Variables and Functions View', ->
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
         spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
+        SparkStub.stubSuccess 'getVariable'
 
       waitsFor ->
         @cloudVariablesAndFunctionsView.hasParent()
