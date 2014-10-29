@@ -2,9 +2,14 @@
 
 COLOR_CLEAR="\x1B[0m"
 COLOR_BLUE="\x1B[1;34m"
+COLOR_CYAN="\x1B[0;36m"
 
 header () {
   echo -e "${COLOR_BLUE}${1}${COLOR_CLEAR}"
+}
+
+subheader () {
+  echo -e "-> ${COLOR_CYAN}${1}${COLOR_CLEAR}"
 }
 
 BUILD=$(cd "$(dirname "$0")"; pwd)
@@ -21,11 +26,10 @@ mkdir -p $TARGET
 cd $TEMP_DIR
 header "Working directory is ${TEMP_DIR}"
 git clone --depth=1 https://github.com/atom/atom.git .
+rm -rf .git
 
 header "Copy resources"
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
-
-cd $TEMP_DIR
 
 header "Append 3rd party packages to package.json"
 ${COMMON}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
@@ -43,7 +47,8 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json feedback-view
 header "Bootstrap Atom"
 script/bootstrap
 
-header "Installing Spark IDE package"
+header "Installing unpublished packages"
+subheader "spark-ide"
 git clone git@github.com:spark/spark-ide.git node_modules/spark-ide
 cd node_modules/spark-ide
 git checkout tags/${SPARK_IDE_VERSION}
@@ -52,11 +57,11 @@ ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
 ${COMMON}/append-package ${TEMP_DIR}/package.json spark-ide ${SPARK_IDE_VERSION}
 
-header "Installing Spark IDE welcome package"
+subheader "welcome-spark-ide"
 git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
 
-header "Installing Spark IDE feedback package"
+subheader "feedback-spark-ide"
 git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
 ${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.34.0"
 
@@ -66,16 +71,18 @@ patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-applicati
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
 patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
 patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
-# Window title
+subheader "Window title"
 patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
 patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
-# Menu items
+subheader "Menu items"
 patch ${TEMP_DIR}/menus/darwin.cson < ${COMMON}/darwin.patch
 patch ${TEMP_DIR}/menus/linux.cson < ${COMMON}/linux.patch
 patch ${TEMP_DIR}/menus/win32.cson < ${COMMON}/win32.patch
-# Settings package
+subheader "Settings package"
 patch ${TEMP_DIR}/node_modules/settings-view/lib/settings-view.coffee < ${COMMON}/settings-view.patch
 cp ${COMMON}/atom.png ${TEMP_DIR}/node_modules/settings-view/images/atom.png
+subheader "App version"
+${COMMON}/set-version ${TEMP_DIR}/package.json ${SPARK_IDE_VERSION}
 
 header "Building app"
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"

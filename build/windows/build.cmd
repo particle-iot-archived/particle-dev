@@ -15,6 +15,7 @@ mkdir %TARGET%
 cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
 git clone --depth=1 https://github.com/atom/atom.git .
+DEL /Q .git
 
 echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
@@ -70,6 +71,8 @@ patch %TEMP_DIR%\menus\win32.cson < %COMMON%\win32.patch
 :: Settings package
 patch %TEMP_DIR%\node_modules\settings-view\lib\settings-view.coffee < %COMMON%\settings-view.patch
 copy %COMMON%\atom.png %TEMP_DIR%\node_modules\settings-view\images\atom.png
+:: App version
+node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_IDE_VERSION%
 
 echo "Building app"
 build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
