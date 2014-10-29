@@ -34,7 +34,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.8"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome
-node %COMMON%\append-package %TEMP_DIR%\package.json feedback-view
+node %COMMON%\append-package %TEMP_DIR%\package.json feedback
 
 echo "Bootstrap Atom"
 script/bootstrap

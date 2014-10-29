@@ -42,7 +42,7 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json swap-panes "0.1.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json toolbar "0.0.8"
 ${COMMON}/append-package ${TEMP_DIR}/package.json monokai "0.8.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome
-${COMMON}/append-package ${TEMP_DIR}/package.json feedback-view
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback
 
 header "Bootstrap Atom"
 script/bootstrap
