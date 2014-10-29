@@ -224,7 +224,8 @@ module.exports =
       fs.writeFileSync settingsFile, '{}'
 
     @configSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
-      if eventType is 'change' and @configSubscription?
+      if eventType is 'change' and @configSubscription? and @accessToken != @SettingsHelper.get('access_token')
+        @accessToken = @SettingsHelper.get 'access_token'
         @updateToolbarButtons()
         @MenuManager.update()
         atom.workspaceView.trigger 'spark-ide:update-login-status'
