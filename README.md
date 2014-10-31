@@ -5,7 +5,7 @@
 ```
 git clone git@github.com:spark/spark-ide.git
 cd spark-ide
-export ATOM_NODE_VERSION="0.17.1"
+export ATOM_NODE_VERSION="0.18.2"
 apm install .
 apm link .
 ```
