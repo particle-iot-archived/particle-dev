@@ -31,10 +31,7 @@ class SelectWifiView extends SelectListView
     if !@hasParent()
       atom.workspaceView.append(this)
 
-      @setItems []
-      @setLoading 'Scaning for networks...'
       @listNetworks()
-      @focusFilterEditor()
 
   hide: ->
     if @hasParent()
@@ -55,7 +52,7 @@ class SelectWifiView extends SelectListView
 
     $$ ->
       @li class: 'two-lines', =>
-        if !!security
+        if security
           @div class: 'pull-right', =>
             @kbd class: 'key-binding pull-right', security
         @div item.ssid
@@ -71,14 +68,18 @@ class SelectWifiView extends SelectListView
   getPlatform: ->
     process.platform
 
+  getFilterKey: ->
+    'ssid'
+
   listNetworks: ->
+    @filterEditorView.hide()
 
     @items = [{
       ssid: 'Enter SSID manually',
       security: null,
     }]
-
     @setItems @items
+    @setLoading 'Scaning for networks...'
 
     switch @getPlatform()
       when 'darwin'
@@ -137,6 +138,8 @@ class SelectWifiView extends SelectListView
           parseInt(b.rssi) - parseInt(a.rssi)
 
         @setItems(networks.concat @items)
+        @filterEditorView.show()
+        @focusFilterEditor()
 
   listNetworksWindows: ->
     fs = require 'fs-plus'
@@ -195,3 +198,5 @@ class SelectWifiView extends SelectListView
           parseInt(b.rssi) - parseInt(a.rssi)
 
         @setItems(networks.concat @items)
+        @filterEditorView.show()
+        @focusFilterEditor()
