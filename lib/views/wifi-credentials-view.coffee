@@ -66,7 +66,10 @@ class WifiCredentialsView extends View
   show: (ssid=null, security=null) =>
     if !@hasParent()
       atom.workspaceView.append(this)
-      @ssidEditor.getEditor().setText ssid
+      if ssid
+        @ssidEditor.getEditor().setText ssid
+      else
+        @ssidEditor.focus()
 
       if security
         input = @find 'input[name=security][value=' + security + ']'
@@ -74,8 +77,6 @@ class WifiCredentialsView extends View
         input.change()
 
       @errorLabel.hide()
-      if !ssid
-        @ssidEditor.focus()
 
   hide: ->
     if @hasParent()

@@ -455,7 +455,7 @@ module.exports =
       @selectWifiView.port = port
       @selectWifiView.show()
 
-  enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
+  enterWifiCredentials: (port, ssid=null, security=null) -> @loginRequired =>
     if !port
       return
 
