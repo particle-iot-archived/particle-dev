@@ -71,6 +71,8 @@ patch %TEMP_DIR%\menus\win32.cson < %COMMON%\win32.patch
 :: Settings package
 patch %TEMP_DIR%\node_modules\settings-view\lib\settings-view.coffee < %COMMON%\settings-view.patch
 copy %COMMON%\atom.png %TEMP_DIR%\node_modules\settings-view\images\atom.png
+:: Exception Reporting package
+patch %TEMP_DIR%\node_modules\exception-reporting\lib\reporter.coffee < %COMMON%\reporter.patch
 :: App version
 node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_IDE_VERSION%
 

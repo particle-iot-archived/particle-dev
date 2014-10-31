@@ -1,0 +1,17 @@
+--- reporter.old.coffee	2014-10-31 13:39:00.000000000 +0100
++++ reporter.coffee	2014-10-31 13:39:57.000000000 +0100
+@@ -51,11 +51,11 @@
+         inProject: true
+ 
+     params =
+-      apiKey: '7ddca14cb60cbd1cd12d1b252473b076'
++      apiKey: '67df35116e8250ccc8c4a3e081882b35'
+       notifier:
+-        name: 'Atom'
++        name: 'Spark IDE'
+         version: atom.getVersion()
+-        url: 'https://www.atom.io'
++        url: 'https://spark.io'
+       events: [
+         userId: atom.config.get('exception-reporting.userId')
+         appVersion: atom.getVersion()
