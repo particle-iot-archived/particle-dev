@@ -101,7 +101,7 @@ class SelectWifiView extends SelectListView
 
           if !!network
             notAdded = (networks.length == 0) || networks.reduce (prev, current) ->
-              prev && (current.ssid != network[1])
+              prev && (current.ssid != _s.trim(network[1]))
 
             if notAdded
               if network[7].indexOf('WPA2') > -1
