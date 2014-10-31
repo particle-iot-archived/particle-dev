@@ -76,6 +76,7 @@ class SelectWifiView extends SelectListView
       @setItems(networks.concat @items)
       @removeClass 'loading'
       @focusFilterEditor()
+      @filterEditorView.hiddenInput.focus()
     else
       @setLoading()
 
