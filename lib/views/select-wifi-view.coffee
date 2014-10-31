@@ -71,8 +71,17 @@ class SelectWifiView extends SelectListView
   getFilterKey: ->
     'ssid'
 
+  setNetworks: (networks) ->
+    if networks.length > 0
+      @setItems(networks.concat @items)
+      @removeClass 'loading'
+      @focusFilterEditor()
+    else
+      @setLoading()
+
   listNetworks: ->
-    @filterEditorView.hide()
+    @addClass 'loading'
+    @focusFilterEditor()
 
     @items = [{
       ssid: 'Enter SSID manually',
@@ -83,13 +92,16 @@ class SelectWifiView extends SelectListView
 
     switch @getPlatform()
       when 'darwin'
-        @listNetworksDarwin()
+        @listNetworksDarwin (networks) =>
+          @setNetworks networks
       when 'win32'
-        @listNetworksWindows()
+        @listNetworksWindows (networks) =>
+          @setNetworks networks
       else
+        @setLoading()
         console.error 'Current platform not supported'
 
-  listNetworksDarwin: ->
+  listNetworksDarwin: (callback) ->
     @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
       currentSsid = null
       if stdout != ''
@@ -137,11 +149,9 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)
-        @filterEditorView.show()
-        @focusFilterEditor()
+        callback networks
 
-  listNetworksWindows: ->
+  listNetworksWindows: (callback) ->
     fs = require 'fs-plus'
     @cp.exec 'netsh wlan show interfaces', (error, stdout, stderr) =>
       currentSsid = null
@@ -197,6 +207,4 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)
-        @filterEditorView.show()
-        @focusFilterEditor()
+        callback networks
