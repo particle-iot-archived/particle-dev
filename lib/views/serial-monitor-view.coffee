@@ -72,6 +72,7 @@ class SerialMonitorView extends View
   appendText: (text, appendNewline=true) ->
     at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 > @output[0].scrollHeight)
 
+    text = text.replace "\r", ''
     if appendNewline
       text += "\n"
     @output.html(@output.html() + text)
