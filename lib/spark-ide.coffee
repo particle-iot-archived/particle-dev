@@ -10,6 +10,7 @@ module.exports =
   SettingsHelper: null
   MenuManager: null
   SerialHelper: null
+  PathWatcher: null
   StatusView: null
   LoginView: null
   SelectCoreView: null
@@ -34,6 +35,8 @@ module.exports =
   cloudVariablesAndFunctionsView: null
   selectFirmwareView: null
   spark: null
+  toolbar: null
+  watchSubscription: null
 
   removePromise: null
   listPortsPromise: null
@@ -45,6 +48,7 @@ module.exports =
     @StatusView ?= require './views/status-bar-view'
     @SettingsHelper ?= require './utils/settings-helper'
     @MenuManager ?= require './utils/menu-manager'
+    @PathWatcher ?= require 'pathwatcher'
 
     # Initialize status bar view
     @statusView = new @StatusView()
@@ -80,6 +84,55 @@ module.exports =
       return unless protocol is 'spark-ide:'
 
       @initView pathname.substr(1)
+
+    # Updating toolbar
+    try
+      atom.packages.activatePackage('toolbar')
+        .then (pkg) =>
+          @toolbar = pkg.mainModule
+          @toolbar.appendSpacer()
+          @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Compile and upload code using cloud', 'ion'
+          @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile and show errors if any', 'ion'
+
+          @toolbar.appendSpacer()
+
+          @toolbar.appendButton 'document-text', ->
+            require('shell').openExternal('http://docs.spark.io/')
+          , 'Opens reference at docs.spark.io', 'ion'
+          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select which Core you want to work on', 'ion'
+          @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi credentials', 'ion'
+          @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
+
+          @updateToolbarButtons()
+
+      atom.workspaceView.command 'spark-ide:update-login-status', =>
+        @updateToolbarButtons()
+
+      atom.workspaceView.command 'spark-ide:update-core-status', =>
+        @updateToolbarButtons()
+    catch
+
+    # Monitoring changes in settings
+    settings ?= require './vendor/settings'
+    fs ?= require 'fs-plus'
+    path ?= require 'path'
+
+    proFile = path.join settings.ensureFolder(), 'profile.json'
+    if !fs.existsSync(proFile)
+      fs.writeFileSync proFile, '{}'
+
+    if typeof(jasmine) == 'undefined'
+      # Don't watch settings during tests
+      @profileSubscription ?= @PathWatcher.watch proFile, (eventType) =>
+        if eventType is 'change' and @profileSubscription?
+          @configSubscription?.close()
+          @configSubscription = null
+          @watchConfig()
+          @updateToolbarButtons()
+          @MenuManager.update()
+          atom.workspaceView.trigger 'spark-ide:update-login-status'
+
+      @watchConfig()
 
   deactivate: ->
     @statusView?.destroy()
@@ -126,14 +179,13 @@ module.exports =
 
   # "Decorator" which runs callback only when there's project set
   projectRequired: (callback) ->
-    if !atom.project.getPath()
+    if atom.project.getPaths().length == 0
       return
 
     callback()
 
   # Open view in bottom panel
   openPane: (uri) ->
-    # TODO: Test it
     uri = 'spark-ide://editor/' + uri
     pane = atom.workspace.paneForUri uri
 
@@ -148,7 +200,38 @@ module.exports =
         pane = pane.splitRight()
 
       pane.activate()
-      atom.workspace.open(uri, searchAllPanes: true)
+      atom.workspace.open uri, searchAllPanes: true
+
+  # Enables/disables toolbar buttons based on log in state
+  updateToolbarButtons: ->
+    if @SettingsHelper.isLoggedIn()
+      @compileButton.setEnabled true
+      @coreButton.setEnabled true
+      @wifiButton.setEnabled true
+
+      if @SettingsHelper.hasCurrentCore()
+        @flashButton.setEnabled true
+      else
+        @flashButton.setEnabled false
+    else
+      @flashButton.setEnabled false
+      @compileButton.setEnabled false
+      @coreButton.setEnabled false
+      @wifiButton.setEnabled false
+
+  # Watch config file for changes
+  watchConfig: ->
+    settings.whichProfile()
+    settingsFile = settings.findOverridesFile()
+    if !fs.existsSync(settingsFile)
+      fs.writeFileSync settingsFile, '{}'
+
+    @configSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
+      if eventType is 'change' and @configSubscription? and @accessToken != @SettingsHelper.get('access_token')
+        @accessToken = @SettingsHelper.get 'access_token'
+        @updateToolbarButtons()
+        @MenuManager.update()
+        atom.workspaceView.trigger 'spark-ide:update-login-status'
 
   # Function for selecting port or showing Listen dialog
   choosePort: (delegate) ->
@@ -217,9 +300,13 @@ module.exports =
         @removePromise = null
       , (e) =>
         @removePromise = null
+        if e.code == 'ENOTFOUND'
+          message = 'Error while connecting to ' + e.hostname
+        else
+          message = e.info
         atom.confirm
-          message: e.error
-          detailedMessage: e.info
+          message: 'Error'
+          detailedMessage: message
 
     atom.confirm
       message: 'Removal confirmation'
@@ -228,6 +315,7 @@ module.exports =
 
   # Show core claiming dialog
   claimCore: -> @loginRequired =>
+    @claimCoreView = null
     @initView 'claim-core'
 
     @claimCoreView.attach()
@@ -260,7 +348,7 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
 
-    rootPath = atom.project.getPath()
+    rootPath = atom.project.getPaths()[0]
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
@@ -286,7 +374,6 @@ module.exports =
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
           @downloadBinaryPromise = null
 
-          # TODO: Test it
           if !!thenFlash
             atom.workspaceView.trigger 'spark-ide:flash-cloud'
       else
@@ -296,6 +383,10 @@ module.exports =
         atom.workspaceView.trigger 'spark-ide:update-compile-status'
         atom.workspaceView.trigger 'spark-ide:show-compile-errors'
         @compileCloudPromise = null
+    , (e) =>
+      console.error e
+      @SettingsHelper.set 'compile-status', null
+      atom.workspaceView.trigger 'spark-ide:update-compile-status'
 
   # Show compile errors list
   showCompileErrors: ->
@@ -314,7 +405,7 @@ module.exports =
     path ?= require 'path'
     utilities ?= require './vendor/utilities'
 
-    rootPath = atom.project.getPath()
+    rootPath = atom.project.getPaths()[0]
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin')
@@ -367,8 +458,10 @@ module.exports =
       @selectWifiView.port = port
       @selectWifiView.show()
 
-  enterWifiCredentials: (port, ssid, security) -> @loginRequired =>
-    # TODO: Require port
+  enterWifiCredentials: (port, ssid=null, security=null) -> @loginRequired =>
+    if !port
+      return
+
     @wifiCredentialsView = null
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port

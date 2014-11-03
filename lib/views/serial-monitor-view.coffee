@@ -1,4 +1,4 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 {Emitter} = require 'event-kit'
 $ = null
 $$ = null
@@ -18,7 +18,7 @@ class SerialMonitorView extends View
         @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
-        @subview 'input', new EditorView(mini: true, placeholderText: 'Enter string to send')
+        @subview 'input', new TextEditorView(mini: true, placeholderText: 'Enter string to send')
 
   initialize: (serializeState) ->
     {$, $$} = require 'atom'
@@ -29,8 +29,10 @@ class SerialMonitorView extends View
     @currentPort = null
     @refreshSerialPorts()
 
-    @currentBaudrate = parseInt(SettingsHelper.get 'serial_baudrate')
+    @currentBaudrate = SettingsHelper.get 'serial_baudrate'
     @currentBaudrate ?= 9600
+    @currentBaudrate = parseInt @currentBaudrate
+
     @baudratesList = [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
     for baudrate in @baudratesList
       option = $$ ->
@@ -70,6 +72,7 @@ class SerialMonitorView extends View
   appendText: (text, appendNewline=true) ->
     at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 > @output[0].scrollHeight)
 
+    text = text.replace "\r", ''
     if appendNewline
       text += "\n"
     @output.html(@output.html() + text)
@@ -120,8 +123,7 @@ class SerialMonitorView extends View
       @disconnect()
 
     @port.on 'error', (e) =>
-      # FIXME: Connecting first time throws an error. Check if this is caused by node-pre-gyp
-      console.log 'error', e
+      console.error e
       @disconnect()
 
     @port.on 'data', (data) =>

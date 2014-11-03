@@ -8,7 +8,8 @@ pushd %BUILD%\..\..
 set ROOT=%CD%
 popd
 set TARGET=%ROOT%\dist\windows
-set APP_NAME=SparkIDE
+set APP_NAME=Spark IDE
+set SPARK_IDE_VERSION=0.0.14
 
 call :GETTEMPDIR
 mkdir %TEMP_DIR%
@@ -18,16 +19,11 @@ mkdir %TARGET%
 cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
 git clone --depth=1 https://github.com/atom/atom.git .
+DEL /Q .git
 
-rem Copy resources
+echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
-rem TODO: replace with 1024px image
 copy %BUILD%\atom.png %TEMP_DIR%\resources\atom.png
-
-echo "Patching code"
-patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
-patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
-patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
 
 cd %TEMP_DIR%
 
@@ -40,23 +36,57 @@ rem Disabled due to errors in cson
 node %COMMON%\append-package %TEMP_DIR%\package.json maximize-panes "0.1.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json move-panes "0.1.2"
 node %COMMON%\append-package %TEMP_DIR%\package.json swap-panes "0.1.0"
+node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.9"
+node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
+node %COMMON%\append-package %TEMP_DIR%\package.json welcome
+node %COMMON%\append-package %TEMP_DIR%\package.json feedback
 
 echo "Bootstrap Atom"
 call script/bootstrap
 
 echo "Installing Spark IDE package"
-git clone --depth=1 git@github.com:spark/spark-ide.git node_modules\spark-ide
+git clone git@github.com:spark/spark-ide.git node_modules\spark-ide
 cd node_modules\spark-ide
-call ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install .
-ls node_modules\serialport\build\serialport\v1.4.6\Release\
-cd ..\..
-node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "0.0.9"
+git checkout tags/%SPARK_IDE_VERSION%
+call ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
+ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
 
-echo "Build app"
+cd ..\..
+node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
+
+echo "Installing Spark IDE welcome package"
+git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
+node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
+
+echo "Installing Spark IDE feedback package"
+git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
+node %COMMON%\append-package %TEMP_DIR%\package.json feedback-spark-ide "0.34.0"
+
+echo "Patching code"
+patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
+patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
+patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
+patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-manager.patch
+:: Window title
+patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
+patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
+:: Menu items
+patch %TEMP_DIR%\menus\darwin.cson < %COMMON%\darwin.patch
+patch %TEMP_DIR%\menus\linux.cson < %COMMON%\linux.patch
+patch %TEMP_DIR%\menus\win32.cson < %COMMON%\win32.patch
+:: Settings package
+patch %TEMP_DIR%\node_modules\settings-view\lib\settings-view.coffee < %COMMON%\settings-view.patch
+copy %COMMON%\atom.png %TEMP_DIR%\node_modules\settings-view\images\atom.png
+:: Exception Reporting package
+patch %TEMP_DIR%\node_modules\exception-reporting\lib\reporter.coffee < %COMMON%\reporter.patch
+:: App version
+node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_IDE_VERSION%
+
+echo "Building app"
 call build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
 
-echo "Build installer"
-makensis /DSOURCE="%TARGET%\%APP_NAME%" /DOUT_FILE="%TARGET%\install.exe" %BUILD%\installer.nsi
+echo "Building installer"
+makensis /DSOURCE="%TARGET%/%APP_NAME%" /DOUT_FILE="%TARGET%/install.exe" %BUILD%/installer.nsi
 
 goto :EOF
 

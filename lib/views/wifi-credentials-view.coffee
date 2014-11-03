@@ -1,4 +1,4 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 
 $ = null
 _s = null
@@ -17,7 +17,7 @@ class WifiCredentialsView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'ssidEditor', new EditorView(mini: true, placeholderText: 'SSID')
+      @subview 'ssidEditor', new TextEditorView(mini: true, placeholderText: 'SSID')
       @div class: 'security', =>
         @label =>
           @input type: 'radio', name: 'security', value: '0', checked: 'checked', change: 'change'
@@ -31,7 +31,7 @@ class WifiCredentialsView extends View
         @label =>
           @input type: 'radio', name: 'security', value: '3', change: 'change'
           @span 'WPA2'
-      @subview 'passwordEditor', new EditorView(mini: true, placeholderText: 'and a password?')
+      @subview 'passwordEditor', new TextEditorView(mini: true, placeholderText: 'and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'save', id: 'saveButton', class: 'btn btn-primary', outlet: 'saveButton', 'Save'
@@ -66,7 +66,10 @@ class WifiCredentialsView extends View
   show: (ssid=null, security=null) =>
     if !@hasParent()
       atom.workspaceView.append(this)
-      @ssidEditor.getEditor().setText ssid
+      if ssid
+        @ssidEditor.getEditor().setText ssid
+      else
+        @ssidEditor.focus()
 
       if security
         input = @find 'input[name=security][value=' + security + ']'
@@ -74,8 +77,6 @@ class WifiCredentialsView extends View
         input.change()
 
       @errorLabel.hide()
-      if !ssid
-        @ssidEditor.focus()
 
   hide: ->
     if @hasParent()
@@ -117,13 +118,10 @@ class WifiCredentialsView extends View
     isOk = true
 
     if @ssid == ''
-      console.log 'ssid'
       @ssidEditor.addClass 'editor-error'
       isOk = false
 
-    console.log 'secu', @security
     if (@security != '0') && (@password == '')
-      console.log 'sec'
       @passwordEditor.addClass 'editor-error'
       isOk = false
 

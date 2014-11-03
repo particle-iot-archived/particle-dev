@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -160,7 +175,7 @@ spark = <span class="hljs-literal">null</span>
       workspace = atom.workspaceView
       <span class="hljs-property">@renamePromise</span> = spark.renameCore SettingsHelper.get(<span class="hljs-string">'current_core'</span>), newName
       <span class="hljs-property">@setLoading</span> <span class="hljs-literal">true</span>
-      <span class="hljs-property">@renamePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@renamePromise</span>.done (e) =&gt;
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@renamePromise</span>
           <span class="hljs-keyword">return</span>
 

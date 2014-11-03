@@ -177,7 +177,7 @@ describe 'Main Tests', ->
         expect(atom.confirm.calls.length).toEqual(2)
         expect(atom.confirm.calls[1].args.length).toEqual(1)
         alertArgs = atom.confirm.calls[1].args[0]
-        expect(alertArgs.message).toEqual('Permission Denied')
+        expect(alertArgs.message).toEqual('Error')
         expect(alertArgs.detailedMessage).toEqual('I didn\'t recognize that core name or ID')
 
         jasmine.unspy SettingsHelper, 'clearCurrentCore'
@@ -209,13 +209,13 @@ describe 'Main Tests', ->
 
   describe 'cloud compile tests', ->
     it 'checks if nothing is done', ->
-      spyOn(atom.project, 'getPath').andReturn null
+      spyOn(atom.project, 'getPaths').andReturn []
 
       # For logged out user
       spyOn(SettingsHelper, 'isLoggedIn').andCallThrough()
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn).toHaveBeenCalled()
-      expect(atom.project.getPath).not.toHaveBeenCalled()
+      expect(atom.project.getPaths).not.toHaveBeenCalled()
 
       # Not null compileCloudPromise
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -229,19 +229,19 @@ describe 'Main Tests', ->
       sparkIde.compileCloudPromise = null
       atom.workspaceView.trigger 'spark-ide:compile-cloud'
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
-      expect(atom.project.getPath).toHaveBeenCalled()
+      expect(atom.project.getPaths).toHaveBeenCalled()
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
       SettingsHelper.set 'compile-status', null
       jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
-      jasmine.unspy atom.project, 'getPath'
+      jasmine.unspy atom.project, 'getPaths'
       SettingsHelper.clearCredentials()
 
     it 'checks if correct files are included', ->
-      oldPath = atom.project.getPath()
-      atom.project.setPath __dirname + '/data/sampleproject'
+      oldPaths = atom.project.getPaths()
+      atom.project.setPaths [__dirname + '/data/sampleproject']
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       SparkStub.stubSuccess 'compileCode'
@@ -251,8 +251,7 @@ describe 'Main Tests', ->
 
       expect(spark.compileCode).toHaveBeenCalled()
 
-      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h'].map (value)->
-        return __dirname + '/data/sampleproject/' + value
+      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h']
 
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
@@ -262,7 +261,7 @@ describe 'Main Tests', ->
       runs ->
         SettingsHelper.set 'compile-status', null
         SettingsHelper.clearCredentials()
-        atom.project.setPath oldPath
+        atom.project.setPaths oldPaths
 
         # Remove firmware files
         for file in fs.listSync(__dirname + '/data/sampleproject')
@@ -291,6 +290,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(1)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
+        expect(atom.workspaceView.trigger).not.toHaveBeenCalledWith('spark-ide:flash-cloud')
 
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
@@ -315,6 +315,27 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-compile-status')
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:show-compile-errors')
+
+        SettingsHelper.set 'compile-status', null
+        jasmine.unspy atom.workspaceView, 'trigger'
+        SettingsHelper.clearCredentials()
+
+    it 'checks flashing after compiling', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SparkStub.stubSuccess 'compileCode'
+      SparkStub.stubSuccess 'downloadBinary'
+
+      atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
+      spyOn atom.workspaceView, 'trigger'
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      waitsFor ->
+        !sparkIde.downloadBinaryPromise
+
+      runs ->
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:flash-cloud')
 
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
@@ -363,7 +384,7 @@ describe 'Main Tests', ->
       atom.config.set 'spark-ide.deleteFirmwareAfterFlash', false
 
       atom.config.get('spark-ide.deleteFirmwareAfterFlash')
-      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
       spyOn sparkIde.statusView, 'setStatus'
       spyOn sparkIde.statusView, 'clearAfter'
       SparkStub.stubSuccess 'flashCore'
@@ -383,7 +404,7 @@ describe 'Main Tests', ->
         # Test removing firmware
         atom.config.set 'spark-ide.deleteFirmwareAfterFlash', false
         atom.workspaceView.trigger 'spark-ide:flash-cloud'
-        expect(fs.existsSync(atom.project.getPath() + '/firmware.bin')).toBe(true)
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware.bin')).toBe(true)
 
         jasmine.unspy sparkIde.statusView, 'clearAfter'
         jasmine.unspy sparkIde.statusView, 'setStatus'
@@ -395,13 +416,13 @@ describe 'Main Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       SparkStub.stubSuccess 'flashCore'
-      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
 
       atom.workspaceView.trigger 'spark-ide:flash-cloud', ['firmware2.bin']
       expect(sparkIde.spark.flashCore).toHaveBeenCalled()
       expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['firmware2.bin'])
 
-      fs.unlinkSync atom.project.getPath() + '/firmware.bin'
+      fs.unlinkSync atom.project.getPaths()[0] + '/firmware.bin'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
@@ -410,8 +431,8 @@ describe 'Main Tests', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       SparkStub.stubSuccess 'flashCore'
 
-      fs.openSync atom.project.getPath() + '/firmware.bin', 'w'
-      fs.openSync atom.project.getPath() + '/firmware2.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/firmware2.bin', 'w'
 
       sparkIde.initView 'select-firmware'
       spyOn sparkIde.selectFirmwareView, 'setItems'
@@ -420,14 +441,78 @@ describe 'Main Tests', ->
       atom.workspaceView.trigger 'spark-ide:flash-cloud'
       expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalled()
       expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalledWith([
-          atom.project.getPath() + '/firmware2.bin',
-          atom.project.getPath() + '/firmware.bin'
+          atom.project.getPaths()[0] + '/firmware2.bin',
+          atom.project.getPaths()[0] + '/firmware.bin'
         ])
       expect(sparkIde.selectFirmwareView.show).toHaveBeenCalled()
 
-      fs.unlinkSync atom.project.getPath() + '/firmware.bin'
-      fs.unlinkSync atom.project.getPath() + '/firmware2.bin'
+      fs.unlinkSync atom.project.getPaths()[0] + '/firmware.bin'
+      fs.unlinkSync atom.project.getPaths()[0] + '/firmware2.bin'
       jasmine.unspy sparkIde.selectFirmwareView, 'setItems'
       jasmine.unspy sparkIde.selectFirmwareView, 'show'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
+
+  describe 'open pane tests', ->
+    url = 'spark-ide://editor/foo'
+
+    describe 'when there already is open panel', ->
+      it 'switches to it', ->
+        activateItemForUriSpy = jasmine.createSpy 'activateItemForUri'
+        spyOn(atom.workspace, 'paneForUri').andReturn {
+          activateItemForUri: activateItemForUriSpy
+        }
+
+        sparkIde.openPane 'foo'
+
+        expect(atom.workspace.paneForUri).toHaveBeenCalled()
+        expect(atom.workspace.paneForUri).toHaveBeenCalledWith(url)
+        expect(activateItemForUriSpy).toHaveBeenCalled()
+        expect(activateItemForUriSpy).toHaveBeenCalledWith(url)
+
+        jasmine.unspy atom.workspace, 'paneForUri'
+
+    describe 'when there is no panel', ->
+      it 'opens new one', ->
+        spyOn(atom.workspace, 'paneForUri').andReturn null
+        spyOn atom.workspace, 'open'
+
+        # Without splitted panels, split
+        spyOn(atom.workspaceView, 'getPaneViews').andReturn ['foo']
+        activateSpy = jasmine.createSpy 'activateSpy'
+        splitDownSpy = jasmine.createSpy('splitDown').andReturn {
+          activate: activateSpy
+        }
+        spyOn(atom.workspaceView, 'getActivePaneView').andReturn {
+          splitDown: splitDownSpy
+        }
+
+        sparkIde.openPane 'foo'
+
+        expect(splitDownSpy).toHaveBeenCalled()
+        expect(activateSpy).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalledWith(url, {searchAllPanes: true})
+
+        # With splitted panels, use last one
+        jasmine.unspy atom.workspaceView, 'getPaneViews'
+        splitRightSpy = jasmine.createSpy('splitRight').andReturn {
+          activate: activateSpy
+        }
+        spyOn(atom.workspaceView, 'getPaneViews').andReturn ['foo', {
+          splitRight: splitRightSpy
+        }]
+        activateSpy.reset()
+        atom.workspace.open.reset()
+
+        sparkIde.openPane 'foo'
+
+        expect(splitRightSpy).toHaveBeenCalled()
+        expect(activateSpy).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open).toHaveBeenCalledWith(url, {searchAllPanes: true})
+
+        jasmine.unspy atom.workspaceView, 'getPaneViews'
+        jasmine.unspy atom.workspaceView, 'getActivePaneView'
+        jasmine.unspy atom.workspace, 'paneForUri'
+        jasmine.unspy atom.workspace, 'open'

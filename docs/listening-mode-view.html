@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -141,7 +156,7 @@ class ListeningModeView extends View
       @div class: 'block', =&gt;
         @button click: 'cancel', class: 'btn', 'Cancel'
 
-  initialize: (serializeState) -&gt;
+  initialize: (delegate) -&gt;
     {Subscriber} = require 'emissary'
     SerialHelper = require '../utils/serial-helper'
 
@@ -160,9 +175,9 @@ class ListeningModeView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval =&gt;
       promise = SerialHelper.listPorts()
-      promise.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+      promise.done (ports) =&gt;
         <span class="hljs-keyword">if</span> ports.length &gt; <span class="hljs-number">0</span></pre></div></div>
             
         </li>
@@ -193,7 +208,7 @@ class ListeningModeView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>          atom.workspaceView.trigger <span class="hljs-string">'spark-ide:identify-core'</span>
+            <div class="content"><div class='highlight'><pre>          atom.workspaceView.trigger delegate
     , <span class="hljs-number">1000</span></pre></div></div>
             
         </li>
@@ -214,16 +229,16 @@ class ListeningModeView extends View
       clearInterval <span class="hljs-property">@interval</span>
       <span class="hljs-property">@hide</span>()
 
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
-  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">destroy</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@detach</span>()
 
-  <span class="hljs-attribute">show</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">show</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
       atom.workspaceView.append(<span class="hljs-keyword">this</span>)
 
-  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">hide</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
       <span class="hljs-property">@detach</span>()
 

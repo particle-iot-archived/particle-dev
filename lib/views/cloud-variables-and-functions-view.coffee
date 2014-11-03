@@ -1,9 +1,10 @@
-{View, EditorView} = require 'atom'
+{View, TextEditorView} = require 'atom'
 {Emitter} = require 'event-kit'
 $ = null
 $$ = null
 whenjs = require 'when'
 SettingsHelper = null
+Subscriber = null
 spark = null
 
 module.exports =
@@ -19,29 +20,36 @@ class CloudVariablesAndFunctionsView extends View
 
   initialize: (serializeState) ->
     {$, $$} = require 'atom'
+    {Subscriber} = require 'emissary'
     SettingsHelper = require '../utils/settings-helper'
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
 
     @emitter = new Emitter
+    @subscriber = new Subscriber()
+    # Show some progress when core's status is downloaded
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:update-core-status', =>
+      @variables.empty()
+      @functions.empty()
+      @addClass 'loading'
+
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:core-status-updated', =>
+      # Refresh UI and watchers when current core changes
+      @listVariables()
+      @listFunctions()
+      @clearWatchers()
+      @removeClass 'loading'
+
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:logout', =>
+      # Clear watchers and hide when user logs out
+      @clearWatchers()
+      @close()
 
     @client = null
     @watchers = {}
 
-    # TODO: Support empty variables/functions lists
     @listVariables()
     @listFunctions()
-
-    # Refresh UI and watchers when current core changes
-    atom.workspaceView.command 'spark-ide:update-core-status', =>
-      @listVariables()
-      @listFunctions()
-      @clearWatchers()
-
-    # Clear watchers and hide when user logs out
-    atom.workspaceView.command 'spark-ide:logout', =>
-      @clearWatchers()
-      @close()
 
   serialize: ->
 
@@ -64,10 +72,9 @@ class CloudVariablesAndFunctionsView extends View
   # Propagate table with variables
   listVariables: ->
     variables = SettingsHelper.get 'variables'
-    # TODO: Fix background message
     @variables.empty()
 
-    if !variables || variables.length == 0
+    if !variables || Object.keys(variables).length == 0
       @variables.append $$ ->
         @ul class: 'background-message', =>
           @li 'No variables registered'
@@ -173,9 +180,9 @@ class CloudVariablesAndFunctionsView extends View
           @div 'data-id': func, =>
             @button class: 'btn icon icon-zap', func
             @span '('
-            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
+            @subview 'parameters', new TextEditorView(mini: true, placeholderText: 'Parameters')
             @span ') == '
-            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
+            @subview 'result', new TextEditorView(mini: true, placeholderText: 'Result')
             @span class: 'three-quarters inline-block hidden'
         row.find('button').on 'click', (event) =>
           @callFunction $(event.currentTarget).parent().attr('data-id')

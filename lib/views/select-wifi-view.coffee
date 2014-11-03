@@ -31,10 +31,7 @@ class SelectWifiView extends SelectListView
     if !@hasParent()
       atom.workspaceView.append(this)
 
-      @setItems []
-      @setLoading 'Scaning for networks...'
       @listNetworks()
-      @focusFilterEditor()
 
   hide: ->
     if @hasParent()
@@ -55,33 +52,57 @@ class SelectWifiView extends SelectListView
 
     $$ ->
       @li class: 'two-lines', =>
-        if !!security
+        if security
           @div class: 'pull-right', =>
             @kbd class: 'key-binding pull-right', security
         @div item.ssid
 
   confirmed: (item) ->
-    atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
     @cancel()
 
+    if item.security
+      atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
+    else
+      atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port]
+
+  getPlatform: ->
+    process.platform
+
+  getFilterKey: ->
+    'ssid'
+
+  setNetworks: (networks) ->
+    if networks.length > 0
+      @setItems(networks.concat @items)
+      @removeClass 'loading'
+      @focusFilterEditor()
+      @filterEditorView.hiddenInput.focus()
+    else
+      @setLoading()
+
   listNetworks: ->
+    @addClass 'loading'
+    @focusFilterEditor()
 
     @items = [{
       ssid: 'Enter SSID manually',
       security: null,
     }]
-
     @setItems @items
+    @setLoading 'Scaning for networks...'
 
-    switch process.platform
+    switch @getPlatform()
       when 'darwin'
-        @listNetworksDarwin()
+        @listNetworksDarwin (networks) =>
+          @setNetworks networks
       when 'win32'
-        @listNetworksWindows()
+        @listNetworksWindows (networks) =>
+          @setNetworks networks
       else
+        @setLoading()
         console.error 'Current platform not supported'
 
-  listNetworksDarwin: ->
+  listNetworksDarwin: (callback) ->
     @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =>
       currentSsid = null
       if stdout != ''
@@ -98,7 +119,7 @@ class SelectWifiView extends SelectListView
 
           if !!network
             notAdded = (networks.length == 0) || networks.reduce (prev, current) ->
-              prev && (current.ssid != network[1])
+              prev && (current.ssid != _s.trim(network[1]))
 
             if notAdded
               if network[7].indexOf('WPA2') > -1
@@ -111,7 +132,7 @@ class SelectWifiView extends SelectListView
                 security = 0
 
               networks.push {
-                ssid: network[1],
+                ssid: _s.trim(network[1]),
                 bssid: network[2],
                 rssi: network[3],
                 channel: network[4],
@@ -129,9 +150,9 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)
+        callback networks
 
-  listNetworksWindows: ->
+  listNetworksWindows: (callback) ->
     fs = require 'fs-plus'
     @cp.exec 'netsh wlan show interfaces', (error, stdout, stderr) =>
       currentSsid = null
@@ -187,4 +208,4 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)
+        callback networks

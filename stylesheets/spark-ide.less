@@ -85,7 +85,7 @@
 }
 
 #spark-ide-cloud-variables-and-functions {
-  display: table;
+  display: flex;
   width: 100%;
   color: @text-color;
 
@@ -96,6 +96,32 @@
 
     &:first-child {
       border-right: 1px solid @overlay-border-color;
+    }
+  }
+
+  &.loading {
+    .panel-body {
+      padding: 0;
+
+      &:before {
+        .three-quarters();
+        width: 128px;
+        height: 128px;
+        border-radius: 64px;
+        border-width: 32px;
+        position: absolute;
+        top: 50%;
+        margin-top: -64px;
+        margin-left: -64px;
+      }
+    }
+
+    #spark-ide-cloud-variables .panel-body:before {
+      left: 25%;
+    }
+
+    #spark-ide-cloud-functions .panel-body:before {
+      left: 75%;
     }
   }
 }
@@ -144,6 +170,10 @@
 
         &:before {
           margin-right: 0;
+        }
+
+        &.selected {
+          background: @text-color-info;
         }
       }
     }
@@ -232,6 +262,18 @@
   pre {
     height: ~"calc(100% - 27px)";
     overflow-y: scroll;
+  }
+}
+
+#spark-ide-select-wifi-view {
+  &.loading {
+    .editor {
+      border: none;
+      height: 1px;
+    }
+    .hidden-input {
+      display: none;
+    }
   }
 }
 

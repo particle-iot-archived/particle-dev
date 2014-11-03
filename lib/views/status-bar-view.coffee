@@ -59,7 +59,7 @@ class StatusBarView extends View
   # Opening file in Finder/Explorer
   showFile: =>
     shell ?= require 'shell'
-    rootPath = atom.project.getPath()
+    rootPath = atom.project.getPaths()[0]
     compileStatus = SettingsHelper.get 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
@@ -71,10 +71,13 @@ class StatusBarView extends View
     statusElement = this.find('#spark-current-core a')
     statusElement.parent().removeClass 'online'
 
-    spark ?= require 'spark'
+    spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
     @getAttributesPromise = spark.getAttributes SettingsHelper.get('current_core')
     @getAttributesPromise.done (e) =>
+      SettingsHelper.set 'variables', {}
+      SettingsHelper.set 'functions', []
+
       if !e
         return
 
@@ -99,6 +102,12 @@ class StatusBarView extends View
           @interval = setInterval =>
             @updateCoreStatus()
           , 30000
+      @getAttributesPromise = null
+      
+    , (e) =>
+      console.error e
+
+      atom.workspaceView.trigger 'spark-ide:core-status-updated'
       @getAttributesPromise = null
 
   # Update current core's status

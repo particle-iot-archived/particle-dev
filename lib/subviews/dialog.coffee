@@ -1,5 +1,5 @@
 # Forked dialog from tree-view package: https://github.com/atom/tree-view/blob/master/lib/dialog.coffee
-{$, EditorView, View} = require 'atom'
+{$, TextEditorView, View} = require 'atom'
 path = require 'path'
 
 module.exports =
@@ -7,7 +7,7 @@ class Dialog extends View
   @content: ({prompt} = {}) ->
     @div class: 'spark-ide-dialog overlay from-top', =>
       @label prompt, class: 'icon', outlet: 'promptText'
-      @subview 'miniEditor', new EditorView(mini: true)
+      @subview 'miniEditor', new TextEditorView(mini: true)
       @div class: 'error-message', outlet: 'errorMessage'
 
   initialize: ({initialText, select, iconClass, hideOnBlur} = {}) ->

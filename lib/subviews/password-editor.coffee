@@ -1,8 +1,11 @@
-{EditorView} = require 'atom'
+{TextEditorView} = require 'atom'
+_s = null
 
 module.exports =
-class PasswordView extends EditorView
+class PasswordView extends TextEditorView
   constructor: (editorOrParams, props) ->
+    _s ?= require 'underscore.string'
+    
     editorOrParams.mini = true
     super editorOrParams, props
 

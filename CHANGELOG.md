@@ -1,3 +1,27 @@
+## 0.0.14
+
+* Fixed missing toolbar labels
+* Fixed #2, #3 and #4 GitHub issues
+* Fixed random newlines in serial monitor
+* Added keyboard shortcuts
+
+## 0.0.13
+
+* Active Watch icon has more contrast
+* Fixed not working menu when online core is selected
+
+## 0.0.12
+
+* Added Select Core button
+* Fixed offline issues
+* Watching for CLI settings changes
+* Fixed refreshing UI
+* A lot of small bug fixes
+
+## 0.0.11 - Added toolbar
+
+## 0.0.10 - Bug fixes
+
 ## 0.0.9 - Added setting up Wifi and build scripts
 
 ## 0.0.8 - Added variables and functions panel

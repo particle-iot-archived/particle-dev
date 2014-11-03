@@ -4,7 +4,7 @@ module.exports =
   # Get root menu
   getMenu: ->
     ideMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark Core'
+      value.label == 'Spark'
 
     ideMenu[0]
 

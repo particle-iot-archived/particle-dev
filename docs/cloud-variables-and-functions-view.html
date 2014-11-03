@@ -99,8 +99,23 @@
               </a>
             
               
+              <a class="source" href="select-wifi-view.html">
+                select-wifi-view.coffee
+              </a>
+            
+              
+              <a class="source" href="serial-monitor-view.html">
+                serial-monitor-view.coffee
+              </a>
+            
+              
               <a class="source" href="status-bar-view.html">
                 status-bar-view.coffee
+              </a>
+            
+              
+              <a class="source" href="wifi-credentials-view.html">
+                wifi-credentials-view.coffee
               </a>
             
           </div>
@@ -126,7 +141,8 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>{View, EditorView} = require 'atom'
+            <div class="content"><div class='highlight'><pre>{View, TextEditorView} = require 'atom'
+{Emitter} = require 'event-kit'
 $ = null
 $$ = null
 whenjs = require 'when'
@@ -134,7 +150,7 @@ SettingsHelper = null
 spark = null
 
 module.exports =
-class CloudVariablesAndFunctions extends View
+class CloudVariablesAndFunctionsView extends View
   @content: -&gt;
     @div id: 'spark-ide-cloud-variables-and-functions', =&gt;
       @div id: 'spark-ide-cloud-variables', class: 'panel', =&gt;
@@ -149,6 +165,8 @@ class CloudVariablesAndFunctions extends View
     SettingsHelper = require '../utils/settings-helper'
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
+
+    @emitter = new Emitter
 
     @client = null
     @watchers = {}</pre></div></div>
@@ -182,7 +200,7 @@ class CloudVariablesAndFunctions extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-core-status'</span>,<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:update-core-status'</span>, <span class="hljs-function">=&gt;</span>
       <span class="hljs-property">@listVariables</span>()
       <span class="hljs-property">@listFunctions</span>()
       <span class="hljs-property">@clearWatchers</span>()</pre></div></div>
@@ -200,21 +218,27 @@ class CloudVariablesAndFunctions extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>,<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-ide:logout'</span>, <span class="hljs-function">=&gt;</span>
       <span class="hljs-property">@clearWatchers</span>()
-      <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
-        <span class="hljs-property">@detach</span>()
+      <span class="hljs-property">@close</span>()
 
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
-  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-property">@detach</span>()
+  <span class="hljs-attribute">getTitle</span>: <span class="hljs-function">-&gt;</span>
+    <span class="hljs-string">'Cloud variables &amp; functions'</span>
 
-  <span class="hljs-attribute">toggle</span>:<span class="hljs-function"> -&gt;</span>
-    <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
-      <span class="hljs-property">@detach</span>()
-    <span class="hljs-keyword">else</span>
-      atom.workspaceView.prependToBottom(<span class="hljs-keyword">this</span>)</pre></div></div>
+  <span class="hljs-attribute">onDidChangeTitle</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    <span class="hljs-property">@emitter</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'did-change-title'</span>, callback
+
+  <span class="hljs-attribute">onDidChangeModified</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
+    <span class="hljs-property">@emitter</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'did-change-modified'</span>, callback
+
+  <span class="hljs-attribute">getUri</span>: <span class="hljs-function">-&gt;</span>
+    <span class="hljs-string">'spark-ide://editor/cloud-variables-and-functions'</span>
+
+  <span class="hljs-attribute">close</span>: <span class="hljs-function">-&gt;</span>
+    pane = atom.workspace.paneForUri <span class="hljs-property">@getUri</span>()
+    pane?.destroy()</pre></div></div>
             
         </li>
         
@@ -229,7 +253,7 @@ class CloudVariablesAndFunctions extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">listVariables</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">listVariables</span>: <span class="hljs-function">-&gt;</span>
     variables = SettingsHelper.get <span class="hljs-string">'variables'</span></pre></div></div>
             
         </li>
@@ -322,7 +346,7 @@ class CloudVariablesAndFunctions extends View
     cell.addClass <span class="hljs-string">'loading'</span>
     cell.text <span class="hljs-string">''</span>
     promise = spark.getVariable SettingsHelper.get(<span class="hljs-string">'current_core'</span>), variableName
-    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    promise.done (e) =&gt;
       cell.removeClass()
       <span class="hljs-keyword">if</span> !!e.ok
         cell.addClass <span class="hljs-string">'icon icon-issue-opened text-error'</span>
@@ -377,7 +401,7 @@ class CloudVariablesAndFunctions extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@watchers</span>[variableName] = setInterval <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@watchers</span>[variableName] = setInterval =&gt;
         <span class="hljs-property">@refreshVariable</span> variableName
       , <span class="hljs-number">5000</span></pre></div></div>
             
@@ -394,7 +418,7 @@ class CloudVariablesAndFunctions extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearWatchers</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearWatchers</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> Object.keys(<span class="hljs-property">@watchers</span>)
       clearInterval <span class="hljs-property">@watchers</span>[key]
     <span class="hljs-property">@watchers</span> = {}</pre></div></div>
@@ -426,9 +450,9 @@ class CloudVariablesAndFunctions extends View
           @div 'data-id': func, =&gt;
             @button class: 'btn icon icon-zap', func
             @span '('
-            @subview 'parameters', new EditorView(mini: true, placeholderText: 'Parameters')
+            @subview 'parameters', new TextEditorView(mini: true, placeholderText: 'Parameters')
             @span ') == '
-            @subview 'result', new EditorView(mini: true, placeholderText: 'Result')
+            @subview 'result', new TextEditorView(mini: true, placeholderText: 'Result')
             @span class: 'three-quarters inline-block hidden'
         row.find('button').on 'click', (event) =&gt;
           @callFunction $(event.currentTarget).parent().attr('data-id')
@@ -481,7 +505,7 @@ class CloudVariablesAndFunctions extends View
     row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).setText <span class="hljs-string">' '</span>
     params = row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).getText()
     promise = spark.callFunction SettingsHelper.get(<span class="hljs-string">'current_core'</span>), functionName, params
-    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    promise.done (e) =&gt;
       <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">true</span>
 
       <span class="hljs-keyword">if</span> !!e.ok

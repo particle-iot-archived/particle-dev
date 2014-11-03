@@ -131,3 +131,37 @@ describe 'Serial Monitor View', ->
         jasmine.unspy @serialMonitorView.port, 'write'
         jasmine.unspy @serialMonitorView, 'isPortOpen'
         @serialMonitorView.close()
+
+    it 'checks default port and baudrate', ->
+      SettingsHelper.set 'serial_port', null
+      SettingsHelper.set 'serial_baudrate', null
+
+      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+
+      waitsFor ->
+        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+
+      runs ->
+        @serialMonitorView = sparkIde.serialMonitorView
+
+        expect(@serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfa1234')
+        expect(@serialMonitorView.baudratesSelect.val()).toEqual('9600')
+
+        SettingsHelper.set 'serial_port', '/dev/cu.usbmodemfab1234'
+        SettingsHelper.set 'serial_baudrate', 115200
+
+        @serialMonitorView.close()
+        sparkIde.serialMonitorView == null
+
+        atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+
+      waitsFor ->
+        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+
+      runs ->
+        @serialMonitorView = sparkIde.serialMonitorView
+
+        expect(@serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfab1234')
+        expect(@serialMonitorView.baudratesSelect.val()).toEqual('115200')
+
+        @serialMonitorView.close()

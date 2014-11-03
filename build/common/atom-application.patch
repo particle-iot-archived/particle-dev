@@ -1,5 +1,5 @@
---- atom-application-original.coffee	2014-09-22 11:24:33.000000000 +0200
-+++ atom-application.coffee	2014-09-22 11:45:18.000000000 +0200
+--- atom-application.coffee.1	2014-11-03 17:00:50.000000000 +0100
++++ atom-application.coffee	2014-11-03 17:00:16.000000000 +0100
 @@ -16,9 +16,9 @@
  
  socketPath =
@@ -12,3 +12,24 @@
  
  # The application's singleton class.
  #
+@@ -154,13 +154,13 @@
+       atomWindow ?= @focusedWindow()
+       atomWindow?.browserWindow.inspectElement(x, y)
+ 
+-    @on 'application:open-documentation', -> require('shell').openExternal('https://atom.io/docs/latest/?app')
+-    @on 'application:open-discussions', -> require('shell').openExternal('https://discuss.atom.io')
+-    @on 'application:open-roadmap', -> require('shell').openExternal('https://atom.io/roadmap?app')
+-    @on 'application:open-faq', -> require('shell').openExternal('https://atom.io/faq')
+-    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://atom.io/terms')
+-    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/atom/atom/issues/new')
+-    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/issues?q=+is%3Aissue+user%3Aatom')
++    @on 'application:open-documentation', -> require('shell').openExternal('http://docs.spark.io/ide/')
++    @on 'application:open-discussions', -> require('shell').openExternal('https://community.spark.io/')
++    @on 'application:open-roadmap', -> require('shell').openExternal('http://docs.spark.io/ide/#roadmap')
++    @on 'application:open-faq', -> require('shell').openExternal('http://docs.spark.io/ide/#faq')
++    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://www.spark.io/tos')
++    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/spark/spark-ide/issues/new')
++    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/spark/spark-ide/issues?q=is%3Aopen+is%3Aissue')
+ 
+     @on 'application:install-update', -> @autoUpdateManager.install()
+     @on 'application:check-for-update', => @autoUpdateManager.check()

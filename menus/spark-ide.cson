@@ -1,7 +1,8 @@
 'menu': [
   {
-    'label': 'Spark Core',
+    'label': 'Spark',
     'submenu': []
   }
 ],
-'context-menu': []
+'context-menu':
+  'atom-workspace': []
