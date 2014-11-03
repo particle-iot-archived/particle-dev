@@ -5,7 +5,7 @@ set COMMON=%BUILD%\..\common
 set ROOT=%BUILD%\..\..
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark IDE
-set SPARK_IDE_VERSION=0.0.13
+set SPARK_IDE_VERSION=0.0.14
 
 call :GETTEMPDIR
 mkdir %TEMP_DIR%
