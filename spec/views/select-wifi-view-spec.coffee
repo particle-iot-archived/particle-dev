@@ -118,14 +118,15 @@ lastAssocStatus: 0\n\
         expect(selectWifiView.listNetworksDarwin).toHaveBeenCalled()
 
         expect(selectWifiView.setItems).toHaveBeenCalled()
-        expect(selectWifiView.setItems.calls.length).toEqual(3)
+        expect(selectWifiView.setItems.calls.length).toEqual(2)
 
-        args = selectWifiView.setItems.calls[1].args[0]
+        args = selectWifiView.setItems.calls[0].args[0]
+        console.log args
         expect(args.length).toEqual(1)
         expect(args[0].ssid).toEqual('Enter SSID manually')
         expect(args[0].security).toBe(null)
 
-        args = selectWifiView.setItems.calls[2].args[0]
+        args = selectWifiView.setItems.calls[1].args[0]
         expect(args.length).toEqual(5)
         expect(args[0].ssid).toEqual('foo')
         expect(args[0].bssid).toEqual('fc:94:e3:21:92:d3')
@@ -177,14 +178,14 @@ lastAssocStatus: 0\n\
         expect(selectWifiView.listNetworksWindows).toHaveBeenCalled()
 
         expect(selectWifiView.setItems).toHaveBeenCalled()
-        expect(selectWifiView.setItems.calls.length).toEqual(3)
+        expect(selectWifiView.setItems.calls.length).toEqual(2)
 
-        args = selectWifiView.setItems.calls[1].args[0]
+        args = selectWifiView.setItems.calls[0].args[0]
         expect(args.length).toEqual(1)
         expect(args[0].ssid).toEqual('Enter SSID manually')
         expect(args[0].security).toBe(null)
 
-        args = selectWifiView.setItems.calls[2].args[0]
+        args = selectWifiView.setItems.calls[1].args[0]
         expect(args.length).toEqual(6)
         expect(args[0].ssid).toEqual('foo')
         expect(args[0].bssid).toEqual('c8:d7:19:39:a6:74')
@@ -229,7 +230,7 @@ lastAssocStatus: 0\n\
         selectWifiView.trigger 'core:confirm'
 
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:enter-wifi-credentials', ['foo', 'Enter SSID manually', null])
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:enter-wifi-credentials', ['foo'])
 
         jasmine.unspy atom.workspaceView, 'trigger'
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
