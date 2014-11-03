@@ -55,7 +55,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
-      SparkStub.stubFail 'getVariable'
+      SparkStub.stubNoResolve 'getVariable'
       atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
 
       waitsFor ->

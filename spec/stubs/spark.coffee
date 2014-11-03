@@ -335,3 +335,11 @@ module.exports =
             }
           , 1
           dfd.promise
+
+  stubNoResolve: (method) ->
+    @unspyTimers()
+
+    switch method
+      when 'getVariable'
+        @stubMethod method, (coreID) ->
+          whenjs.defer().promise
