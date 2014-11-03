@@ -91,13 +91,16 @@ module.exports =
         .then (pkg) =>
           @toolbar = pkg.mainModule
           @toolbar.appendSpacer()
-          @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Flash using cloud', 'ion'
-          @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile in the cloud', 'ion'
+          @flashButton = @toolbar.appendButton 'flash', 'spark-ide:flash-cloud', 'Compile and upload code using cloud', 'ion'
+          @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-ide:compile-cloud', 'Compile and show errors if any', 'ion'
 
           @toolbar.appendSpacer()
 
-          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select Core...', 'ion'
-          @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi...', 'ion'
+          @toolbar.appendButton 'document-text', ->
+            require('shell').openExternal('http://docs.spark.io/')
+          , 'Opens reference at docs.spark.io', 'ion'
+          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-ide:select-core', 'Select which Core you want to work on', 'ion'
+          @wifiButton = @toolbar.appendButton 'wifi', 'spark-ide:setup-wifi', 'Setup Core\'s WiFi credentials', 'ion'
           @toolbar.appendButton 'usb', 'spark-ide:show-serial-monitor', 'Show serial monitor', 'ion'
 
           @updateToolbarButtons()
