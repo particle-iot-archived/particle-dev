@@ -15,6 +15,8 @@ Section "Spark IDE (required)"
 
   File /r "\\?\${SOURCE}\*.*"
 
+  CreateShortCut "$DESKTOP\Spark IDE.lnk" "$INSTDIR\atom.exe" ""
+
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkIDE" "DisplayName" "Spark IDE"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkIDE" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkIDE" "NoModify" 1
@@ -32,6 +34,8 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkIDE"
 
   Delete $INSTDIR\*
+
+  Delete "$DESKTOP\Spark IDE.lnk"
 
   Delete "$SMPROGRAMS\Spark IDE\*.*"
 

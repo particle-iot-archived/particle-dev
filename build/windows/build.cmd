@@ -10,6 +10,7 @@ popd
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark IDE
 set SPARK_IDE_VERSION=0.0.14
+set ATOM_NODE_VERSION=0.18.2
 
 call :GETTEMPDIR
 mkdir %TEMP_DIR%
@@ -48,8 +49,9 @@ echo "Installing Spark IDE package"
 git clone git@github.com:spark/spark-ide.git node_modules\spark-ide
 cd node_modules\spark-ide
 git checkout tags/%SPARK_IDE_VERSION%
+node -e "console.log('-> Atom ', process.env.ATOM_NODE_VERSION);"
 call ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
-ls -lha node_modules\serialport\build\serialport\v1.4.6\Release\
+ls node_modules\serialport\build\serialport\v1.4.6\Release\
 
 cd ..\..
 node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
@@ -83,10 +85,10 @@ patch %TEMP_DIR%\node_modules\exception-reporting\lib\reporter.coffee < %COMMON%
 node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_IDE_VERSION%
 
 echo "Building app"
-call build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%/%APP_NAME%"
+call build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%\%APP_NAME%"
 
 echo "Building installer"
-makensis /DSOURCE="%TARGET%/%APP_NAME%" /DOUT_FILE="%TARGET%/install.exe" %BUILD%/installer.nsi
+makensis /DSOURCE="%TARGET%\%APP_NAME%" /DOUT_FILE="%TARGET%\InstallSparkIDE.exe" %BUILD%\installer.nsi
 
 goto :EOF
 
