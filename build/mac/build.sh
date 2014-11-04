@@ -20,6 +20,7 @@ APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
 SPARK_IDE_VERSION="0.0.14"
+ATOM_NODE_VERSION="0.18.2"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
@@ -52,6 +53,7 @@ subheader "spark-ide"
 git clone git@github.com:spark/spark-ide.git node_modules/spark-ide
 cd node_modules/spark-ide
 git checkout tags/${SPARK_IDE_VERSION}
+export ATOM_NODE_VERSION
 ../../apm/node_modules/atom-package-manager/bin/apm install .
 ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
