@@ -19,7 +19,7 @@ TARGET="${ROOT}/dist/mac"
 APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
-SPARK_IDE_VERSION="0.0.13"
+SPARK_IDE_VERSION="0.0.14"
 ATOM_NODE_VERSION="0.18.2"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
@@ -93,6 +93,9 @@ header "Building app"
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app" download-atom-shell build set-version codesign install
 
 # rm -rf $TEMP_DIR
+
+header "Build ZIP"
+ditto -ck --rsrc --sequesterRsrc "${TARGET}/${APP_NAME}.app" "${TARGET}/${APP_NAME}.app.zip"
 
 header "Build DMG"
 TEMPLATE="${HOME}/tmp/template.dmg"
