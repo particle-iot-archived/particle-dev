@@ -372,10 +372,11 @@ module.exports =
           atom.workspaceView = workspace
           @SettingsHelper.set 'compile-status', {filename: filename}
           atom.workspaceView.trigger 'spark-ide:update-compile-status'
-          @downloadBinaryPromise = null
 
           if !!thenFlash
             atom.workspaceView.trigger 'spark-ide:flash-cloud'
+
+          @downloadBinaryPromise = null
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
