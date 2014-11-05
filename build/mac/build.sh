@@ -19,7 +19,7 @@ TARGET="${ROOT}/dist/mac"
 APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
-SPARK_IDE_VERSION="0.0.14"
+SPARK_IDE_VERSION="0.0.13"
 ATOM_NODE_VERSION="0.18.2"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
@@ -73,6 +73,7 @@ patch ${TEMP_DIR}/src/browser/atom-application.coffee < ${COMMON}/atom-applicati
 patch ${TEMP_DIR}/.npmrc < ${COMMON}/npmrc.patch
 patch ${TEMP_DIR}/src/atom.coffee < ${COMMON}/atom.patch
 patch ${TEMP_DIR}/src/browser/auto-update-manager.coffee < ${COMMON}/auto-update-manager.patch
+patch ${TEMP_DIR}/build/tasks/codesign-task.coffee < ${COMMON}/codesign-task.patch
 subheader "Window title"
 patch ${TEMP_DIR}/src/browser/atom-window.coffee < ${COMMON}/atom-window.patch
 patch ${TEMP_DIR}/src/workspace.coffee < ${COMMON}/workspace.patch
@@ -89,7 +90,7 @@ subheader "App version"
 ${COMMON}/set-version ${TEMP_DIR}/package.json ${SPARK_IDE_VERSION}
 
 header "Building app"
-build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app"
+build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app" download-atom-shell build set-version codesign install
 
 # rm -rf $TEMP_DIR
 

@@ -69,6 +69,7 @@ patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application
 patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch
 patch %TEMP_DIR%\.npmrc < %COMMON%\npmrc.patch
 patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-manager.patch
+patch %TEMP_DIR%\build\tasks\codesign-task.coffee < %COMMON\%codesign-task.patch
 :: Window title
 patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
 patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
