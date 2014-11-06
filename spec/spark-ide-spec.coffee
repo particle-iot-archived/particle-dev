@@ -415,14 +415,15 @@ describe 'Main Tests', ->
     it 'tests passing firmware', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      atom.config.set 'spark-ide.deleteFirmwareAfterFlash', true
+      firmwarePath = atom.project.getPaths()[0] + '/firmware.bin'
       SparkStub.stubSuccess 'flashCore'
-      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
+      fs.openSync firmwarePath, 'w'
 
-      sparkIde.flashCloud 'firmware2.bin'
+      sparkIde.flashCloud 'firmware.bin'
       expect(sparkIde.spark.flashCore).toHaveBeenCalled()
-      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['firmware2.bin'])
+      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['firmware.bin'])
 
-      fs.unlinkSync atom.project.getPaths()[0] + '/firmware.bin'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
