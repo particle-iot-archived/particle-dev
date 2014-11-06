@@ -97,10 +97,13 @@ describe 'Serial Monitor View', ->
         expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
         expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toBeUndefined()
 
+        spyOn console, 'error'
         @serialMonitorView.port.emit 'error'
 
         expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
+        expect(console.error).toHaveBeenCalled()
 
+        jasmine.unspy console, 'error'
         @serialMonitorView.close()
 
     it 'checks serial communication', ->
