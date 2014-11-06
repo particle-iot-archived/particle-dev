@@ -325,8 +325,8 @@ describe 'Main Tests', ->
       SparkStub.stubSuccess 'compileCode'
       SparkStub.stubSuccess 'downloadBinary'
 
-      atom.workspaceView.trigger 'spark-ide:compile-cloud', [true]
       spyOn atom.workspaceView, 'trigger'
+      sparkIde.compileCloud true
 
       waitsFor ->
         !sparkIde.compileCloudPromise
