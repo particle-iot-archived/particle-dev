@@ -52,7 +52,7 @@ describe 'Status Bar Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Refresh UI
-      atom.workspaceView.trigger 'spark-ide:update-login-status'
+      sparkIde.statusView.updateLoginStatus()
 
       expect(statusBar.find('#spark-login-status a')).not.toExist()
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
@@ -71,7 +71,7 @@ describe 'Status Bar Tests', ->
       SparkStub.stubSuccess 'getAttributes'
 
       spyOn statusView, 'getCurrentCoreStatus'
-      atom.workspaceView.trigger 'spark-ide:update-core-status'
+      sparkIde.statusView.updateCoreStatus()
       expect(statusBar.find('#spark-current-core a').text()).toBe('Foo')
       expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
@@ -124,13 +124,12 @@ describe 'Status Bar Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
       statusBarView = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').data 'view'
-
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(true)
 
       # Test compiling in progress
       SettingsHelper.set 'compile-status', {working:true}
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).not.toBe('none')
       expect(statusBarItem.find('#spark-compile-failed').css('display')).toBe('none')
@@ -138,7 +137,7 @@ describe 'Status Bar Tests', ->
 
       # Test errors
       SettingsHelper.set 'compile-status', {errors:[1]}
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
       expect(statusBarItem.find('#spark-compile-failed').css('display')).not.toBe('none')
@@ -147,7 +146,7 @@ describe 'Status Bar Tests', ->
 
       # Test multiple errors
       SettingsHelper.set 'compile-status', {errors:[1,2]}
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('2 errors')
 
       # Test clicking on error
@@ -159,7 +158,7 @@ describe 'Status Bar Tests', ->
 
       # Test complete
       SettingsHelper.set 'compile-status', {filename:'foo.bin'}
-      atom.workspaceView.trigger 'spark-ide:update-compile-status'
+      sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
       expect(statusBarItem.find('#spark-compile-failed').css('display')).toBe('none')

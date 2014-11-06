@@ -32,7 +32,7 @@ describe 'Select Wifi View', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+      sparkIde.setupWifi 'foo'
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
@@ -40,7 +40,7 @@ describe 'Select Wifi View', ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).not.toExist()
 
         # Test core:close
-        atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+        sparkIde.setupWifi 'foo'
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
@@ -53,21 +53,20 @@ describe 'Select Wifi View', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
+      sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
       selectWifiView = sparkIde.selectWifiView
 
       spyOn selectWifiView, 'listNetworks'
 
-      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+      sparkIde.setupWifi 'foo'
 
-      runs ->
-        expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
-        expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
-        expect(selectWifiView.listNetworks).toHaveBeenCalled()
+      expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
+      expect(selectWifiView.listNetworks).toHaveBeenCalled()
 
-        jasmine.unspy selectWifiView, 'listNetworks'
-        SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'
+      jasmine.unspy selectWifiView, 'listNetworks'
+      SettingsHelper.clearCredentials()
+      atom.workspaceView.trigger 'core:close'
 
     it 'test listing networks on Darwin', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -110,7 +109,7 @@ lastAssocStatus: 0\n\
 
       spyOn selectWifiView, 'setItems'
 
-      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+      sparkIde.setupWifi 'foo'
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
@@ -121,7 +120,6 @@ lastAssocStatus: 0\n\
         expect(selectWifiView.setItems.calls.length).toEqual(2)
 
         args = selectWifiView.setItems.calls[0].args[0]
-        console.log args
         expect(args.length).toEqual(1)
         expect(args[0].ssid).toEqual('Enter SSID manually')
         expect(args[0].security).toBe(null)
@@ -170,7 +168,7 @@ lastAssocStatus: 0\n\
 
       spyOn selectWifiView, 'setItems'
 
-      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+      sparkIde.setupWifi 'foo'
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
@@ -219,7 +217,7 @@ lastAssocStatus: 0\n\
 
       spyOn selectWifiView, 'listNetworksDarwin'
 
-      atom.workspaceView.trigger 'spark-ide:setup-wifi', ['foo']
+      sparkIde.setupWifi 'foo'
 
       runs ->
         expect(atom.workspaceView.find('#spark-ide-select-wifi-view')).toExist()
