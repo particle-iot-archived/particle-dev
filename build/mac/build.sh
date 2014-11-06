@@ -20,7 +20,7 @@ APP_NAME="Spark IDE"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
 SPARK_IDE_VERSION="0.0.14"
-ATOM_NODE_VERSION="0.18.2"
+ATOM_NODE_VERSION="0.19.1"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
