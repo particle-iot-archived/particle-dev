@@ -69,6 +69,10 @@ echo "Installing Spark IDE release-notes-spark package"
 git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
 node %COMMON%\append-package %TEMP_DIR%\package.json release-notes-spark "0.36.0"
 
+echo "Installing Spark IDE language-spark package"
+git clone git@github.com:spark/language-spark.git node_modules/language-spark
+node %COMMON%\append-package %TEMP_DIR%\package.json language-spark "0.3.0"
+
 echo "Patching code"
 patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch
 patch %TEMP_DIR%\src\atom.coffee < %COMMON%\atom.patch

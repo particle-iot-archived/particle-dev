@@ -33,7 +33,6 @@ header "Copy resources"
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
 
 header "Append 3rd party packages to package.json"
-${COMMON}/append-package ${TEMP_DIR}/package.json language-arduino "0.2.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json file-type-icons "0.4.4"
 ${COMMON}/append-package ${TEMP_DIR}/package.json switch-header-source "0.8.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json resize-panes "0.1.0"
@@ -71,6 +70,10 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.34.0"
 subheader "release-notes-spark"
 git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
 ${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.36.0"
+
+subheader "language-spark"
+git clone git@github.com:spark/language-spark.git node_modules/language-spark
+${COMMON}/append-package ${TEMP_DIR}/package.json language-spark "0.3.0"
 
 header "Patch code"
 patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
