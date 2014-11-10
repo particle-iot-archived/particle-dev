@@ -41,6 +41,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.9"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome
 node %COMMON%\append-package %TEMP_DIR%\package.json feedback
+${COMMON}/append-package ${TEMP_DIR}/package.json release-notes
 
 echo "Bootstrap Atom"
 call script/bootstrap
@@ -63,6 +64,10 @@ node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
 echo "Installing Spark IDE feedback package"
 git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
 node %COMMON%\append-package %TEMP_DIR%\package.json feedback-spark-ide "0.34.0"
+
+echo "Installing Spark IDE release-notes-spark package"
+git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
+node %COMMON%\append-package %TEMP_DIR%\package.json release-notes-spark "0.36.0"
 
 echo "Patching code"
 patch %TEMP_DIR%\src\browser\atom-application.coffee < %COMMON%\atom-application.patch

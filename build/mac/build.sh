@@ -44,6 +44,7 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json toolbar "0.0.9"
 ${COMMON}/append-package ${TEMP_DIR}/package.json monokai "0.8.0"
 ${COMMON}/append-package ${TEMP_DIR}/package.json welcome
 ${COMMON}/append-package ${TEMP_DIR}/package.json feedback
+${COMMON}/append-package ${TEMP_DIR}/package.json release-notes
 
 header "Bootstrap Atom"
 script/bootstrap
@@ -66,6 +67,10 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
 subheader "feedback-spark-ide"
 git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
 ${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.34.0"
+
+subheader "release-notes-spark"
+git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.36.0"
 
 header "Patch code"
 patch ${TEMP_DIR}/resources/mac/atom-Info.plist < ${BUILD}/atom-Info.patch
