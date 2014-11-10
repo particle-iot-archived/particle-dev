@@ -5,7 +5,7 @@
        when 'darwin'
          cmd = 'codesign'
 -        args = ['--deep', '--force', '--verbose', '--sign', 'Developer ID Application: GitHub', grunt.config.get('atom.shellAppDir')]
-+        args = ['--deep', '--force', '--verbose', '--sign', 'Mac Developer: Zach Supalla', grunt.config.get('atom.shellAppDir')]
++        args = ['--deep', '--force', '--verbose', '--sign', 'Developer ID Application: Spark Labs, Inc.', grunt.config.get('atom.shellAppDir')]
          spawn {cmd, args}, (error) -> callback(error)
        when 'win32'
          spawn {cmd: 'taskkill', args: ['/F', '/IM', 'atom.exe']}, ->
