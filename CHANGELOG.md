@@ -1,3 +1,13 @@
+## 0.0.15
+
+* Fixed Enter in empty WiFi list
+* Search input is being focused after networks scan
+* Fixed fail on getting variable
+* Fixed #5
+* Fixed building on Windows
+* Building ZIP archive
+* Signing OS X app with certificate
+
 ## 0.0.14
 
 * Fixed missing toolbar labels
