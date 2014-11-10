@@ -100,7 +100,7 @@ build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "
 # rm -rf $TEMP_DIR
 
 header "Build ZIP"
-ditto -ck --rsrc --sequesterRsrc "${TARGET}" "${TARGET}/${APP_NAME}.app.zip"
+ditto -ck --rsrc --sequesterRsrc --keepParent "${TARGET}" "${TARGET}/${APP_NAME}.app.zip"
 
 header "Build DMG"
 TEMPLATE="${HOME}/tmp/template.dmg"
