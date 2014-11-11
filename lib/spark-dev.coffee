@@ -99,8 +99,8 @@ module.exports =
           @toolbar.appendButton 'document-text', ->
             require('shell').openExternal('http://docs.spark.io/')
           , 'Opens reference at docs.spark.io', 'ion'
-          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-dev:select-core', 'Select which Core you want to work on', 'ion'
-          @wifiButton = @toolbar.appendButton 'wifi', 'spark-dev:setup-wifi', 'Setup Core\'s WiFi credentials', 'ion'
+          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-dev:select-core', 'Select which device you want to work on', 'ion'
+          @wifiButton = @toolbar.appendButton 'wifi', 'spark-dev:setup-wifi', 'Setup device\'s WiFi credentials', 'ion'
           @toolbar.appendButton 'usb', 'spark-dev:show-serial-monitor', 'Show serial monitor', 'ion'
 
           @updateToolbarButtons()
