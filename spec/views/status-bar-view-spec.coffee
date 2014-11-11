@@ -123,9 +123,11 @@ describe 'Status Bar Tests', ->
     it 'checks compile status', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
-      statusBarView = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view').data 'view'
+      statusBarView = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view').view()
+      spyOn(SettingsHelper, 'get').andReturn null
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(true)
+      jasmine.unspy SettingsHelper, 'get'
 
       # Test compiling in progress
       SettingsHelper.set 'compile-status', {working:true}

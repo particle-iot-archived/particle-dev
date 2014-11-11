@@ -35,7 +35,7 @@ describe 'Listening Mode View', ->
   describe '', ->
     it 'tests hiding and showing', ->
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-dev:identify-core'
+      sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise
@@ -46,7 +46,7 @@ describe 'Listening Mode View', ->
         expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).not.toExist()
 
         # Test core:close
-        atom.workspaceView.trigger 'spark-dev:identify-core'
+        sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise
@@ -57,7 +57,7 @@ describe 'Listening Mode View', ->
         expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).not.toExist()
 
         # Test cancel button
-        atom.workspaceView.trigger 'spark-dev:identify-core'
+        sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise
@@ -71,7 +71,7 @@ describe 'Listening Mode View', ->
 
     it 'tests interval for dialog dismissal', ->
       jasmine.Clock.useMock()
-      atom.workspaceView.trigger 'spark-dev:identify-core'
+      sparkIde.identifyCore()
       spyOn SerialHelper, 'listPorts'
 
       waitsFor ->

@@ -31,7 +31,7 @@ describe 'Select Port View', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-dev:identify-core'
+      sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise
@@ -42,7 +42,7 @@ describe 'Select Port View', ->
         expect(atom.workspaceView.find('#spark-dev-select-port-view')).not.toExist()
 
         # Test core:close
-        atom.workspaceView.trigger 'spark-dev:identify-core'
+        sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise
@@ -58,7 +58,7 @@ describe 'Select Port View', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      atom.workspaceView.trigger 'spark-dev:identify-core'
+      sparkIde.identifyCore()
 
       waitsFor ->
         !sparkIde.listPortsPromise

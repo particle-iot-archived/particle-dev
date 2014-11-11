@@ -128,7 +128,8 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.input.setText 'foo'
         event = $.Event 'keydown'
         event.which = 13
-        @serialMonitorView.input.hiddenInput.trigger event
+
+        @serialMonitorView.input.trigger event
         expect(@serialMonitorView.port.write).toHaveBeenCalled()
 
         jasmine.unspy @serialMonitorView.port, 'write'
