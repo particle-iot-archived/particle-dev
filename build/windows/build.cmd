@@ -9,7 +9,7 @@ set ROOT=%CD%
 popd
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark Dev
-set SPARK_DEV_VERSION=0.0.15
+set SPARK_DEV_VERSION=0.0.16
 set ATOM_VERSION=v0.144.0
 set ATOM_NODE_VERSION=0.19.1
 

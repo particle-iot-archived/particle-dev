@@ -1,3 +1,6 @@
+## 0.0.16
+* Renamed to Spark Dev
+
 ## 0.0.15
 
 * Fixed Enter in empty WiFi list
