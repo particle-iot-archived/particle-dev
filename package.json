@@ -1,9 +1,9 @@
 {
-  "name": "spark-ide",
-  "main": "./lib/spark-ide",
+  "name": "spark-dev",
+  "main": "./lib/spark-dev",
   "version": "0.0.15",
-  "description": "Spark Core local IDE",
-  "repository": "https://github.com/spark/spark-ide",
+  "description": "Professional, hackable IDE for Spark, based on Github's Atom",
+  "repository": "https://github.com/spark/spark-dev",
   "license": "Apache 2.0",
   "engines": {
     "atom": ">0.50.0"
