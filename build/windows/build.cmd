@@ -20,7 +20,9 @@ if exist "%TARGET%" DEL /Q %TARGET%
 mkdir %TARGET%
 cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
-wget https://github.com/atom/atom/archive/%ATOM_VERSION%.tar.gz -O - | tar -xz --strip-components=1
+%BUILD%\wget https://github.com/atom/atom/archive/%ATOM_VERSION%.tar.gz --no-check-certificate -O atom.tar.gz
+tar --strip-components=1 -xzf atom.tar.gz
+del atom.tar.gz
 
 echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico
@@ -41,7 +43,7 @@ node %COMMON%\append-package %TEMP_DIR%\package.json toolbar "0.0.9"
 node %COMMON%\append-package %TEMP_DIR%\package.json monokai "0.8.0"
 node %COMMON%\append-package %TEMP_DIR%\package.json welcome
 node %COMMON%\append-package %TEMP_DIR%\package.json feedback
-${COMMON}/append-package ${TEMP_DIR}/package.json release-notes
+node %COMMON%\append-package %TEMP_DIR%\package.json release-notes
 
 echo "Bootstrap Atom"
 call script/bootstrap
@@ -81,7 +83,7 @@ patch %TEMP_DIR%\src\browser\auto-update-manager.coffee < %COMMON%\auto-update-m
 patch %TEMP_DIR%\build\tasks\codesign-task.coffee < %COMMON\%codesign-task.patch
 :: Window title
 patch %TEMP_DIR%\src\browser\atom-window.coffee < %COMMON%\atom-window.patch
-patch %TEMP_DIR%\src/workspace.coffee < %COMMON%\workspace.patch
+patch %TEMP_DIR%\src\workspace.coffee < %COMMON%\workspace.patch
 :: Menu items
 patch %TEMP_DIR%\menus\darwin.cson < %COMMON%\darwin.patch
 patch %TEMP_DIR%\menus\linux.cson < %COMMON%\linux.patch
