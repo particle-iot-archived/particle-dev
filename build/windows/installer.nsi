@@ -17,7 +17,7 @@ Section "Spark Dev (required)"
 
   CreateShortCut "$DESKTOP\Spark Dev.lnk" "$INSTDIR\atom.exe" ""
 
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkDev" "DisplayName" "Spark IDE"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkDev" "DisplayName" "Spark Dev"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkDev" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkDev" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SparkDev" "NoRepair" 1

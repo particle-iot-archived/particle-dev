@@ -2,4 +2,4 @@
 +++ .npmrc	2014-09-22 12:42:31.000000000 +0200
 @@ -1 +1 @@
 -cache = ~/.atom/.npm
-+cache = ~/.sparkide/.npm
++cache = ~/.sparkdev/.npm

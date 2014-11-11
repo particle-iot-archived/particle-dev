@@ -5,7 +5,7 @@
          @ul class: 'panels-packages nav nav-pills nav-stacked', outlet: 'panelPackages'
          @div class: 'button-area', =>
 -          @button class: 'btn btn-default icon icon-link-external', outlet: 'openDotAtom', 'Open ~/.atom'
-+          @button class: 'btn btn-default icon icon-link-external', outlet: 'openDotAtom', 'Open ~/.sparkide'
++          @button class: 'btn btn-default icon icon-link-external', outlet: 'openDotAtom', 'Open ~/.sparkdev'
        @div class: 'panels padded', outlet: 'panels'
- 
+
    initialize: ({@uri, activePanelName}={}) ->
