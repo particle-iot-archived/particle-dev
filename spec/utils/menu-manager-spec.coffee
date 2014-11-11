@@ -54,18 +54,18 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[1].type).toBe('separator')
 
-      expect(ideMenu.submenu[2].label).toBe('Select Core...')
-      expect(ideMenu.submenu[2].command).toBe('spark-dev:select-core')
+      expect(ideMenu.submenu[2].label).toBe('Select device...')
+      expect(ideMenu.submenu[2].command).toBe('spark-dev:select-device')
 
       expect(ideMenu.submenu[3].type).toBe('separator')
 
-      expect(ideMenu.submenu[4].label).toBe('Claim Core...')
-      expect(ideMenu.submenu[4].command).toBe('spark-dev:claim-core')
+      expect(ideMenu.submenu[4].label).toBe('Claim device...')
+      expect(ideMenu.submenu[4].command).toBe('spark-dev:claim-device')
 
-      expect(ideMenu.submenu[5].label).toBe('Identify Core...')
-      expect(ideMenu.submenu[5].command).toBe('spark-dev:identify-core')
+      expect(ideMenu.submenu[5].label).toBe('Identify device...')
+      expect(ideMenu.submenu[5].command).toBe('spark-dev:identify-device')
 
-      expect(ideMenu.submenu[6].label).toBe('Setup Core\'s WiFi...')
+      expect(ideMenu.submenu[6].label).toBe('Setup device\'s WiFi...')
       expect(ideMenu.submenu[6].command).toBe('spark-dev:setup-wifi')
 
       expect(ideMenu.submenu[7].type).toBe('separator')
@@ -80,7 +80,7 @@ describe 'MenuManager tests', ->
 
       SettingsHelper.clearCredentials()
 
-  it 'checks menu for selected core', ->
+  it 'checks menu for selected device', ->
     waitsForPromise ->
       activationPromise
 
@@ -98,10 +98,10 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu.length).toBe(15)
 
       expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
-      expect(ideMenu.submenu[3].command).toBe('spark-dev:rename-core')
+      expect(ideMenu.submenu[3].command).toBe('spark-dev:rename-device')
 
       expect(ideMenu.submenu[4].label).toBe('Remove Foo...')
-      expect(ideMenu.submenu[4].command).toBe('spark-dev:remove-core')
+      expect(ideMenu.submenu[4].command).toBe('spark-dev:remove-device')
 
       expect(ideMenu.submenu[5].label).toBe('Show cloud variables and functions')
       expect(ideMenu.submenu[5].command).toBe('spark-dev:show-cloud-variables-and-functions')

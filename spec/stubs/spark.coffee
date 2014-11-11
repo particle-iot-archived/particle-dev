@@ -194,7 +194,7 @@ module.exports =
           setTimeout ->
             dfd.resolve {
               "error": "Permission Denied",
-              "info": "I didn't recognize that core name or ID"
+              "info": "I didn't recognize that device name or ID"
             }
           , 1
           dfd.promise
@@ -205,7 +205,7 @@ module.exports =
           setTimeout ->
             dfd.reject {
               "error": "Permission Denied",
-              "info": "I didn't recognize that core name or ID"
+              "info": "I didn't recognize that device name or ID"
             }
           , 1
           dfd.promise
@@ -216,7 +216,7 @@ module.exports =
           setTimeout ->
             dfd.reject {
               "error": "Permission Denied",
-              "info": "I didn't recognize that core name or ID"
+              "info": "I didn't recognize that device name or ID"
             }
           , 1
           dfd.promise

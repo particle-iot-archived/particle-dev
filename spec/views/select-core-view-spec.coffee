@@ -32,13 +32,13 @@ describe 'Select Core View', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-dev:select-core'
+      sparkIde.selectCore()
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:cancel'
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
 
       # # Test core:close
-      atom.workspaceView.trigger 'spark-dev:select-core'
+      sparkIde.selectCore()
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:close'
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
@@ -49,7 +49,7 @@ describe 'Select Core View', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      atom.workspaceView.trigger 'spark-dev:select-core'
+      sparkIde.selectCore()
       selectCoreView = sparkIde.selectCoreView
 
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
@@ -77,7 +77,7 @@ describe 'Select Core View', ->
 
     it 'tests choosing core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      atom.workspaceView.trigger 'spark-dev:select-core'
+      sparkIde.selectCore()
       selectCoreView = sparkIde.selectCoreView
 
       waitsFor ->

@@ -36,7 +36,7 @@ describe 'Claim Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
-      atom.workspaceView.trigger 'spark-dev:claim-core'
+      sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
       editor = claimCoreView.miniEditor.getEditor()
@@ -55,7 +55,7 @@ describe 'Claim Core View', ->
 
     it 'claims the core', ->
       SparkStub.stubSuccess 'claimCore'
-      atom.workspaceView.trigger 'spark-dev:claim-core'
+      sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
       editor = claimCoreView.miniEditor.getEditor()

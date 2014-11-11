@@ -42,33 +42,33 @@ describe 'Main Tests', ->
       expect(sparkIde.logout).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'logout'
 
-    it 'calls selectCore() method for spark-dev:select-core event', ->
+    it 'calls selectCore() method for spark-dev:select-device event', ->
       spyOn sparkIde, 'selectCore'
-      atom.workspaceView.trigger 'spark-dev:select-core'
+      atom.workspaceView.trigger 'spark-dev:select-device'
       expect(sparkIde.selectCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'selectCore'
 
-    it 'calls renameCore() method for spark-dev:rename-core event', ->
+    it 'calls renameCore() method for spark-dev:rename-device event', ->
       spyOn sparkIde, 'renameCore'
-      atom.workspaceView.trigger 'spark-dev:rename-core'
+      atom.workspaceView.trigger 'spark-dev:rename-device'
       expect(sparkIde.renameCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'renameCore'
 
-    it 'calls removeCore() method for spark-dev:remove-core event', ->
+    it 'calls removeCore() method for spark-dev:remove-device event', ->
       spyOn sparkIde, 'removeCore'
-      atom.workspaceView.trigger 'spark-dev:remove-core'
+      atom.workspaceView.trigger 'spark-dev:remove-device'
       expect(sparkIde.removeCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'removeCore'
 
-    it 'calls claimCore() method for spark-dev:claim-core event', ->
+    it 'calls claimCore() method for spark-dev:claim-device event', ->
       spyOn sparkIde, 'claimCore'
-      atom.workspaceView.trigger 'spark-dev:claim-core'
+      atom.workspaceView.trigger 'spark-dev:claim-device'
       expect(sparkIde.claimCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'claimCore'
 
-    it 'calls identifyCore() method for spark-dev:identify-core event', ->
+    it 'calls identifyCore() method for spark-dev:identify-device event', ->
       spyOn sparkIde, 'identifyCore'
-      atom.workspaceView.trigger 'spark-dev:identify-core'
+      atom.workspaceView.trigger 'spark-dev:identify-device'
       expect(sparkIde.identifyCore).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'identifyCore'
 
@@ -116,7 +116,7 @@ describe 'Main Tests', ->
 
 
   describe 'checks logged out user', ->
-    it 'checks spark-dev:remove-core', ->
+    it 'checks spark-dev:remove-device', ->
       spyOn atom, 'confirm'
       sparkIde.removeCore()
       expect(atom.confirm).not.toHaveBeenCalled()
@@ -178,7 +178,7 @@ describe 'Main Tests', ->
         expect(atom.confirm.calls[1].args.length).toEqual(1)
         alertArgs = atom.confirm.calls[1].args[0]
         expect(alertArgs.message).toEqual('Error')
-        expect(alertArgs.detailedMessage).toEqual('I didn\'t recognize that core name or ID')
+        expect(alertArgs.detailedMessage).toEqual('I didn\'t recognize that device name or ID')
 
         jasmine.unspy SettingsHelper, 'clearCurrentCore'
         jasmine.unspy(atom.workspaceView, 'trigger')

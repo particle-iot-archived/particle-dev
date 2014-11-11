@@ -36,7 +36,7 @@ describe 'Rename Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
-      atom.workspaceView.trigger 'spark-dev:rename-core'
+      sparkIde.renameCore()
       renameCoreView = sparkIde.renameCoreView
 
       editor = renameCoreView.miniEditor.getEditor()
@@ -54,7 +54,7 @@ describe 'Rename Core View', ->
 
     it 'renames the core', ->
       SparkStub.stubSuccess 'renameCore'
-      atom.workspaceView.trigger 'spark-dev:rename-core'
+      sparkIde.renameCore()
       renameCoreView = sparkIde.renameCoreView
 
       editor = renameCoreView.miniEditor.getEditor()

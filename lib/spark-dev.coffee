@@ -56,11 +56,11 @@ module.exports =
     # Hook up commands
     atom.workspaceView.command 'spark-dev:login', => @login()
     atom.workspaceView.command 'spark-dev:logout', => @logout()
-    atom.workspaceView.command 'spark-dev:select-core', => @selectCore()
-    atom.workspaceView.command 'spark-dev:rename-core', => @renameCore()
-    atom.workspaceView.command 'spark-dev:remove-core', => @removeCore()
-    atom.workspaceView.command 'spark-dev:claim-core', => @claimCore()
-    atom.workspaceView.command 'spark-dev:identify-core', (event, port) => @identifyCore(port)
+    atom.workspaceView.command 'spark-dev:select-device', => @selectCore()
+    atom.workspaceView.command 'spark-dev:rename-device', => @renameCore()
+    atom.workspaceView.command 'spark-dev:remove-device', => @removeCore()
+    atom.workspaceView.command 'spark-dev:claim-device', => @claimCore()
+    atom.workspaceView.command 'spark-dev:identify-device', (event, port) => @identifyCore(port)
     atom.workspaceView.command 'spark-dev:compile-cloud', (event, thenFlash) => @compileCloud(thenFlash)
     atom.workspaceView.command 'spark-dev:show-compile-errors', => @showCompileErrors()
     atom.workspaceView.command 'spark-dev:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
@@ -323,7 +323,7 @@ module.exports =
   # Identify core via serial
   identifyCore: (port=null) -> @loginRequired =>
     if !port
-      @choosePort('spark-dev:identify-core')
+      @choosePort('spark-dev:identify-device')
     else
       @SerialHelper ?= require './utils/serial-helper'
       promise = @SerialHelper.askForCoreID port

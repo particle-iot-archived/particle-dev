@@ -22,18 +22,18 @@ module.exports =
       },{
         type: 'separator'
       },{
-        label: 'Select Core...',
-        command: 'spark-dev:select-core'
+        label: 'Select device...',
+        command: 'spark-dev:select-device'
       }]
 
       if SettingsHelper.hasCurrentCore()
         # Menu items depending on current core
         ideMenu.submenu = ideMenu.submenu.concat [{
           label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
-          command: 'spark-dev:rename-core'
+          command: 'spark-dev:rename-device'
         },{
           label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
-          command: 'spark-dev:remove-core'
+          command: 'spark-dev:remove-device'
         },{
           label: 'Show cloud variables and functions',
           command: 'spark-dev:show-cloud-variables-and-functions'
@@ -45,13 +45,13 @@ module.exports =
       ideMenu.submenu = ideMenu.submenu.concat [{
         type: 'separator'
       },{
-        label: 'Claim Core...',
-        command: 'spark-dev:claim-core'
+        label: 'Claim device...',
+        command: 'spark-dev:claim-device'
       },{
-        label: 'Identify Core...',
-        command: 'spark-dev:identify-core'
+        label: 'Identify device...',
+        command: 'spark-dev:identify-device'
       },{
-        label: 'Setup Core\'s WiFi...',
+        label: 'Setup device\'s WiFi...',
         command: 'spark-dev:setup-wifi'
       },{
         type: 'separator'
