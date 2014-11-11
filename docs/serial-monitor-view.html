@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -151,7 +151,7 @@ serialport = null
 module.exports =
 class SerialMonitorView extends View
   @content: -&gt;
-    @div id: 'spark-ide-serial-monitor', class: 'panel', =&gt;
+    @div id: 'spark-dev-serial-monitor', class: 'panel', =&gt;
       @div class: 'panel-heading', =&gt;
         @select outlet: 'portsSelect', mousedown: 'refreshSerialPorts', change: 'portSelected', =&gt;
           @option value: '', 'No port selected'
@@ -206,7 +206,7 @@ class SerialMonitorView extends View
     @emitter.on 'did-change-modified', callback
 
   getUri: -&gt;
-    'spark-ide://editor/serial-monitor'
+    'spark-dev://editor/serial-monitor'
 
   close: -&gt;
     pane = atom.workspace.paneForUri @getUri()
@@ -215,6 +215,7 @@ class SerialMonitorView extends View
   appendText: (text, appendNewline=true) -&gt;
     at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 &gt; @output[0].scrollHeight)
 
+    text = text.replace "\r", ''
     if appendNewline
       text += "\n"
     @output.html(@output.html() + text)

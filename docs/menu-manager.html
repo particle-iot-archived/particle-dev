@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -158,8 +158,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>: <span class="hljs-function">-&gt;</span>
-    ideMenu = atom.menu.template.filter (value) -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>:<span class="hljs-function"> -&gt;</span>
+    ideMenu = atom.menu.template.filter <span class="hljs-function"><span class="hljs-params">(value)</span> -&gt;</span>
       value.label == <span class="hljs-string">'Spark'</span>
 
     ideMenu[<span class="hljs-number">0</span>]</pre></div></div>
@@ -177,7 +177,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>: <span class="hljs-function">-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>:<span class="hljs-function"> -&gt;</span>
     ideMenu = <span class="hljs-property">@getMenu</span>()
 
     <span class="hljs-keyword">if</span> SettingsHelper.isLoggedIn()</pre></div></div>
@@ -199,12 +199,12 @@
 
       ideMenu.submenu = [{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Log out '</span> + username,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:logout'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:logout'</span>
       },{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Select Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:select-core'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:select-core'</span>
       }]
 
       <span class="hljs-keyword">if</span> SettingsHelper.hasCurrentCore()</pre></div></div>
@@ -224,34 +224,34 @@
             
             <div class="content"><div class='highlight'><pre>        ideMenu.submenu = ideMenu.submenu.concat [{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Rename '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:rename-core'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:rename-core'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:remove-core'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:remove-core'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Show cloud variables and functions'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:show-cloud-variables-and-functions'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:show-cloud-variables-and-functions'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Flash '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">' via the cloud'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:flash-cloud'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:flash-cloud'</span>
         }]
 
       ideMenu.submenu = ideMenu.submenu.concat [{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:claim-core'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:claim-core'</span>
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Identify Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:identify-core'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:identify-core'</span>
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Setup Core\'s WiFi...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:setup-wifi'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:setup-wifi'</span>
       },{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Compile in the cloud'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:compile-cloud'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:compile-cloud'</span>
       }]
     <span class="hljs-keyword">else</span></pre></div></div>
             
@@ -270,14 +270,14 @@
             
             <div class="content"><div class='highlight'><pre>      ideMenu.submenu = [{
         <span class="hljs-attribute">label</span>: <span class="hljs-string">'Log in to Spark Cloud...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:login'</span>
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:login'</span>
       }]
 
     ideMenu.submenu = ideMenu.submenu.concat [{
       <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
     },{
       <span class="hljs-attribute">label</span>: <span class="hljs-string">'Show serial monitor'</span>,
-      <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-ide:show-serial-monitor'</span>
+      <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:show-serial-monitor'</span>
     }]</pre></div></div>
             
         </li>

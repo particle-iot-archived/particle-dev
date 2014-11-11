@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -163,7 +163,7 @@ class SelectWifiView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', =&gt; @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-wifi-view'
+    @prop 'id', 'spark-dev-select-wifi-view'
 
     @port = null
 
@@ -174,10 +174,7 @@ class SelectWifiView extends SelectListView
     if !@hasParent()
       atom.workspaceView.append(this)
 
-      @setItems []
-      @setLoading 'Scaning for networks...'
       @listNetworks()
-      @focusFilterEditor()
 
   hide: -&gt;
     if @hasParent()
@@ -198,36 +195,57 @@ class SelectWifiView extends SelectListView
 
     $$ -&gt;
       @li class: 'two-lines', =&gt;
-        if !!security
+        if security
           @div class: 'pull-right', =&gt;
             @kbd class: 'key-binding pull-right', security
         @div item.ssid
 
   confirmed: (item) -&gt;
-    atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
     @cancel()
+
+    if item.security
+      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port, item.ssid, item.security]
+    else
+      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port]
 
   getPlatform: -&gt;
     process.platform
 
+  getFilterKey: -&gt;
+    'ssid'
+
+  setNetworks: (networks) -&gt;
+    if networks.length &gt; 0
+      @setItems(networks.concat @items)
+      @removeClass 'loading'
+      @focusFilterEditor()
+      @filterEditorView.hiddenInput.focus()
+    else
+      @setLoading()
+
   listNetworks: -&gt;
+    @addClass 'loading'
+    @focusFilterEditor()
 
     @items = [{
       ssid: 'Enter SSID manually',
       security: null,
     }]
-
     @setItems @items
+    @setLoading 'Scaning for networks...'
 
     switch @getPlatform()
       when 'darwin'
-        @listNetworksDarwin()
+        @listNetworksDarwin (networks) =&gt;
+          @setNetworks networks
       when 'win32'
-        @listNetworksWindows()
+        @listNetworksWindows (networks) =&gt;
+          @setNetworks networks
       else
+        @setLoading()
         console.error 'Current platform not supported'
 
-  listNetworksDarwin: -&gt;
+  listNetworksDarwin: (callback) -&gt;
     @cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I', (error, stdout, stderr) =&gt;
       currentSsid = null
       if stdout != ''
@@ -244,7 +262,7 @@ class SelectWifiView extends SelectListView
 
           if !!network
             notAdded = (networks.length == 0) || networks.reduce (prev, current) -&gt;
-              prev &amp;&amp; (current.ssid != network[1])
+              prev &amp;&amp; (current.ssid != _s.trim(network[1]))
 
             if notAdded
               if network[7].indexOf('WPA2') &gt; -1
@@ -275,9 +293,9 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)
+        callback networks
 
-  listNetworksWindows: -&gt;
+  listNetworksWindows: (callback) -&gt;
     fs = require 'fs-plus'
     @cp.exec 'netsh wlan show interfaces', (error, stdout, stderr) =&gt;
       currentSsid = null
@@ -333,7 +351,7 @@ class SelectWifiView extends SelectListView
 
           parseInt(b.rssi) - parseInt(a.rssi)
 
-        @setItems(networks.concat @items)</pre></div></div>
+        callback networks</pre></div></div>
             
         </li>
         

@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -148,7 +148,7 @@ path = require 'path'
 module.exports =
 class Dialog extends View
   @content: ({prompt} = {}) -&gt;
-    @div class: 'spark-ide-dialog overlay from-top', =&gt;
+    @div class: 'spark-dev-dialog overlay from-top', =&gt;
       @label prompt, class: 'icon', outlet: 'promptText'
       @subview 'miniEditor', new TextEditorView(mini: true)
       @div class: 'error-message', outlet: 'errorMessage'
@@ -187,15 +187,15 @@ class Dialog extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hideOthers</span>: <span class="hljs-function">-&gt;</span>
-    $(<span class="hljs-string">'.spark-ide-dialog'</span>).each (idx, item) -&gt;
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">hideOthers</span>:<span class="hljs-function"> -&gt;</span>
+    $<span class="hljs-function"><span class="hljs-params">(<span class="hljs-string">'.spark-dev-dialog'</span>)</span>.<span class="hljs-title">each</span> <span class="hljs-params">(idx, item)</span> -&gt;</span>
       $(item).data(<span class="hljs-string">'view'</span>).close()
 
-  <span class="hljs-attribute">close</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">close</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@remove</span>()
     atom.workspaceView.focus()
 
-  <span class="hljs-attribute">cancel</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">cancel</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@remove</span>()
 
   <span class="hljs-attribute">showError</span>: <span class="hljs-function"><span class="hljs-params">(message=<span class="hljs-string">''</span>)</span> -&gt;</span>

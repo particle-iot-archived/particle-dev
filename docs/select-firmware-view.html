@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -165,7 +165,7 @@ class SelectFirmwareView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', =&gt; @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-firmware-view'
+    @prop 'id', 'spark-dev-select-firmware-view'
 
   destroy: -&gt;
     @remove()
@@ -187,7 +187,7 @@ class SelectFirmwareView extends SelectListView
         @div class: 'secondary-line', stats.ctime.toLocaleString()
 
   confirmed: (item) -&gt;
-    atom.workspaceView.trigger 'spark-ide:flash-cloud', [item]
+    atom.workspaceView.trigger 'spark-dev:flash-cloud', [item]
     @cancel()</pre></div></div>
             
         </li>

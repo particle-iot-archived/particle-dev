@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -147,7 +147,7 @@ _s = <span class="hljs-literal">null</span>
 
 <span class="hljs-built_in">module</span>.exports =
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ClaimCoreView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Dialog</span></span>
-  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">super</span>
       <span class="hljs-attribute">prompt</span>: <span class="hljs-string">'Enter device ID (hex string)'</span>
       <span class="hljs-attribute">initialText</span>: <span class="hljs-string">''</span>
@@ -156,7 +156,7 @@ _s = <span class="hljs-literal">null</span>
       <span class="hljs-attribute">hideOnBlur</span>: <span class="hljs-literal">false</span>
 
     <span class="hljs-property">@claimPromise</span> = <span class="hljs-literal">null</span>
-    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-claim-core-view'</span></pre></div></div>
+    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-dev-claim-core-view'</span></pre></div></div>
             
         </li>
         
@@ -232,7 +232,7 @@ _s = <span class="hljs-literal">null</span>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Unlock input</p>
+              <p>Lock input</p>
 
             </div>
             
@@ -257,7 +257,7 @@ _s = <span class="hljs-literal">null</span>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@claimPromise</span> = spark.claimCore deviceID
       <span class="hljs-property">@setLoading</span> <span class="hljs-literal">true</span>
-      <span class="hljs-property">@claimPromise</span>.done (e) =&gt;
+      <span class="hljs-property">@claimPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@claimPromise</span>
           <span class="hljs-keyword">return</span></pre></div></div>
             
@@ -289,8 +289,8 @@ _s = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-core-status'</span>
-        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-menu'</span>
+            <div class="content"><div class='highlight'><pre>        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-core-status'</span>
+        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-menu'</span>
 
         <span class="hljs-property">@claimPromise</span> = <span class="hljs-literal">null</span>
         <span class="hljs-property">@close</span>()
@@ -311,8 +311,15 @@ _s = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@miniEditor</span>.addClass <span class="hljs-string">'editor-error'</span>
-        <span class="hljs-property">@showError</span>(e.errors)
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@miniEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+
+        <span class="hljs-keyword">if</span> e.code == <span class="hljs-string">'ENOTFOUND'</span>
+          message = <span class="hljs-string">'Error while connecting to '</span> + e.hostname
+          <span class="hljs-property">@showError</span> message
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@miniEditor</span>.addClass <span class="hljs-string">'editor-error'</span>
+          <span class="hljs-property">@showError</span> e.errors
+
         <span class="hljs-property">@claimPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>

@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -153,7 +153,7 @@ validator = null
 module.exports =
 class LoginView extends View
   @content: -&gt;
-    @div id: 'spark-ide-login-view', class: 'overlay from-top', =&gt;
+    @div id: 'spark-dev-login-view', class: 'overlay from-top', =&gt;
       @div class: 'block', =&gt;
         @span 'Log in to Spark Cloud '
         @span class: 'text-subtle', =&gt;
@@ -178,7 +178,7 @@ class LoginView extends View
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =&gt;
-      atom.workspaceView.trigger 'spark-ide:cancel-login'
+      atom.workspaceView.trigger 'spark-dev:cancel-login'
 
     @loginPromise = null</pre></div></div>
             
@@ -239,7 +239,7 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
             
         </li>
         
@@ -254,10 +254,10 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">destroy</span>: <span class="hljs-function">-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@remove</span>()
 
-  <span class="hljs-attribute">show</span>: <span class="hljs-function">=&gt;</span>
+  <span class="hljs-attribute">show</span>:<span class="hljs-function"> =&gt;</span>
     <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
       atom.workspaceView.append(<span class="hljs-keyword">this</span>)
       <span class="hljs-property">@emailEditor</span>.getEditor().setText <span class="hljs-string">''</span>
@@ -266,7 +266,7 @@ class LoginView extends View
       <span class="hljs-property">@errorLabel</span>.hide()
       <span class="hljs-property">@emailEditor</span>.focus()
 
-  <span class="hljs-attribute">hide</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
       <span class="hljs-property">@detach</span>()
 
@@ -277,7 +277,7 @@ class LoginView extends View
     <span class="hljs-property">@clearErrors</span>()
     <span class="hljs-property">@hide</span>()
 
-  <span class="hljs-attribute">cancelCommand</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">cancelCommand</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@cancel</span>()</pre></div></div>
             
         </li>
@@ -293,7 +293,7 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearErrors</span>: <span class="hljs-function">-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearErrors</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@emailEditor</span>.removeClass <span class="hljs-string">'editor-error'</span>
     <span class="hljs-property">@passwordEditor</span>.removeClass <span class="hljs-string">'editor-error'</span></pre></div></div>
             
@@ -310,7 +310,7 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">validateInputs</span>: <span class="hljs-function">-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">validateInputs</span>:<span class="hljs-function"> -&gt;</span>
     validator ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'validator'</span>
 
     <span class="hljs-property">@clearErrors</span>()
@@ -343,7 +343,7 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">unlockUi</span>: <span class="hljs-function">-&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">unlockUi</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@emailEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
     <span class="hljs-property">@passwordEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
     <span class="hljs-property">@loginButton</span>.removeAttr <span class="hljs-string">'disabled'</span></pre></div></div>
@@ -373,12 +373,12 @@ class LoginView extends View
 
     spark = <span class="hljs-built_in">require</span> <span class="hljs-string">'spark'</span>
     <span class="hljs-property">@loginPromise</span> = spark.login { <span class="hljs-attribute">username</span>:<span class="hljs-property">@email</span>, <span class="hljs-attribute">password</span>:<span class="hljs-property">@password</span> }
-    <span class="hljs-property">@loginPromise</span>.done (e) =&gt;
+    <span class="hljs-property">@loginPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
       <span class="hljs-property">@spinner</span>.addClass <span class="hljs-string">'hidden'</span>
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@loginPromise</span>
         <span class="hljs-keyword">return</span>
       SettingsHelper.setCredentials <span class="hljs-property">@email</span>, e.access_token
-      atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span>
+      atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-login-status'</span>
       <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span>
 
       <span class="hljs-property">@cancel</span>()
@@ -388,7 +388,12 @@ class LoginView extends View
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@loginPromise</span>
         <span class="hljs-keyword">return</span>
       <span class="hljs-property">@unlockUi</span>()
-      <span class="hljs-property">@errorLabel</span>.text(e).show()
+      <span class="hljs-keyword">if</span> e.code == <span class="hljs-string">'ENOTFOUND'</span>
+        <span class="hljs-property">@errorLabel</span>.text <span class="hljs-string">'Error while connecting to '</span> + e.hostname
+      <span class="hljs-keyword">else</span>
+        <span class="hljs-property">@errorLabel</span>.text e
+
+      <span class="hljs-property">@errorLabel</span>.show()
       <span class="hljs-property">@loginPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
             
         </li>
@@ -404,9 +409,9 @@ class LoginView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>: <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> =&gt;</span>
     SettingsHelper.clearCredentials()
-    atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-login-status'</span></pre></div></div>
+    atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-login-status'</span></pre></div></div>
             
         </li>
         

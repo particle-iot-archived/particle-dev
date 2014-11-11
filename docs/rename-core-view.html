@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -157,7 +157,7 @@ spark = <span class="hljs-literal">null</span>
       <span class="hljs-attribute">hideOnBlur</span>: <span class="hljs-literal">false</span>
 
     <span class="hljs-property">@renamePromise</span> = <span class="hljs-literal">null</span>
-    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-ide-rename-core-view'</span>
+    <span class="hljs-property">@prop</span> <span class="hljs-string">'id'</span>, <span class="hljs-string">'spark-dev-rename-core-view'</span>
 
   <span class="hljs-attribute">onConfirm</span>: <span class="hljs-function"><span class="hljs-params">(newName)</span> -&gt;</span>
     SettingsHelper ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'../utils/settings-helper'</span>
@@ -175,14 +175,14 @@ spark = <span class="hljs-literal">null</span>
       workspace = atom.workspaceView
       <span class="hljs-property">@renamePromise</span> = spark.renameCore SettingsHelper.get(<span class="hljs-string">'current_core'</span>), newName
       <span class="hljs-property">@setLoading</span> <span class="hljs-literal">true</span>
-      <span class="hljs-property">@renamePromise</span>.done (e) =&gt;
+      <span class="hljs-property">@renamePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@renamePromise</span>
           <span class="hljs-keyword">return</span>
 
         atom.workspaceView = workspace
         SettingsHelper.set <span class="hljs-string">'current_core_name'</span>, newName
-        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-core-status'</span>
-        atom.workspaceView.trigger <span class="hljs-string">'spark-ide:update-menu'</span>
+        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-core-status'</span>
+        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-menu'</span>
         <span class="hljs-property">@renamePromise</span> = <span class="hljs-literal">null</span>
 
         <span class="hljs-property">@close</span>()
@@ -191,9 +191,14 @@ spark = <span class="hljs-literal">null</span>
         <span class="hljs-property">@setLoading</span> <span class="hljs-literal">false</span>
         <span class="hljs-property">@renamePromise</span> = <span class="hljs-literal">null</span>
         <span class="hljs-property">@miniEditor</span>.hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+        <span class="hljs-keyword">if</span> e.code == <span class="hljs-string">'ENOTFOUND'</span>
+          message = <span class="hljs-string">'Error while connecting to '</span> + e.hostname
+        <span class="hljs-keyword">else</span>
+          message = e.message
+
         atom.confirm
           <span class="hljs-attribute">message</span>: <span class="hljs-string">'Error'</span>
-          <span class="hljs-attribute">detailedMessage</span>: e</pre></div></div>
+          <span class="hljs-attribute">detailedMessage</span>: message</pre></div></div>
             
         </li>
         

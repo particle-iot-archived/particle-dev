@@ -19,8 +19,8 @@
           <div id="jump_page">
             
               
-              <a class="source" href="spark-ide.html">
-                spark-ide.coffee
+              <a class="source" href="spark-dev.html">
+                spark-dev.coffee
               </a>
             
               
@@ -151,7 +151,7 @@ class ListeningModeView extends View
     @div class: 'overlay from-top', =&gt;
       @h1 'Waiting for core...'
       @p =&gt;
-        @img src: 'atom://spark-ide/images/listening.gif'
+        @img src: 'atom://spark-dev/images/listening.gif'
       @p 'Check if your core is connected via USB and it\'s in listening mode (LED blinking blue).'
       @div class: 'block', =&gt;
         @button click: 'cancel', class: 'btn', 'Cancel'
@@ -160,7 +160,7 @@ class ListeningModeView extends View
     {Subscriber} = require 'emissary'
     SerialHelper = require '../utils/serial-helper'
 
-    @prop 'id', 'spark-ide-listening-mode-view'</pre></div></div>
+    @prop 'id', 'spark-dev-listening-mode-view'</pre></div></div>
             
         </li>
         
@@ -175,9 +175,9 @@ class ListeningModeView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval =&gt;
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval <span class="hljs-function">=&gt;</span>
       promise = SerialHelper.listPorts()
-      promise.done (ports) =&gt;
+      promise.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
         <span class="hljs-keyword">if</span> ports.length &gt; <span class="hljs-number">0</span></pre></div></div>
             
         </li>
@@ -229,16 +229,16 @@ class ListeningModeView extends View
       clearInterval <span class="hljs-property">@interval</span>
       <span class="hljs-property">@hide</span>()
 
-  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
 
-  <span class="hljs-attribute">destroy</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-property">@detach</span>()
 
-  <span class="hljs-attribute">show</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">show</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
       atom.workspaceView.append(<span class="hljs-keyword">this</span>)
 
-  <span class="hljs-attribute">hide</span>: <span class="hljs-function">-&gt;</span>
+  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
       <span class="hljs-property">@detach</span>()
 
