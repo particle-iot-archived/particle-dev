@@ -10,6 +10,7 @@ popd
 set TARGET=%ROOT%\dist\windows
 set APP_NAME=Spark Dev
 set SPARK_DEV_VERSION=0.0.15
+set ATOM_VERSION=v0.144.0
 set ATOM_NODE_VERSION=0.19.1
 
 call :GETTEMPDIR
@@ -19,8 +20,7 @@ if exist "%TARGET%" DEL /Q %TARGET%
 mkdir %TARGET%
 cd %TEMP_DIR%
 echo "Working directory is %TEMP_DIR%"
-git clone --depth=1 https://github.com/atom/atom.git .
-DEL /Q .git
+wget https://github.com/atom/atom/archive/%ATOM_VERSION%.tar.gz -O - | tar -xz --strip-components=1
 
 echo "Copy resources"
 copy %BUILD%\sparkide.ico %TEMP_DIR%\resources\win\atom.ico

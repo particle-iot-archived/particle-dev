@@ -20,14 +20,14 @@ APP_NAME="Spark Dev"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
 SPARK_DEV_VERSION="0.0.15"
+ATOM_VERSION="v0.144.0"
 ATOM_NODE_VERSION="0.19.1"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
 mkdir -p $TARGET
 cd $TEMP_DIR
 header "Working directory is ${TEMP_DIR}"
-git clone --depth=1 https://github.com/atom/atom.git .
-rm -rf .git
+wget https://github.com/atom/atom/archive/${ATOM_VERSION}.tar.gz -O - | tar -xz --strip-components=1
 
 header "Copy resources"
 cp ${BUILD}/sparkide.icns ${TEMP_DIR}/resources/mac/atom.icns
