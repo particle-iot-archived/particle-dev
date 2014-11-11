@@ -325,6 +325,7 @@ module.exports =
     if !port
       @choosePort('spark-dev:identify-core')
     else
+      @SerialHelper ?= require './utils/serial-helper'
       promise = @SerialHelper.askForCoreID port
       promise.done (coreID) =>
         @IdentifyCoreView ?= require './views/identify-core-view'
