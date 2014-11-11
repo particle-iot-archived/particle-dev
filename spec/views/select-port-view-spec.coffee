@@ -10,12 +10,12 @@ describe 'Select Port View', ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
@@ -31,26 +31,26 @@ describe 'Select Port View', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-ide:identify-core'
+      atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
-        expect(atom.workspaceView.find('#spark-ide-select-port-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
         atom.workspaceView.trigger 'core:cancel'
-        expect(atom.workspaceView.find('#spark-ide-select-port-view')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-select-port-view')).not.toExist()
 
         # Test core:close
-        atom.workspaceView.trigger 'spark-ide:identify-core'
+        atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
-        expect(atom.workspaceView.find('#spark-ide-select-port-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
         atom.workspaceView.trigger 'core:close'
-        expect(atom.workspaceView.find('#spark-ide-select-port-view')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-select-port-view')).not.toExist()
 
         SettingsHelper.clearCredentials()
 
@@ -58,14 +58,14 @@ describe 'Select Port View', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      atom.workspaceView.trigger 'spark-ide:identify-core'
+      atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
         selectPortView = sparkIde.selectPortView
-        expect(atom.workspaceView.find('#spark-ide-select-port-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
 
       waitsFor ->
         !selectPortView.listPortsPromise

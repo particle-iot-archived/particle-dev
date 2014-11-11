@@ -5,7 +5,7 @@ path = require 'path'
 module.exports =
 class Dialog extends View
   @content: ({prompt} = {}) ->
-    @div class: 'spark-ide-dialog overlay from-top', =>
+    @div class: 'spark-dev-dialog overlay from-top', =>
       @label prompt, class: 'icon', outlet: 'promptText'
       @subview 'miniEditor', new TextEditorView(mini: true)
       @div class: 'error-message', outlet: 'errorMessage'
@@ -33,7 +33,7 @@ class Dialog extends View
 
   # Close other dialogs
   hideOthers: ->
-    $('.spark-ide-dialog').each (idx, item) ->
+    $('.spark-dev-dialog').each (idx, item) ->
       $(item).data('view').close()
 
   close: ->

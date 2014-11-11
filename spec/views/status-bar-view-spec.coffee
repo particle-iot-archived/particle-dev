@@ -12,7 +12,7 @@ describe 'Status Bar Tests', ->
   beforeEach ->
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     SparkStub.stubSuccess 'getAttributes'
 
@@ -23,7 +23,7 @@ describe 'Status Bar Tests', ->
       statusBarPromise
 
     runs ->
-      activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+      activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
         sparkIde = mainModule
         statusView = sparkIde.statusView
 
@@ -34,9 +34,9 @@ describe 'Status Bar Tests', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe 'when the spark-ide is activated', ->
+  describe 'when the spark-dev is activated', ->
     it 'attaches custom status bar', ->
-      statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+      statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
       expect(statusBar).toExist()
       expect(statusBar.find('#spark-icon').is(':empty')).toBe(true)
       # User should be logged off
@@ -45,7 +45,7 @@ describe 'Status Bar Tests', ->
 
 
     it 'checks if username of logged in user is shown', ->
-      statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+      statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
       # Previously logged out user
       expect(statusBar.find('#spark-login-status a')).toExist()
       # Log user in
@@ -64,7 +64,7 @@ describe 'Status Bar Tests', ->
 
 
     it 'checks current core name', ->
-      statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+      statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
 
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
@@ -92,7 +92,7 @@ describe 'Status Bar Tests', ->
         !statusView.getAttributesPromise
 
       runs ->
-        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+        statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
         expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(true)
 
         variables = SettingsHelper.get('variables')
@@ -113,7 +113,7 @@ describe 'Status Bar Tests', ->
         !statusView.getAttributesPromise
 
       runs ->
-        statusBar = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view')
+        statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
         expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(false)
         clearInterval statusView.interval
 
@@ -123,7 +123,7 @@ describe 'Status Bar Tests', ->
     it 'checks compile status', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
-      statusBarView = atom.workspaceView.statusBar.find('#spark-ide-status-bar-view').data 'view'
+      statusBarView = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view').data 'view'
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(true)
 

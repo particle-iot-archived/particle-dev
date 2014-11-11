@@ -13,5 +13,5 @@ class IdentifyCoreView extends Dialog
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', 'spark-ide-identify-core-view'
+    @prop 'id', 'spark-dev-identify-core-view'
     @miniEditor.hiddenInput.attr 'disabled', 'disabled'

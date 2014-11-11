@@ -11,13 +11,13 @@ describe 'Select Core View', ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.initView 'select-core'
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     SparkStub.stubSuccess 'listDevices'
 
@@ -32,16 +32,16 @@ describe 'Select Core View', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-ide:select-core'
-      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
+      atom.workspaceView.trigger 'spark-dev:select-core'
+      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-ide-select-core-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
 
       # # Test core:close
-      atom.workspaceView.trigger 'spark-ide:select-core'
-      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
+      atom.workspaceView.trigger 'spark-dev:select-core'
+      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-ide-select-core-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
 
       SettingsHelper.clearCredentials()
 
@@ -49,10 +49,10 @@ describe 'Select Core View', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      atom.workspaceView.trigger 'spark-ide:select-core'
+      atom.workspaceView.trigger 'spark-dev:select-core'
       selectCoreView = sparkIde.selectCoreView
 
-      expect(atom.workspaceView.find('#spark-ide-select-core-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       expect(selectCoreView.find('div.loading').css('display')).toEqual('block')
       expect(selectCoreView.find('span.loading-message').text()).toEqual('Loading cores...')
       expect(selectCoreView.find('ol.list-group li').length).toEqual(0)
@@ -77,7 +77,7 @@ describe 'Select Core View', ->
 
     it 'tests choosing core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      atom.workspaceView.trigger 'spark-ide:select-core'
+      atom.workspaceView.trigger 'spark-dev:select-core'
       selectCoreView = sparkIde.selectCoreView
 
       waitsFor ->
@@ -93,8 +93,8 @@ describe 'Select Core View', ->
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('51ff6e065067545724680187', 'Online Core')
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
 
         jasmine.unspy atom.workspaceView, 'trigger'
         jasmine.unspy SettingsHelper, 'setCurrentCore'

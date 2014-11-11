@@ -8,7 +8,7 @@ serialport = null
 module.exports =
 class SerialMonitorView extends View
   @content: ->
-    @div id: 'spark-ide-serial-monitor', class: 'panel', =>
+    @div id: 'spark-dev-serial-monitor', class: 'panel', =>
       @div class: 'panel-heading', =>
         @select outlet: 'portsSelect', mousedown: 'refreshSerialPorts', change: 'portSelected', =>
           @option value: '', 'No port selected'
@@ -63,7 +63,7 @@ class SerialMonitorView extends View
     @emitter.on 'did-change-modified', callback
 
   getUri: ->
-    'spark-ide://editor/serial-monitor'
+    'spark-dev://editor/serial-monitor'
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()

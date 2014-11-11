@@ -1,9 +1,9 @@
 '.platform-darwin':
-  'cmd-u': 'spark-ide:flash-cloud'
-  'cmd-r': 'spark-ide:compile-cloud'
-  'cmd-shift-m': 'spark-ide:show-serial-monitor'
+  'cmd-u': 'spark-dev:flash-cloud'
+  'cmd-r': 'spark-dev:compile-cloud'
+  'cmd-shift-m': 'spark-dev:show-serial-monitor'
 
 '.platform-win32, .platform-linux':
-  'ctrl-u': 'spark-ide:flash-cloud'
-  'ctrl-r': 'spark-ide:compile-cloud'
-  'ctrl-shift-m': 'spark-ide:show-serial-monitor'
+  'ctrl-u': 'spark-dev:flash-cloud'
+  'ctrl-r': 'spark-dev:compile-cloud'
+  'ctrl-shift-m': 'spark-dev:show-serial-monitor'

@@ -20,7 +20,7 @@ class SelectWifiView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-wifi-view'
+    @prop 'id', 'spark-dev-select-wifi-view'
 
     @port = null
 
@@ -61,9 +61,9 @@ class SelectWifiView extends SelectListView
     @cancel()
 
     if item.security
-      atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port, item.ssid, item.security]
+      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port, item.ssid, item.security]
     else
-      atom.workspaceView.trigger 'spark-ide:enter-wifi-credentials', [@port]
+      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port]
 
   getPlatform: ->
     process.platform

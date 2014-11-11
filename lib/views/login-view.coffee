@@ -10,7 +10,7 @@ validator = null
 module.exports =
 class LoginView extends View
   @content: ->
-    @div id: 'spark-ide-login-view', class: 'overlay from-top', =>
+    @div id: 'spark-dev-login-view', class: 'overlay from-top', =>
       @div class: 'block', =>
         @span 'Log in to Spark Cloud '
         @span class: 'text-subtle', =>
@@ -35,7 +35,7 @@ class LoginView extends View
 
     @subscriber = new Subscriber()
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      atom.workspaceView.trigger 'spark-ide:cancel-login'
+      atom.workspaceView.trigger 'spark-dev:cancel-login'
 
     @loginPromise = null
 
@@ -150,13 +150,13 @@ class LoginView extends View
       if !@loginPromise
         return
       SettingsHelper.setCredentials @email, e.access_token
-      atom.workspaceView.trigger 'spark-ide:update-login-status'
+      atom.workspaceView.trigger 'spark-dev:update-login-status'
       @loginPromise = null
 
       @cancel()
 
     , (e) =>
-      @spinner.addClass 'hidden'      
+      @spinner.addClass 'hidden'
       if !@loginPromise
         return
       @unlockUi()
@@ -171,4 +171,4 @@ class LoginView extends View
   # Logout
   logout: =>
     SettingsHelper.clearCredentials()
-    atom.workspaceView.trigger 'spark-ide:update-login-status'
+    atom.workspaceView.trigger 'spark-dev:update-login-status'

@@ -13,7 +13,7 @@ class ClaimCoreView extends Dialog
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', 'spark-ide-claim-core-view'
+    @prop 'id', 'spark-dev-claim-core-view'
 
   # When deviceID is submited
   onConfirm: (deviceID) ->
@@ -46,8 +46,8 @@ class ClaimCoreView extends Dialog
         SettingsHelper.setCurrentCore e.id, e.id
 
         # Refresh UI
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
-        atom.workspaceView.trigger 'spark-ide:update-menu'
+        atom.workspaceView.trigger 'spark-dev:update-core-status'
+        atom.workspaceView.trigger 'spark-dev:update-menu'
 
         @claimPromise = null
         @close()

@@ -11,14 +11,14 @@ describe 'Login View', ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.initView 'login'
       loginView = sparkIde.loginView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     waitsForPromise ->
       activationPromise
@@ -26,36 +26,36 @@ describe 'Login View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-    atom.workspaceView.trigger 'spark-ide:cancel-login'
+    atom.workspaceView.trigger 'spark-dev:cancel-login'
 
   describe 'when Login View is activated', ->
     beforeEach ->
-      atom.workspaceView.trigger 'spark-ide:login'
+      atom.workspaceView.trigger 'spark-dev:login'
 
     it 'tests hiding and showing', ->
       # beforeEach should show the dialog
-      expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-login-view')).toExist()
 
       # Test core:cancel
-      expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-login-view')).toExist()
       atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
-      atom.workspaceView.trigger 'spark-ide:login'
-      expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-login-view')).not.toExist()
+      atom.workspaceView.trigger 'spark-dev:login'
+      expect(atom.workspaceView.find('#spark-dev-login-view')).toExist()
 
       # Test core:close
       atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
-      atom.workspaceView.trigger 'spark-ide:login'
-      expect(atom.workspaceView.find('#spark-ide-login-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-login-view')).not.toExist()
+      atom.workspaceView.trigger 'spark-dev:login'
+      expect(atom.workspaceView.find('#spark-dev-login-view')).toExist()
 
-      # Test spark-ide:cancelLogin
-      atom.workspaceView.trigger 'spark-ide:cancel-login'
-      expect(atom.workspaceView.find('#spark-ide-login-view')).not.toExist()
+      # Test spark-dev:cancelLogin
+      atom.workspaceView.trigger 'spark-dev:cancel-login'
+      expect(atom.workspaceView.find('#spark-dev-login-view')).not.toExist()
 
 
     it 'tests empty values', ->
-      context = atom.workspaceView.find('#spark-ide-login-view')
+      context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
 
@@ -66,7 +66,7 @@ describe 'Login View', ->
 
 
     it 'tests invalid values', ->
-      context = atom.workspaceView.find('#spark-ide-login-view')
+      context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
 
@@ -81,7 +81,7 @@ describe 'Login View', ->
     it 'tests valid values', ->
       SparkStub.stubSuccess 'login'
 
-      context = atom.workspaceView.find('#spark-ide-login-view')
+      context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
       expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
       expect(loginView.spinner.hasClass('hidden')).toBe(true)
@@ -96,7 +96,7 @@ describe 'Login View', ->
         !loginView.loginPromise
 
       runs ->
-        context = atom.workspaceView.find('#spark-ide-login-view')
+        context = atom.workspaceView.find('#spark-dev-login-view')
         expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
         expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
         expect(loginView.spinner.hasClass('hidden')).toBe(true)
@@ -110,7 +110,7 @@ describe 'Login View', ->
     it 'tests wrong credentials', ->
       SparkStub.stubFail 'login'
 
-      context = atom.workspaceView.find('#spark-ide-login-view')
+      context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.text-error').css 'display').toEqual('none')
 
       loginView.emailEditor.getEditor().setText 'foo@bar.baz'
@@ -121,7 +121,7 @@ describe 'Login View', ->
         !loginView.loginPromise
 
       runs ->
-        context = atom.workspaceView.find('#spark-ide-login-view')
+        context = atom.workspaceView.find('#spark-dev-login-view')
         expect(context.find('.text-error').css 'display').toEqual('block')
         expect(context.find('.text-error').text()).toEqual('Unknown user')
         expect(loginView.spinner.hasClass('hidden')).toBe(true)
@@ -130,7 +130,7 @@ describe 'Login View', ->
     it 'tests logging out', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      atom.workspaceView.trigger 'spark-ide:logout'
+      atom.workspaceView.trigger 'spark-dev:logout'
 
       expect(SettingsHelper.get('username')).toEqual(null)
       expect(SettingsHelper.get('access_token')).toEqual(null)

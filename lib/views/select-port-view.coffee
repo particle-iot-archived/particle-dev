@@ -17,7 +17,7 @@ class SelectPortView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-port-view'
+    @prop 'id', 'spark-dev-select-port-view'
     @listPortsPromise = null
 
     @delegate = delegate

@@ -5,12 +5,12 @@
  	<string>atom.icns</string>
  	<key>CFBundleIdentifier</key>
 -	<string>com.github.atom</string>
-+	<string>com.spark.ide</string>
++	<string>com.spark.dev</string>
  	<key>CFBundleInfoDictionaryVersion</key>
  	<string>6.0</string>
  	<key>CFBundleName</key>
 -	<string>Atom</string>
-+	<string>Spark IDE</string>
++	<string>Spark Dev</string>
  	<key>CFBundlePackageType</key>
  	<string>APPL</string>
  	<key>CFBundleDevelopmentRegion</key>

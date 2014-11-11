@@ -8,8 +8,8 @@ pushd %BUILD%\..\..
 set ROOT=%CD%
 popd
 set TARGET=%ROOT%\dist\windows
-set APP_NAME=Spark IDE
-set SPARK_IDE_VERSION=0.0.15
+set APP_NAME=Spark Dev
+set SPARK_DEV_VERSION=0.0.15
 set ATOM_NODE_VERSION=0.19.1
 
 call :GETTEMPDIR
@@ -46,30 +46,30 @@ ${COMMON}/append-package ${TEMP_DIR}/package.json release-notes
 echo "Bootstrap Atom"
 call script/bootstrap
 
-echo "Installing Spark IDE package"
-git clone git@github.com:spark/spark-ide.git node_modules\spark-ide
-cd node_modules\spark-ide
-git checkout tags/%SPARK_IDE_VERSION%
+echo "Installing Spark Dev package"
+git clone git@github.com:spark/spark-dev.git node_modules\spark-dev
+cd node_modules\spark-dev
+git checkout tags/%SPARK_DEV_VERSION%
 node -e "console.log('-> Atom ', process.env.ATOM_NODE_VERSION);"
 call ..\..\apm\node_modules\atom-package-manager\bin\apm.cmd install . --verbose
 ls node_modules\serialport\build\serialport\v1.4.6\Release\
 
 cd ..\..
-node %COMMON%\append-package %TEMP_DIR%\package.json spark-ide "%SPARK_IDE_VERSION%"
+node %COMMON%\append-package %TEMP_DIR%\package.json spark-dev "%SPARK_DEV_VERSION%"
 
-echo "Installing Spark IDE welcome package"
-git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
-node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark-ide "0.19.0"
+echo "Installing Spark welcome package"
+git clone git@github.com:spark/welcome-spark.git node_modules/welcome-spark
+node %COMMON%\append-package %TEMP_DIR%\package.json welcome-spark "0.19.0"
 
-echo "Installing Spark IDE feedback package"
-git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
-node %COMMON%\append-package %TEMP_DIR%\package.json feedback-spark-ide "0.34.0"
+echo "Installing Spark feedback package"
+git clone git@github.com:spark/feedback-spark.git node_modules/feedback-spark
+node %COMMON%\append-package %TEMP_DIR%\package.json feedback-spark "0.34.0"
 
-echo "Installing Spark IDE release-notes-spark package"
+echo "Installing Spark release-notes-spark package"
 git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
 node %COMMON%\append-package %TEMP_DIR%\package.json release-notes-spark "0.36.0"
 
-echo "Installing Spark IDE language-spark package"
+echo "Installing Spark language-spark package"
 git clone git@github.com:spark/language-spark.git node_modules/language-spark
 node %COMMON%\append-package %TEMP_DIR%\package.json language-spark "0.3.0"
 
@@ -92,13 +92,13 @@ copy %COMMON%\atom.png %TEMP_DIR%\node_modules\settings-view\images\atom.png
 :: Exception Reporting package
 patch %TEMP_DIR%\node_modules\exception-reporting\lib\reporter.coffee < %COMMON%\reporter.patch
 :: App version
-node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_IDE_VERSION%
+node %COMMON%\set-version %TEMP_DIR%\package.json %SPARK_DEV_VERSION%
 
 echo "Building app"
 call build\node_modules\.bin\grunt --gruntfile build\Gruntfile.coffee --install-dir "%TARGET%\%APP_NAME%"
 
 echo "Building installer"
-makensis /DSOURCE="%TARGET%\%APP_NAME%" /DOUT_FILE="%TARGET%\InstallSparkIDE.exe" %BUILD%\installer.nsi
+makensis /DSOURCE="%TARGET%\%APP_NAME%" /DOUT_FILE="%TARGET%\InstallSparkDev.exe" %BUILD%\installer.nsi
 
 goto :EOF
 

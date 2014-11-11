@@ -12,13 +12,13 @@ describe 'Rename Core View', ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
 
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.renameCoreView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     waitsForPromise ->
       activationPromise
@@ -36,7 +36,7 @@ describe 'Rename Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
-      atom.workspaceView.trigger 'spark-ide:rename-core'
+      atom.workspaceView.trigger 'spark-dev:rename-core'
       renameCoreView = sparkIde.renameCoreView
 
       editor = renameCoreView.miniEditor.getEditor()
@@ -44,9 +44,9 @@ describe 'Rename Core View', ->
 
       editor.setText ''
       spyOn renameCoreView, 'close'
-      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(atom.workspaceView.find('#spark-dev-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
       renameCoreView.trigger 'core:confirm'
-      expect(atom.workspaceView.find('#spark-ide-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(atom.workspaceView.find('#spark-dev-rename-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(renameCoreView.close).not.toHaveBeenCalled()
 
       atom.workspaceView.trigger 'core:cancel'
@@ -54,7 +54,7 @@ describe 'Rename Core View', ->
 
     it 'renames the core', ->
       SparkStub.stubSuccess 'renameCore'
-      atom.workspaceView.trigger 'spark-ide:rename-core'
+      atom.workspaceView.trigger 'spark-dev:rename-core'
       renameCoreView = sparkIde.renameCoreView
 
       editor = renameCoreView.miniEditor.getEditor()
@@ -71,8 +71,8 @@ describe 'Rename Core View', ->
         expect(SettingsHelper.get('current_core_name')).toBe('Bar')
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
         expect(renameCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy renameCoreView, 'close'

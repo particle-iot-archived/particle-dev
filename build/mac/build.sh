@@ -16,10 +16,10 @@ BUILD=$(cd "$(dirname "$0")"; pwd)
 COMMON=$(cd "$(dirname "$0")"; cd ../common; pwd)
 ROOT=$(cd "$(dirname "$0")"; cd ../..; pwd)
 TARGET="${ROOT}/dist/mac"
-APP_NAME="Spark IDE"
+APP_NAME="Spark Dev"
 TEMP_DIR=`mktemp -d tmp.XXXXXXXXXX`
 TEMP_DIR="${BUILD}/${TEMP_DIR}"
-SPARK_IDE_VERSION="0.0.15"
+SPARK_DEV_VERSION="0.0.15"
 ATOM_NODE_VERSION="0.19.1"
 
 if [ -d $TARGET ]; then rm -rf $TARGET ; fi
@@ -49,27 +49,27 @@ header "Bootstrap Atom"
 script/bootstrap
 
 header "Installing unpublished packages"
-subheader "spark-ide"
-git clone git@github.com:spark/spark-ide.git node_modules/spark-ide
-cd node_modules/spark-ide
-git checkout tags/${SPARK_IDE_VERSION}
+subheader "spark-dev"
+git clone git@github.com:spark/spark-dev.git node_modules/spark-dev
+cd node_modules/spark-dev
+git checkout tags/${SPARK_DEV_VERSION}
 export ATOM_NODE_VERSION
 ../../apm/node_modules/atom-package-manager/bin/apm install .
 ls -lha node_modules/serialport/build/serialport/v1.4.6/Release/
 cd ../..
-${COMMON}/append-package ${TEMP_DIR}/package.json spark-ide ${SPARK_IDE_VERSION}
+${COMMON}/append-package ${TEMP_DIR}/package.json spark-dev ${SPARK_DEV_VERSION}
 
-subheader "welcome-spark-ide"
-git clone git@github.com:spark/welcome-spark-ide.git node_modules/welcome-spark-ide
-${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark-ide "0.19.0"
+subheader "welcome-spark"
+git clone git@github.com:spark/welcome-spark.git node_modules/welcome-spark
+${COMMON}/append-package ${TEMP_DIR}/package.json welcome-spark "0.19.0"
 
-subheader "feedback-spark-ide"
-git clone git@github.com:spark/feedback-spark-ide.git node_modules/feedback-spark-ide
-${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.34.0"
+subheader "feedback-spark"
+git clone git@github.com:spark/feedback-spark.git node_modules/feedback-spark
+${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark "0.34.0"
 
 subheader "release-notes-spark"
 git clone git@github.com:spark/release-notes-spark.git node_modules/release-notes-spark
-${COMMON}/append-package ${TEMP_DIR}/package.json feedback-spark-ide "0.36.0"
+${COMMON}/append-package ${TEMP_DIR}/package.json release-notes-spark "0.36.0"
 
 subheader "language-spark"
 git clone git@github.com:spark/language-spark.git node_modules/language-spark
@@ -95,7 +95,7 @@ cp ${COMMON}/atom.png ${TEMP_DIR}/node_modules/settings-view/images/atom.png
 subheader "Exception Reporting package"
 patch ${TEMP_DIR}/node_modules/exception-reporting/lib/reporter.coffee < ${COMMON}/reporter.patch
 subheader "App version"
-${COMMON}/set-version ${TEMP_DIR}/package.json ${SPARK_IDE_VERSION}
+${COMMON}/set-version ${TEMP_DIR}/package.json ${SPARK_DEV_VERSION}
 
 header "Building app"
 build/node_modules/.bin/grunt --gruntfile build/Gruntfile.coffee --install-dir "${TARGET}/${APP_NAME}.app" download-atom-shell build set-version codesign install
@@ -108,7 +108,7 @@ ditto -ck --rsrc --sequesterRsrc --keepParent "${TARGET}" "${TARGET}/${APP_NAME}
 header "Build DMG"
 TEMPLATE="${HOME}/tmp/template.dmg"
 WC_DMG="${TARGET}/image.dmg"
-MASTER_DMG="${TARGET}/Spark IDE.dmg"
+MASTER_DMG="${TARGET}/Spark Dev.dmg"
 WC_DIR="${TARGET}/image"
 cp $TEMPLATE $WC_DMG
 mkdir -p $WC_DIR

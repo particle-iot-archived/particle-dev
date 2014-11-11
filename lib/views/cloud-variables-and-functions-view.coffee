@@ -10,11 +10,11 @@ spark = null
 module.exports =
 class CloudVariablesAndFunctionsView extends View
   @content: ->
-    @div id: 'spark-ide-cloud-variables-and-functions', =>
-      @div id: 'spark-ide-cloud-variables', class: 'panel', =>
+    @div id: 'spark-dev-cloud-variables-and-functions', =>
+      @div id: 'spark-dev-cloud-variables', class: 'panel', =>
         @div class: 'panel-heading', 'Variables'
         @div class: 'panel-body padded', outlet: 'variables'
-      @div id: 'spark-ide-cloud-functions', class: 'panel', =>
+      @div id: 'spark-dev-cloud-functions', class: 'panel', =>
         @div class: 'panel-heading', 'Functions'
         @div class: 'panel-body padded', outlet: 'functions'
 
@@ -28,19 +28,19 @@ class CloudVariablesAndFunctionsView extends View
     @emitter = new Emitter
     @subscriber = new Subscriber()
     # Show some progress when core's status is downloaded
-    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:update-core-status', =>
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-dev:update-core-status', =>
       @variables.empty()
       @functions.empty()
       @addClass 'loading'
 
-    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:core-status-updated', =>
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-dev:core-status-updated', =>
       # Refresh UI and watchers when current core changes
       @listVariables()
       @listFunctions()
       @clearWatchers()
       @removeClass 'loading'
 
-    @subscriber.subscribeToCommand atom.workspaceView, 'spark-ide:logout', =>
+    @subscriber.subscribeToCommand atom.workspaceView, 'spark-dev:logout', =>
       # Clear watchers and hide when user logs out
       @clearWatchers()
       @close()
@@ -63,7 +63,7 @@ class CloudVariablesAndFunctionsView extends View
     @emitter.on 'did-change-modified', callback
 
   getUri: ->
-    'spark-ide://editor/cloud-variables-and-functions'
+    'spark-dev://editor/cloud-variables-and-functions'
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()
@@ -121,7 +121,7 @@ class CloudVariablesAndFunctionsView extends View
   refreshVariable: (variableName) ->
     dfd = whenjs.defer()
 
-    cell = @find('#spark-ide-cloud-variables [data-id=' + variableName + '] td:eq(2)')
+    cell = @find('#spark-dev-cloud-variables [data-id=' + variableName + '] td:eq(2)')
     cell.addClass 'loading'
     cell.text ''
     promise = spark.getVariable SettingsHelper.get('current_core'), variableName
@@ -141,7 +141,7 @@ class CloudVariablesAndFunctionsView extends View
 
   # Toggle watching variable
   toggleWatchVariable: (variableName) ->
-    row = @find('#spark-ide-cloud-variables [data-id=' + variableName + ']')
+    row = @find('#spark-dev-cloud-variables [data-id=' + variableName + ']')
     watchButton = row.find('td:eq(4) button')
     refreshButton = row.find('td:eq(3) button')
     valueCell = row.find('td:eq(2)')
@@ -206,7 +206,7 @@ class CloudVariablesAndFunctionsView extends View
   # Call function via cloud
   callFunction: (functionName) ->
     dfd = whenjs.defer()
-    row = @find('#spark-ide-cloud-functions [data-id=' + functionName + ']')
+    row = @find('#spark-dev-cloud-functions [data-id=' + functionName + ']')
     @setRowEnabled row, false
     row.find('.editor:eq(1)').data('view').setText ' '
     params = row.find('.editor:eq(0)').data('view').getText()

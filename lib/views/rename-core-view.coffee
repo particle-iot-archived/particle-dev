@@ -14,7 +14,7 @@ class RenameCoreView extends Dialog
       hideOnBlur: false
 
     @renamePromise = null
-    @prop 'id', 'spark-ide-rename-core-view'
+    @prop 'id', 'spark-dev-rename-core-view'
 
   onConfirm: (newName) ->
     SettingsHelper ?= require '../utils/settings-helper'
@@ -38,8 +38,8 @@ class RenameCoreView extends Dialog
 
         atom.workspaceView = workspace
         SettingsHelper.set 'current_core_name', newName
-        atom.workspaceView.trigger 'spark-ide:update-core-status'
-        atom.workspaceView.trigger 'spark-ide:update-menu'
+        atom.workspaceView.trigger 'spark-dev:update-core-status'
+        atom.workspaceView.trigger 'spark-dev:update-menu'
         @renamePromise = null
 
         @close()

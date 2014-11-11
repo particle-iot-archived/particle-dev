@@ -5,7 +5,7 @@
    # open.
    updateWindowTitle: =>
 -    appName = 'Atom'
-+    appName = 'Spark IDE'
++    appName = 'Spark Dev'
      if projectPath = atom.project?.getPaths()[0]
        if item = @getActivePaneItem()
          document.title = "#{item.getTitle?() ? 'untitled'} - #{projectPath} - #{appName}"

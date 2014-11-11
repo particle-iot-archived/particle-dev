@@ -9,7 +9,7 @@ describe 'Compile Errors View', ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.compileErrorsView = null
 
@@ -18,9 +18,9 @@ describe 'Compile Errors View', ->
 
   describe '', ->
     it 'tests showing without errors', ->
-      atom.workspaceView.trigger 'spark-ide:show-compile-errors'
+      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
       compileErrorsView = sparkIde.compileErrorsView
-      expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).toExist()
+      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
 
       expect(compileErrorsView.find('div.loading').css('display')).toEqual('block')
       expect(compileErrorsView.find('span.loading-message').text()).toEqual('There were no compile errors')
@@ -30,16 +30,16 @@ describe 'Compile Errors View', ->
 
     it 'tests hiding and showing', ->
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-ide:show-compile-errors'
-      expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).toExist()
+      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
       atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).not.toExist()
 
       # Test core:close
-      atom.workspaceView.trigger 'spark-ide:show-compile-errors'
-      expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).toExist()
+      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
       atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-ide-compile-errors-view')).not.toExist()
+      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).not.toExist()
 
     it 'tests loading and selecting items', ->
       SettingsHelper.set 'compile-status', {errors: [
@@ -55,7 +55,7 @@ describe 'Compile Errors View', ->
           col: 4
         }
       ]}
-      atom.workspaceView.trigger 'spark-ide:show-compile-errors'
+      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
       compileErrorsView = sparkIde.compileErrorsView
 
       errors = compileErrorsView.find('ol.list-group li')

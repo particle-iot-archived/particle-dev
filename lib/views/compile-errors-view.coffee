@@ -20,7 +20,7 @@ class CompileErrorsView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-compile-errors-view'
+    @prop 'id', 'spark-dev-compile-errors-view'
 
   # Parse gcc errors into array
   @parseErrors: (raw) ->

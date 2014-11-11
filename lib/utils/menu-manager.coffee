@@ -18,59 +18,59 @@ module.exports =
 
       ideMenu.submenu = [{
         label: 'Log out ' + username,
-        command: 'spark-ide:logout'
+        command: 'spark-dev:logout'
       },{
         type: 'separator'
       },{
         label: 'Select Core...',
-        command: 'spark-ide:select-core'
+        command: 'spark-dev:select-core'
       }]
 
       if SettingsHelper.hasCurrentCore()
         # Menu items depending on current core
         ideMenu.submenu = ideMenu.submenu.concat [{
           label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
-          command: 'spark-ide:rename-core'
+          command: 'spark-dev:rename-core'
         },{
           label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
-          command: 'spark-ide:remove-core'
+          command: 'spark-dev:remove-core'
         },{
           label: 'Show cloud variables and functions',
-          command: 'spark-ide:show-cloud-variables-and-functions'
+          command: 'spark-dev:show-cloud-variables-and-functions'
         },{
           label: 'Flash ' + SettingsHelper.get('current_core_name') + ' via the cloud',
-          command: 'spark-ide:flash-cloud'
+          command: 'spark-dev:flash-cloud'
         }]
 
       ideMenu.submenu = ideMenu.submenu.concat [{
         type: 'separator'
       },{
         label: 'Claim Core...',
-        command: 'spark-ide:claim-core'
+        command: 'spark-dev:claim-core'
       },{
         label: 'Identify Core...',
-        command: 'spark-ide:identify-core'
+        command: 'spark-dev:identify-core'
       },{
         label: 'Setup Core\'s WiFi...',
-        command: 'spark-ide:setup-wifi'
+        command: 'spark-dev:setup-wifi'
       },{
         type: 'separator'
       },{
         label: 'Compile in the cloud',
-        command: 'spark-ide:compile-cloud'
+        command: 'spark-dev:compile-cloud'
       }]
     else
       # Logged out user can only log in
       ideMenu.submenu = [{
         label: 'Log in to Spark Cloud...',
-        command: 'spark-ide:login'
+        command: 'spark-dev:login'
       }]
 
     ideMenu.submenu = ideMenu.submenu.concat [{
       type: 'separator'
     },{
       label: 'Show serial monitor',
-      command: 'spark-ide:show-serial-monitor'
+      command: 'spark-dev:show-serial-monitor'
     }]
 
     # Refresh UI

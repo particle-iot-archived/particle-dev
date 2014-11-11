@@ -10,7 +10,7 @@ SerialHelper = null
 module.exports =
 class WifiCredentialsView extends View
   @content: ->
-    @div id: 'spark-ide-wifi-credentials-view', class: 'overlay from-top', =>
+    @div id: 'spark-dev-wifi-credentials-view', class: 'overlay from-top', =>
       @div class: 'block', =>
         @span 'Enter WiFi Credentials '
         @span class: 'text-subtle', =>

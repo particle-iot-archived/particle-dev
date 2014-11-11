@@ -14,13 +14,13 @@ describe 'Serial Monitor View', ->
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
 
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.serialMonitorView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     waitsForPromise ->
       activationPromise
@@ -34,7 +34,7 @@ describe 'Serial Monitor View', ->
     afterEach ->
 
     it 'checks hiding and showing', ->
-      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
@@ -42,12 +42,12 @@ describe 'Serial Monitor View', ->
       runs ->
         @serialMonitorView = sparkIde.serialMonitorView
 
-        expect(atom.workspaceView.find('#spark-ide-serial-monitor')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-serial-monitor')).toExist()
         @serialMonitorView.close()
-        expect(atom.workspaceView.find('#spark-ide-serial-monitor')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-serial-monitor')).not.toExist()
 
     it 'checks listing ports and baudrates', ->
-      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
@@ -77,7 +77,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.close()
 
     it 'checks blocking UI on connection', ->
-      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
@@ -107,7 +107,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.close()
 
     it 'checks serial communication', ->
-      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
@@ -139,7 +139,7 @@ describe 'Serial Monitor View', ->
       SettingsHelper.set 'serial_port', null
       SettingsHelper.set 'serial_baudrate', null
 
-      atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
@@ -156,7 +156,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.close()
         sparkIde.serialMonitorView == null
 
-        atom.workspaceView.trigger 'spark-ide:show-serial-monitor'
+        atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
 
       waitsFor ->
         !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()

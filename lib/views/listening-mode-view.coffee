@@ -8,7 +8,7 @@ class ListeningModeView extends View
     @div class: 'overlay from-top', =>
       @h1 'Waiting for core...'
       @p =>
-        @img src: 'atom://spark-ide/images/listening.gif'
+        @img src: 'atom://spark-dev/images/listening.gif'
       @p 'Check if your core is connected via USB and it\'s in listening mode (LED blinking blue).'
       @div class: 'block', =>
         @button click: 'cancel', class: 'btn', 'Cancel'
@@ -17,7 +17,7 @@ class ListeningModeView extends View
     {Subscriber} = require 'emissary'
     SerialHelper = require '../utils/serial-helper'
 
-    @prop 'id', 'spark-ide-listening-mode-view'
+    @prop 'id', 'spark-dev-listening-mode-view'
 
     # Interval for automatic dialog dismissal
     @interval = setInterval =>

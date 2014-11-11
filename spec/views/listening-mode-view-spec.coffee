@@ -12,13 +12,13 @@ describe 'Listening Mode View', ->
 
   beforeEach ->
     atom.workspaceView = new WorkspaceView
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.listeningModeView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
@@ -35,43 +35,43 @@ describe 'Listening Mode View', ->
   describe '', ->
     it 'tests hiding and showing', ->
       # Test core:cancel
-      atom.workspaceView.trigger 'spark-ide:identify-core'
+      atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).toExist()
         atom.workspaceView.trigger 'core:cancel'
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).not.toExist()
 
         # Test core:close
-        atom.workspaceView.trigger 'spark-ide:identify-core'
+        atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).toExist()
         atom.workspaceView.trigger 'core:close'
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).not.toExist()
 
         # Test cancel button
-        atom.workspaceView.trigger 'spark-ide:identify-core'
+        atom.workspaceView.trigger 'spark-dev:identify-core'
 
       waitsFor ->
         !sparkIde.listPortsPromise
 
       runs ->
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).toExist()
         listeningModeView = sparkIde.listeningModeView
         listeningModeView.find('button').click()
-        expect(atom.workspaceView.find('#spark-ide-listening-mode-view')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-listening-mode-view')).not.toExist()
 
 
     it 'tests interval for dialog dismissal', ->
       jasmine.Clock.useMock()
-      atom.workspaceView.trigger 'spark-ide:identify-core'
+      atom.workspaceView.trigger 'spark-dev:identify-core'
       spyOn SerialHelper, 'listPorts'
 
       waitsFor ->

@@ -12,13 +12,13 @@ describe 'Claim Core View', ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
 
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.claimCoreView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     waitsForPromise ->
       activationPromise
@@ -36,7 +36,7 @@ describe 'Claim Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
-      atom.workspaceView.trigger 'spark-ide:claim-core'
+      atom.workspaceView.trigger 'spark-dev:claim-core'
       claimCoreView = sparkIde.claimCoreView
 
       editor = claimCoreView.miniEditor.getEditor()
@@ -44,9 +44,9 @@ describe 'Claim Core View', ->
       editor.setText ''
       spyOn claimCoreView, 'close'
 
-      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
+      expect(atom.workspaceView.find('#spark-dev-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
       claimCoreView.trigger 'core:confirm'
-      expect(atom.workspaceView.find('#spark-ide-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(atom.workspaceView.find('#spark-dev-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(claimCoreView.close).not.toHaveBeenCalled()
 
       atom.workspaceView.trigger 'core:cancel'
@@ -55,7 +55,7 @@ describe 'Claim Core View', ->
 
     it 'claims the core', ->
       SparkStub.stubSuccess 'claimCore'
-      atom.workspaceView.trigger 'spark-ide:claim-core'
+      atom.workspaceView.trigger 'spark-dev:claim-core'
       claimCoreView = sparkIde.claimCoreView
 
       editor = claimCoreView.miniEditor.getEditor()
@@ -73,8 +73,8 @@ describe 'Claim Core View', ->
         expect(SettingsHelper.get('current_core_name')).toBe('0123456789abcdef0123456789abcdef')
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-ide:update-menu')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
+        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
         expect(claimCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy claimCoreView, 'close'

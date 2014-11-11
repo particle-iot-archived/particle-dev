@@ -22,7 +22,7 @@ class SelectFirmwareView extends SelectListView
     @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
 
     @addClass 'overlay from-top'
-    @prop 'id', 'spark-ide-select-firmware-view'
+    @prop 'id', 'spark-dev-select-firmware-view'
 
   destroy: ->
     @remove()
@@ -44,5 +44,5 @@ class SelectFirmwareView extends SelectListView
         @div class: 'secondary-line', stats.ctime.toLocaleString()
 
   confirmed: (item) ->
-    atom.workspaceView.trigger 'spark-ide:flash-cloud', [item]
+    atom.workspaceView.trigger 'spark-dev:flash-cloud', [item]
     @cancel()

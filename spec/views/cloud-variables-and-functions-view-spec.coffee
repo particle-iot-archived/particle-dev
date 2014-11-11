@@ -12,13 +12,13 @@ describe 'Cloud Variables and Functions View', ->
   beforeEach ->
     atom.workspaceView = new WorkspaceView
 
-    activationPromise = atom.packages.activatePackage('spark-ide').then ({mainModule}) ->
+    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
       sparkIde.cloudVariablesAndFunctionsView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-ide-test'
+    SettingsHelper.setProfile 'spark-dev-test'
 
     waitsForPromise ->
       activationPromise
@@ -42,7 +42,7 @@ describe 'Cloud Variables and Functions View', ->
     it 'checks hiding and showing', ->
       SparkStub.stubSuccess 'getVariable'
       sparkIde.cloudVariablesAndFunctionsView = null
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
@@ -50,13 +50,13 @@ describe 'Cloud Variables and Functions View', ->
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
-        expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).toExist()
+        expect(atom.workspaceView.find('#spark-dev-cloud-variables-and-functions')).toExist()
         @cloudVariablesAndFunctionsView.close()
-        expect(atom.workspaceView.find('#spark-ide-cloud-variables-and-functions')).not.toExist()
+        expect(atom.workspaceView.find('#spark-dev-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
       SparkStub.stubNoResolve 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView
@@ -70,7 +70,7 @@ describe 'Cloud Variables and Functions View', ->
         @cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
-        body = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body')
+        body = @cloudVariablesAndFunctionsView.find('#spark-dev-cloud-variables > .panel-body')
 
         expect(body.find('table')).toExist()
 
@@ -102,14 +102,14 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'tests refreshing', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
 
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
-        @body = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body')
+        @body = @cloudVariablesAndFunctionsView.find('#spark-dev-cloud-variables > .panel-body')
 
       waitsFor ->
         @body.find('table > tbody > tr:eq(0) > td:eq(2)').text() == '1'
@@ -119,7 +119,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks event hooks', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
@@ -127,11 +127,11 @@ describe 'Cloud Variables and Functions View', ->
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
-        # Tests spark-ide:update-core-status
+        # Tests spark-dev:update-core-status
         spyOn @cloudVariablesAndFunctionsView, 'listVariables'
         spyOn @cloudVariablesAndFunctionsView, 'listFunctions'
         spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
-        atom.workspaceView.trigger 'spark-ide:core-status-updated'
+        atom.workspaceView.trigger 'spark-dev:core-status-updated'
         expect(@cloudVariablesAndFunctionsView.listVariables).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.listFunctions).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()
@@ -139,11 +139,11 @@ describe 'Cloud Variables and Functions View', ->
         jasmine.unspy @cloudVariablesAndFunctionsView, 'listFunctions'
         jasmine.unspy @cloudVariablesAndFunctionsView, 'clearWatchers'
 
-        # Tests spark-ide:spark-ide:logout
+        # Tests spark-dev:logout
         SettingsHelper.clearCredentials()
         spyOn @cloudVariablesAndFunctionsView, 'close'
         spyOn @cloudVariablesAndFunctionsView, 'clearWatchers'
-        atom.workspaceView.trigger 'spark-ide:logout'
+        atom.workspaceView.trigger 'spark-dev:logout'
         expect(@cloudVariablesAndFunctionsView.close).toHaveBeenCalled()
         expect(@cloudVariablesAndFunctionsView.clearWatchers).toHaveBeenCalled()
         jasmine.unspy @cloudVariablesAndFunctionsView, 'close'
@@ -152,7 +152,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'check watching variable', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
@@ -160,7 +160,7 @@ describe 'Cloud Variables and Functions View', ->
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
 
-        row = @cloudVariablesAndFunctionsView.find('#spark-ide-cloud-variables > .panel-body table > tbody > tr:eq(0)')
+        row = @cloudVariablesAndFunctionsView.find('#spark-dev-cloud-variables > .panel-body table > tbody > tr:eq(0)')
 
         watchButton = row.find('td:eq(4) > button')
         refreshButton = row.find('td:eq(3) > button')
@@ -206,7 +206,7 @@ describe 'Cloud Variables and Functions View', ->
 
     it 'checks clearing watchers', ->
       SparkStub.stubSuccess 'getVariable'
-      atom.workspaceView.trigger 'spark-ide:show-cloud-variables-and-functions'
+      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
         !!sparkIde.cloudVariablesAndFunctionsView && sparkIde.cloudVariablesAndFunctionsView.hasParent()
