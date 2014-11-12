@@ -1,6 +1,6 @@
 # Spark Dev
 
-Spark Dev is a professional, open source, hackable IDE, designed for use with the Spark Core and Photon.
+Spark Dev is a professional, open source, hackable IDE, designed for use with the Spark devices.
 
 [![Build Status](https://magnum.travis-ci.com/spark/spark-dev.svg?token=M4rP8W5QPGszZyem6TGE&branch=master)](https://magnum.travis-ci.com/spark/spark-dev)
 
