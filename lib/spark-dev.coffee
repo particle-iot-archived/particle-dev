@@ -350,9 +350,10 @@ module.exports =
     utilities ?= require './vendor/utilities'
 
     rootPath = atom.project.getPaths()[0]
-    files = fs.listSync(rootPath)
+    files = fs.listTreeSync(rootPath)
     files = files.filter (file) ->
-      return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions)
+      return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions) &&
+              !fs.isDirectorySync(file)
 
     process.chdir rootPath
     files = (path.relative(rootPath, file) for file in files)

@@ -251,7 +251,7 @@ describe 'Main Tests', ->
 
       expect(spark.compileCode).toHaveBeenCalled()
 
-      expectedFiles = ['foo.ino', 'lib.cpp', 'lib.h']
+      expectedFiles = ['foo.ino', 'inner/bar.cpp', 'lib.cpp', 'lib.h']
 
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
