@@ -120,7 +120,7 @@ describe 'Status Bar Tests', ->
         SettingsHelper.clearCurrentCore()
         SettingsHelper.clearCredentials()
 
-    fit 'checks compile status', ->
+    it 'checks compile status', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
       statusBarView = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view').view()
