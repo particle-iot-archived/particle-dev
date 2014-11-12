@@ -164,6 +164,10 @@ class StatusBarView extends View
         else
           subElement.text(compileStatus.errors.length + ' errors')
         subElement.show()
+      else if !!compileStatus.error
+        subElement = statusElement.find('#spark-compile-failed')
+        subElement.text(compileStatus.error)
+        subElement.show()
       else
         statusElement.find('#spark-compile-success')
                      .text('Success! Firmware saved to ' + compileStatus.filename)

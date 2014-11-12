@@ -382,9 +382,15 @@ module.exports =
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
-        @SettingsHelper.set 'compile-status', {errors: @CompileErrorsView.parseErrors(e.errors[0])}
-        atom.workspaceView.trigger 'spark-dev:update-compile-status'
-        atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+        errors = @CompileErrorsView.parseErrors(e.errors[0])
+
+        if errors.length == 0
+          @SettingsHelper.set 'compile-status', {error: e.output}
+        else
+          @SettingsHelper.set 'compile-status', {errors: errors}
+          atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+
+        atom.workspaceView.trigger 'spark-dev:update-compile-status'        
         @compileCloudPromise = null
     , (e) =>
       console.error e

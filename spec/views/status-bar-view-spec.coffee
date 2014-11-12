@@ -120,7 +120,7 @@ describe 'Status Bar Tests', ->
         SettingsHelper.clearCurrentCore()
         SettingsHelper.clearCredentials()
 
-    it 'checks compile status', ->
+    fit 'checks compile status', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = atom.workspaceView.statusBar.find('#spark-compile-status')
       statusBarView = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view').view()
@@ -145,6 +145,15 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-failed').css('display')).not.toBe('none')
       expect(statusBarItem.find('#spark-compile-success').css('display')).toBe('none')
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('One error')
+
+      # Test error
+      SettingsHelper.set 'compile-status', {error:'Foo'}
+      sparkIde.statusView.updateCompileStatus()
+      expect(statusBarItem.hasClass('hidden')).toBe(false)
+      expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
+      expect(statusBarItem.find('#spark-compile-failed').css('display')).not.toBe('none')
+      expect(statusBarItem.find('#spark-compile-success').css('display')).toBe('none')
+      expect(statusBarItem.find('#spark-compile-failed').text()).toBe('Foo')
 
       # Test multiple errors
       SettingsHelper.set 'compile-status', {errors:[1,2]}
