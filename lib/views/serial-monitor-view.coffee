@@ -107,7 +107,7 @@ class SerialMonitorView extends View
       @connect()
 
   isPortOpen: ->
-    @port.fd && parseInt(@port.fd) >= 0
+    @port?.fd && parseInt(@port.fd) >= 0
 
   connect: ->
     @portsSelect.attr 'disabled', 'disabled'
