@@ -247,22 +247,22 @@ url = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-dev:login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@login</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:logout'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@logout</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:select-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@selectCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:rename-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@renameCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:remove-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@removeCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:claim-core'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@claimCore</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:identify-core'</span>, <span class="hljs-function"><span class="hljs-params">(event, port)</span> =&gt;</span> <span class="hljs-property">@identifyCore</span>(port)
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-dev:login'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@login</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:logout'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@logout</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:select-device'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@selectCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:rename-device'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@renameCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:remove-device'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@removeCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:claim-device'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@claimCore</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:identify-device'</span>, <span class="hljs-function"><span class="hljs-params">(event, port)</span> =&gt;</span> <span class="hljs-property">@identifyCore</span>(port)
     atom.workspaceView.command <span class="hljs-string">'spark-dev:compile-cloud'</span>, <span class="hljs-function"><span class="hljs-params">(event, thenFlash)</span> =&gt;</span> <span class="hljs-property">@compileCloud</span>(thenFlash)
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-compile-errors'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@showCompileErrors</span>()
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-cloud-variables-and-functions'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@showCloudVariablesAndFunctions</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-compile-errors'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@showCompileErrors</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-cloud-variables-and-functions'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@showCloudVariablesAndFunctions</span>()
     atom.workspaceView.command <span class="hljs-string">'spark-dev:flash-cloud'</span>, <span class="hljs-function"><span class="hljs-params">(event, firmware)</span> =&gt;</span> <span class="hljs-property">@flashCloud</span>(firmware)
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-serial-monitor'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@showSerialMonitor</span>()
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:show-serial-monitor'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@showSerialMonitor</span>()
     atom.workspaceView.command <span class="hljs-string">'spark-dev:setup-wifi'</span>, <span class="hljs-function"><span class="hljs-params">(event, port)</span> =&gt;</span> <span class="hljs-property">@setupWifi</span>(port)
     atom.workspaceView.command <span class="hljs-string">'spark-dev:enter-wifi-credentials'</span>, <span class="hljs-function"><span class="hljs-params">(event, port, ssid, security)</span> =&gt;</span> <span class="hljs-property">@enterWifiCredentials</span>(port, ssid, security)
 
-    atom.workspaceView.command <span class="hljs-string">'spark-dev:update-menu'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@MenuManager</span>.update()</pre></div></div>
+    atom.workspaceView.command <span class="hljs-string">'spark-dev:update-menu'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@MenuManager</span>.update()</pre></div></div>
             
         </li>
         
@@ -280,7 +280,7 @@ url = <span class="hljs-literal">null</span>
             <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@MenuManager</span>.update()
 
     url = <span class="hljs-built_in">require</span> <span class="hljs-string">'url'</span>
-    atom.workspace.addOpener <span class="hljs-function"><span class="hljs-params">(uriToOpen)</span> =&gt;</span>
+    atom.workspace.addOpener (uriToOpen) =&gt;
       <span class="hljs-keyword">try</span>
         {protocol, host, pathname} = url.parse(uriToOpen)
       <span class="hljs-keyword">catch</span> error
@@ -305,7 +305,7 @@ url = <span class="hljs-literal">null</span>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">try</span>
       atom.packages.activatePackage(<span class="hljs-string">'toolbar'</span>)
-        .<span class="hljs-keyword">then</span> <span class="hljs-function"><span class="hljs-params">(pkg)</span> =&gt;</span>
+        .<span class="hljs-keyword">then</span> (pkg) =&gt;
           <span class="hljs-property">@toolbar</span> = pkg.mainModule
           <span class="hljs-property">@toolbar</span>.appendSpacer()
           <span class="hljs-property">@flashButton</span> = <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'flash'</span>, <span class="hljs-string">'spark-dev:flash-cloud'</span>, <span class="hljs-string">'Compile and upload code using cloud'</span>, <span class="hljs-string">'ion'</span>
@@ -313,19 +313,19 @@ url = <span class="hljs-literal">null</span>
 
           <span class="hljs-property">@toolbar</span>.appendSpacer()
 
-          <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'document-text'</span>,<span class="hljs-function"> -&gt;</span>
+          <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'document-text'</span>, <span class="hljs-function">-&gt;</span>
             <span class="hljs-built_in">require</span>(<span class="hljs-string">'shell'</span>).openExternal(<span class="hljs-string">'http://docs.spark.io/'</span>)
           , <span class="hljs-string">'Opens reference at docs.spark.io'</span>, <span class="hljs-string">'ion'</span>
-          <span class="hljs-property">@coreButton</span> = <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'pinpoint'</span>, <span class="hljs-string">'spark-dev:select-core'</span>, <span class="hljs-string">'Select which Core you want to work on'</span>, <span class="hljs-string">'ion'</span>
-          <span class="hljs-property">@wifiButton</span> = <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'wifi'</span>, <span class="hljs-string">'spark-dev:setup-wifi'</span>, <span class="hljs-string">'Setup Core\'s WiFi credentials'</span>, <span class="hljs-string">'ion'</span>
+          <span class="hljs-property">@coreButton</span> = <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'pinpoint'</span>, <span class="hljs-string">'spark-dev:select-core'</span>, <span class="hljs-string">'Select which device you want to work on'</span>, <span class="hljs-string">'ion'</span>
+          <span class="hljs-property">@wifiButton</span> = <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'wifi'</span>, <span class="hljs-string">'spark-dev:setup-wifi'</span>, <span class="hljs-string">'Setup device\'s WiFi credentials'</span>, <span class="hljs-string">'ion'</span>
           <span class="hljs-property">@toolbar</span>.appendButton <span class="hljs-string">'usb'</span>, <span class="hljs-string">'spark-dev:show-serial-monitor'</span>, <span class="hljs-string">'Show serial monitor'</span>, <span class="hljs-string">'ion'</span>
 
           <span class="hljs-property">@updateToolbarButtons</span>()
 
-      atom.workspaceView.command <span class="hljs-string">'spark-dev:update-login-status'</span>,<span class="hljs-function"> =&gt;</span>
+      atom.workspaceView.command <span class="hljs-string">'spark-dev:update-login-status'</span>, <span class="hljs-function">=&gt;</span>
         <span class="hljs-property">@updateToolbarButtons</span>()
 
-      atom.workspaceView.command <span class="hljs-string">'spark-dev:update-core-status'</span>,<span class="hljs-function"> =&gt;</span>
+      atom.workspaceView.command <span class="hljs-string">'spark-dev:update-core-status'</span>, <span class="hljs-function">=&gt;</span>
         <span class="hljs-property">@updateToolbarButtons</span>()
     <span class="hljs-keyword">catch</span></pre></div></div>
             
@@ -376,10 +376,10 @@ url = <span class="hljs-literal">null</span>
 
       <span class="hljs-property">@watchConfig</span>()
 
-  <span class="hljs-attribute">deactivate</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">deactivate</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@statusView</span>?.destroy()
 
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
   <span class="hljs-attribute">config</span>:</pre></div></div>
             
@@ -462,7 +462,7 @@ url = <span class="hljs-literal">null</span>
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">coreRequired</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
-    <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+    <span class="hljs-property">@loginRequired</span> =&gt;
       <span class="hljs-keyword">if</span> !<span class="hljs-property">@SettingsHelper</span>.hasCurrentCore()
         <span class="hljs-keyword">return</span>
 
@@ -530,7 +530,7 @@ url = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateToolbarButtons</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateToolbarButtons</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@SettingsHelper</span>.isLoggedIn()
       <span class="hljs-property">@compileButton</span>.setEnabled <span class="hljs-literal">true</span>
       <span class="hljs-property">@coreButton</span>.setEnabled <span class="hljs-literal">true</span>
@@ -559,7 +559,7 @@ url = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">watchConfig</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">watchConfig</span>: <span class="hljs-function">-&gt;</span>
     settings.whichProfile()
     settingsFile = settings.findOverridesFile()
     <span class="hljs-keyword">if</span> !fs.existsSync(settingsFile)
@@ -589,7 +589,7 @@ url = <span class="hljs-literal">null</span>
     <span class="hljs-property">@ListeningModeView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/listening-mode-view'</span>
     <span class="hljs-property">@SerialHelper</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./utils/serial-helper'</span>
     <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-property">@SerialHelper</span>.listPorts()
-    <span class="hljs-property">@listPortsPromise</span>.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+    <span class="hljs-property">@listPortsPromise</span>.done (ports) =&gt;
       <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-literal">null</span>
       <span class="hljs-keyword">if</span> ports.length == <span class="hljs-number">0</span></pre></div></div>
             
@@ -643,7 +643,7 @@ url = <span class="hljs-literal">null</span>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">login</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">login</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@initView</span> <span class="hljs-string">'login'</span></pre></div></div>
             
         </li>
@@ -660,7 +660,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-dev:cancel-login'</span>,<span class="hljs-function"> =&gt;</span> <span class="hljs-property">@loginView</span>.cancelCommand()
+            <div class="content"><div class='highlight'><pre>    atom.workspaceView.command <span class="hljs-string">'spark-dev:cancel-login'</span>, <span class="hljs-function">=&gt;</span> <span class="hljs-property">@loginView</span>.cancelCommand()
     <span class="hljs-property">@loginView</span>.show()</pre></div></div>
             
         </li>
@@ -676,7 +676,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">logout</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-property">@initView</span> <span class="hljs-string">'login'</span>
 
     <span class="hljs-property">@loginView</span>.logout()</pre></div></div>
@@ -694,7 +694,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">selectCore</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-property">@initView</span> <span class="hljs-string">'select-core'</span>
 
     <span class="hljs-property">@selectCoreView</span>.show()</pre></div></div>
@@ -712,7 +712,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">renameCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">renameCore</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@coreRequired</span> =&gt;
     <span class="hljs-property">@RenameCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/rename-core-view'</span>
     <span class="hljs-property">@renameCoreView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@RenameCoreView</span>(<span class="hljs-property">@SettingsHelper</span>.get <span class="hljs-string">'current_core_name'</span>)
 
@@ -731,15 +731,15 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">removeCore</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@coreRequired</span> =&gt;
     removeButton = <span class="hljs-string">'Remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>)
     buttons = {}
-    buttons[<span class="hljs-string">'Cancel'</span>] =<span class="hljs-function"> -&gt;</span>
+    buttons[<span class="hljs-string">'Cancel'</span>] = <span class="hljs-function">-&gt;</span>
 
-    buttons[<span class="hljs-string">'Remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>)] =<span class="hljs-function"> =&gt;</span>
+    buttons[<span class="hljs-string">'Remove '</span> + <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core_name'</span>)] = <span class="hljs-function">=&gt;</span>
       workspace = atom.workspaceView
       <span class="hljs-property">@removePromise</span> = <span class="hljs-property">@spark</span>.removeCore <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core'</span>)
-      <span class="hljs-property">@removePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@removePromise</span>.done (e) =&gt;
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@removePromise</span>
           <span class="hljs-keyword">return</span>
         atom.workspaceView = workspace
@@ -776,7 +776,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">claimCore</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">claimCore</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-property">@claimCoreView</span> = <span class="hljs-literal">null</span>
     <span class="hljs-property">@initView</span> <span class="hljs-string">'claim-core'</span>
 
@@ -795,12 +795,13 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">identifyCore</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">identifyCore</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-keyword">if</span> !port
-      <span class="hljs-property">@choosePort</span>(<span class="hljs-string">'spark-dev:identify-core'</span>)
+      <span class="hljs-property">@choosePort</span>(<span class="hljs-string">'spark-dev:identify-device'</span>)
     <span class="hljs-keyword">else</span>
+      <span class="hljs-property">@SerialHelper</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./utils/serial-helper'</span>
       promise = <span class="hljs-property">@SerialHelper</span>.askForCoreID port
-      promise.done <span class="hljs-function"><span class="hljs-params">(coreID)</span> =&gt;</span>
+      promise.done (coreID) =&gt;
         <span class="hljs-property">@IdentifyCoreView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/identify-core-view'</span>
         <span class="hljs-property">@identifyCoreView</span> = <span class="hljs-keyword">new</span> <span class="hljs-property">@IdentifyCoreView</span> coreID
         <span class="hljs-property">@identifyCoreView</span>.attach()
@@ -821,7 +822,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">compileCloud</span>: <span class="hljs-function"><span class="hljs-params">(thenFlash=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span> <span class="hljs-property">@projectRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">compileCloud</span>: <span class="hljs-function"><span class="hljs-params">(thenFlash=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt; <span class="hljs-property">@projectRequired</span> =&gt;
     <span class="hljs-keyword">if</span> !!<span class="hljs-property">@compileCloudPromise</span>
       <span class="hljs-keyword">return</span>
 
@@ -847,16 +848,17 @@ This way, we don’t need to require/initialize login view until it’s needed.<
     utilities ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/utilities'</span>
 
     rootPath = atom.project.getPaths()[<span class="hljs-number">0</span>]
-    files = fs.listSync(rootPath)
-    files = files.filter <span class="hljs-function"><span class="hljs-params">(file)</span> -&gt;</span>
-      <span class="hljs-keyword">return</span> !(utilities.getFilenameExt(file).toLowerCase() <span class="hljs-keyword">in</span> settings.notSourceExtensions)
+    files = fs.listTreeSync(rootPath)
+    files = files.filter (file) -&gt;
+      <span class="hljs-keyword">return</span> !(utilities.getFilenameExt(file).toLowerCase() <span class="hljs-keyword">in</span> settings.notSourceExtensions) &amp;&amp;
+              !fs.isDirectorySync(file)
 
     process.chdir rootPath
     files = (path.relative(rootPath, file) <span class="hljs-keyword">for</span> file <span class="hljs-keyword">in</span> files)
 
     workspace = atom.workspaceView
     <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-property">@spark</span>.compileCode files
-    <span class="hljs-property">@compileCloudPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    <span class="hljs-property">@compileCloudPromise</span>.done (e) =&gt;
       <span class="hljs-keyword">if</span> !e
         <span class="hljs-keyword">return</span>
 
@@ -879,7 +881,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
         filename = <span class="hljs-string">'firmware_'</span> + (<span class="hljs-keyword">new</span> Date()).getTime() + <span class="hljs-string">'.bin'</span>;
         <span class="hljs-property">@downloadBinaryPromise</span> = <span class="hljs-property">@spark</span>.downloadBinary e.binary_url, rootPath + <span class="hljs-string">'/'</span> + filename
 
-        <span class="hljs-property">@downloadBinaryPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+        <span class="hljs-property">@downloadBinaryPromise</span>.done (e) =&gt;
           atom.workspaceView = workspace
           <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">filename</span>: filename}
           atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-compile-status'</span>
@@ -904,9 +906,15 @@ This way, we don’t need to require/initialize login view until it’s needed.<
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-property">@CompileErrorsView</span> ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./views/compile-errors-view'</span>
-        <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">errors</span>: <span class="hljs-property">@CompileErrorsView</span>.parseErrors(e.errors[<span class="hljs-number">0</span>])}
-        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-compile-status'</span>
-        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:show-compile-errors'</span>
+        errors = <span class="hljs-property">@CompileErrorsView</span>.parseErrors(e.errors[<span class="hljs-number">0</span>])
+
+        <span class="hljs-keyword">if</span> errors.length == <span class="hljs-number">0</span>
+          <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">error</span>: e.output}
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-property">@SettingsHelper</span>.set <span class="hljs-string">'compile-status'</span>, {<span class="hljs-attribute">errors</span>: errors}
+          atom.workspaceView.trigger <span class="hljs-string">'spark-dev:show-compile-errors'</span>
+
+        atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-compile-status'</span>        
         <span class="hljs-property">@compileCloudPromise</span> = <span class="hljs-literal">null</span>
     , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
       <span class="hljs-built_in">console</span>.error e
@@ -926,7 +934,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showCompileErrors</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showCompileErrors</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@initView</span> <span class="hljs-string">'compile-errors'</span>
 
     <span class="hljs-property">@compileErrorsView</span>.show()</pre></div></div>
@@ -944,7 +952,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showCloudVariablesAndFunctions</span>:<span class="hljs-function"> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showCloudVariablesAndFunctions</span>: <span class="hljs-function">-&gt;</span> <span class="hljs-property">@coreRequired</span> =&gt;
     <span class="hljs-property">@cloudVariablesAndFunctionsView</span> = <span class="hljs-literal">null</span>
     <span class="hljs-property">@openPane</span> <span class="hljs-string">'cloud-variables-and-functions'</span></pre></div></div>
             
@@ -961,14 +969,14 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">flashCloud</span>: <span class="hljs-function"><span class="hljs-params">(firmware=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@coreRequired</span> <span class="hljs-function">=&gt;</span> <span class="hljs-property">@projectRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">flashCloud</span>: <span class="hljs-function"><span class="hljs-params">(firmware=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@coreRequired</span> =&gt; <span class="hljs-property">@projectRequired</span> =&gt;
     fs ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'fs-plus'</span>
     path ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'path'</span>
     utilities ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'./vendor/utilities'</span>
 
     rootPath = atom.project.getPaths()[<span class="hljs-number">0</span>]
     files = fs.listSync(rootPath)
-    files = files.filter <span class="hljs-function"><span class="hljs-params">(file)</span> -&gt;</span>
+    files = files.filter (file) -&gt;
       <span class="hljs-keyword">return</span> (utilities.getFilenameExt(file).toLowerCase() == <span class="hljs-string">'.bin'</span>)
 
     <span class="hljs-keyword">if</span> files.length == <span class="hljs-number">0</span></pre></div></div>
@@ -1012,7 +1020,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
       <span class="hljs-property">@statusView</span>.setStatus <span class="hljs-string">'Flashing via the cloud...'</span>
 
       <span class="hljs-property">@flashCorePromise</span> = <span class="hljs-property">@spark</span>.flashCore <span class="hljs-property">@SettingsHelper</span>.get(<span class="hljs-string">'current_core'</span>), [firmware]
-      <span class="hljs-property">@flashCorePromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@flashCorePromise</span>.done (e) =&gt;
         <span class="hljs-property">@statusView</span>.setStatus e.status + <span class="hljs-string">'...'</span>
         <span class="hljs-property">@statusView</span>.clearAfter <span class="hljs-number">5000</span>
 
@@ -1057,7 +1065,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showSerialMonitor</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showSerialMonitor</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@serialMonitorView</span> = <span class="hljs-literal">null</span>
     <span class="hljs-property">@openPane</span> <span class="hljs-string">'serial-monitor'</span></pre></div></div>
             
@@ -1074,7 +1082,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setupWifi</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setupWifi</span>: <span class="hljs-function"><span class="hljs-params">(port=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-keyword">if</span> !port
       <span class="hljs-property">@choosePort</span> <span class="hljs-string">'spark-dev:setup-wifi'</span>
     <span class="hljs-keyword">else</span>
@@ -1082,7 +1090,7 @@ This way, we don’t need to require/initialize login view until it’s needed.<
       <span class="hljs-property">@selectWifiView</span>.port = port
       <span class="hljs-property">@selectWifiView</span>.show()
 
-  <span class="hljs-attribute">enterWifiCredentials</span>: <span class="hljs-function"><span class="hljs-params">(port, ssid=<span class="hljs-literal">null</span>, security=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> <span class="hljs-function">=&gt;</span>
+  <span class="hljs-attribute">enterWifiCredentials</span>: <span class="hljs-function"><span class="hljs-params">(port, ssid=<span class="hljs-literal">null</span>, security=<span class="hljs-literal">null</span>)</span> -&gt;</span> <span class="hljs-property">@loginRequired</span> =&gt;
     <span class="hljs-keyword">if</span> !port
       <span class="hljs-keyword">return</span>
 

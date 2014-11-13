@@ -205,13 +205,13 @@ class SelectPortView extends SelectListView
             <div class="content"><div class='highlight'><pre>    atom.workspaceView.trigger <span class="hljs-property">@delegate</span>, [item.comName]
     <span class="hljs-property">@cancel</span>()
 
-  <span class="hljs-attribute">getFilterKey</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">getFilterKey</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-string">'comName'</span>
 
-  <span class="hljs-attribute">listPorts</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">listPorts</span>: <span class="hljs-function">-&gt;</span>
     SerialHelper = <span class="hljs-built_in">require</span> <span class="hljs-string">'../utils/serial-helper'</span>
     <span class="hljs-property">@listPortsPromise</span> = SerialHelper.listPorts()
-    <span class="hljs-property">@listPortsPromise</span>.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+    <span class="hljs-property">@listPortsPromise</span>.done (ports) =&gt;
       <span class="hljs-property">@setItems</span> ports
       <span class="hljs-property">@listPortsPromise</span> = <span class="hljs-literal">null</span></pre></div></div>
             

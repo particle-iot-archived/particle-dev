@@ -147,7 +147,7 @@ _s = <span class="hljs-literal">null</span>
 
 <span class="hljs-built_in">module</span>.exports =
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ClaimCoreView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Dialog</span></span>
-  <span class="hljs-attribute">constructor</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">constructor</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">super</span>
       <span class="hljs-attribute">prompt</span>: <span class="hljs-string">'Enter device ID (hex string)'</span>
       <span class="hljs-attribute">initialText</span>: <span class="hljs-string">''</span>
@@ -257,7 +257,7 @@ _s = <span class="hljs-literal">null</span>
             
             <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@claimPromise</span> = spark.claimCore deviceID
       <span class="hljs-property">@setLoading</span> <span class="hljs-literal">true</span>
-      <span class="hljs-property">@claimPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+      <span class="hljs-property">@claimPromise</span>.done (e) =&gt;
         <span class="hljs-keyword">if</span> !<span class="hljs-property">@claimPromise</span>
           <span class="hljs-keyword">return</span></pre></div></div>
             

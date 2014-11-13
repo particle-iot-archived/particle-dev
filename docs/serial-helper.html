@@ -162,7 +162,7 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
             
             <div class="content"><div class='highlight'><pre>
 <span class="hljs-built_in">module</span>.exports =
-  <span class="hljs-attribute">listPorts</span>:<span class="hljs-function"> -&gt;</span></pre></div></div>
+  <span class="hljs-attribute">listPorts</span>: <span class="hljs-function">-&gt;</span></pre></div></div>
             
         </li>
         
@@ -181,7 +181,7 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
     dfd = whenjs.defer()
 
     cores = []
-    serialport.list <span class="hljs-function"><span class="hljs-params">(err, ports)</span> -&gt;</span>
+    serialport.list (err, ports) -&gt;
       <span class="hljs-keyword">for</span> port <span class="hljs-keyword">in</span> ports
         <span class="hljs-keyword">if</span> (port.manufacturer &amp;&amp; port.manufacturer.indexOf(<span class="hljs-string">"Spark"</span>) &gt;= <span class="hljs-number">0</span>) ||
             (port.pnpId &amp;&amp; port.pnpId.indexOf(<span class="hljs-string">"Spark_Core"</span>) &gt;= <span class="hljs-number">0</span>)
@@ -233,7 +233,7 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
           data = data.replace(prefix, <span class="hljs-string">''</span>).trim()
           dfd.resolve data
 
-      failTimer = setTimeout <span class="hljs-function">-&gt;</span>
+      failTimer = setTimeout -&gt;
         dfd.reject <span class="hljs-string">'Serial timed out'</span>
       , failDelay
 
@@ -244,20 +244,20 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
         chunks.push data
         boredTimer = setTimeout whenBored, boredDelay
 
-      serialPort.open <span class="hljs-function"><span class="hljs-params">(err)</span> -&gt;</span>
+      serialPort.open (err) -&gt;
         <span class="hljs-keyword">if</span> err
           dfd.reject <span class="hljs-string">'Serial problems, please reconnect the core.'</span>
         <span class="hljs-keyword">else</span>
           serialPort.write <span class="hljs-string">'i'</span>
 
-      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+      whenjs(dfd.promise).ensure -&gt;
         serialPort.removeAllListeners <span class="hljs-string">'open'</span>
         serialPort.removeAllListeners <span class="hljs-string">'data'</span>
 
     <span class="hljs-keyword">catch</span> ex
       dfd.reject <span class="hljs-string">'Serial errors'</span>
 
-    whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+    whenjs(dfd.promise).ensure -&gt;
       serialPort.close()
 
   <span class="hljs-attribute">serialPromptDfd</span>: <span class="hljs-function"><span class="hljs-params">(serialPort, prompt, answer, timeout, alwaysResolve)</span> -&gt;</span></pre></div></div>
@@ -281,11 +281,11 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
     showTraffic = <span class="hljs-literal">true</span>
 <span class="hljs-function">
     <span class="hljs-title">writeAndDrain</span> = <span class="hljs-params">(data, callback)</span> -&gt;</span>
-      serialPort.write data,<span class="hljs-function"> -&gt;</span>
+      serialPort.write data, <span class="hljs-function">-&gt;</span>
           serialPort.drain callback
 
     <span class="hljs-keyword">if</span> timeout
-      failTimer = setTimeout <span class="hljs-function">-&gt;</span>
+      failTimer = setTimeout -&gt;
         <span class="hljs-keyword">if</span> showTraffic
           <span class="hljs-built_in">console</span>.log <span class="hljs-string">'Timed out on '</span> + prompt
         <span class="hljs-keyword">if</span> alwaysResolve
@@ -302,9 +302,9 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
           <span class="hljs-built_in">console</span>.log <span class="hljs-string">'Serial said: '</span> + data
         <span class="hljs-keyword">if</span> data &amp;&amp; data.indexOf(prompt) &gt;= <span class="hljs-number">0</span>
           <span class="hljs-keyword">if</span> answer
-            serialPort.flush <span class="hljs-function">-&gt;</span>
+            serialPort.flush -&gt;
 
-            writeAndDrain answer,<span class="hljs-function"> -&gt;</span>
+            writeAndDrain answer, <span class="hljs-function">-&gt;</span>
               <span class="hljs-keyword">if</span> showTraffic
                 <span class="hljs-built_in">console</span>.log <span class="hljs-string">'I said: '</span> + answer
               dfd.resolve <span class="hljs-literal">true</span>
@@ -313,7 +313,7 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
 
       serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'data'</span>, onMessage
 
-      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+      whenjs(dfd.promise).ensure -&gt;
         clearTimeout failTimer
         serialPort.removeListener <span class="hljs-string">'data'</span>, onMessage
     <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> answer
@@ -322,7 +322,7 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
       <span class="hljs-keyword">if</span> showTraffic
         <span class="hljs-built_in">console</span>.log <span class="hljs-string">'I said: '</span> + answer
 
-      writeAndDrain answer,<span class="hljs-function"> -&gt;</span>
+      writeAndDrain answer, <span class="hljs-function">-&gt;</span>
         dfd.resolve <span class="hljs-literal">true</span>
 
     dfd.promise
@@ -350,21 +350,21 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
       <span class="hljs-attribute">parser</span>: SerialBoredParser.MakeParser <span class="hljs-number">250</span>
     }, <span class="hljs-literal">false</span>
 
-    serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'error'</span>,<span class="hljs-function"> -&gt;</span>
+    serialPort.<span class="hljs-literal">on</span> <span class="hljs-string">'error'</span>, <span class="hljs-function">-&gt;</span>
       dfd.reject <span class="hljs-string">'Serial error'</span>
 
-    serialPort.open <span class="hljs-function">=&gt;</span>
-      configDone = pipeline [<span class="hljs-function">
-        =&gt;</span>
+    serialPort.open =&gt;
+      configDone = pipeline [
+        =&gt;
           <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-literal">null</span>, <span class="hljs-string">'w'</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">true</span>
         , <span class="hljs-function"><span class="hljs-params">(result)</span> =&gt;</span>
           <span class="hljs-keyword">if</span> !result
             <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-literal">null</span>, <span class="hljs-string">'w'</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">true</span>
           <span class="hljs-keyword">else</span>
             <span class="hljs-keyword">return</span> whenjs.resolve()
-        ,<span class="hljs-function"> =&gt;</span>
+        , <span class="hljs-function">=&gt;</span>
           <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"SSID:"</span>, ssid + <span class="hljs-string">"\n"</span>, <span class="hljs-number">5000</span>, <span class="hljs-literal">false</span>
-        ,<span class="hljs-function"> =&gt;</span>
+        , <span class="hljs-function">=&gt;</span>
           <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"Security 0=unsecured, 1=WEP, 2=WPA, 3=WPA2:"</span>, securityType + <span class="hljs-string">"\n"</span>, <span class="hljs-number">1500</span>, <span class="hljs-literal">true</span>
         , <span class="hljs-function"><span class="hljs-params">(result)</span> =&gt;</span>
           passPrompt = <span class="hljs-string">"Password:"</span>
@@ -375,12 +375,12 @@ SerialBoredParser = <span class="hljs-built_in">require</span> <span class="hljs
             <span class="hljs-keyword">return</span> whenjs.resolve()
 
           <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, passPrompt, password + <span class="hljs-string">"\n"</span>, <span class="hljs-number">5000</span>
-        ,<span class="hljs-function"> =&gt;</span>
+        , <span class="hljs-function">=&gt;</span>
           <span class="hljs-keyword">return</span> <span class="hljs-property">@serialPromptDfd</span> serialPort, <span class="hljs-string">"Spark &lt;3 you!"</span>, <span class="hljs-literal">null</span>, <span class="hljs-number">15000</span>
       ]
       utilities.pipeDeferred configDone, dfd
 
-      whenjs(dfd.promise).ensure <span class="hljs-function">-&gt;</span>
+      whenjs(dfd.promise).ensure -&gt;
         serialPort.close()
 
     dfd.promise</pre></div></div>

@@ -193,9 +193,9 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
-  <span class="hljs-attribute">attach</span>:<span class="hljs-function"> =&gt;</span>
+  <span class="hljs-attribute">attach</span>: <span class="hljs-function">=&gt;</span>
     atom.workspaceView.statusBar.appendLeft(<span class="hljs-keyword">this</span>)
     <span class="hljs-property">@updateLoginStatus</span>()</pre></div></div>
             
@@ -212,7 +212,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">destroy</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@remove</span>()</pre></div></div>
             
         </li>
@@ -228,7 +228,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">selectCore</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">selectCore</span>: <span class="hljs-function">-&gt;</span>
     atom.workspaceView.trigger <span class="hljs-string">'spark-dev:select-core'</span></pre></div></div>
             
         </li>
@@ -244,7 +244,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showErrors</span>:<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showErrors</span>: <span class="hljs-function">=&gt;</span>
     atom.workspaceView.trigger <span class="hljs-string">'spark-dev:show-compile-errors'</span></pre></div></div>
             
         </li>
@@ -260,7 +260,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showFile</span>:<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">showFile</span>: <span class="hljs-function">=&gt;</span>
     shell ?= <span class="hljs-built_in">require</span> <span class="hljs-string">'shell'</span>
     rootPath = atom.project.getPaths()[<span class="hljs-number">0</span>]
     compileStatus = SettingsHelper.get <span class="hljs-string">'compile-status'</span>
@@ -279,7 +279,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getCurrentCoreStatus</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getCurrentCoreStatus</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> !SettingsHelper.hasCurrentCore()
       <span class="hljs-keyword">return</span>
 
@@ -289,7 +289,7 @@ class StatusBarView extends View
     spark = <span class="hljs-built_in">require</span> <span class="hljs-string">'spark'</span>
     spark.login { <span class="hljs-attribute">accessToken</span>: SettingsHelper.get(<span class="hljs-string">'access_token'</span>) }
     <span class="hljs-property">@getAttributesPromise</span> = spark.getAttributes SettingsHelper.get(<span class="hljs-string">'current_core'</span>)
-    <span class="hljs-property">@getAttributesPromise</span>.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    <span class="hljs-property">@getAttributesPromise</span>.done (e) =&gt;
       SettingsHelper.set <span class="hljs-string">'variables'</span>, {}
       SettingsHelper.set <span class="hljs-string">'functions'</span>, []
 
@@ -338,7 +338,7 @@ class StatusBarView extends View
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> !<span class="hljs-property">@interval</span>
-          <span class="hljs-property">@interval</span> = setInterval <span class="hljs-function">=&gt;</span>
+          <span class="hljs-property">@interval</span> = setInterval =&gt;
             <span class="hljs-property">@updateCoreStatus</span>()
           , <span class="hljs-number">30000</span>
       <span class="hljs-property">@getAttributesPromise</span> = <span class="hljs-literal">null</span>
@@ -362,7 +362,7 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateCoreStatus</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateCoreStatus</span>: <span class="hljs-function">-&gt;</span>
     statusElement = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-current-core a'</span>)
 
     <span class="hljs-keyword">if</span> SettingsHelper.hasCurrentCore()
@@ -386,11 +386,11 @@ class StatusBarView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateLoginStatus</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">updateLoginStatus</span>: <span class="hljs-function">-&gt;</span>
     statusElement = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-login-status'</span>)
     statusElement.empty()
 
-    ideMenu = atom.menu.template.filter <span class="hljs-function"><span class="hljs-params">(value)</span> -&gt;</span>
+    ideMenu = atom.menu.template.filter (value) -&gt;
       value.label == <span class="hljs-string">'Spark Dev'</span>
 
     <span class="hljs-keyword">if</span> SettingsHelper.isLoggedIn()
@@ -402,14 +402,14 @@ class StatusBarView extends View
     <span class="hljs-keyword">else</span>
       loginButton = $(<span class="hljs-string">'&lt;a/&gt;'</span>).text(<span class="hljs-string">'Click to log in to Spark Cloud...'</span>)
       statusElement.append loginButton
-      loginButton.<span class="hljs-literal">on</span> <span class="hljs-string">'click'</span>,<span class="hljs-function"> =&gt;</span>
+      loginButton.<span class="hljs-literal">on</span> <span class="hljs-string">'click'</span>, <span class="hljs-function">=&gt;</span>
         atom.workspaceView.trigger <span class="hljs-string">'spark-dev:login'</span>
 
       <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-current-core'</span>).addClass <span class="hljs-string">'hidden'</span>
 
     atom.workspaceView.trigger <span class="hljs-string">'spark-dev:update-menu'</span>
 
-  <span class="hljs-attribute">updateCompileStatus</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">updateCompileStatus</span>: <span class="hljs-function">-&gt;</span>
     statusElement = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-compile-status'</span>)
     statusElement.addClass <span class="hljs-string">'hidden'</span>
     compileStatus = SettingsHelper.get <span class="hljs-string">'compile-status'</span>
@@ -427,6 +427,10 @@ class StatusBarView extends View
         <span class="hljs-keyword">else</span>
           subElement.text(compileStatus.errors.length + <span class="hljs-string">' errors'</span>)
         subElement.show()
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> !!compileStatus.error
+        subElement = statusElement.find(<span class="hljs-string">'#spark-compile-failed'</span>)
+        subElement.text(compileStatus.error)
+        subElement.show()
       <span class="hljs-keyword">else</span>
         statusElement.find(<span class="hljs-string">'#spark-compile-success'</span>)
                      .text(<span class="hljs-string">'Success! Firmware saved to '</span> + compileStatus.filename)
@@ -440,15 +444,15 @@ class StatusBarView extends View
       <span class="hljs-keyword">if</span> type
         el.addClass(<span class="hljs-string">'text-'</span> + type)
 
-  <span class="hljs-attribute">clear</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">clear</span>: <span class="hljs-function">-&gt;</span>
     el = <span class="hljs-keyword">this</span>.find(<span class="hljs-string">'#spark-log'</span>)
     self = @
-    el.fadeOut <span class="hljs-function">-&gt;</span>
+    el.fadeOut -&gt;
       self.setStatus <span class="hljs-string">''</span>
       el.show()
 
   <span class="hljs-attribute">clearAfter</span>: <span class="hljs-function"><span class="hljs-params">(delay)</span> -&gt;</span>
-    setTimeout <span class="hljs-function">=&gt;</span>
+    setTimeout =&gt;
       <span class="hljs-property">@clear</span>()
     , delay</pre></div></div>
             

@@ -175,9 +175,9 @@ class ListeningModeView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@interval</span> = setInterval =&gt;
       promise = SerialHelper.listPorts()
-      promise.done <span class="hljs-function"><span class="hljs-params">(ports)</span> =&gt;</span>
+      promise.done (ports) =&gt;
         <span class="hljs-keyword">if</span> ports.length &gt; <span class="hljs-number">0</span></pre></div></div>
             
         </li>
@@ -229,16 +229,16 @@ class ListeningModeView extends View
       clearInterval <span class="hljs-property">@interval</span>
       <span class="hljs-property">@hide</span>()
 
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
-  <span class="hljs-attribute">destroy</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">destroy</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-property">@detach</span>()
 
-  <span class="hljs-attribute">show</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">show</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> !<span class="hljs-property">@hasParent</span>()
       atom.workspaceView.append(<span class="hljs-keyword">this</span>)
 
-  <span class="hljs-attribute">hide</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">hide</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">if</span> <span class="hljs-property">@hasParent</span>()
       <span class="hljs-property">@detach</span>()
 

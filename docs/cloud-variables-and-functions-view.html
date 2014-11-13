@@ -184,12 +184,12 @@ class CloudVariablesAndFunctionsView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:update-core-status'</span>,<span class="hljs-function"> =&gt;</span>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:update-core-status'</span>, <span class="hljs-function">=&gt;</span>
       <span class="hljs-property">@variables</span>.empty()
       <span class="hljs-property">@functions</span>.empty()
       <span class="hljs-property">@addClass</span> <span class="hljs-string">'loading'</span>
 
-    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:core-status-updated'</span>,<span class="hljs-function"> =&gt;</span></pre></div></div>
+    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:core-status-updated'</span>, <span class="hljs-function">=&gt;</span></pre></div></div>
             
         </li>
         
@@ -209,7 +209,7 @@ class CloudVariablesAndFunctionsView extends View
       <span class="hljs-property">@clearWatchers</span>()
       <span class="hljs-property">@removeClass</span> <span class="hljs-string">'loading'</span>
 
-    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:logout'</span>,<span class="hljs-function"> =&gt;</span></pre></div></div>
+    <span class="hljs-property">@subscriber</span>.subscribeToCommand atom.workspaceView, <span class="hljs-string">'spark-dev:logout'</span>, <span class="hljs-function">=&gt;</span></pre></div></div>
             
         </li>
         
@@ -233,9 +233,9 @@ class CloudVariablesAndFunctionsView extends View
     <span class="hljs-property">@listVariables</span>()
     <span class="hljs-property">@listFunctions</span>()
 
-  <span class="hljs-attribute">serialize</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">serialize</span>: <span class="hljs-function">-&gt;</span>
 
-  <span class="hljs-attribute">getTitle</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">getTitle</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-string">'Cloud variables &amp; functions'</span>
 
   <span class="hljs-attribute">onDidChangeTitle</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
@@ -244,10 +244,10 @@ class CloudVariablesAndFunctionsView extends View
   <span class="hljs-attribute">onDidChangeModified</span>: <span class="hljs-function"><span class="hljs-params">(callback)</span> -&gt;</span>
     <span class="hljs-property">@emitter</span>.<span class="hljs-literal">on</span> <span class="hljs-string">'did-change-modified'</span>, callback
 
-  <span class="hljs-attribute">getUri</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">getUri</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-string">'spark-dev://editor/cloud-variables-and-functions'</span>
 
-  <span class="hljs-attribute">close</span>:<span class="hljs-function"> -&gt;</span>
+  <span class="hljs-attribute">close</span>: <span class="hljs-function">-&gt;</span>
     pane = atom.workspace.paneForUri <span class="hljs-property">@getUri</span>()
     pane?.destroy()</pre></div></div>
             
@@ -343,7 +343,7 @@ class CloudVariablesAndFunctionsView extends View
     cell.addClass <span class="hljs-string">'loading'</span>
     cell.text <span class="hljs-string">''</span>
     promise = spark.getVariable SettingsHelper.get(<span class="hljs-string">'current_core'</span>), variableName
-    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    promise.done (e) =&gt;
       cell.removeClass()
       <span class="hljs-keyword">if</span> !!e.ok
         cell.addClass <span class="hljs-string">'icon icon-issue-opened text-error'</span>
@@ -398,7 +398,7 @@ class CloudVariablesAndFunctionsView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@watchers</span>[variableName] = setInterval <span class="hljs-function">=&gt;</span>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-property">@watchers</span>[variableName] = setInterval =&gt;
         <span class="hljs-property">@refreshVariable</span> variableName
       , <span class="hljs-number">5000</span></pre></div></div>
             
@@ -415,7 +415,7 @@ class CloudVariablesAndFunctionsView extends View
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearWatchers</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">clearWatchers</span>: <span class="hljs-function">-&gt;</span>
     <span class="hljs-keyword">for</span> key <span class="hljs-keyword">in</span> Object.keys(<span class="hljs-property">@watchers</span>)
       clearInterval <span class="hljs-property">@watchers</span>[key]
     <span class="hljs-property">@watchers</span> = {}</pre></div></div>
@@ -453,9 +453,9 @@ class CloudVariablesAndFunctionsView extends View
             @span class: 'three-quarters inline-block hidden'
         row.find('button').on 'click', (event) =&gt;
           @callFunction $(event.currentTarget).parent().attr('data-id')
-        row.find('.editor:eq(0)').data('view').on 'core:confirm', (event) =&gt;
+        row.find('.editor:eq(0)').view().on 'core:confirm', (event) =&gt;
           @callFunction $(event.currentTarget).parent().attr('data-id')
-        row.find('.editor:eq(1)').data('view').hiddenInput.attr 'disabled', 'disabled'
+        row.find('.editor:eq(1)').view().hiddenInput.attr 'disabled', 'disabled'
         @functions.append row</pre></div></div>
             
         </li>
@@ -474,13 +474,13 @@ class CloudVariablesAndFunctionsView extends View
             <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">setRowEnabled</span>: <span class="hljs-function"><span class="hljs-params">(row, enabled)</span> -&gt;</span>
     <span class="hljs-keyword">if</span> enabled
       row.find(<span class="hljs-string">'button'</span>).removeAttr <span class="hljs-string">'disabled'</span>
-      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).view().hiddenInput.removeAttr <span class="hljs-string">'disabled'</span>
       row.find(<span class="hljs-string">'.three-quarters'</span>).addClass <span class="hljs-string">'hidden'</span>
     <span class="hljs-keyword">else</span>
       row.find(<span class="hljs-string">'button'</span>).attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
-      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
+      row.find(<span class="hljs-string">'.editor:eq(0)'</span>).view().hiddenInput.attr <span class="hljs-string">'disabled'</span>, <span class="hljs-string">'disabled'</span>
       row.find(<span class="hljs-string">'.three-quarters'</span>).removeClass <span class="hljs-string">'hidden'</span>
-      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).removeClass <span class="hljs-string">'icon icon-issue-opened'</span></pre></div></div>
+      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).view().removeClass <span class="hljs-string">'icon icon-issue-opened'</span></pre></div></div>
             
         </li>
         
@@ -499,22 +499,22 @@ class CloudVariablesAndFunctionsView extends View
     dfd = whenjs.defer()
     row = <span class="hljs-property">@find</span>(<span class="hljs-string">'#spark-dev-cloud-functions [data-id='</span> + functionName + <span class="hljs-string">']'</span>)
     <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">false</span>
-    row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).setText <span class="hljs-string">' '</span>
-    params = row.find(<span class="hljs-string">'.editor:eq(0)'</span>).data(<span class="hljs-string">'view'</span>).getText()
+    row.find(<span class="hljs-string">'.editor:eq(1)'</span>).view().setText <span class="hljs-string">' '</span>
+    params = row.find(<span class="hljs-string">'.editor:eq(0)'</span>).view().getText()
     promise = spark.callFunction SettingsHelper.get(<span class="hljs-string">'current_core'</span>), functionName, params
-    promise.done <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
+    promise.done (e) =&gt;
       <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">true</span>
 
       <span class="hljs-keyword">if</span> !!e.ok
-        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).addClass <span class="hljs-string">'icon icon-issue-opened'</span>
+        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).view().addClass <span class="hljs-string">'icon icon-issue-opened'</span>
         dfd.reject()
       <span class="hljs-keyword">else</span>
-        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).setText e.return_value.toString()
+        row.find(<span class="hljs-string">'.editor:eq(1)'</span>).view().setText e.return_value.toString()
 
         dfd.resolve e.return_value
     , <span class="hljs-function"><span class="hljs-params">(e)</span> =&gt;</span>
       <span class="hljs-property">@setRowEnabled</span> row, <span class="hljs-literal">true</span>
-      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).data(<span class="hljs-string">'view'</span>).addClass <span class="hljs-string">'icon icon-issue-opened'</span>
+      row.find(<span class="hljs-string">'.editor:eq(1)'</span>).view().addClass <span class="hljs-string">'icon icon-issue-opened'</span>
 
       dfd.reject()
     dfd.promise</pre></div></div>

@@ -158,8 +158,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>:<span class="hljs-function"> -&gt;</span>
-    ideMenu = atom.menu.template.filter <span class="hljs-function"><span class="hljs-params">(value)</span> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">getMenu</span>: <span class="hljs-function">-&gt;</span>
+    ideMenu = atom.menu.template.filter (value) -&gt;
       value.label == <span class="hljs-string">'Spark'</span>
 
     ideMenu[<span class="hljs-number">0</span>]</pre></div></div>
@@ -177,7 +177,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>:<span class="hljs-function"> -&gt;</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-attribute">update</span>: <span class="hljs-function">-&gt;</span>
     ideMenu = <span class="hljs-property">@getMenu</span>()
 
     <span class="hljs-keyword">if</span> SettingsHelper.isLoggedIn()</pre></div></div>
@@ -203,8 +203,8 @@
       },{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Select Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:select-core'</span>
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Select device...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:select-device'</span>
       }]
 
       <span class="hljs-keyword">if</span> SettingsHelper.hasCurrentCore()</pre></div></div>
@@ -224,10 +224,10 @@
             
             <div class="content"><div class='highlight'><pre>        ideMenu.submenu = ideMenu.submenu.concat [{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Rename '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:rename-core'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:rename-device'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Remove '</span> + SettingsHelper.get(<span class="hljs-string">'current_core_name'</span>) + <span class="hljs-string">'...'</span>,
-          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:remove-core'</span>
+          <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:remove-device'</span>
         },{
           <span class="hljs-attribute">label</span>: <span class="hljs-string">'Show cloud variables and functions'</span>,
           <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:show-cloud-variables-and-functions'</span>
@@ -239,13 +239,13 @@
       ideMenu.submenu = ideMenu.submenu.concat [{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:claim-core'</span>
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Claim device...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:claim-device'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Identify Core...'</span>,
-        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:identify-core'</span>
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Identify device...'</span>,
+        <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:identify-device'</span>
       },{
-        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Setup Core\'s WiFi...'</span>,
+        <span class="hljs-attribute">label</span>: <span class="hljs-string">'Setup device\'s WiFi...'</span>,
         <span class="hljs-attribute">command</span>: <span class="hljs-string">'spark-dev:setup-wifi'</span>
       },{
         <span class="hljs-attribute">type</span>: <span class="hljs-string">'separator'</span>
