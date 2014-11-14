@@ -4,8 +4,11 @@
   "description": "",
   "author": "",
   "dependencies": {
+    "decompress": "^2.1.1",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-coffee": "^0.12.0"
+    "grunt-contrib-coffee": "^0.12.0",
+    "request": "^2.48.0",
+    "temp": "^0.8.1"
   }
 }
