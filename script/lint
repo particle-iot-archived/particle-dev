@@ -1,0 +1,6 @@
+#!/bin/bash
+ROOT=$(cd "$(dirname "$0")"; cd ..; pwd)
+echo "Linting code..."
+find ${ROOT}/lib/ -name '*.coffee' | xargs coffee-jshint --globals atom,module,require,setTimeout,clearTimeout,setInterval,clearInterval,window,localStorage,__dirname,process
+echo "Linting tests..."
+find ${ROOT}/spec/ -name '*.coffee' | xargs coffee-jshint --globals atom,module,require,setTimeout,clearTimeout,setInterval,clearInterval,window,localStorage,__dirname,process,describe,it,expect,beforeEach,afterEach,waitsForPromise,waitsFor,runs,spyOn,jasmine
