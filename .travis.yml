@@ -3,4 +3,7 @@ notifications:
   email:
     on_success: never
     on_failure: change
-script: curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh
+env:
+  - ATOM_VERSION=v0.140.0
+  - SPARK_DEV_VERSION=0.0.16
+script: curl -s https://raw.githubusercontent.com/spark/spark-dev/${SPARK_DEV_VERSION}/build/mac/build-package.sh | sh
