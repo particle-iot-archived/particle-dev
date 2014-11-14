@@ -19,7 +19,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask('default', [
     'download-atom',
-    # 'copy-resources',
+    'copy-resources',
     # 'inject-packages',
     # 'install-spark-dev',
     # 'install-unpublished-packages',
