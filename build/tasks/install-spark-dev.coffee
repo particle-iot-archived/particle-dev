@@ -24,6 +24,8 @@ module.exports = (grunt) ->
         fs.unlinkSync tarballPath
         fs.removeSync path.join(sparkDevPath, 'build')
         fs.removeSync path.join(sparkDevPath, 'docs')
+
+        # TODO: Build serialport
         done()
 
     r.pipe(fs.createWriteStream(tarballPath))
