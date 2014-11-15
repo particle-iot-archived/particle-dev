@@ -32,14 +32,16 @@ module.exports = (grunt) ->
         packageJson = path.join(workDir, 'package.json')
         packages = JSON.parse(fs.readFileSync(packageJson))
         process.chdir(sparkDevPath);
+        env = process.env
+        env['ATOM_NODE_VERSION'] = packages.atomShellVersion
+        env['ATOM_HOME'] = if process.platform is 'win32' then process.env.USERPROFILE else process.env.HOME
         options = {
-          env: {
-            ATOM_NODE_VERSION: packages.atomShellVersion,
-            ATOM_HOME: if process.platform is 'win32' then process.env.USERPROFILE else process.env.HOME
-          }
+          env: env
         }
 
-        cp.safeExec '../../apm/node_modules/atom-package-manager/bin/apm install .', options, ->
+        cp.safeExec '../../apm/node_modules/atom-package-manager/bin/apm install . --verbose', options, ->
+          packages.packageDependencies['spark-dev'] = grunt.config.get('sparkDevVersion')
+          fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
           done()
 
     r.pipe(fs.createWriteStream(tarballPath))
