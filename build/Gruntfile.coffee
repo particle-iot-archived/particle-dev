@@ -21,7 +21,7 @@ module.exports = (grunt) ->
     'download-atom',
     'copy-resources',
     'inject-packages',
-    # 'install-spark-dev',
+    'install-spark-dev',
     # 'install-unpublished-packages',
     # 'patch-code',
     # 'set-app-version',
