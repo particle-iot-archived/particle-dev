@@ -18,7 +18,7 @@ module.exports = (grunt) ->
   grunt.initConfig
     workDir: workDir
     atomVersion: 'v0.140.0'
-    sparkDevVersion: '0.0.16'
+    sparkDevVersion: '0.0.17'
     appName: 'Spark Dev'
 
   tasks = []

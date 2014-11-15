@@ -1,3 +1,6 @@
+## 0.0.17
+* Bug fixes
+
 ## 0.0.16
 * Renamed to Spark Dev
 
