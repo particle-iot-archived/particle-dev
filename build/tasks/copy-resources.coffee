@@ -15,5 +15,5 @@ module.exports = (grunt) ->
 
     if process.platform is 'darwin'
       copyResource 'sparkdev.icns', 'resources/mac/atom.icns'
-    else if process.platform is 'wind32'
+    else if process.platform is 'win32'
       copyResource 'sparkdev.ico', 'resources/win/atom.ico'
