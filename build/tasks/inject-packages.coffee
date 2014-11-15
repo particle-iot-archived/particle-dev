@@ -2,16 +2,9 @@ path = require 'path'
 fs = require 'fs-extra'
 workDir = null
 
-injectPackage = (name, version=null) ->
-  packageJson = path.join(workDir, 'package.json')
-  packages = JSON.parse(fs.readFileSync(packageJson))
-  if !version
-    delete packages.packageDependencies[name]
-  else
-    packages.packageDependencies[name] = version
-  fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
-
 module.exports = (grunt) ->
+  {injectPackage} = require('./task-helpers')(grunt)
+
   grunt.registerTask 'inject-packages', 'Inject packages into packages.json and node_modules dir', ->
     workDir = grunt.config.get 'workDir'
 

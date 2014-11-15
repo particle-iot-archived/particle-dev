@@ -28,13 +28,13 @@ module.exports = (grunt) ->
       'download-atom',
       'copy-resources',
       'inject-packages',
-      'bootstrap-atom'
+      'bootstrap-atom',
+      'install-spark-dev',
     ]
 
 
   tasks = tasks.concat [
-    'install-spark-dev',
-    # 'install-unpublished-packages',
+    'install-unpublished-packages',
     # 'patch-code',
     # 'set-app-version',
     # 'build-app',
