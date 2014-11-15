@@ -3,8 +3,12 @@ temp = require 'temp'
 module.exports = (grunt) ->
   grunt.loadTasks('tasks')
 
-  # temp.track()
-  workDir = temp.mkdirSync 'spark-dev'
+  if !!grunt.option('workDir')
+    workDir = grunt.option('workDir')
+  else
+    # temp.track()
+    workDir = temp.mkdirSync 'spark-dev'
+
   grunt.log.writeln 'Work dir is ' + workDir
 
   if grunt.option('showWorkDir')
@@ -17,15 +21,24 @@ module.exports = (grunt) ->
     sparkDevVersion: '0.0.16'
     appName: 'Spark Dev'
 
-  grunt.registerTask('default', [
-    'download-atom',
-    'copy-resources',
-    'inject-packages',
-    'bootstrap-atom',
+  tasks = []
+
+  if !grunt.option('workDir')
+    tasks = tasks.concat [
+      'download-atom',
+      'copy-resources',
+      'inject-packages',
+      'bootstrap-atom'
+    ]
+
+
+  tasks = tasks.concat [
     'install-spark-dev',
     # 'install-unpublished-packages',
     # 'patch-code',
     # 'set-app-version',
     # 'build-app',
     # 'package-app'
-    ])
+  ]
+
+  grunt.registerTask('default', tasks)
