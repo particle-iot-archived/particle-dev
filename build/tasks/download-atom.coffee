@@ -19,7 +19,9 @@ module.exports = (grunt) ->
         if error
           throw error
 
+        # TODO: Fix permissions
+
         fs.unlinkSync tarballPath
         done()
-        
+
     r.pipe(fs.createWriteStream(tarballPath))

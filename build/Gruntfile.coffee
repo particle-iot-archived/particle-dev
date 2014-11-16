@@ -16,12 +16,17 @@ module.exports = (grunt) ->
     cp = require 'child_process'
     cp.exec 'open ' + workDir
 
+  appName = 'Spark Dev'
+  installDir = path.join(__dirname, '..', 'dist', process.platform, appName)
+  if process.platform is 'darwin'
+    installDir += '.app'
+
   grunt.initConfig
     workDir: workDir
     atomVersion: 'v0.140.0'
     sparkDevVersion: '0.0.17'
-    appName: 'Spark Dev'
-    installDir: path.join(__dirname, '..', 'dist', process.platform)
+    appName: appName
+    installDir: installDir
 
   tasks = []
 
@@ -34,10 +39,11 @@ module.exports = (grunt) ->
       'install-spark-dev',
       'install-unpublished-packages',
       'patch-code',
-      'build-app',
+
     ]
 
   tasks = tasks.concat [
+    'build-app',
     'package-app'
   ]
 

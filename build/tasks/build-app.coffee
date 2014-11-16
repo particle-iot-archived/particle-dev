@@ -8,13 +8,17 @@ module.exports = (grunt) ->
 
     process.chdir(grunt.config.get('workDir'))
 
-    installDir = path.join(grunt.config.get('installDir'), grunt.config.get('appName'))
-    if process.platform is 'darwin'
-      installDir += '.app'
+    installDir = grunt.config.get('installDir')
 
     command = 'build/node_modules/.bin/grunt ' +
               '--gruntfile build/Gruntfile.coffee ' +
               '--install-dir "' + installDir + '" ' +
-              'download-atom-shell build set-version codesign install'
+              'download-atom-shell build set-version '
+
+    if not grunt.config.get('no-codesign')
+      command += 'codesign '
+
+    command += 'install'
+
     cp.safeExec command, ->
       done()
