@@ -31,6 +31,7 @@ module.exports = (grunt) ->
         # Build serialport
         packageJson = path.join(workDir, 'package.json')
         packages = JSON.parse(fs.readFileSync(packageJson))
+        packages.version = grunt.config.get('sparkDevVersion')
         process.chdir(sparkDevPath);
         env = process.env
         env['ATOM_NODE_VERSION'] = packages.atomShellVersion

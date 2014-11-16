@@ -1,0 +1,19 @@
+--- atom.coffe.old	2014-10-21 13:50:35.000000000 +0200
++++ atom.coffee	2014-10-21 13:54:57.000000000 +0200
+@@ -78,7 +78,7 @@
+   #
+   # Returns the absolute path to ~/.atom
+   @getConfigDirPath: ->
+-    @configDirPath ?= fs.absolute('~/.atom')
++    @configDirPath ?= fs.absolute('~/.sparkdev')
+
+   # Get the path to Atom's storage directory.
+   #
+@@ -199,6 +199,8 @@
+     # Still set NODE_PATH since tasks may need it.
+     process.env.NODE_PATH = exportsPath
+
++    process.env.ATOM_HOME = @getConfigDirPath()
++
+     # Make react.js faster
+     process.env.NODE_ENV ?= 'production' unless devMode

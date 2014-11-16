@@ -1,0 +1,16 @@
+--- resources/mac/atom-Info-original.plist	2014-09-22 12:52:55.000000000 +0200
++++ resources/mac/atom-Info.plist	2014-09-22 12:53:10.000000000 +0200
+@@ -7,11 +7,11 @@
+ 	<key>CFBundleIconFile</key>
+ 	<string>atom.icns</string>
+ 	<key>CFBundleIdentifier</key>
+-	<string>com.github.atom</string>
++	<string>com.spark.dev</string>
+ 	<key>CFBundleInfoDictionaryVersion</key>
+ 	<string>6.0</string>
+ 	<key>CFBundleName</key>
+-	<string>Atom</string>
++	<string>Spark Dev</string>
+ 	<key>CFBundlePackageType</key>
+ 	<string>APPL</string>
+ 	<key>CFBundleDevelopmentRegion</key>

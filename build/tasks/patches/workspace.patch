@@ -1,0 +1,11 @@
+--- workspace.old.coffee	2014-10-24 13:04:45.000000000 +0100
++++ workspace.coffee	2014-10-24 13:05:10.000000000 +0100
+@@ -154,7 +154,7 @@
+   # Updates the application's title and proxy icon based on whichever file is
+   # open.
+   updateWindowTitle: =>
+-    appName = 'Atom'
++    appName = 'Spark Dev'
+     if projectPath = atom.project?.getPaths()[0]
+       if item = @getActivePaneItem()
+         document.title = "#{item.getTitle?() ? 'untitled'} - #{projectPath} - #{appName}"
