@@ -1,4 +1,5 @@
 temp = require 'temp'
+path = require 'path'
 
 module.exports = (grunt) ->
   grunt.loadTasks('tasks')
@@ -20,6 +21,7 @@ module.exports = (grunt) ->
     atomVersion: 'v0.140.0'
     sparkDevVersion: '0.0.17'
     appName: 'Spark Dev'
+    installDir: path.join(__dirname, '..', 'dist', process.platform)
 
   tasks = []
 
@@ -31,13 +33,12 @@ module.exports = (grunt) ->
       'copy-resources',
       'install-spark-dev',
       'install-unpublished-packages',
+      'patch-code',
+      'build-app',
     ]
 
   tasks = tasks.concat [
-    'patch-code',
-    # 'set-app-version',
-    # 'build-app',
-    # 'package-app'
+    'package-app'
   ]
 
   grunt.registerTask('default', tasks)
