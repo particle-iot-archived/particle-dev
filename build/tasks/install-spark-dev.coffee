@@ -40,7 +40,12 @@ module.exports = (grunt) ->
           env: env
         }
 
-        cp.safeExec '../../apm/node_modules/atom-package-manager/bin/apm install . --verbose', options, ->
+        if process.platform == 'win32'
+          command = '..\\..\\apm\\node_modules\\atom-package-manager\\bin\\apm.cmd'
+        else
+          command = '../../apm/node_modules/atom-package-manager/bin/apm'
+
+        cp.safeExec command + ' install . --verbose', options, ->
           packages.packageDependencies['spark-dev'] = grunt.config.get('sparkDevVersion')
           fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
           done()
