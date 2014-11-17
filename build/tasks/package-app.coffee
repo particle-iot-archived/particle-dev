@@ -12,13 +12,13 @@ module.exports = (grunt) ->
     if process.platform is 'darwin'
       command = 'ditto -ck --rsrc --sequesterRsrc --keepParent ' +
                 '"' + installDir + '" ' +
-                '"' + installDir + '.zip"'
+                '"' + path.dirname(installDir) + 'spark-dev-mac.zip"'
+      console.log command
       cp.safeExec command, ->
         done()
 
     else if process.platform is 'win32'
-      cleanName = grunt.config.get('appName').replace(' ', '')
-      outFile = path.join(path.dirname(installDir), 'Install' + cleanName + '.exe')
+      outFile = path.join(path.dirname(installDir), 'spark-dev-windows.exe')
       installerFile = path.join('resources', 'installer.nsi')
       command = 'makensis /DSOURCE="' + installDir +
                   '" /DOUT_FILE="' + outFile + '" ' +
