@@ -20,6 +20,7 @@ module.exports = (grunt) ->
     pathFile 'npmrc.patch', '.npmrc'
     pathFile 'atom.patch', 'src/atom.coffee'
     pathFile 'auto-update-manager.patch', 'src/browser/auto-update-manager.coffee'
+    pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee'
     pathFile 'atom-window.patch', 'src/browser/atom-window.coffee'
     pathFile 'workspace.patch', 'src/workspace.coffee'
     pathFile 'settings-view.patch', 'node_modules/settings-view/lib/settings-view.coffee'

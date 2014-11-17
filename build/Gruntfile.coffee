@@ -39,7 +39,6 @@ module.exports = (grunt) ->
       'install-spark-dev',
       'install-unpublished-packages',
       'patch-code',
-
     ]
 
   tasks = tasks.concat [

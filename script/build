@@ -3,7 +3,7 @@ var cp = require('./utils/child-process-wrapper.js');
 var path = require('path');
 
 process.chdir(path.dirname(__dirname));
-
+// TODO: Bootstrap build/
 var gruntPath = path.join('build', 'node_modules', '.bin', 'grunt') + (process.platform === 'win32' ? '.cmd' : '');
 var args = ['--gruntfile', path.resolve('build', 'Gruntfile.coffee')];
 args = args.concat(process.argv.slice(2));
