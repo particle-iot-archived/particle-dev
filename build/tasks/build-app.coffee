@@ -10,9 +10,9 @@ module.exports = (grunt) ->
 
     installDir = grunt.config.get('installDir')
 
-    command = 'build/node_modules/.bin/grunt ' +
-              '--gruntfile build/Gruntfile.coffee ' +
-              '--install-dir "' + installDir + '" ' +
+    command = path.join('build', 'node_modules', '.bin', 'grunt') +
+              ' --gruntfile ' + path.join('build', 'Gruntfile.coffee') +
+              ' --install-dir "' + installDir + '" ' +
               'download-atom-shell build set-version '
 
     if not grunt.config.get('no-codesign')
