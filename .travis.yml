@@ -5,5 +5,5 @@ notifications:
     on_failure: change
 env:
   - ATOM_VERSION=v0.140.0
-  - SPARK_DEV_VERSION=0.0.16
-script: curl -s https://raw.githubusercontent.com/spark/spark-dev/${SPARK_DEV_VERSION}/build/mac/build-package.sh | sh
+  - SPARK_DEV_VERSION=0.0.18
+script: curl -s https://raw.githubusercontent.com/spark/spark-dev/${SPARK_DEV_VERSION}/build/build-package.sh | sh -s ${ATOM_VERSION}

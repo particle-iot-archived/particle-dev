@@ -6,7 +6,7 @@ tar -zxf node-v0.10.22-darwin-x64.tar.gz
 export PATH=$PATH:$PWD/node-v0.10.22-darwin-x64/bin
 
 echo "Downloading latest Atom release..."
-curl -s -L "https://atom.io/download/mac" \
+curl -s -L "https://github.com/atom/atom/releases/download/v${1}/atom-mac.zip" \
   -H 'Accept: application/octet-stream' \
   -o atom.zip
 
