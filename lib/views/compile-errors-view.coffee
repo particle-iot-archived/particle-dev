@@ -29,8 +29,8 @@ class CompileErrorsView extends SelectListView
     lines = raw.split "\n"
     errors = []
     for line in lines
-      result = line.match /^([^:]+):(\d+):(\d+):\s(\w+):(.*)$/
-      if result and result[4] == 'error'
+      result = line.match /^([^:]+):(\d+):(\d+):\s(\w+\s*\w*):(.*)$/
+      if result and result[4].indexOf('error') > -1
         errors.push {
           file: result[1],
           row: result[2],
