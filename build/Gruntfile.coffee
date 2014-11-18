@@ -21,6 +21,9 @@ module.exports = (grunt) ->
   if process.platform is 'darwin'
     installDir += '.app'
 
+  # TODO: Get Atom Version from .atomrc
+  # TODO: Get Spark Dev version from options/latest tag
+
   grunt.initConfig
     workDir: workDir
     atomVersion: 'v0.140.0'

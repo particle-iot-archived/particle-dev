@@ -1,12 +1,14 @@
 #!/bin/sh
 
+source .atomrc
+
 echo "Downloading node v0.10.22..."
 curl -s -O http://nodejs.org/dist/v0.10.22/node-v0.10.22-darwin-x64.tar.gz
 tar -zxf node-v0.10.22-darwin-x64.tar.gz
 export PATH=$PATH:$PWD/node-v0.10.22-darwin-x64/bin
 
 echo "Downloading latest Atom release..."
-curl -s -L "https://github.com/atom/atom/releases/download/v${1}/atom-mac.zip" \
+curl -s -L "https://github.com/atom/atom/releases/download/${ATOM_VERSION}/atom-mac.zip" \
   -H 'Accept: application/octet-stream' \
   -o atom.zip
 
