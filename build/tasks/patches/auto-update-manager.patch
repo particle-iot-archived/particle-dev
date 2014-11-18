@@ -1,11 +1,10 @@
 --- auto-update-manager.old.coffee	2014-10-23 12:38:55.000000000 +0200
 +++ auto-update-manager.coffee	2014-10-23 12:45:09.000000000 +0200
 @@ -15,7 +15,7 @@
- 
+
    constructor: (@version) ->
      @state = IdleState
 -    @feedUrl = "https://atom.io/api/updates?version=#{@version}"
-+    @feedUrl = "http://spark-ide-updates.herokuapp.com?version=#{@version}"
- 
++    @feedUrl = "https://spark-ide-updates.herokuapp.com?version=#{@version}"
+
      process.nextTick => @setupAutoUpdater()
- 
