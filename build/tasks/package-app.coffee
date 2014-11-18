@@ -12,7 +12,7 @@ module.exports = (grunt) ->
     if process.platform is 'darwin'
       command = 'ditto -ck --rsrc --sequesterRsrc --keepParent ' +
                 '"' + installDir + '" ' +
-                '"' + path.dirname(installDir) + 'spark-dev-mac.zip"'
+                '"' + path.dirname(installDir) + path.sep + 'spark-dev-mac.zip"'
       console.log command
       cp.safeExec command, ->
         done()
