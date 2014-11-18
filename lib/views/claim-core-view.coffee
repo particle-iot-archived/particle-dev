@@ -39,18 +39,25 @@ class ClaimCoreView extends Dialog
       @claimPromise = spark.claimCore deviceID
       @setLoading true
       @claimPromise.done (e) =>
-        if !@claimPromise
-          return
+        @setLoading false
+        if e.ok
+          if !@claimPromise
+            return
 
-        # Set current core in settings
-        SettingsHelper.setCurrentCore e.id, e.id
+          # Set current core in settings
+          SettingsHelper.setCurrentCore e.id, e.id
 
-        # Refresh UI
-        atom.workspaceView.trigger 'spark-dev:update-core-status'
-        atom.workspaceView.trigger 'spark-dev:update-menu'
+          # Refresh UI
+          atom.workspaceView.trigger 'spark-dev:update-core-status'
+          atom.workspaceView.trigger 'spark-dev:update-menu'
 
-        @claimPromise = null
-        @close()
+          @claimPromise = null
+          @close()
+        else
+          @miniEditor.hiddenInput.removeAttr 'disabled'
+          @miniEditor.addClass 'editor-error'
+          @showError e.errors
+          @claimPromise = null
 
       , (e) =>
         @setLoading false
