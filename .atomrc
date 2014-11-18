@@ -1,1 +1,2 @@
 export ATOM_VERSION=v0.140.0
+export ATOM_NODE_VERSION=0.18.2
