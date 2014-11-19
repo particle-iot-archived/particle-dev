@@ -50,7 +50,7 @@ class StatusBarView extends View
 
   # Callback triggering selecting core command
   selectCore: ->
-    atom.workspaceView.trigger 'spark-dev:select-core'
+    atom.workspaceView.trigger 'spark-dev:select-device'
 
   # Callback triggering showing compile errors command
   showErrors: =>

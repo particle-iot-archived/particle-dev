@@ -202,3 +202,19 @@ describe 'Status Bar Tests', ->
 
       SettingsHelper.set 'compile-status', null
       SettingsHelper.clearCredentials()
+
+  it 'checks link commands', ->
+    sparkIde.statusView.updateLoginStatus()
+    spyOn atom.workspaceView, 'trigger'
+
+    sparkIde.statusView.find('#spark-login-status a').click()
+    expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:login')
+
+    SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+    atom.workspaceView.trigger.reset()
+
+    sparkIde.statusView.find('#spark-current-core a').click()
+    expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:select-device')
+
+    jasmine.unspy atom.workspaceView, 'trigger'
+    SettingsHelper.clearCredentials()
