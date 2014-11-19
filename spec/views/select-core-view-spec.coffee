@@ -54,7 +54,7 @@ describe 'Select Core View', ->
 
       expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       expect(selectCoreView.find('div.loading').css('display')).toEqual('block')
-      expect(selectCoreView.find('span.loading-message').text()).toEqual('Loading cores...')
+      expect(selectCoreView.find('span.loading-message').text()).toEqual('Loading devices...')
       expect(selectCoreView.find('ol.list-group li').length).toEqual(0)
 
       waitsFor ->

@@ -31,7 +31,7 @@ class SelectCoreView extends SelectListView
       atom.workspaceView.append(this)
 
       @setItems []
-      @setLoading 'Loading cores...'
+      @setLoading 'Loading devices...'
       @loadCores()
       @focusFilterEditor()
 
@@ -44,7 +44,7 @@ class SelectCoreView extends SelectListView
     name = item.name
     if !name
       name = 'Unnamed'
-      
+
     $$ ->
       @li class: 'two-lines core-line', =>
         @div class: 'primary-line ' + (if item.connected then 'core-online' else 'core-offline'), name
