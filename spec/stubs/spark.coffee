@@ -45,6 +45,12 @@ module.exports =
                 "last_app": null,
                 "last_heard": null,
                 "connected": false
+              }, {
+                "id": "51ff61258067545724380687",
+                "name": null,
+                "last_app": null,
+                "last_heard": null,
+                "connected": false
               }
             ]
             dfd.resolve this._devices
@@ -333,6 +339,28 @@ module.exports =
               "functions": [],
               "cc3000_patch_version": "1.28"
             }
+          , 1
+          dfd.promise
+
+  stubNullName: (method) ->
+    @unspyTimers()
+
+    switch method
+      when 'listDevices'
+        @stubMethod method, ->
+          dfd = whenjs.defer()
+          setTimeout ->
+            this._devices = [
+              {
+                "id": "51ff6e065067545724680187",
+                "name": null,
+                "last_app": null,
+                "last_heard": null,
+                "requires_deep_update": true,
+                "connected": true
+              }
+            ]
+            dfd.resolve this._devices
           , 1
           dfd.promise
 

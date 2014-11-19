@@ -45,7 +45,7 @@ class ClaimCoreView extends Dialog
             return
 
           # Set current core in settings
-          SettingsHelper.setCurrentCore e.id, e.id
+          SettingsHelper.setCurrentCore e.id, null
 
           # Refresh UI
           atom.workspaceView.trigger 'spark-dev:update-core-status'

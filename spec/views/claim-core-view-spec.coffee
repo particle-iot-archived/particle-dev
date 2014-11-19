@@ -36,6 +36,7 @@ describe 'Claim Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
+      SparkStub.stubSuccess 'claimCore'
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
@@ -49,12 +50,6 @@ describe 'Claim Core View', ->
       expect(atom.workspaceView.find('#spark-dev-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(claimCoreView.close).not.toHaveBeenCalled()
 
-      atom.workspaceView.trigger 'core:cancel'
-      jasmine.unspy claimCoreView, 'close'
-
-
-    it 'claims the core', ->
-      SparkStub.stubSuccess 'claimCore'
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
@@ -63,14 +58,15 @@ describe 'Claim Core View', ->
       editor.setText '0123456789abcdef0123456789abcdef'
       spyOn claimCoreView, 'close'
       spyOn atom.workspaceView, 'trigger'
+      spyOn SettingsHelper, 'setCurrentCore'
       claimCoreView.trigger 'core:confirm'
 
       waitsFor ->
         !claimCoreView.claimPromise
 
       runs ->
-        expect(SettingsHelper.get('current_core')).toBe('0123456789abcdef0123456789abcdef')
-        expect(SettingsHelper.get('current_core_name')).toBe('0123456789abcdef0123456789abcdef')
+        expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
+        expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null)
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
@@ -79,4 +75,5 @@ describe 'Claim Core View', ->
 
         jasmine.unspy claimCoreView, 'close'
         jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy SettingsHelper, 'setCurrentCore'
         claimCoreView.close()

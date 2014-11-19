@@ -41,9 +41,13 @@ class SelectCoreView extends SelectListView
 
   # Here you specify the view for an item
   viewForItem: (item) ->
+    name = item.name
+    if !name
+      name = 'Unnamed'
+      
     $$ ->
       @li class: 'two-lines core-line', =>
-        @div class: 'primary-line ' + (if item.connected then 'core-online' else 'core-offline'), item.name
+        @div class: 'primary-line ' + (if item.connected then 'core-online' else 'core-offline'), name
         @div class: 'secondary-line no-icon', item.id
 
   confirmed: (item) ->

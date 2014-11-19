@@ -62,15 +62,18 @@ describe 'Select Core View', ->
 
       runs ->
         devices = selectCoreView.find('ol.list-group li')
-        expect(devices.length).toEqual(2)
+        expect(devices.length).toEqual(3)
         expect(devices.eq(0).find('.primary-line').hasClass('core-online')).toEqual(true)
         expect(devices.eq(1).find('.primary-line').hasClass('core-offline')).toEqual(true)
+        expect(devices.eq(2).find('.primary-line').hasClass('core-offline')).toEqual(true)
 
         expect(devices.eq(0).find('.primary-line').text()).toEqual('Online Core')
         expect(devices.eq(1).find('.primary-line').text()).toEqual('Offline Core')
+        expect(devices.eq(2).find('.primary-line').text()).toEqual('Unnamed')
 
         expect(devices.eq(0).find('.secondary-line').text()).toEqual('51ff6e065067545724680187')
         expect(devices.eq(1).find('.secondary-line').text()).toEqual('51ff67258067545724380687')
+        expect(devices.eq(2).find('.secondary-line').text()).toEqual('51ff61258067545724380687')
 
         selectCoreView.hide()
         SettingsHelper.clearCredentials()

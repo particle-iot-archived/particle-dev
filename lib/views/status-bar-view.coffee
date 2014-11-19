@@ -92,7 +92,10 @@ class StatusBarView extends View
           statusElement.parent().addClass 'online'
 
         SettingsHelper.set 'current_core_name', e.name
-        statusElement.text e.name
+        if !e.name
+          statusElement.text 'Unnamed'
+        else
+          statusElement.text e.name
 
         SettingsHelper.set 'variables', e.variables
         SettingsHelper.set 'functions', e.functions
@@ -115,7 +118,10 @@ class StatusBarView extends View
     statusElement = this.find('#spark-current-core a')
 
     if SettingsHelper.hasCurrentCore()
-      statusElement.text SettingsHelper.get('current_core_name')
+      currentCore = SettingsHelper.get('current_core_name')
+      if !currentCore
+        currentCore = 'Unnamed'
+      statusElement.text currentCore
 
       @getCurrentCoreStatus()
     else

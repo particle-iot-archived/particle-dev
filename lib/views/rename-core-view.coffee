@@ -6,6 +6,8 @@ spark = null
 module.exports =
 class RenameCoreView extends Dialog
   constructor: (@initialName) ->
+    if !@initialName
+      @initialName = ''
     super
       prompt: 'Enter new name for this Core'
       initialText: @initialName

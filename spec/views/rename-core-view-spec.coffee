@@ -78,3 +78,9 @@ describe 'Rename Core View', ->
         jasmine.unspy renameCoreView, 'close'
         jasmine.unspy atom.workspaceView, 'trigger'
         renameCoreView.close()
+
+    it 'checks null core name', ->
+      SparkStub.stubSuccess 'renameCore'
+
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', null
+      sparkIde.renameCore()

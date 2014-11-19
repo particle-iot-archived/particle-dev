@@ -80,6 +80,23 @@ describe 'Status Bar Tests', ->
       jasmine.unspy statusView, 'getCurrentCoreStatus'
 
 
+    it 'checks current core name when its null', ->
+      statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
+
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', null
+      SparkStub.stubNullName 'getAttributes'
+
+      spyOn statusView, 'getCurrentCoreStatus'
+      sparkIde.statusView.updateCoreStatus()
+      expect(statusBar.find('#spark-current-core a').text()).toBe('Unnamed')
+      expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
+
+      SettingsHelper.clearCurrentCore()
+      SettingsHelper.clearCredentials()
+      jasmine.unspy statusView, 'getCurrentCoreStatus'
+
+
     it 'checks current core status', ->
       # Check async core status checking
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
