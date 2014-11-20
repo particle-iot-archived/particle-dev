@@ -15,7 +15,7 @@ module.exports = (grunt) ->
               ' --install-dir "' + installDir + '" ' +
               'download-atom-shell build set-version '
 
-    if not grunt.config.get('no-codesign')
+    if not grunt.option('no-codesign')
       command += 'codesign '
 
     command += 'install'
