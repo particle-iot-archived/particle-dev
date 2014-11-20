@@ -1,3 +1,15 @@
+## 0.0.18
+* Fixed new version notification on Windows
+* Fixed [#19](https://github.com/spark/spark-dev/issues/19)
+* Fixed [#24](https://github.com/spark/spark-dev/issues/24)
+* Fixed [#26](https://github.com/spark/spark-dev/issues/26)
+* Fixed [#29](https://github.com/spark/spark-dev/issues/29)
+* Fixed [#33](https://github.com/spark/spark-dev/issues/33)
+* Fixed [#34](https://github.com/spark/spark-dev/issues/34)
+* Fixed [#35](https://github.com/spark/spark-dev/issues/35)
+* Fixed [#36](https://github.com/spark/spark-dev/issues/36)
+* Fixed [#37](https://github.com/spark/spark-dev/issues/37)
+
 ## 0.0.17
 * Bug fixes
 
