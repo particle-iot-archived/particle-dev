@@ -11,7 +11,7 @@ module.exports = (grunt) ->
     done = @async()
     workDir = grunt.config.get('workDir')
 
-    tarballUrl = 'https://github.com/spark/spark-dev/archive/' + grunt.config.get('sparkDevVersion') + '.tar.gz'
+    tarballUrl = 'https://github.com/spark/spark-dev/archive/v' + grunt.config.get('sparkDevVersion') + '.tar.gz'
     tarballPath = path.join(workDir, 'sparkdev.tar.gz')
     sparkDevPath = path.join(workDir, 'node_modules', 'spark-dev')
     r = request(tarballUrl)
