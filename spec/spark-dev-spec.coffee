@@ -268,7 +268,7 @@ describe 'Main Tests', ->
           if utilities.getFilenameExt(file).toLowerCase() == '.bin'
             fs.unlinkSync file
 
-    it 'checks successful compile', ->
+    fit 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SparkStub.stubSuccess 'compileCode'
       SparkStub.stubSuccess 'downloadBinary'
@@ -292,9 +292,38 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-compile-status')
         expect(atom.workspaceView.trigger).not.toHaveBeenCalledWith('spark-dev:flash-cloud')
 
+        # Test leaving old firmwares
+        @originalDeleteOldFirmwareAfterCompile = atom.config.get 'spark-dev.deleteOldFirmwareAfterCompile'
+        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', false
+        fs.openSync atom.project.getPaths()[0] + '/firmware_123.bin', 'w'
+        sparkIde.compileCloud()
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      waitsFor ->
+        !sparkIde.downloadBinaryPromise
+
+      runs ->
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware_123.bin')).toBe(true)
+
+        # Test leaving only latest firmware
+        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', true
+        sparkIde.compileCloud()
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      waitsFor ->
+        !sparkIde.downloadBinaryPromise
+
+      runs ->
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware_123.bin')).toBe(false)
+
         SettingsHelper.set 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
+        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', @originalDeleteOldFirmwareAfterCompile
 
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'

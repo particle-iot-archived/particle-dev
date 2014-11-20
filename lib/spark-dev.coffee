@@ -145,6 +145,11 @@ module.exports =
       type: 'boolean'
       default: true
 
+    # Delete old .bin files on successful compile
+    deleteOldFirmwareAfterCompile:
+      type: 'boolean'
+      default: true
+
   # Require view's module and initialize it
   initView: (name) ->
     _s ?= require 'underscore.string'
@@ -348,6 +353,7 @@ module.exports =
     path ?= require 'path'
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
+    _s ?= require 'underscore.string'
 
     rootPath = atom.project.getPaths()[0]
     files = fs.listTreeSync(rootPath)
@@ -367,6 +373,14 @@ module.exports =
       if e.ok
         # Download binary
         @compileCloudPromise = null
+
+        if atom.config.get('spark-dev.deleteOldFirmwareAfterCompile')
+          # Remove old firmwares
+          files = fs.listSync rootPath
+          for file in files
+            if _s.startsWith(path.basename(file), 'firmware') and _s.endsWith(file, '.bin')
+              fs.unlinkSync file
+
         filename = 'firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
