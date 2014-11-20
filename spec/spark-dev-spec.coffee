@@ -245,15 +245,28 @@ describe 'Main Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       SparkStub.stubSuccess 'compileCode'
+      @originalFilesExcludedFromCompile = atom.config.get 'spark-dev.filesExcludedFromCompile'
+      atom.config.set 'spark-dev.filesExcludedFromCompile', '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
+
       sparkIde.compileCloud()
       # Check if local storage is set to working
       expect(SettingsHelper.get('compile-status')).toEqual({working:true})
 
       expect(spark.compileCode).toHaveBeenCalled()
-
       expectedFiles = ['foo.ino', 'inner/bar.cpp', 'lib.cpp', 'lib.h']
-
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
+
+      waitsFor ->
+        !sparkIde.compileCloudPromise
+
+      runs ->
+        atom.config.set 'spark-dev.filesExcludedFromCompile', '.ds_store, .jpg, .ino, .bin'
+        spark.compileCode.reset()
+        sparkIde.compileCloud()
+
+        expect(spark.compileCode).toHaveBeenCalled()
+        expectedFiles = ['inner/bar.cpp', 'lib.cpp', 'lib.h']
+        expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
       waitsFor ->
         !sparkIde.compileCloudPromise
@@ -262,13 +275,14 @@ describe 'Main Tests', ->
         SettingsHelper.set 'compile-status', null
         SettingsHelper.clearCredentials()
         atom.project.setPaths oldPaths
+        atom.config.set 'spark-dev.filesExcludedFromCompile', @originalFilesExcludedFromCompile
 
         # Remove firmware files
         for file in fs.listSync(__dirname + '/data/sampleproject')
           if utilities.getFilenameExt(file).toLowerCase() == '.bin'
             fs.unlinkSync file
 
-    fit 'checks successful compile', ->
+    it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SparkStub.stubSuccess 'compileCode'
       SparkStub.stubSuccess 'downloadBinary'

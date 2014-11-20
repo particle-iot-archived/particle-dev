@@ -150,6 +150,11 @@ module.exports =
       type: 'boolean'
       default: true
 
+    # Files ignored when compiling
+    filesExcludedFromCompile:
+      type: 'string'
+      default: '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
+
   # Require view's module and initialize it
   initView: (name) ->
     _s ?= require 'underscore.string'
@@ -357,8 +362,11 @@ module.exports =
 
     rootPath = atom.project.getPaths()[0]
     files = fs.listTreeSync(rootPath)
+    notSourceExtensions = atom.config.get('spark-dev.filesExcludedFromCompile').split ','
+    notSourceExtensions = (_s.trim(extension).toLowerCase() for extension in notSourceExtensions)
+
     files = files.filter (file) ->
-      return !(utilities.getFilenameExt(file).toLowerCase() in settings.notSourceExtensions) &&
+      return !(utilities.getFilenameExt(file).toLowerCase() in notSourceExtensions) &&
               !fs.isDirectorySync(file)
 
     process.chdir rootPath
