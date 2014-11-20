@@ -2,6 +2,8 @@ Name "Spark IDE"
 OutFile ${OUT_FILE}
 InstallDir "$PROGRAMFILES\Spark Dev"
 
+!insertmacro MUI_PAGE_LICENSE "..\..\LICENSE"
+
 Page license
 Page directory
 Page instfiles
