@@ -56,7 +56,22 @@ describe 'Serial Monitor View', ->
         @serialMonitorView = sparkIde.serialMonitorView
 
         # Test ports
+        require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-success'
+        @serialMonitorView.nullifySerialport()
+
+        @serialMonitorView.refreshSerialPorts()
         options = @serialMonitorView.portsSelect.find 'option'
+
+        expect(options.length).toEqual(1)
+        expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
+        expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
+
+        require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
+        @serialMonitorView.nullifySerialport()
+        @serialMonitorView.find('#refresh-ports-button').click()
+
+        options = @serialMonitorView.portsSelect.find 'option'
+
         expect(options.length).toEqual(2)
         expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
         expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
@@ -86,6 +101,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView = sparkIde.serialMonitorView
 
         expect(@serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
         expect(@serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
         expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
         expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toEqual('disabled')
@@ -93,10 +109,23 @@ describe 'Serial Monitor View', ->
         @serialMonitorView.connectButton.click()
 
         expect(@serialMonitorView.portsSelect.attr('disabled')).toEqual('disabled')
+        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toEqual('disabled')
         expect(@serialMonitorView.baudratesSelect.attr('disabled')).toEqual('disabled')
         expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
         expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toBeUndefined()
 
+        @serialMonitorView.connectButton.click()
+
+        expect(@serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
+        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
+        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toEqual('disabled')
+
+        @serialMonitorView.connectButton.click()
+
+        # Test disconnecting on error
+        expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
         spyOn console, 'error'
         @serialMonitorView.port.emit 'error'
 

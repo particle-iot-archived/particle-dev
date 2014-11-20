@@ -10,8 +10,9 @@ class SerialMonitorView extends View
   @content: ->
     @div id: 'spark-dev-serial-monitor', class: 'panel', =>
       @div class: 'panel-heading', =>
-        @select outlet: 'portsSelect', mousedown: 'refreshSerialPorts', change: 'portSelected', =>
+        @select outlet: 'portsSelect', change: 'portSelected', =>
           @option value: '', 'No port selected'
+        @button class: 'btn icon-sync', id: 'refresh-ports-button', outlet: 'refreshPortsButton', click: 'refreshSerialPorts', ''
         @span '@'
         @select outlet: 'baudratesSelect', change: 'baudrateSelected'
         @button class: 'btn', outlet: 'connectButton', click: 'toggleConnect', 'Connect'
@@ -111,6 +112,7 @@ class SerialMonitorView extends View
 
   connect: ->
     @portsSelect.attr 'disabled', 'disabled'
+    @refreshPortsButton.attr 'disabled', 'disabled'
     @baudratesSelect.attr 'disabled', 'disabled'
     @connectButton.text 'Disconnect'
     @input.hiddenInput.removeAttr 'disabled'
@@ -134,6 +136,7 @@ class SerialMonitorView extends View
 
   disconnect: ->
     @portsSelect.removeAttr 'disabled'
+    @refreshPortsButton.removeAttr 'disabled'
     @baudratesSelect.removeAttr 'disabled'
     @connectButton.text 'Connect'
     @input.hiddenInput.attr 'disabled', 'disabled'
@@ -143,3 +146,7 @@ class SerialMonitorView extends View
 
   clearOutput: ->
     @output.html ''
+
+  # Method used only in tests
+  nullifySerialport: ->
+    serialport = null
