@@ -31,19 +31,26 @@ module.exports = (grunt) ->
     if key.indexOf('ATOM_VERSION') > 0
       atomVersion = value
 
-  # TODO: Get Spark Dev version from options/latest tag
+  # Get Spark Dev version from options/latest tag
+  if !!grunt.option('sparkDevVersion')
+    sparkDevVersion = grunt.option('sparkDevVersion')
+  else
+    request = require 'sync-request'
+    response = request 'get', 'https://api.github.com/repos/spark/spark-dev/releases',
+      headers:
+        'User-Agent': 'Spark Dev build script'
+
+    releases = JSON.parse response.getBody()
+    sparkDevVersion = releases[0].tag_name.substring(1)
 
   grunt.initConfig
     workDir: workDir
     atomVersion: atomVersion
-    sparkDevVersion: '0.0.18'
+    sparkDevVersion: sparkDevVersion
     appName: appName
     installDir: installDir
 
   tasks = []
-
-  console.log grunt.config.get('atomVersion')
-  return
 
   if !grunt.option('workDir')
     tasks = tasks.concat [
