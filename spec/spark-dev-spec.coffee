@@ -363,7 +363,7 @@ describe 'Main Tests', ->
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
 
-    it 'checks flashing after compiling', ->
+    xit 'checks flashing after compiling', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SparkStub.stubSuccess 'compileCode'
       SparkStub.stubSuccess 'downloadBinary'
