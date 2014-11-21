@@ -398,7 +398,9 @@ module.exports =
           atom.workspaceView.trigger 'spark-dev:update-compile-status'
 
           if !!thenFlash
-            atom.workspaceView.trigger 'spark-dev:flash-cloud'
+            setTimeout ->
+              atom.workspaceView.trigger 'spark-dev:flash-cloud'
+            , 500
 
           @downloadBinaryPromise = null
       else
