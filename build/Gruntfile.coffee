@@ -1,5 +1,6 @@
 temp = require 'temp'
 path = require 'path'
+fs = require 'fs'
 
 module.exports = (grunt) ->
   grunt.loadTasks('tasks')
@@ -21,17 +22,28 @@ module.exports = (grunt) ->
   if process.platform is 'darwin'
     installDir += '.app'
 
-  # TODO: Get Atom Version from .atomrc
+  # Get Atom Version from .atomrc
+  atomrc = fs.readFileSync(path.join(__dirname, '..', '.atomrc')).toString()
+  lines = atomrc.split "\n"
+  atomVersion = null
+  for line in lines
+    [key, value] = line.split '='
+    if key.indexOf('ATOM_VERSION') > 0
+      atomVersion = value
+
   # TODO: Get Spark Dev version from options/latest tag
 
   grunt.initConfig
     workDir: workDir
-    atomVersion: 'v0.140.0'
+    atomVersion: atomVersion
     sparkDevVersion: '0.0.18'
     appName: appName
     installDir: installDir
 
   tasks = []
+
+  console.log grunt.config.get('atomVersion')
+  return
 
   if !grunt.option('workDir')
     tasks = tasks.concat [
