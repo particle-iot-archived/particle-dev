@@ -32,7 +32,7 @@ module.exports = (grunt) ->
     done = @async()
 
     installPackage 'spark', 'welcome-spark', '0.19.0', ->
-      installPackage 'spark', 'feedback-spark', '0.34.0', ->
+      installPackage 'spark', 'feedback-spark', '0.35.0', ->
         installPackage 'spark', 'release-notes-spark', '0.36.0', ->
           installPackage 'spark', 'language-spark', '0.3.0', ->
             done()
