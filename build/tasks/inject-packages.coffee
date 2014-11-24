@@ -20,3 +20,4 @@ module.exports = (grunt) ->
     injectPackage 'feedback'
     injectPackage 'release-notes'
     injectPackage 'symbols-view'
+    injectPackage 'exception-reporting'

@@ -28,17 +28,16 @@ module.exports = (grunt) ->
             pathFile 'atom-window.patch', 'src/browser/atom-window.coffee', ->
               pathFile 'workspace.patch', 'src/workspace.coffee', ->
                 pathFile 'settings-view.patch', 'node_modules/settings-view/lib/settings-view.coffee', ->
-                 pathFile 'reporter.patch', 'node_modules/exception-reporting/lib/reporter.coffee', ->
-                   pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
+                 pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
 
-                    if process.platform is 'darwin'
-                      pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
-                        pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee', ->
-                          pathFile 'darwin.patch', 'menus/darwin.cson', ->
-                            done()
-                    else if process.platform is 'win32'
-                      pathFile 'win32.patch', 'menus/win32.cson', ->
-                        done()
-                    else
-                      pathFile 'linux.patch', 'menus/linux.cson', ->
-                        done()
+                  if process.platform is 'darwin'
+                    pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
+                      pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee', ->
+                        pathFile 'darwin.patch', 'menus/darwin.cson', ->
+                          done()
+                  else if process.platform is 'win32'
+                    pathFile 'win32.patch', 'menus/win32.cson', ->
+                      done()
+                  else
+                    pathFile 'linux.patch', 'menus/linux.cson', ->
+                      done()

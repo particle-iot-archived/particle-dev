@@ -55,16 +55,17 @@ module.exports = (grunt) ->
   if !grunt.option('workDir')
     tasks = tasks.concat [
       'download-atom',
-      'inject-packages',
-      'bootstrap-atom',
-      'copy-resources',
-      'install-spark-dev',
-      'install-unpublished-packages',
-      'patch-code',
-      'build-app',
+
     ]
 
   tasks = tasks.concat [
+    'inject-packages',
+    'bootstrap-atom',
+    'copy-resources',
+    'install-spark-dev',
+    'install-unpublished-packages',
+    # 'patch-code',
+    'build-app',
     'package-app'
   ]
 
