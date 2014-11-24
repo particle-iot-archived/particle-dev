@@ -1,0 +1,10 @@
+--- Gruntfile.coffee.old	2014-11-24 15:19:25.000000000 +0100
++++ Gruntfile.coffee	2014-11-24 15:19:49.000000000 +0100
+@@ -75,6 +75,7 @@
+       ]
+       dest: appDir
+       ext: '.js'
++      sourceMap: true
+ 
+   lessConfig =
+     options:
