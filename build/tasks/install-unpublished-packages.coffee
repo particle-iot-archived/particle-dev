@@ -31,7 +31,7 @@ module.exports = (grunt) ->
     workDir = grunt.config.get 'workDir'
     done = @async()
 
-    installPackage 'spark', 'welcome-spark', '0.19.0', ->
+    installPackage 'spark', 'welcome-spark', '0.20.0', ->
       installPackage 'spark', 'feedback-spark', '0.35.0', ->
         installPackage 'spark', 'release-notes-spark', '0.36.0', ->
           installPackage 'spark', 'language-spark', '0.3.0', ->
