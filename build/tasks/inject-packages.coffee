@@ -3,7 +3,7 @@ fs = require 'fs-extra'
 workDir = null
 
 module.exports = (grunt) ->
-  {injectPackage} = require('./task-helpers')(grunt)
+  {injectPackage, injectDependency} = require('./task-helpers')(grunt)
 
   grunt.registerTask 'inject-packages', 'Inject packages into packages.json and node_modules dir', ->
     workDir = grunt.config.get 'workDir'
@@ -21,3 +21,5 @@ module.exports = (grunt) ->
     injectPackage 'release-notes'
     injectPackage 'symbols-view'
     injectPackage 'exception-reporting'
+
+    injectDependency 'coffeestack', 'git+https://github.com/spark/coffeestack.git#master'

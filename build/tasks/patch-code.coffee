@@ -29,7 +29,6 @@ module.exports = (grunt) ->
               pathFile 'workspace.patch', 'src/workspace.coffee', ->
                 pathFile 'settings-view.patch', 'node_modules/settings-view/lib/settings-view.coffee', ->
                  pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
-
                   if process.platform is 'darwin'
                     pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
                       pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee', ->
