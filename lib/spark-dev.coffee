@@ -120,6 +120,7 @@ module.exports =
     proFile = path.join settings.ensureFolder(), 'profile.json'
     if !fs.existsSync(proFile)
       fs.writeFileSync proFile, '{}'
+      console.log '!Created profile ' + proFile
 
     if typeof(jasmine) == 'undefined'
       # Don't watch settings during tests
@@ -234,6 +235,7 @@ module.exports =
     settings.whichProfile()
     settingsFile = settings.findOverridesFile()
     if !fs.existsSync(settingsFile)
+      console.log '!Created ' + settingsFile
       fs.writeFileSync settingsFile, '{}'
 
     @configSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
