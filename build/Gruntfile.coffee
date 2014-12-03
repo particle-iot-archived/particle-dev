@@ -64,7 +64,7 @@ module.exports = (grunt) ->
     'copy-resources',
     'install-spark-dev',
     'install-unpublished-packages',
-    # 'patch-code',
+    'patch-code',
     'build-app',
     'package-app'
   ]
