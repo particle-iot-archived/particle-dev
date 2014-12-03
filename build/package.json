@@ -10,7 +10,6 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-coffee": "^0.12.0",
     "request": "^2.48.0",
-    "spawn-sync": "^1.0.0",
     "sync-request": "^1.0.1",
     "temp": "^0.8.1"
   }
