@@ -28,6 +28,8 @@ class ListeningModeView extends View
           atom.workspaceView.trigger 'core:cancel'
           # Try to identify found ports
           atom.workspaceView.trigger delegate
+      , (e) =>
+        console.error e
     , 1000
 
     # Subscribe to Atom's core:cancel core:close events

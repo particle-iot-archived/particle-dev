@@ -264,6 +264,8 @@ module.exports =
         @selectPortView = new @SelectPortView(delegate)
 
         @selectPortView.show()
+    , (e) =>
+      console.error e
 
   # Show login dialog
   login: ->
@@ -405,6 +407,8 @@ module.exports =
             , 500
 
           @downloadBinaryPromise = null
+        , (e) =>
+          console.error e
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'

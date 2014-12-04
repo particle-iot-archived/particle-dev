@@ -58,3 +58,5 @@ class SelectPortView extends SelectListView
     @listPortsPromise.done (ports) =>
       @setItems ports
       @listPortsPromise = null
+    , (e) =>
+      console.error e
