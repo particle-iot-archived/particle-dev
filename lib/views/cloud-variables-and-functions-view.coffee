@@ -47,6 +47,7 @@ class CloudVariablesAndFunctionsView extends View
 
     @client = null
     @watchers = {}
+    @variablePromises = {}
 
     @listVariables()
     @listFunctions()
@@ -124,9 +125,19 @@ class CloudVariablesAndFunctionsView extends View
     cell = @find('#spark-dev-cloud-variables [data-id=' + variableName + '] td:eq(2)')
     cell.addClass 'loading'
     cell.text ''
+    promise = @variablePromises[variableName]
+    if !!promise
+      promise._handler.resolve()
     promise = spark.getVariable SettingsHelper.get('current_core'), variableName
+    @variablePromises[variableName] = promise
     promise.done (e) =>
+      if !e
+        dfd.resolve null
+        return
+        
+      delete @variablePromises[variableName]
       cell.removeClass()
+
       if !!e.ok
         cell.addClass 'icon icon-issue-opened text-error'
         dfd.reject()
@@ -134,6 +145,7 @@ class CloudVariablesAndFunctionsView extends View
         cell.text e.result
         dfd.resolve e.result
     , (e) =>
+      delete @variablePromises[variableName]
       cell.removeClass()
       cell.addClass 'icon icon-issue-opened text-error'
       dfd.reject()
