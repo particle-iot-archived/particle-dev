@@ -1,3 +1,8 @@
+## 0.0.19
+* Fixed [#28](https://github.com/spark/spark-dev/issues/28)
+* Fixed [#41](https://github.com/spark/spark-dev/issues/41)
+* Cleaned up status bar
+
 ## 0.0.18
 * Fixed new version notification on Windows
 * Fixed [#19](https://github.com/spark/spark-dev/issues/19)
