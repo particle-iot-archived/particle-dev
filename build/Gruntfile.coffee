@@ -1,6 +1,7 @@
 temp = require 'temp'
 path = require 'path'
 fs = require 'fs'
+_s = require 'underscore.string'
 
 module.exports = (grunt) ->
   grunt.loadTasks('tasks')
@@ -29,7 +30,7 @@ module.exports = (grunt) ->
   for line in lines
     [key, value] = line.split '='
     if key.indexOf('ATOM_VERSION') > 0
-      atomVersion = value
+      atomVersion = _s.trim(value)
 
   # Get Spark Dev version from options/latest tag
   if !!grunt.option('sparkDevVersion')
