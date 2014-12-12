@@ -73,10 +73,14 @@ class CompileErrorsView extends SelectListView
 
   fixInoFile: (filename) ->
     fs ?= require 'fs-plus'
-    if fs.existsSync filename
-      return filename
-    else
-      return filename.replace '.cpp', '.ino'
+    path ?= require 'path'
+
+    rootPath = atom.project.getPaths()[0]
+    files = fs.listTreeSync rootPath
+    for file in files
+      if path.basename(file) == filename
+        return file.slice(rootPath.length + 1)
+    return filename.replace '.cpp', '.ino'
 
   viewForItem: (item) ->
     self = @

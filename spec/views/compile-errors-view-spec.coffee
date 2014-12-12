@@ -1,5 +1,6 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
+path = require 'path'
 SettingsHelper = require '../../lib/utils/settings-helper'
 
 describe 'Compile Errors View', ->
@@ -55,6 +56,7 @@ describe 'Compile Errors View', ->
           col: 4
         }
       ]}
+      atom.project.setPaths [path.join(__dirname, '..', 'data', 'sampleproject')]
       atom.workspaceView.trigger 'spark-dev:show-compile-errors'
       compileErrorsView = sparkIde.compileErrorsView
 
