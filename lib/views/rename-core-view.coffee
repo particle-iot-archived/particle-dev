@@ -32,14 +32,14 @@ class RenameCoreView extends Dialog
       spark ?= require 'spark'
       spark.login { accessToken: SettingsHelper.get('access_token') }
       workspace = atom.workspaceView
-      @renamePromise = spark.renameCore SettingsHelper.get('current_core'), newName
+      @renamePromise = spark.renameCore SettingsHelper.getLocal('current_core'), newName
       @setLoading true
       @renamePromise.done (e) =>
         if !@renamePromise
           return
 
         atom.workspaceView = workspace
-        SettingsHelper.set 'current_core_name', newName
+        SettingsHelper.setLocal 'current_core_name', newName
         atom.workspaceView.trigger 'spark-dev:update-core-status'
         atom.workspaceView.trigger 'spark-dev:update-menu'
         @renamePromise = null

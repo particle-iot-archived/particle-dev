@@ -60,7 +60,7 @@ class StatusBarView extends View
   showFile: =>
     shell ?= require 'shell'
     rootPath = atom.project.getPaths()[0]
-    compileStatus = SettingsHelper.get 'compile-status'
+    compileStatus = SettingsHelper.getLocal 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
   # Get current core's status from the cloud
@@ -73,10 +73,10 @@ class StatusBarView extends View
 
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
-    @getAttributesPromise = spark.getAttributes SettingsHelper.get('current_core')
+    @getAttributesPromise = spark.getAttributes SettingsHelper.getLocal('current_core')
     @getAttributesPromise.done (e) =>
-      SettingsHelper.set 'variables', {}
-      SettingsHelper.set 'functions', []
+      SettingsHelper.setLocal 'variables', {}
+      SettingsHelper.setLocal 'functions', []
 
       if !e
         return
@@ -91,14 +91,14 @@ class StatusBarView extends View
         if e.connected
           statusElement.parent().addClass 'online'
 
-        SettingsHelper.set 'current_core_name', e.name
+        SettingsHelper.setLocal 'current_core_name', e.name
         if !e.name
           statusElement.text 'Unnamed'
         else
           statusElement.text e.name
 
-        SettingsHelper.set 'variables', e.variables
-        SettingsHelper.set 'functions', e.functions
+        SettingsHelper.setLocal 'variables', e.variables
+        SettingsHelper.setLocal 'functions', e.functions
 
         # Periodically check if core is online
         if !@interval
@@ -118,7 +118,7 @@ class StatusBarView extends View
     statusElement = this.find('#spark-current-core a')
 
     if SettingsHelper.hasCurrentCore()
-      currentCore = SettingsHelper.get('current_core_name')
+      currentCore = SettingsHelper.getLocal('current_core_name')
       if !currentCore
         currentCore = 'Unnamed'
       statusElement.text currentCore
@@ -155,7 +155,7 @@ class StatusBarView extends View
   updateCompileStatus: ->
     statusElement = this.find('#spark-compile-status')
     statusElement.addClass 'hidden'
-    compileStatus = SettingsHelper.get 'compile-status'
+    compileStatus = SettingsHelper.getLocal 'compile-status'
 
     if !!compileStatus
       statusElement.removeClass 'hidden'

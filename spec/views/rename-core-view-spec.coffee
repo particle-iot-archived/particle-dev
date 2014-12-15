@@ -68,7 +68,7 @@ describe 'Rename Core View', ->
         !renameCoreView.renamePromise
 
       runs ->
-        expect(SettingsHelper.get('current_core_name')).toBe('Bar')
+        expect(SettingsHelper.getLocal('current_core_name')).toBe('Bar')
         expect(atom.workspaceView.trigger).toHaveBeenCalled()
         expect(atom.workspaceView.trigger.calls.length).toEqual(2)
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')

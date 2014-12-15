@@ -29,16 +29,16 @@ module.exports =
       if SettingsHelper.hasCurrentCore()
         # Menu items depending on current core
         ideMenu.submenu = ideMenu.submenu.concat [{
-          label: 'Rename ' + SettingsHelper.get('current_core_name') + '...',
+          label: 'Rename ' + SettingsHelper.getLocal('current_core_name') + '...',
           command: 'spark-dev:rename-device'
         },{
-          label: 'Remove ' + SettingsHelper.get('current_core_name') + '...',
+          label: 'Remove ' + SettingsHelper.getLocal('current_core_name') + '...',
           command: 'spark-dev:remove-device'
         },{
           label: 'Show cloud variables and functions',
           command: 'spark-dev:show-cloud-variables-and-functions'
         },{
-          label: 'Flash ' + SettingsHelper.get('current_core_name') + ' via the cloud',
+          label: 'Flash ' + SettingsHelper.getLocal('current_core_name') + ' via the cloud',
           command: 'spark-dev:flash-cloud'
         }]
 

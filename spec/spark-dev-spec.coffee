@@ -233,7 +233,7 @@ describe 'Main Tests', ->
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
-      SettingsHelper.set 'compile-status', null
+      SettingsHelper.setLocal 'compile-status', null
       jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
       jasmine.unspy atom.project, 'getPaths'
@@ -250,7 +250,7 @@ describe 'Main Tests', ->
 
       sparkIde.compileCloud()
       # Check if local storage is set to working
-      expect(SettingsHelper.get('compile-status')).toEqual({working:true})
+      expect(SettingsHelper.getLocal('compile-status')).toEqual({working:true})
 
       expect(spark.compileCode).toHaveBeenCalled()
       expectedFiles = ['foo.ino', 'inner/bar.cpp', 'lib.cpp', 'lib.h']
@@ -272,7 +272,7 @@ describe 'Main Tests', ->
         !sparkIde.compileCloudPromise
 
       runs ->
-        SettingsHelper.set 'compile-status', null
+        SettingsHelper.setLocal 'compile-status', null
         SettingsHelper.clearCredentials()
         atom.project.setPaths oldPaths
         atom.config.set 'spark-dev.filesExcludedFromCompile', @originalFilesExcludedFromCompile
@@ -297,7 +297,7 @@ describe 'Main Tests', ->
         !sparkIde.downloadBinaryPromise
 
       runs ->
-        compileStatus = SettingsHelper.get 'compile-status'
+        compileStatus = SettingsHelper.getLocal 'compile-status'
         expect(compileStatus.filename).not.toBeUndefined()
         expect(_s.startsWith(compileStatus.filename, 'firmware')).toBe(true)
         expect(_s.endsWith(compileStatus.filename, '.bin')).toBe(true)
@@ -334,7 +334,7 @@ describe 'Main Tests', ->
       runs ->
         expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware_123.bin')).toBe(false)
 
-        SettingsHelper.set 'compile-status', null
+        SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
         atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', @originalDeleteOldFirmwareAfterCompile
@@ -350,7 +350,7 @@ describe 'Main Tests', ->
         !sparkIde.compileCloudPromise
 
       runs ->
-        compileStatus = SettingsHelper.get 'compile-status'
+        compileStatus = SettingsHelper.getLocal 'compile-status'
         expect(compileStatus.errors).not.toBeUndefined()
         expect(compileStatus.errors.length).toEqual(1)
 
@@ -359,7 +359,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-compile-status')
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:show-compile-errors')
 
-        SettingsHelper.set 'compile-status', null
+        SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
 
@@ -380,7 +380,7 @@ describe 'Main Tests', ->
       runs ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:flash-cloud')
 
-        SettingsHelper.set 'compile-status', null
+        SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.workspaceView, 'trigger'
         SettingsHelper.clearCredentials()
 

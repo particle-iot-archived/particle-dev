@@ -112,12 +112,12 @@ describe 'Status Bar Tests', ->
         statusBar = atom.workspaceView.statusBar.find('#spark-dev-status-bar-view')
         expect(statusBar.find('#spark-current-core').hasClass('online')).toBe(true)
 
-        variables = SettingsHelper.get('variables')
+        variables = SettingsHelper.getLocal('variables')
         expect(variables).not.toBe(null)
         expect(Object.keys(variables).length).toEqual(1)
         expect(variables.foo).toEqual('int32')
 
-        functions = SettingsHelper.get('functions')
+        functions = SettingsHelper.getLocal('functions')
         expect(functions).not.toBe(null)
         expect(functions.length).toEqual(1)
         expect(functions[0]).toEqual('bar')
@@ -147,7 +147,7 @@ describe 'Status Bar Tests', ->
       jasmine.unspy SettingsHelper, 'get'
 
       # Test compiling in progress
-      SettingsHelper.set 'compile-status', {working:true}
+      SettingsHelper.setLocal 'compile-status', {working:true}
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).not.toBe('none')
@@ -155,7 +155,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-success').css('display')).toBe('none')
 
       # Test errors
-      SettingsHelper.set 'compile-status', {errors:[1]}
+      SettingsHelper.setLocal 'compile-status', {errors:[1]}
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
@@ -164,7 +164,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('One error')
 
       # Test error
-      SettingsHelper.set 'compile-status', {error:'Foo'}
+      SettingsHelper.setLocal 'compile-status', {error:'Foo'}
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
@@ -173,7 +173,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('Foo')
 
       # Test multiple errors
-      SettingsHelper.set 'compile-status', {errors:[1,2]}
+      SettingsHelper.setLocal 'compile-status', {errors:[1,2]}
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.find('#spark-compile-failed').text()).toBe('2 errors')
 
@@ -185,7 +185,7 @@ describe 'Status Bar Tests', ->
       jasmine.unspy statusBarView, 'showErrors'
 
       # Test complete
-      SettingsHelper.set 'compile-status', {filename:'foo.bin'}
+      SettingsHelper.setLocal 'compile-status', {filename:'foo.bin'}
       sparkIde.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(false)
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
@@ -200,7 +200,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarView.showFile).toHaveBeenCalled()
       jasmine.unspy statusBarView, 'showFile'
 
-      SettingsHelper.set 'compile-status', null
+      SettingsHelper.setLocal 'compile-status', null
       SettingsHelper.clearCredentials()
 
   it 'checks link commands', ->

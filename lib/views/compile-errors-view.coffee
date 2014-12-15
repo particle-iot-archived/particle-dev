@@ -60,7 +60,7 @@ class CompileErrorsView extends SelectListView
 
       atom.workspaceView.append(this)
 
-      compileStatus = SettingsHelper.get 'compile-status'
+      compileStatus = SettingsHelper.getLocal 'compile-status'
       if compileStatus?.errors
         @setItems compileStatus.errors
       else

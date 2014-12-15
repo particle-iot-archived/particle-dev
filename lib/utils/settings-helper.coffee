@@ -20,6 +20,19 @@ module.exports =
     settings = require settingsPath
     settings.override null, key, value
 
+  # Get local (current window's) key's value
+  getLocal: (key) ->
+    if window.localSettings
+      return window.localSettings[key]
+    null
+
+  # Set local (current window's) key to value
+  setLocal: (key, value) ->
+    if !window.localSettings
+      window.localSettings = {}
+
+    window.localSettings[key] = value
+
   # Get key's value
   get: (key) ->
     delete require.cache[require.resolve(settingsPath)]
@@ -43,14 +56,14 @@ module.exports =
 
   # Set current core's ID and name
   setCurrentCore: (id, name) ->
-    @set 'current_core', id
-    @set 'current_core_name', name
+    @setLocal 'current_core', id
+    @setLocal 'current_core_name', name
 
   # Clear current core
   clearCurrentCore: ->
-    @set 'current_core', null
-    @set 'current_core_name', null
+    @setLocal 'current_core', null
+    @setLocal 'current_core_name', null
 
   # True if there is current core set
   hasCurrentCore: ->
-    !!@get('current_core')
+    !!@getLocal('current_core')

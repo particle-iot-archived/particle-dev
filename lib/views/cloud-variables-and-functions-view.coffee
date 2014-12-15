@@ -72,7 +72,7 @@ class CloudVariablesAndFunctionsView extends View
 
   # Propagate table with variables
   listVariables: ->
-    variables = SettingsHelper.get 'variables'
+    variables = SettingsHelper.getLocal 'variables'
     @variables.empty()
 
     if !variables || Object.keys(variables).length == 0
@@ -128,13 +128,13 @@ class CloudVariablesAndFunctionsView extends View
     promise = @variablePromises[variableName]
     if !!promise
       promise._handler.resolve()
-    promise = spark.getVariable SettingsHelper.get('current_core'), variableName
+    promise = spark.getVariable SettingsHelper.getLocal('current_core'), variableName
     @variablePromises[variableName] = promise
     promise.done (e) =>
       if !e
         dfd.resolve null
         return
-        
+
       delete @variablePromises[variableName]
       cell.removeClass()
 
@@ -179,7 +179,7 @@ class CloudVariablesAndFunctionsView extends View
 
   # Propagate table with functions
   listFunctions: ->
-    functions = SettingsHelper.get 'functions'
+    functions = SettingsHelper.getLocal 'functions'
 
     @functions.empty()
     if !functions || functions.length == 0
@@ -222,7 +222,7 @@ class CloudVariablesAndFunctionsView extends View
     @setRowEnabled row, false
     row.find('.editor:eq(1)').view().setText ' '
     params = row.find('.editor:eq(0)').view().getText()
-    promise = spark.callFunction SettingsHelper.get('current_core'), functionName, params
+    promise = spark.callFunction SettingsHelper.getLocal('current_core'), functionName, params
     promise.done (e) =>
       @setRowEnabled row, true
 

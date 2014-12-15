@@ -290,19 +290,19 @@ module.exports =
   # Show rename core dialog
   renameCore: -> @coreRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
-    @renameCoreView = new @RenameCoreView(@SettingsHelper.get 'current_core_name')
+    @renameCoreView = new @RenameCoreView(@SettingsHelper.getLocal 'current_core_name')
 
     @renameCoreView.attach()
 
   # Remove current core from user's account
   removeCore: -> @coreRequired =>
-    removeButton = 'Remove ' + @SettingsHelper.get('current_core_name')
+    removeButton = 'Remove ' + @SettingsHelper.getLocal('current_core_name')
     buttons = {}
     buttons['Cancel'] = ->
 
-    buttons['Remove ' + @SettingsHelper.get('current_core_name')] = =>
+    buttons['Remove ' + @SettingsHelper.getLocal('current_core_name')] = =>
       workspace = atom.workspaceView
-      @removePromise = @spark.removeCore @SettingsHelper.get('current_core')
+      @removePromise = @spark.removeCore @SettingsHelper.getLocal('current_core')
       @removePromise.done (e) =>
         if !@removePromise
           return
@@ -324,7 +324,7 @@ module.exports =
 
     atom.confirm
       message: 'Removal confirmation'
-      detailedMessage: 'Do you really want to remove ' + @SettingsHelper.get('current_core_name') + '?'
+      detailedMessage: 'Do you really want to remove ' + @SettingsHelper.getLocal('current_core_name') + '?'
       buttons: buttons
 
   # Show core claiming dialog
@@ -354,7 +354,7 @@ module.exports =
     if !!@compileCloudPromise
       return
 
-    @SettingsHelper.set 'compile-status', {working: true}
+    @SettingsHelper.setLocal 'compile-status', {working: true}
     atom.workspaceView.trigger 'spark-dev:update-compile-status'
 
     # Including files
@@ -398,7 +398,7 @@ module.exports =
 
         @downloadBinaryPromise.done (e) =>
           atom.workspaceView = workspace
-          @SettingsHelper.set 'compile-status', {filename: filename}
+          @SettingsHelper.setLocal 'compile-status', {filename: filename}
           atom.workspaceView.trigger 'spark-dev:update-compile-status'
 
           if !!thenFlash
@@ -415,16 +415,16 @@ module.exports =
         errors = @CompileErrorsView.parseErrors(e.errors[0])
 
         if errors.length == 0
-          @SettingsHelper.set 'compile-status', {error: e.output}
+          @SettingsHelper.setLocal 'compile-status', {error: e.output}
         else
-          @SettingsHelper.set 'compile-status', {errors: errors}
+          @SettingsHelper.setLocal 'compile-status', {errors: errors}
           atom.workspaceView.trigger 'spark-dev:show-compile-errors'
 
         atom.workspaceView.trigger 'spark-dev:update-compile-status'
         @compileCloudPromise = null
     , (e) =>
       console.error e
-      @SettingsHelper.set 'compile-status', null
+      @SettingsHelper.setLocal 'compile-status', null
       atom.workspaceView.trigger 'spark-dev:update-compile-status'
 
   # Show compile errors list
@@ -463,7 +463,7 @@ module.exports =
 
       @statusView.setStatus 'Flashing via the cloud...'
 
-      @flashCorePromise = @spark.flashCore @SettingsHelper.get('current_core'), [firmware]
+      @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
       @flashCorePromise.done (e) =>
         @statusView.setStatus e.status + '...'
         @statusView.clearAfter 5000

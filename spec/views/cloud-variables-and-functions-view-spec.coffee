@@ -30,14 +30,14 @@ describe 'Cloud Variables and Functions View', ->
     beforeEach ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      SettingsHelper.set 'variables', {foo: 'int32'}
-      SettingsHelper.set 'functions', ['bar']
+      SettingsHelper.setLocal 'variables', {foo: 'int32'}
+      SettingsHelper.setLocal 'functions', ['bar']
 
     afterEach ->
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
-      SettingsHelper.set 'variables', {}
-      SettingsHelper.set 'functions', []
+      SettingsHelper.setLocal 'variables', {}
+      SettingsHelper.setLocal 'functions', []
 
     it 'checks hiding and showing', ->
       SparkStub.stubSuccess 'getVariable'

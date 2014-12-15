@@ -43,7 +43,7 @@ describe 'Compile Errors View', ->
       expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).not.toExist()
 
     it 'tests loading and selecting items', ->
-      SettingsHelper.set 'compile-status', {errors: [
+      SettingsHelper.setLocal 'compile-status', {errors: [
         {
           message: 'Foo',
           file: 'foo.ino',
@@ -94,4 +94,4 @@ describe 'Compile Errors View', ->
 
       jasmine.unspy compileErrorsView, 'cancel'
       jasmine.unspy atom.workspaceView, 'open'
-      SettingsHelper.set 'compile-status', null
+      SettingsHelper.setLocal 'compile-status', null
