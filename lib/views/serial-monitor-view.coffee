@@ -93,6 +93,10 @@ class SerialMonitorView extends View
           option.attr 'selected', 'selected'
         @portsSelect.append option
 
+      if ports.length > 0
+        @currentPort ?= ports[0].comName
+        SettingsHelper.set 'serial_port', @currentPort
+
   portSelected: ->
     @currentPort = @portsSelect.val()
     SettingsHelper.set 'serial_port', @currentPort
