@@ -12,7 +12,7 @@ module.exports = (grunt) ->
     # temp.track()
     workDir = temp.mkdirSync 'spark-dev'
 
-  grunt.log.writeln 'Work dir is ' + workDir
+  grunt.log.writeln '(i) Work dir is ' + workDir
 
   if grunt.option('showWorkDir')
     cp = require 'child_process'
@@ -31,8 +31,10 @@ module.exports = (grunt) ->
     [key, value] = line.split '='
     if key.indexOf('ATOM_VERSION') > 0
       atomVersion = _s.trim(value)
+  grunt.log.writeln '(i) Atom version is ' + atomVersion
 
   # Get Spark Dev version from options/latest tag
+  grunt.log.writeln grunt.option('sparkDevVersion')
   if !!grunt.option('sparkDevVersion')
     sparkDevVersion = grunt.option('sparkDevVersion')
   else
@@ -43,6 +45,7 @@ module.exports = (grunt) ->
 
     releases = JSON.parse response.getBody()
     sparkDevVersion = releases[0].tag_name.substring(1)
+  grunt.log.writeln '(i) Spark Dev version is ' + sparkDevVersion
 
   grunt.initConfig
     workDir: workDir

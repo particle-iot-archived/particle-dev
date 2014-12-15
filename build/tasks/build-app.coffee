@@ -20,5 +20,7 @@ module.exports = (grunt) ->
 
     command += 'install'
 
+    grunt.log.writeln '(i) Build command is ' + command
+
     cp.safeExec command, ->
       done()
