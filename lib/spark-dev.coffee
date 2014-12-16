@@ -83,7 +83,10 @@ module.exports =
 
       return unless protocol is 'spark-dev:'
 
-      @initView pathname.substr(1)
+      try
+        @initView pathname.substr(1)
+      catch
+        return
 
     # Updating toolbar
     try
