@@ -3,20 +3,20 @@ SettingsHelper = require './settings-helper'
 module.exports =
   # Get root menu
   getMenu: ->
-    ideMenu = atom.menu.template.filter (value) ->
+    devMenu = atom.menu.template.filter (value) ->
       value.label == 'Spark'
 
-    ideMenu[0]
+    devMenu[0]
 
   # Update menu
   update: ->
-    ideMenu = @getMenu()
+    devMenu = @getMenu()
 
     if SettingsHelper.isLoggedIn()
       # Menu items for logged in user
       username = SettingsHelper.get('username')
 
-      ideMenu.submenu = [{
+      devMenu.submenu = [{
         label: 'Log out ' + username,
         command: 'spark-dev:logout'
       },{
@@ -28,7 +28,7 @@ module.exports =
 
       if SettingsHelper.hasCurrentCore()
         # Menu items depending on current core
-        ideMenu.submenu = ideMenu.submenu.concat [{
+        devMenu.submenu = devMenu.submenu.concat [{
           label: 'Rename ' + SettingsHelper.getLocal('current_core_name') + '...',
           command: 'spark-dev:rename-device'
         },{
@@ -42,7 +42,7 @@ module.exports =
           command: 'spark-dev:flash-cloud'
         }]
 
-      ideMenu.submenu = ideMenu.submenu.concat [{
+      devMenu.submenu = devMenu.submenu.concat [{
         type: 'separator'
       },{
         label: 'Claim device...',
@@ -61,12 +61,12 @@ module.exports =
       }]
     else
       # Logged out user can only log in
-      ideMenu.submenu = [{
+      devMenu.submenu = [{
         label: 'Log in to Spark Cloud...',
         command: 'spark-dev:login'
       }]
 
-    ideMenu.submenu = ideMenu.submenu.concat [{
+    devMenu.submenu = devMenu.submenu.concat [{
       type: 'separator'
     },{
       label: 'Show serial monitor',
@@ -74,4 +74,9 @@ module.exports =
     }]
 
     # Refresh UI
+    atom.menu.update()
+
+  append: (items) ->
+    devMenu = @getMenu()
+    devMenu.submenu = devMenu.submenu.concat items
     atom.menu.update()
