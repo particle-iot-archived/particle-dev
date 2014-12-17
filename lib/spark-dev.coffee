@@ -20,7 +20,6 @@ module.exports =
   ListeningModeView: null
   SelectPortView: null
   CompileErrorsView: null
-  CloudVariablesAndFunctions: null
   SelectFirmwareView: null
 
   statusView: null
@@ -32,7 +31,6 @@ module.exports =
   listeningModeView: null
   selectPortView: null
   compileErrorsView: null
-  cloudVariablesAndFunctionsView: null
   selectFirmwareView: null
   spark: null
   toolbar: null
@@ -63,7 +61,6 @@ module.exports =
     atom.workspaceView.command 'spark-dev:identify-device', (event, port) => @identifyCore(port)
     atom.workspaceView.command 'spark-dev:compile-cloud', (event, thenFlash) => @compileCloud(thenFlash)
     atom.workspaceView.command 'spark-dev:show-compile-errors', => @showCompileErrors()
-    atom.workspaceView.command 'spark-dev:show-cloud-variables-and-functions', => @showCloudVariablesAndFunctions()
     atom.workspaceView.command 'spark-dev:flash-cloud', (event, firmware) => @flashCloud(firmware)
     atom.workspaceView.command 'spark-dev:show-serial-monitor', => @showSerialMonitor()
     atom.workspaceView.command 'spark-dev:setup-wifi', (event, port) => @setupWifi(port)
@@ -435,11 +432,6 @@ module.exports =
     @initView 'compile-errors'
 
     @compileErrorsView.show()
-
-  # Show cloud variables and functions panel
-  showCloudVariablesAndFunctions: -> @coreRequired =>
-    @cloudVariablesAndFunctionsView = null
-    @openPane 'cloud-variables-and-functions'
 
   # Flash core via the cloud
   flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>

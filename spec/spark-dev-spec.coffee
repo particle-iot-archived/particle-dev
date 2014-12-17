@@ -84,12 +84,6 @@ describe 'Main Tests', ->
       expect(sparkIde.showCompileErrors).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'showCompileErrors'
 
-    it 'calls showCloudVariablesAndFunctions() method for spark-dev:show-cloud-variables-and-functions event', ->
-      spyOn sparkIde, 'showCloudVariablesAndFunctions'
-      atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
-      expect(sparkIde.showCloudVariablesAndFunctions).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'showCloudVariablesAndFunctions'
-
     it 'calls flashCloud() method for spark-dev:flash-cloud event', ->
       spyOn sparkIde, 'flashCloud'
       atom.workspaceView.trigger 'spark-dev:flash-cloud'
