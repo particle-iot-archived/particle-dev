@@ -18,7 +18,7 @@ describe 'Select Port View', ->
     SettingsHelper.setProfile 'spark-dev-test'
 
     # Mock serial
-    require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
+    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
 
     waitsForPromise ->
       activationPromise

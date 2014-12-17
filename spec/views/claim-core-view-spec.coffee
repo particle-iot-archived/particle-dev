@@ -1,7 +1,8 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require '../stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
+spark = require 'spark'
 
 describe 'Claim Core View', ->
   activationPromise = null
@@ -36,7 +37,7 @@ describe 'Claim Core View', ->
       SettingsHelper.clearCredentials()
 
     it 'checks if empty name would cause an error', ->
-      SparkStub.stubSuccess 'claimCore'
+      SparkStub.stubSuccess spark, 'claimCore'
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 

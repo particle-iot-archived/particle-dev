@@ -1,7 +1,8 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require '../stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
+spark = require 'spark'
 
 describe 'Cloud Variables and Functions View', ->
   activationPromise = null
@@ -40,7 +41,7 @@ describe 'Cloud Variables and Functions View', ->
       SettingsHelper.setLocal 'functions', []
 
     it 'checks hiding and showing', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubSuccess spark, 'getVariable'
       sparkIde.cloudVariablesAndFunctionsView = null
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
@@ -55,7 +56,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(atom.workspaceView.find('#spark-dev-cloud-variables-and-functions')).not.toExist()
 
     it 'checks listing variables', ->
-      SparkStub.stubNoResolve 'getVariable'
+      SparkStub.stubNoResolve spark, 'getVariable'
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -64,7 +65,7 @@ describe 'Cloud Variables and Functions View', ->
       runs ->
         @cloudVariablesAndFunctionsView = sparkIde.cloudVariablesAndFunctionsView
         spyOn @cloudVariablesAndFunctionsView, 'refreshVariable'
-        SparkStub.stubSuccess 'getVariable'
+        SparkStub.stubSuccess spark, 'getVariable'
 
       waitsFor ->
         @cloudVariablesAndFunctionsView.hasParent()
@@ -101,7 +102,7 @@ describe 'Cloud Variables and Functions View', ->
         jasmine.unspy @cloudVariablesAndFunctionsView, 'refreshVariable'
 
     it 'tests refreshing', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubSuccess spark, 'getVariable'
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -118,7 +119,7 @@ describe 'Cloud Variables and Functions View', ->
         expect(@body.find('table > tbody > tr:eq(0) > td:eq(2)').hasClass('loading')).toBe(false)
 
     it 'checks event hooks', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubSuccess spark, 'getVariable'
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -151,7 +152,7 @@ describe 'Cloud Variables and Functions View', ->
         @cloudVariablesAndFunctionsView.detach()
 
     it 'check watching variable', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubSuccess spark, 'getVariable'
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->
@@ -205,7 +206,7 @@ describe 'Cloud Variables and Functions View', ->
         @cloudVariablesAndFunctionsView.detach()
 
     it 'checks clearing watchers', ->
-      SparkStub.stubSuccess 'getVariable'
+      SparkStub.stubSuccess spark, 'getVariable'
       atom.workspaceView.trigger 'spark-dev:show-cloud-variables-and-functions'
 
       waitsFor ->

@@ -1,7 +1,8 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require '../stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
+spark = require 'spark'
 
 describe 'Rename Core View', ->
   activationPromise = null
@@ -53,7 +54,7 @@ describe 'Rename Core View', ->
       jasmine.unspy renameCoreView, 'close'
 
     it 'renames the core', ->
-      SparkStub.stubSuccess 'renameCore'
+      SparkStub.stubSuccess spark, 'renameCore'
       sparkIde.renameCore()
       renameCoreView = sparkIde.renameCoreView
 
@@ -80,7 +81,7 @@ describe 'Rename Core View', ->
         renameCoreView.close()
 
     it 'checks null core name', ->
-      SparkStub.stubSuccess 'renameCore'
+      SparkStub.stubSuccess spark, 'renameCore'
 
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', null
       sparkIde.renameCore()

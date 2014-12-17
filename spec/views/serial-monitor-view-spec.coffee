@@ -12,7 +12,7 @@ describe 'Serial Monitor View', ->
     atom.workspaceView = new WorkspaceView
 
     # Mock serial
-    require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
+    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
 
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
@@ -56,7 +56,7 @@ describe 'Serial Monitor View', ->
         @serialMonitorView = sparkIde.serialMonitorView
 
         # Test ports
-        require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-success'
+        require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
         @serialMonitorView.nullifySerialport()
 
         @serialMonitorView.refreshSerialPorts()
@@ -66,7 +66,7 @@ describe 'Serial Monitor View', ->
         expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
         expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
 
-        require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
+        require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
         @serialMonitorView.nullifySerialport()
         @serialMonitorView.find('#refresh-ports-button').click()
 

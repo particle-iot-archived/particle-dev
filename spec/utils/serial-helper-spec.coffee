@@ -1,5 +1,5 @@
 require 'serialport'
-require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-success'
+require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
 SerialHelper = require '../../lib/utils/serial-helper'
 
 describe 'Serial helper tests', ->
@@ -14,7 +14,7 @@ describe 'Serial helper tests', ->
       expect(status.value.length).toBe(1)
 
   it 'tests listing multiple ports', ->
-    require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-multiple-ports'
+    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
     promise = SerialHelper.listPorts()
 
     waitsFor ->
@@ -25,7 +25,7 @@ describe 'Serial helper tests', ->
       expect(status.value.length).toBe(2)
 
   it 'tests listing no ports', ->
-    require.cache[require.resolve('serialport')].exports = require '../stubs/serialport-no-ports'
+    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportNoPorts
     promise = SerialHelper.listPorts()
 
     waitsFor ->

@@ -1,7 +1,8 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require '../stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
+spark = require 'spark'
 
 describe 'Select Core View', ->
   activationPromise = null
@@ -19,7 +20,7 @@ describe 'Select Core View', ->
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-dev-test'
 
-    SparkStub.stubSuccess 'listDevices'
+    SparkStub.stubSuccess spark, 'listDevices'
 
     waitsForPromise ->
       activationPromise

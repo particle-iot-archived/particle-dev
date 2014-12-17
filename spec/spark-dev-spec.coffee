@@ -5,7 +5,7 @@ fs = require 'fs-plus'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
 utilities = require '../lib/vendor/utilities'
-SparkStub = require './stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -149,7 +149,7 @@ describe 'Main Tests', ->
       expect('Remove Foo' of args.buttons).toEqual(true)
 
       # Test remove callback
-      SparkStub.stubSuccess 'removeCore'
+      SparkStub.stubSuccess spark, 'removeCore'
 
       spyOn SettingsHelper, 'clearCurrentCore'
       spyOn atom.workspaceView, 'trigger'
@@ -167,7 +167,7 @@ describe 'Main Tests', ->
         expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
 
         # Test fail
-        SparkStub.stubFail 'removeCore'
+        SparkStub.stubFail spark, 'removeCore'
         args.buttons['Remove Foo']()
 
       waitsFor ->
@@ -190,7 +190,7 @@ describe 'Main Tests', ->
   describe 'when identifyCore() method is called and there is only one core', ->
     it 'checks if it is identified', ->
       require 'serialport'
-      require.cache[require.resolve('serialport')].exports = require './stubs/serialport-success'
+      require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
 
       spyOn SerialHelper, 'askForCoreID'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -244,7 +244,7 @@ describe 'Main Tests', ->
       atom.project.setPaths [__dirname + '/data/sampleproject']
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      SparkStub.stubSuccess 'compileCode'
+      SparkStub.stubSuccess spark, 'compileCode'
       @originalFilesExcludedFromCompile = atom.config.get 'spark-dev.filesExcludedFromCompile'
       atom.config.set 'spark-dev.filesExcludedFromCompile', '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
 
@@ -284,8 +284,8 @@ describe 'Main Tests', ->
 
     it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubSuccess 'compileCode'
-      SparkStub.stubSuccess 'downloadBinary'
+      SparkStub.stubSuccess spark, 'compileCode'
+      SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.workspaceView, 'trigger'
       sparkIde.compileCloud()
@@ -341,7 +341,7 @@ describe 'Main Tests', ->
 
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubFail 'compileCode'
+      SparkStub.stubFail spark, 'compileCode'
 
       spyOn atom.workspaceView, 'trigger'
       sparkIde.compileCloud()
@@ -365,8 +365,8 @@ describe 'Main Tests', ->
 
     xit 'checks flashing after compiling', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubSuccess 'compileCode'
-      SparkStub.stubSuccess 'downloadBinary'
+      SparkStub.stubSuccess spark, 'compileCode'
+      SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.workspaceView, 'trigger'
       sparkIde.compileCloud true
@@ -430,7 +430,7 @@ describe 'Main Tests', ->
       fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
       spyOn sparkIde.statusView, 'setStatus'
       spyOn sparkIde.statusView, 'clearAfter'
-      SparkStub.stubSuccess 'flashCore'
+      SparkStub.stubSuccess spark, 'flashCore'
 
       sparkIde.flashCloud()
       expect(sparkIde.statusView.setStatus).toHaveBeenCalled()
@@ -460,7 +460,7 @@ describe 'Main Tests', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       atom.config.set 'spark-dev.deleteFirmwareAfterFlash', true
       firmwarePath = atom.project.getPaths()[0] + '/firmware.bin'
-      SparkStub.stubSuccess 'flashCore'
+      SparkStub.stubSuccess spark, 'flashCore'
       fs.openSync firmwarePath, 'w'
 
       sparkIde.flashCloud 'firmware.bin'
@@ -473,7 +473,7 @@ describe 'Main Tests', ->
     it 'tests more than one firmware file', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      SparkStub.stubSuccess 'flashCore'
+      SparkStub.stubSuccess spark, 'flashCore'
 
       fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
       fs.openSync atom.project.getPaths()[0] + '/firmware2.bin', 'w'

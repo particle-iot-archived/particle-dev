@@ -1,7 +1,8 @@
 {WorkspaceView} = require 'atom'
 $ = require('atom').$
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require '../stubs/spark'
+SparkStub = require('spark-dev-spec-stubs').spark
+spark = require 'spark'
 
 describe 'Login View', ->
   activationPromise = null
@@ -79,7 +80,7 @@ describe 'Login View', ->
 
 
     it 'tests valid values', ->
-      SparkStub.stubSuccess 'login'
+      SparkStub.stubSuccess spark, 'login'
 
       context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
@@ -108,7 +109,7 @@ describe 'Login View', ->
 
 
     it 'tests wrong credentials', ->
-      SparkStub.stubFail 'login'
+      SparkStub.stubFail spark, 'login'
 
       context = atom.workspaceView.find('#spark-dev-login-view')
       expect(context.find('.text-error').css 'display').toEqual('none')
