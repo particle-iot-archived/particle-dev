@@ -162,7 +162,7 @@ class LoginView extends View
       @unlockUi()
       if e.code == 'ENOTFOUND'
         @errorLabel.text 'Error while connecting to ' + e.hostname
-      else if e == 'invalid_grant'
+      else if e.message == 'invalid_grant'
         @errorLabel.text 'invalid email or password'
       else
         @errorLabel.text e
