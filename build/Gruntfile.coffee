@@ -34,7 +34,6 @@ module.exports = (grunt) ->
   grunt.log.writeln '(i) Atom version is ' + atomVersion
 
   # Get Spark Dev version from options/latest tag
-  grunt.log.writeln grunt.option('sparkDevVersion')
   if !!grunt.option('sparkDevVersion')
     sparkDevVersion = grunt.option('sparkDevVersion')
   else
