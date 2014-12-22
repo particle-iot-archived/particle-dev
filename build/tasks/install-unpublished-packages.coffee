@@ -38,4 +38,5 @@ module.exports = (grunt) ->
             installPackage 'spark', 'exception-reporting', '0.20.0', ->
               installPackage 'spark', 'spark-dev-cloud-functions', '0.0.1', ->
                 installPackage 'spark', 'spark-dev-cloud-variables', '0.0.1', ->
-                  done()
+                  installPackage 'spark', 'metrics', '0.40.0', ->
+                    done()
