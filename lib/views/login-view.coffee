@@ -163,7 +163,7 @@ class LoginView extends View
       if e.code == 'ENOTFOUND'
         @errorLabel.text 'Error while connecting to ' + e.hostname
       else if e.message == 'invalid_grant'
-        @errorLabel.text 'invalid email or password'
+        @errorLabel.text 'Invalid email or password'
       else
         @errorLabel.text e
 
