@@ -124,7 +124,7 @@ describe 'Login View', ->
       runs ->
         context = atom.workspaceView.find('#spark-dev-login-view')
         expect(context.find('.text-error').css 'display').toEqual('block')
-        expect(context.find('.text-error').text()).toEqual('Unknown user')
+        expect(context.find('.text-error').text()).toEqual('invalid email or password')
         expect(loginView.spinner.hasClass('hidden')).toBe(true)
 
 
