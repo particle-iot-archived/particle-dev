@@ -1,3 +1,13 @@
+## 0.0.20
+* Storing current device and compile status in session instead of globally
+* Better messages on invalida credentials
+* Fixed #57
+* Fixed #56
+* Fixed #59
+* Fixed #55
+* Fixed #53
+* Fixed #30
+
 ## 0.0.19
 * Fixed [#28](https://github.com/spark/spark-dev/issues/28)
 * Fixed [#41](https://github.com/spark/spark-dev/issues/41)
