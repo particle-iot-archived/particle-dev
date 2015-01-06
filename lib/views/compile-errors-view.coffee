@@ -78,7 +78,7 @@ class CompileErrorsView extends SelectListView
     rootPath = atom.project.getPaths()[0]
     files = fs.listTreeSync rootPath
     for file in files
-      if path.basename(file) == filename
+      if file.replace(rootPath + path.sep, '') == filename
         return file.slice(rootPath.length + 1)
     return filename.replace '.cpp', '.ino'
 

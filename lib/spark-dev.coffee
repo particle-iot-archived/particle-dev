@@ -399,9 +399,25 @@ module.exports =
 
     rootPath = atom.project.getPaths()[0]
     files = @processDirIncludes rootPath
-
     process.chdir rootPath
     files = (path.relative(rootPath, file) for file in files)
+
+    invalidFiles = files.filter (file) ->
+      path.basename(file).indexOf(' ') > -1
+    if invalidFiles.length
+      errors = []
+      for file in invalidFiles
+        errors.push
+          file: file,
+          message: 'File contains space in its name'
+          row: 0,
+          col: 0
+
+      @CompileErrorsView ?= require './views/compile-errors-view'
+      @SettingsHelper.setLocal 'compile-status', {errors: errors}
+      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+      atom.workspaceView.trigger 'spark-dev:update-compile-status'
+      return
 
     workspace = atom.workspaceView
     @compileCloudPromise = @spark.compileCode files
