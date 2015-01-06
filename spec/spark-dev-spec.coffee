@@ -247,7 +247,7 @@ describe 'Main Tests', ->
       expect(SettingsHelper.getLocal('compile-status')).toEqual({working:true})
 
       expect(spark.compileCode).toHaveBeenCalled()
-      expectedFiles = ['foo.ino', 'inner/bar.cpp', 'lib.cpp', 'lib.h']
+      expectedFiles = ['lib.h', 'foo.ino', 'inner/bar.cpp', 'lib.cpp']
       expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
       waitsFor ->
@@ -259,7 +259,7 @@ describe 'Main Tests', ->
         sparkIde.compileCloud()
 
         expect(spark.compileCode).toHaveBeenCalled()
-        expectedFiles = ['inner/bar.cpp', 'lib.cpp', 'lib.h']
+        expectedFiles = ['lib.h', 'inner/bar.cpp', 'lib.cpp']
         expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
 
       waitsFor ->

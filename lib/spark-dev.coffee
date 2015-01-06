@@ -245,6 +245,39 @@ module.exports =
         @MenuManager.update()
         atom.workspaceView.trigger 'spark-dev:update-login-status'
 
+  processDirIncludes: (dirname) ->
+    settings ?= require './vendor/settings'
+    utilities ?= require './vendor/utilities'
+
+    dirname = path.resolve dirname
+    includesFile = path.join dirname, settings.dirIncludeFilename
+    ignoreFile = path.join dirname, settings.dirExcludeFilename
+    ignores = []
+    includes = [
+      "**/*.h",
+      "**/*.ino",
+      "**/*.cpp",
+      "**/*.c"
+    ]
+
+    if fs.existsSync(includesFile)
+      # Grab and process all the files in the include file.
+      # cleanIncludes = utilities.trimBlankLinesAndComments(utilities.readAndTrimLines(includesFile))
+      # includes = utilities.fixRelativePaths dirname, cleanIncludes
+      null
+
+    files = utilities.globList dirname, includes
+
+    notSourceExtensions = atom.config.get('spark-dev.filesExcludedFromCompile').split ','
+    ignores = ('**/*' + _s.trim(extension).toLowerCase() for extension in notSourceExtensions)
+
+    if fs.existsSync(ignoreFile)
+      cleanIgnores = utilities.readAndTrimLines ignoreFile
+      ignores = ignores.concat utilities.trimBlankLinesAndComments cleanIgnores
+
+    ignoredFiles = utilities.globList dirname, ignores
+    utilities.compliment files, ignoredFiles
+
   # Function for selecting port or showing Listen dialog
   choosePort: (delegate) ->
     @ListeningModeView ?= require './views/listening-mode-view'
@@ -365,13 +398,7 @@ module.exports =
     _s ?= require 'underscore.string'
 
     rootPath = atom.project.getPaths()[0]
-    files = fs.listTreeSync(rootPath)
-    notSourceExtensions = atom.config.get('spark-dev.filesExcludedFromCompile').split ','
-    notSourceExtensions = (_s.trim(extension).toLowerCase() for extension in notSourceExtensions)
-
-    files = files.filter (file) ->
-      return !(utilities.getFilenameExt(file).toLowerCase() in notSourceExtensions) &&
-              !fs.isDirectorySync(file)
+    files = @processDirIncludes rootPath
 
     process.chdir rootPath
     files = (path.relative(rootPath, file) for file in files)
