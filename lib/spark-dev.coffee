@@ -468,8 +468,12 @@ module.exports =
 
         @flashCorePromise = null
       , (e) =>
-        @statusView.setStatus e.message, 'error'
+        if e.code == 'ECONNRESET'
+          @statusView.setStatus 'Device seems to be offline', 'error'
+        else
+          @statusView.setStatus e.message, 'error'
         @statusView.clearAfter 5000
+        @flashCorePromise = null
     else
       # If multiple firmware files, show select
       @initView 'select-firmware'

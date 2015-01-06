@@ -491,6 +491,30 @@ describe 'Main Tests', ->
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
+    it 'tests showing error for offline core', ->
+      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
+      firmwarePath = atom.project.getPaths()[0] + '/firmware.bin'
+      fs.openSync firmwarePath, 'w'
+
+      SparkStub.stubOffline spark, 'flashCore'
+      spyOn sparkIde.statusView, 'setStatus'
+
+      sparkIde.flashCloud 'firmware.bin'
+
+      waitsFor ->
+        !sparkIde.flashCorePromise
+
+      runs ->
+        expect(sparkIde.statusView.setStatus).toHaveBeenCalled()
+        expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Device seems to be offline', 'error')
+
+        jasmine.unspy sparkIde.statusView, 'setStatus'
+
+        fs.unlinkSync firmwarePath
+        SettingsHelper.clearCurrentCore()
+        SettingsHelper.clearCredentials()
+
   describe 'open pane tests', ->
     url = 'spark-dev://editor/foo'
 
