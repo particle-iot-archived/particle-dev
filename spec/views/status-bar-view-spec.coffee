@@ -59,7 +59,7 @@ describe 'Status Bar Tests', ->
       expect(statusBar.find('#spark-login-status').text()).toEqual('foo@bar.baz')
 
       expect(statusBar.find('#spark-current-core').hasClass('hidden')).toBe(false)
-      expect(statusBar.find('#spark-current-core a').text()).toBe('No cores selected')
+      expect(statusBar.find('#spark-current-core a').text()).toBe('No devices selected')
 
       SettingsHelper.clearCredentials()
 

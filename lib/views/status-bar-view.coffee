@@ -105,7 +105,7 @@ class StatusBarView extends View
           @interval = setInterval =>
             @updateCoreStatus()
           , 30000
-          
+
       atom.workspaceView.trigger 'spark-dev:core-status-updated'
       @getAttributesPromise = null
 
@@ -128,7 +128,7 @@ class StatusBarView extends View
       @getCurrentCoreStatus()
     else
       statusElement.parent().removeClass 'online'
-      statusElement.text 'No cores selected'
+      statusElement.text 'No devices selected'
 
   # Update login status
   updateLoginStatus: ->
