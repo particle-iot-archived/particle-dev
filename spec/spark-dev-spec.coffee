@@ -108,6 +108,12 @@ describe 'Main Tests', ->
       expect(sparkIde.setupWifi).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'setupWifi'
 
+    it 'calls tryFlashUsb() method for spark-dev:try-flash-usb event', ->
+      spyOn sparkIde, 'tryFlashUsb'
+      atom.workspaceView.trigger 'spark-dev:try-flash-usb'
+      expect(sparkIde.tryFlashUsb).toHaveBeenCalled()
+      jasmine.unspy sparkIde, 'tryFlashUsb'
+
 
   describe 'checks logged out user', ->
     it 'checks spark-dev:remove-device', ->

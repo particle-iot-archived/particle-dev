@@ -65,6 +65,7 @@ module.exports =
     atom.workspaceView.command 'spark-dev:show-serial-monitor', => @showSerialMonitor()
     atom.workspaceView.command 'spark-dev:setup-wifi', (event, port) => @setupWifi(port)
     atom.workspaceView.command 'spark-dev:enter-wifi-credentials', (event, port, ssid, security) => @enterWifiCredentials(port, ssid, security)
+    atom.workspaceView.command 'spark-dev:try-flash-usb', => @tryFlashUsb()
 
     atom.workspaceView.command 'spark-dev:update-menu', => @MenuManager.update()
 
@@ -547,3 +548,5 @@ module.exports =
     @initView 'wifi-credentials'
     @wifiCredentialsView.port = port
     @wifiCredentialsView.show(ssid, security)
+
+  tryFlashUsb: -> @projectRequired =>
