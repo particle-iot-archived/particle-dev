@@ -90,12 +90,6 @@ describe 'Main Tests', ->
       expect(sparkIde.flashCloud).toHaveBeenCalled()
       jasmine.unspy sparkIde, 'flashCloud'
 
-    it 'calls flashCloud() method for spark-dev:flash-cloud event', ->
-      spyOn sparkIde, 'flashCloud'
-      atom.workspaceView.trigger 'spark-dev:flash-cloud'
-      expect(sparkIde.flashCloud).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'flashCloud'
-
     it 'calls showSerialMonitor() method for spark-dev:show-serial-monitor event', ->
       spyOn sparkIde, 'showSerialMonitor'
       atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
