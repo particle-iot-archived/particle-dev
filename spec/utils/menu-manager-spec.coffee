@@ -48,7 +48,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(11)
+      expect(ideMenu.submenu.length).toBe(12)
       idx = 0
 
       expect(ideMenu.submenu[idx].label).toBe('Log out foo@bar.baz')
@@ -69,6 +69,9 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[idx].label).toBe('Setup device\'s WiFi...')
       expect(ideMenu.submenu[idx++].command).toBe('spark-dev:setup-wifi')
+
+      expect(ideMenu.submenu[idx].label).toBe('Flash device via USB')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:try-flash-usb')
 
       expect(ideMenu.submenu[idx++].type).toBe('separator')
 
@@ -97,7 +100,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(15)
+      expect(ideMenu.submenu.length).toBe(16)
       idx = 3
 
       expect(ideMenu.submenu[idx].label).toBe('Rename Foo...')

@@ -54,6 +54,9 @@ module.exports =
         label: 'Setup device\'s WiFi...',
         command: 'spark-dev:setup-wifi'
       },{
+        label: 'Flash device via USB',
+        command: 'spark-dev:try-flash-usb'
+      },{
         type: 'separator'
       },{
         label: 'Compile in the cloud',
