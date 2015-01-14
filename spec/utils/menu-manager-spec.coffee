@@ -25,14 +25,15 @@ describe 'MenuManager tests', ->
       ideMenu = MenuManager.getMenu()
 
       expect(ideMenu.submenu.length).toBe(3)
+      idx = 0
 
-      expect(ideMenu.submenu[0].label).toBe('Log in to Spark Cloud...')
-      expect(ideMenu.submenu[0].command).toBe('spark-dev:login')
+      expect(ideMenu.submenu[idx].label).toBe('Log in to Spark Cloud...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:login')
 
-      expect(ideMenu.submenu[1].type).toBe('separator')
+      expect(ideMenu.submenu[idx++].type).toBe('separator')
 
-      expect(ideMenu.submenu[2].label).toBe('Show serial monitor')
-      expect(ideMenu.submenu[2].command).toBe('spark-dev:show-serial-monitor')
+      expect(ideMenu.submenu[idx].label).toBe('Show serial monitor')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:show-serial-monitor')
 
 
   it 'checks menu for logged in user', ->
@@ -48,35 +49,36 @@ describe 'MenuManager tests', ->
       ideMenu = MenuManager.getMenu()
 
       expect(ideMenu.submenu.length).toBe(11)
+      idx = 0
 
-      expect(ideMenu.submenu[0].label).toBe('Log out foo@bar.baz')
-      expect(ideMenu.submenu[0].command).toBe('spark-dev:logout')
+      expect(ideMenu.submenu[idx].label).toBe('Log out foo@bar.baz')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:logout')
 
-      expect(ideMenu.submenu[1].type).toBe('separator')
+      expect(ideMenu.submenu[idx++].type).toBe('separator')
 
-      expect(ideMenu.submenu[2].label).toBe('Select device...')
-      expect(ideMenu.submenu[2].command).toBe('spark-dev:select-device')
+      expect(ideMenu.submenu[idx].label).toBe('Select device...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:select-device')
 
-      expect(ideMenu.submenu[3].type).toBe('separator')
+      expect(ideMenu.submenu[idx++].type).toBe('separator')
 
-      expect(ideMenu.submenu[4].label).toBe('Claim device...')
-      expect(ideMenu.submenu[4].command).toBe('spark-dev:claim-device')
+      expect(ideMenu.submenu[idx].label).toBe('Claim device...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:claim-device')
 
-      expect(ideMenu.submenu[5].label).toBe('Identify device...')
-      expect(ideMenu.submenu[5].command).toBe('spark-dev:identify-device')
+      expect(ideMenu.submenu[idx].label).toBe('Identify device...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:identify-device')
 
-      expect(ideMenu.submenu[6].label).toBe('Setup device\'s WiFi...')
-      expect(ideMenu.submenu[6].command).toBe('spark-dev:setup-wifi')
+      expect(ideMenu.submenu[idx].label).toBe('Setup device\'s WiFi...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:setup-wifi')
 
-      expect(ideMenu.submenu[7].type).toBe('separator')
+      expect(ideMenu.submenu[idx++].type).toBe('separator')
 
-      expect(ideMenu.submenu[8].label).toBe('Compile in the cloud')
-      expect(ideMenu.submenu[8].command).toBe('spark-dev:compile-cloud')
+      expect(ideMenu.submenu[idx].label).toBe('Compile in the cloud')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:compile-cloud')
 
-      expect(ideMenu.submenu[9].type).toBe('separator')
+      expect(ideMenu.submenu[idx++].type).toBe('separator')
 
-      expect(ideMenu.submenu[10].label).toBe('Show serial monitor')
-      expect(ideMenu.submenu[10].command).toBe('spark-dev:show-serial-monitor')
+      expect(ideMenu.submenu[idx].label).toBe('Show serial monitor')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:show-serial-monitor')
 
       SettingsHelper.clearCredentials()
 
@@ -96,18 +98,19 @@ describe 'MenuManager tests', ->
       ideMenu = MenuManager.getMenu()
 
       expect(ideMenu.submenu.length).toBe(15)
+      idx = 3
 
-      expect(ideMenu.submenu[3].label).toBe('Rename Foo...')
-      expect(ideMenu.submenu[3].command).toBe('spark-dev:rename-device')
+      expect(ideMenu.submenu[idx].label).toBe('Rename Foo...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:rename-device')
 
-      expect(ideMenu.submenu[4].label).toBe('Remove Foo...')
-      expect(ideMenu.submenu[4].command).toBe('spark-dev:remove-device')
+      expect(ideMenu.submenu[idx].label).toBe('Remove Foo...')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:remove-device')
 
-      expect(ideMenu.submenu[5].label).toBe('Show cloud variables and functions')
-      expect(ideMenu.submenu[5].command).toBe('spark-dev:show-cloud-variables-and-functions')
+      expect(ideMenu.submenu[idx].label).toBe('Show cloud variables and functions')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:show-cloud-variables-and-functions')
 
-      expect(ideMenu.submenu[6].label).toBe('Flash Foo via the cloud')
-      expect(ideMenu.submenu[6].command).toBe('spark-dev:flash-cloud')
+      expect(ideMenu.submenu[idx].label).toBe('Flash Foo via the cloud')
+      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:flash-cloud')
 
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
