@@ -550,3 +550,7 @@ module.exports =
     @wifiCredentialsView.show(ssid, security)
 
   tryFlashUsb: -> @projectRequired =>
+    if !atom.commands.registeredCommands['spark-dev-dfu-util:flash-usb']
+      # TODO: Ask for installation
+    else
+      atom.workspaceView.trigger 'spark-dev-dfu-util:flash-usb'
