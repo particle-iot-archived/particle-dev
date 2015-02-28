@@ -1,12 +1,16 @@
+## 0.0.21
+* Updated Atom to 0.186.0
+* Fixed [#43](https://github.com/spark/spark-dev/issues/43)
+
 ## 0.0.20
 * Storing current device and compile status in session instead of globally
-* Better messages on invalida credentials
-* Fixed #57
-* Fixed #56
-* Fixed #59
-* Fixed #55
-* Fixed #53
-* Fixed #30
+* Better messages on invalid credentials
+* Fixed [#57](https://github.com/spark/spark-dev/issues/57)
+* Fixed [#56](https://github.com/spark/spark-dev/issues/56)
+* Fixed [#59](https://github.com/spark/spark-dev/issues/59)
+* Fixed [#55](https://github.com/spark/spark-dev/issues/55)
+* Fixed [#53](https://github.com/spark/spark-dev/issues/53)
+* Fixed [#30](https://github.com/spark/spark-dev/issues/30)
 
 ## 0.0.19
 * Fixed [#28](https://github.com/spark/spark-dev/issues/28)
