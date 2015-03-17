@@ -1,5 +1,5 @@
 ## 0.0.21
-* Updated Atom to 0.186.0
+* Updated Atom to 0.187.0
 * Fixed [#43](https://github.com/spark/spark-dev/issues/43)
 
 ## 0.0.20

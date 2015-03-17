@@ -1,7 +1,7 @@
 {
   "name": "spark-dev",
   "main": "./lib/spark-dev",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Professional, hackable IDE for Spark, based on Github's Atom",
   "repository": "https://github.com/spark/spark-dev",
   "license": "Apache 2.0",
@@ -9,18 +9,19 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "when": "*",
-    "request": "*",
-    "xtend": "*",
-    "underscore.string": "*",
+    "atom-space-pen-views": "^2.0.3",
     "emissary": "1.x",
-    "validator": "*",
-    "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
-    "fs-plus": "^2.0.4",
-    "spark": "*",
     "event-kit": "0.7.2",
+    "fs-plus": "^2.0.4",
+    "glob": "^4.2.1",
     "pathwatcher": "^4.1.2",
+    "request": "*",
+    "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
+    "spark": "*",
     "spark-dev-spec-stubs": "git://github.com/spark/spark-dev-spec-stubs.git#master",
-    "glob": "^4.2.1"
+    "underscore.string": "*",
+    "validator": "*",
+    "when": "*",
+    "xtend": "*"
   }
 }
