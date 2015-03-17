@@ -277,7 +277,7 @@
 
 #spark-dev-select-wifi-view {
   &.loading {
-    .editor {
+    atom-text-editor {
       border: none;
       height: 1px;
     }
@@ -295,7 +295,7 @@
     margin-right: 10px;
   }
 
-  .editor.mini::first-child {
+  atom-text-editor[mini]::first-child {
     margin-bottom: 5px !important;
   }
 
@@ -309,7 +309,7 @@
   }
 }
 
-.editor.editor-error {
+atom-text-editor.editor-error {
   border-color: @background-color-error !important;
 
   .lines {
@@ -349,7 +349,7 @@
 
 /* Dialog */
 .spark-dev-dialog {
-  .editor.loading:after {
+  atom-text-editor.loading:after {
     .three-quarters();
 
     content: " ";
