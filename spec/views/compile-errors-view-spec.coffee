@@ -1,5 +1,4 @@
-{WorkspaceView} = require 'atom'
-$ = require('atom').$
+{WorkspaceView, $} = require 'atom-space-pen-views'
 path = require 'path'
 SettingsHelper = require '../../lib/utils/settings-helper'
 
