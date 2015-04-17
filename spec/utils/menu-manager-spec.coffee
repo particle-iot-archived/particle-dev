@@ -1,17 +1,17 @@
-{WorkspaceView} = require 'atom'
 MenuManager = require '../../lib/utils/menu-manager'
 SettingsHelper = require '../../lib/utils/settings-helper'
 
 describe 'MenuManager tests', ->
   activationPromise = null
   originalProfile = null
+  workspaceElement = null
 
   beforeEach ->
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-dev-test'
 
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev')
 
   afterEach ->
@@ -44,11 +44,11 @@ describe 'MenuManager tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Refresh UI
-      atom.workspaceView.trigger 'spark-dev:update-menu'
+      atom.commands.dispatch workspaceElement, 'spark-dev:update-menu'
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(12)
+      expect(ideMenu.submenu.length).toBe(11)
       idx = 0
 
       expect(ideMenu.submenu[idx].label).toBe('Log out foo@bar.baz')
@@ -70,8 +70,8 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu[idx].label).toBe('Setup device\'s WiFi...')
       expect(ideMenu.submenu[idx++].command).toBe('spark-dev:setup-wifi')
 
-      expect(ideMenu.submenu[idx].label).toBe('Flash device via USB')
-      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:try-flash-usb')
+      # expect(ideMenu.submenu[idx].label).toBe('Flash device via USB')
+      # expect(ideMenu.submenu[idx++].command).toBe('spark-dev:try-flash-usb')
 
       expect(ideMenu.submenu[idx++].type).toBe('separator')
 
@@ -91,16 +91,16 @@ describe 'MenuManager tests', ->
 
     runs ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      atom.workspaceView.trigger 'spark-dev:update-menu'
+      atom.commands.dispatch workspaceElement, 'spark-dev:update-menu'
 
       ideMenu = MenuManager.getMenu()
 
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      atom.workspaceView.trigger 'spark-dev:update-menu'
+      atom.commands.dispatch workspaceElement, 'spark-dev:update-menu'
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(16)
+      expect(ideMenu.submenu.length).toBe(15)
       idx = 3
 
       expect(ideMenu.submenu[idx].label).toBe('Rename Foo...')
