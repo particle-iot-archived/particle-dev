@@ -162,8 +162,14 @@ module.exports =
     @statusView?.destroy()
     @emitter.dispose()
     @disposables.dispose()
+    @statusBarTile?.destroy()
+    @statusBarTile = null
 
   serialize: ->
+
+  consumeStatusBar: (statusBar) ->
+    @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
+    @statusView.updateLoginStatus()
 
   config:
     # Delete .bin file after flash

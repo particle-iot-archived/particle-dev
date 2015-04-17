@@ -32,11 +32,6 @@ class StatusBarView extends View
 
     @getAttributesPromise = null
     @interval = null
-    if @workspaceElement.statusBar
-      @attach()
-    else
-      atom.packages.onDidActivateAll =>
-        @attach()
 
     @disposables.add atom.commands.add 'atom-workspace',
       'spark-dev:update-login-status': => @updateLoginStatus()
@@ -46,21 +41,16 @@ class StatusBarView extends View
   # Returns an object that can be retrieved when package is activated
   serialize: ->
 
-  attach: =>
-    @workspaceElement.statusBar.appendLeft(this)
-    @updateLoginStatus()
-
   # Tear down any state and detach
   destroy: ->
-    @remove()
 
   # Callback triggering selecting core command
   selectCore: ->
-    atom.workspaceView.trigger 'spark-dev:select-device'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:select-device'
 
   # Callback triggering showing compile errors command
   showErrors: =>
-    atom.workspaceView.trigger 'spark-dev:show-compile-errors'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
 
   # Opening file in Finder/Explorer
   showFile: =>
@@ -112,13 +102,13 @@ class StatusBarView extends View
             @updateCoreStatus()
           , 30000
 
-      atom.workspaceView.trigger 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
       @getAttributesPromise = null
 
     , (e) =>
       console.error e
 
-      atom.workspaceView.trigger 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
       @getAttributesPromise = null
 
   # Update current core's status
@@ -154,11 +144,11 @@ class StatusBarView extends View
       loginButton = $('<a/>').text('Click to log in to Spark Cloud...')
       statusElement.append loginButton
       loginButton.on 'click', =>
-        atom.workspaceView.trigger 'spark-dev:login'
+        atom.commands.dispatch @workspaceElement, 'spark-dev:login'
 
       this.find('#spark-current-core').addClass 'hidden'
 
-    atom.workspaceView.trigger 'spark-dev:update-menu'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
 
   updateCompileStatus: ->
     statusElement = this.find('#spark-compile-status')
