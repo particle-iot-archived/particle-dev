@@ -1,5 +1,5 @@
 # Forked dialog from tree-view package: https://github.com/atom/tree-view/blob/master/lib/dialog.coffee
-{$, TextEditorView, View} = require 'atom'
+{$, TextEditorView, View} = require 'atom-space-pen-views'
 path = require 'path'
 
 module.exports =

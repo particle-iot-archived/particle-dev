@@ -1,4 +1,5 @@
-View = require('atom').View
+{View} = require('atom-space-pen-views')
+CompositeDisposable = null
 shell = null
 $ = null
 SettingsHelper = null
@@ -21,27 +22,32 @@ class StatusBarView extends View
       @span id: 'spark-log'
 
   initialize: (serializeState) ->
-    $ = require('atom').$
+    {$} = require('atom-space-pen-views')
+    {CompositeDisposable} = require 'atom'
+
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
 
     SettingsHelper = require '../utils/settings-helper'
 
     @getAttributesPromise = null
     @interval = null
-    if atom.workspaceView.statusBar
+    if @workspaceElement.statusBar
       @attach()
     else
       atom.packages.onDidActivateAll =>
         @attach()
 
-    atom.workspaceView.command 'spark-dev:update-login-status', => @updateLoginStatus()
-    atom.workspaceView.command 'spark-dev:update-core-status', => @updateCoreStatus()
-    atom.workspaceView.command 'spark-dev:update-compile-status', => @updateCompileStatus()
+    @disposables.add atom.commands.add 'atom-workspace',
+      'spark-dev:update-login-status': => @updateLoginStatus()
+      'spark-dev:update-core-status': => @updateCoreStatus()
+      'spark-dev:update-compile-status': => @updateCompileStatus()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
 
   attach: =>
-    atom.workspaceView.statusBar.appendLeft(this)
+    @workspaceElement.statusBar.appendLeft(this)
     @updateLoginStatus()
 
   # Tear down any state and detach

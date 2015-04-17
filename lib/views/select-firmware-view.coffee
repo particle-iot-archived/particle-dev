@@ -2,7 +2,7 @@ SelectListView = require('atom').SelectListView
 
 $ = null
 $$ = null
-Subscriber = null
+CompositeDisposable = null
 SerialHelper = null
 SettingsHelper = null
 fs = null
@@ -14,12 +14,14 @@ class SelectFirmwareView extends SelectListView
     super
 
     {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
+    {CompositeDisposable} = require 'atom'
     path ?= require 'path'
     fs ?= require 'fs-plus'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+    @disposables = new CompositeDisposable
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel': => @hide()
+      'core:close': => @hide()
 
     @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-select-firmware-view'
