@@ -8,40 +8,41 @@ class Dialog extends View
     @div class: 'spark-dev-dialog overlay from-top', =>
       @label prompt, class: 'icon', outlet: 'promptText'
       @subview 'miniEditor', new TextEditorView(mini: true)
+      @div class: 'editor-overlay', outlet: 'editorOverlay'
       @div class: 'error-message', outlet: 'errorMessage'
 
   initialize: ({initialText, select, iconClass, hideOnBlur} = {}) ->
     @promptText.addClass(iconClass) if iconClass
-    @on 'core:confirm', => @onConfirm(@miniEditor.getText())
-    @on 'core:cancel', => @cancel()
-
-    @miniEditor.getEditor().getBuffer().onDidChange => @showError()
-
-    @miniEditor.setText(initialText)
+    atom.commands.add @element,
+      'core:confirm': => @onConfirm(@miniEditor.getText())
+      'core:cancel': => @cancel()
+    @miniEditor.getModel().onDidChange => @showError()
+    @miniEditor.getModel().setText(initialText)
+    @miniEditor.getModel().onWillInsertText (event) =>
+      if not @enabled
+        event.cancel()
+    @enabled = true
 
     if hideOnBlur
-      @miniEditor.hiddenInput.on 'focusout', => @remove()
+      @miniEditor.on 'blur', => @close()
 
     if select
       @miniEditor.getEditor().setSelectedBufferRange([[0, 0], [0, initialText.length]])
 
   attach: ->
-    @hideOthers()
-    atom.workspaceView.append(this)
+    @panel = atom.workspace.addModalPanel(item: this.element)
     @miniEditor.focus()
     @miniEditor.getModel().scrollToCursorPosition()
 
-  # Close other dialogs
-  hideOthers: ->
-    $('.spark-dev-dialog').each (idx, item) ->
-      $(item).data('view').close()
-
   close: ->
-    @remove()
-    atom.workspaceView.focus()
+    panelToDestroy = @panel
+    @panel = null
+    panelToDestroy?.destroy()
+    atom.workspace.getActivePane().activate()
 
   cancel: ->
-    @remove()
+    @close()
+    atom.workspace.getActivePane().activate()
 
   showError: (message='') ->
     @errorMessage.text(message)
@@ -52,3 +53,10 @@ class Dialog extends View
     @miniEditor.removeClass 'loading'
     if isLoading
       @miniEditor.addClass 'loading'
+
+  setInputEnabled: (enabled=true) ->
+    if enabled
+      @editorOverlay.hide()
+    else
+      @editorOverlay.show()
+      @miniEditor.blur()

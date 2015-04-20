@@ -1,4 +1,4 @@
-{WorkspaceView, $} = require 'atom-space-pen-views'
+{$} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require('spark-dev-spec-stubs').spark
 spark = require 'spark'
@@ -8,9 +8,10 @@ describe 'Claim Core View', ->
   originalProfile = null
   sparkIde = null
   claimCoreView = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
 
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
@@ -40,26 +41,32 @@ describe 'Claim Core View', ->
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
-      editor = claimCoreView.miniEditor.getEditor()
+      editor = claimCoreView.miniEditor.getModel()
 
       editor.setText ''
       spyOn claimCoreView, 'close'
 
-      expect(atom.workspaceView.find('#spark-dev-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(false)
-      claimCoreView.trigger 'core:confirm'
-      expect(atom.workspaceView.find('#spark-dev-claim-core-view .editor:eq(0)').hasClass('editor-error')).toBe(true)
+      expect(claimCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
+      atom.commands.dispatch claimCoreView.miniEditor.element, 'core:confirm'
+      expect(claimCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(claimCoreView.close).not.toHaveBeenCalled()
 
+      jasmine.unspy claimCoreView, 'close'
+      claimCoreView.close()
+
+
+    it 'checks if proper value passes', ->
+      SparkStub.stubSuccess spark, 'claimCore'
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
-      editor = claimCoreView.miniEditor.getEditor()
+      editor = claimCoreView.miniEditor.getModel()
 
       editor.setText '0123456789abcdef0123456789abcdef'
       spyOn claimCoreView, 'close'
-      spyOn atom.workspaceView, 'trigger'
+      spyOn(atom.commands, 'dispatch').andCallThrough()
       spyOn SettingsHelper, 'setCurrentCore'
-      claimCoreView.trigger 'core:confirm'
+      atom.commands.dispatch claimCoreView.miniEditor.element, 'core:confirm'
 
       waitsFor ->
         !claimCoreView.claimPromise
@@ -67,13 +74,13 @@ describe 'Claim Core View', ->
       runs ->
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null)
-        expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger.calls.length).toEqual(2)
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalled()
+        expect(atom.commands.dispatch.calls.length).toEqual(3)
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
         expect(claimCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy claimCoreView, 'close'
-        jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy atom.commands, 'dispatch'
         jasmine.unspy SettingsHelper, 'setCurrentCore'
         claimCoreView.close()

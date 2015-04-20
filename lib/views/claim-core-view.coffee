@@ -14,6 +14,7 @@ class ClaimCoreView extends Dialog
 
     @claimPromise = null
     @prop 'id', 'spark-dev-claim-core-view'
+    @workspaceElement = atom.views.getView(atom.workspace)
 
   # When deviceID is submited
   onConfirm: (deviceID) ->
@@ -30,11 +31,11 @@ class ClaimCoreView extends Dialog
       @miniEditor.addClass 'editor-error'
     else
       # Lock input
-      @miniEditor.hiddenInput.attr 'disabled', 'disabled'
+      @setInputEnabled false
 
       spark = require 'spark'
       spark.login { accessToken: SettingsHelper.get('access_token') }
-      workspace = atom.workspaceView
+
       # Claim core via API
       @claimPromise = spark.claimCore deviceID
       @setLoading true
@@ -48,21 +49,22 @@ class ClaimCoreView extends Dialog
           SettingsHelper.setCurrentCore e.id, null
 
           # Refresh UI
-          atom.workspaceView.trigger 'spark-dev:update-core-status'
-          atom.workspaceView.trigger 'spark-dev:update-menu'
+          atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
+          atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
 
           @claimPromise = null
           @close()
         else
-          @miniEditor.hiddenInput.removeAttr 'disabled'
+          @setInputEnabled true
           @miniEditor.addClass 'editor-error'
           @showError e.errors
+
           @claimPromise = null
 
       , (e) =>
         @setLoading false
         # Show error
-        @miniEditor.hiddenInput.removeAttr 'disabled'
+        @setInputEnabled true
 
         if e.code == 'ENOTFOUND'
           message = 'Error while connecting to ' + e.hostname
