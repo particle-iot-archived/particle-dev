@@ -1,6 +1,7 @@
-{View, TextEditorView} = require 'atom'
+{View, TextEditorView, $} = require 'atom-space-pen-views'
+MiniEditor = require '../subviews/mini-editor'
 
-$ = null
+CompositeDisposable = null
 _s = null
 Subscriber = null
 spark = null
@@ -10,15 +11,15 @@ validator = null
 module.exports =
 class LoginView extends View
   @content: ->
-    @div id: 'spark-dev-login-view', class: 'overlay from-top', =>
+    @div id: 'spark-dev-login-view', =>
       @div class: 'block', =>
         @span 'Log in to Spark Cloud '
         @span class: 'text-subtle', =>
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'emailEditor', new TextEditorView(mini: true, placeholderText: 'Could I please have an email address?')
-      @subview 'passwordEditor', new TextEditorView(mini: true, placeholderText: 'and a password?')
+      @subview 'emailEditor', new MiniEditor('Could I please have an email address?')
+      @subview 'passwordEditor', new MiniEditor('and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
@@ -27,48 +28,33 @@ class LoginView extends View
         @a href: 'https://www.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
   initialize: (serializeState) ->
-    {Subscriber} = require 'emissary'
-    $ ?= require('atom').$
-
+    {CompositeDisposable} = require 'atom'
     _s ?= require 'underscore.string'
     SettingsHelper = require '../utils/settings-helper'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      atom.workspaceView.trigger 'spark-dev:cancel-login'
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', =>
+        atom.commands.dispatch @workspaceElement, 'spark-dev:cancel-login'
+      'core:close', =>
+        atom.commands.dispatch @workspaceElement, 'spark-dev:cancel-login'
+
 
     @loginPromise = null
 
-    # As Atom doesn't provide password input, we have to hack TextEditorView to act as one
-    #
-    # Known issues:
-    # * doesn't support pasting (it will show plain text)
-    # * doesn't work with multiple selections
-    @passwordEditor.originalText = ''
-    @passwordEditor.hiddenInput.on 'keypress', (e) =>
-      editor = @passwordEditor.getEditor()
-      selection = editor.getSelectedBufferRange()
-      cursor = editor.getCursorBufferPosition()
-      if !selection.isEmpty()
-        @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, selection.start.column, selection.end.column - selection.start.column, String.fromCharCode(e.which))
-      else
-        @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, cursor.column, 0, String.fromCharCode(e.which))
-      @passwordEditor.insertText '*'
-      false
+    @emailModel = @emailEditor.editor.getModel()
+    @passwordModel = @passwordEditor.editor.getModel()
 
-    @passwordEditor.hiddenInput.on 'keydown', (e) =>
-      if e.which == 8
-        editor = @passwordEditor.getEditor()
-        selection = editor.getSelectedBufferRange()
-        cursor = editor.getCursorBufferPosition()
-        if !selection.isEmpty()
-          @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, selection.start.column, selection.end.column - selection.start.column)
-        else
-          @passwordEditor.originalText = _s.splice(@passwordEditor.originalText, cursor.column - 1, 1)
-        @passwordEditor.backspace
-      else if e.which == 13
-        @login()
-      true
+    passwordElement = $(@passwordEditor.editor.element.rootElement)
+    passwordElement.find('div.lines').addClass('password-lines')
+    @passwordModel.onDidChange =>
+      string = @passwordModel.getText().split('').map(->
+        '*'
+      ).join ''
+
+      passwordElement.find('#password-style').remove()
+      passwordElement.append('<style id="password-style">.password-lines .line span.text:before {content:"' + string + '";}</style>')
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -76,25 +62,29 @@ class LoginView extends View
   # Tear down any state and detach
   destroy: ->
     @remove()
+    @disposables.dispose()
 
   show: =>
     if !@hasParent()
-      atom.workspaceView.append(this)
-      @emailEditor.getEditor().setText ''
-      @passwordEditor.getEditor().setText ''
-      @passwordEditor.originalText = ''
-      @errorLabel.hide()
-      @emailEditor.focus()
+      @panel = atom.workspace.addModalPanel(item: this.element)
+      @emailEditor.editor.click()
 
   hide: ->
     if @hasParent()
       @detach()
+      @unlockUi()
+      @clearErrors()
+      @emailModel.setText ''
+      @passwordModel.setText ''
+      @errorLabel.hide()
+
+      panelToDestroy = @panel
+      @panel = null
+      panelToDestroy?.destroy()
 
   cancel: (event, element) =>
     if !!@loginPromise
       @loginPromise = null
-    @unlockUi()
-    @clearErrors()
     @hide()
 
   cancelCommand: ->
@@ -102,8 +92,8 @@ class LoginView extends View
 
   # Remove errors from inputs
   clearErrors: ->
-    @emailEditor.removeClass 'editor-error'
-    @passwordEditor.removeClass 'editor-error'
+    @emailEditor.editor.removeClass 'editor-error'
+    @passwordEditor.editor.removeClass 'editor-error'
 
   # Test input's values
   validateInputs: ->
@@ -111,25 +101,25 @@ class LoginView extends View
 
     @clearErrors()
 
-    @email = _s.trim(@emailEditor.getText())
-    @password = _s.trim(@passwordEditor.originalText)
+    @email = _s.trim(@emailModel.getText())
+    @password = _s.trim(@passwordModel.getText())
 
     isOk = true
 
     if (@email == '') || (!validator.isEmail(@email))
-      @emailEditor.addClass 'editor-error'
+      @emailEditor.editor.addClass 'editor-error'
       isOk = false
 
     if @password == ''
-      @passwordEditor.addClass 'editor-error'
+      @passwordEditor.editor.addClass 'editor-error'
       isOk = false
 
     isOk
 
   # Unlock inputs and buttons
   unlockUi: ->
-    @emailEditor.hiddenInput.removeAttr 'disabled'
-    @passwordEditor.hiddenInput.removeAttr 'disabled'
+    @emailEditor.setEnabled true
+    @passwordEditor.setEnabled true
     @loginButton.removeAttr 'disabled'
 
   # Login via the cloud
@@ -137,8 +127,8 @@ class LoginView extends View
     if !@validateInputs()
       return false
 
-    @emailEditor.hiddenInput.attr 'disabled', 'disabled'
-    @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
+    @emailEditor.setEnabled false
+    @passwordEditor.setEnabled false
     @loginButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
     @errorLabel.hide()
@@ -150,7 +140,7 @@ class LoginView extends View
       if !@loginPromise
         return
       SettingsHelper.setCredentials @email, e.access_token
-      atom.workspaceView.trigger 'spark-dev:update-login-status'
+      atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
       @loginPromise = null
 
       @cancel()
@@ -173,4 +163,4 @@ class LoginView extends View
   # Logout
   logout: =>
     SettingsHelper.clearCredentials()
-    atom.workspaceView.trigger 'spark-dev:update-login-status'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'

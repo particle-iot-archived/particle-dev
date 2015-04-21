@@ -7,7 +7,8 @@ class MiniEditor extends View
 			@subview 'editor', new TextEditorView(mini: true)
 			@div class: 'editor-disabled', outlet: 'editorOverlay'
 
-	initialize: ->
+	initialize: (placeholderText) ->
+		@editor.model.setPlaceholderText placeholderText
 		@enabled = true
 		@editor.on 'focus', =>
 			if not @enabled

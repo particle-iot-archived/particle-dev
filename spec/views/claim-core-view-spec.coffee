@@ -3,7 +3,7 @@ SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require('spark-dev-spec-stubs').spark
 spark = require 'spark'
 
-fdescribe 'Claim Core View', ->
+describe 'Claim Core View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
