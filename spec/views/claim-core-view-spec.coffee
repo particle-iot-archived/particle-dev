@@ -3,7 +3,7 @@ SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require('spark-dev-spec-stubs').spark
 spark = require 'spark'
 
-describe 'Claim Core View', ->
+fdescribe 'Claim Core View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
@@ -41,13 +41,13 @@ describe 'Claim Core View', ->
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
-      editor = claimCoreView.miniEditor.getModel()
+      editor = claimCoreView.miniEditor.editor.getModel()
 
       editor.setText ''
       spyOn claimCoreView, 'close'
 
       expect(claimCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
-      atom.commands.dispatch claimCoreView.miniEditor.element, 'core:confirm'
+      atom.commands.dispatch claimCoreView.miniEditor.editor.element, 'core:confirm'
       expect(claimCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(claimCoreView.close).not.toHaveBeenCalled()
 
@@ -60,7 +60,7 @@ describe 'Claim Core View', ->
       sparkIde.claimCore()
       claimCoreView = sparkIde.claimCoreView
 
-      editor = claimCoreView.miniEditor.getModel()
+      editor = claimCoreView.miniEditor.editor.getModel()
 
       editor.setText '0123456789abcdef0123456789abcdef'
       spyOn claimCoreView, 'close'

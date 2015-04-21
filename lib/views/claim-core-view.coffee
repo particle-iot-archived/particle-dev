@@ -22,16 +22,17 @@ class ClaimCoreView extends Dialog
     _s ?= require 'underscore.string'
 
     # Remove any errors
-    @miniEditor.removeClass 'editor-error'
+    @miniEditor.editor.removeClass 'editor-error'
     # Trim deviceID from any whitespaces
     deviceID = _s.trim(deviceID)
 
     if deviceID == ''
       # Empty deviceID is not allowed
-      @miniEditor.addClass 'editor-error'
+      @miniEditor.editor.addClass 'editor-error'
     else
       # Lock input
-      @setInputEnabled false
+      @miniEditor.setEnabled false
+      @miniEditor.setLoading true
 
       spark = require 'spark'
       spark.login { accessToken: SettingsHelper.get('access_token') }
@@ -40,7 +41,7 @@ class ClaimCoreView extends Dialog
       @claimPromise = spark.claimCore deviceID
       @setLoading true
       @claimPromise.done (e) =>
-        @setLoading false
+        @miniEditor.setLoading false
         if e.ok
           if !@claimPromise
             return
@@ -55,8 +56,8 @@ class ClaimCoreView extends Dialog
           @claimPromise = null
           @close()
         else
-          @setInputEnabled true
-          @miniEditor.addClass 'editor-error'
+          @miniEditor.setEnabled true
+          @miniEditor.editor.addClass 'editor-error'
           @showError e.errors
 
           @claimPromise = null
@@ -64,13 +65,13 @@ class ClaimCoreView extends Dialog
       , (e) =>
         @setLoading false
         # Show error
-        @setInputEnabled true
+        @miniEditor.setEnabled true
 
         if e.code == 'ENOTFOUND'
           message = 'Error while connecting to ' + e.hostname
           @showError message
         else
-          @miniEditor.addClass 'editor-error'
+          @miniEditor.editor.addClass 'editor-error'
           @showError e.errors
 
         @claimPromise = null
