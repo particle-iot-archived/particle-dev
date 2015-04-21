@@ -6,40 +6,43 @@ describe 'Compile Errors View', ->
   activationPromise = null
   sparkIde = null
   compileErrorsView = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
-      sparkIde.compileErrorsView = null
+      sparkIde.initView 'compile-errors'
+      compileErrorsView = sparkIde.compileErrorsView
 
     waitsForPromise ->
       activationPromise
 
+  describe 'tests hiding and showing', ->
+    it 'checks command hooks', ->
+      compileErrorsView.show()
+
+      spyOn(compileErrorsView, 'hide').andCallThrough()
+      atom.commands.dispatch workspaceElement, 'core:cancel'
+      expect(compileErrorsView.hide).toHaveBeenCalled()
+
+      # compileErrorsView.show()
+      # compileErrorsView.hide.reset()
+      # atom.commands.dispatch workspaceElement, 'core:close'
+      # expect(compileErrorsView.hide).toHaveBeenCalled()
+
+      jasmine.unspy compileErrorsView, 'hide'
+      compileErrorsView.hide()
+
   describe '', ->
     it 'tests showing without errors', ->
-      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
-      compileErrorsView = sparkIde.compileErrorsView
-      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
+      compileErrorsView.show()
 
       expect(compileErrorsView.find('div.loading').css('display')).toEqual('block')
       expect(compileErrorsView.find('span.loading-message').text()).toEqual('There were no compile errors')
       expect(compileErrorsView.find('ol.list-group li').length).toEqual(0)
 
       compileErrorsView.hide()
-
-    it 'tests hiding and showing', ->
-      # Test core:cancel
-      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
-      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
-      atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).not.toExist()
-
-      # Test core:close
-      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
-      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).toExist()
-      atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-dev-compile-errors-view')).not.toExist()
 
     it 'tests loading and selecting items', ->
       SettingsHelper.setLocal 'compile-status', {errors: [
@@ -56,8 +59,7 @@ describe 'Compile Errors View', ->
         }
       ]}
       atom.project.setPaths [path.join(__dirname, '..', 'data', 'sampleproject')]
-      atom.workspaceView.trigger 'spark-dev:show-compile-errors'
-      compileErrorsView = sparkIde.compileErrorsView
+      compileErrorsView.show()
 
       errors = compileErrorsView.find('ol.list-group li')
       expect(errors.length).toEqual(2)
@@ -70,7 +72,7 @@ describe 'Compile Errors View', ->
 
       # Test selecting
       editorSpy = jasmine.createSpy 'setCursorBufferPosition'
-      spyOn(atom.workspaceView, 'open').andCallFake ->
+      spyOn(atom.workspace, 'open').andCallFake ->
         return {
           done: (callback) ->
             callback {
@@ -79,11 +81,11 @@ describe 'Compile Errors View', ->
         }
       spyOn(compileErrorsView, 'cancel').andCallThrough()
 
-      expect(atom.workspaceView.open).not.toHaveBeenCalled()
+      expect(atom.workspace.open).not.toHaveBeenCalled()
       errors.eq(0).addClass 'selected'
-      compileErrorsView.trigger 'core:confirm'
-      expect(atom.workspaceView.open).toHaveBeenCalled()
-      expect(atom.workspaceView.open).toHaveBeenCalledWith(
+      atom.commands.dispatch compileErrorsView.element, 'core:confirm'
+      expect(atom.workspace.open).toHaveBeenCalled()
+      expect(atom.workspace.open).toHaveBeenCalledWith(
         'foo.ino',
         {searchAllPanes: true}
       )
@@ -92,5 +94,5 @@ describe 'Compile Errors View', ->
       expect(compileErrorsView.cancel).toHaveBeenCalled()
 
       jasmine.unspy compileErrorsView, 'cancel'
-      jasmine.unspy atom.workspaceView, 'open'
+      jasmine.unspy atom.workspace, 'open'
       SettingsHelper.setLocal 'compile-status', null

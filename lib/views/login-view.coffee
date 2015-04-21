@@ -32,6 +32,8 @@ class LoginView extends View
     _s ?= require 'underscore.string'
     SettingsHelper = require '../utils/settings-helper'
 
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+
     @disposables = new CompositeDisposable
     @workspaceElement = atom.views.getView(atom.workspace)
     @disposables.add atom.commands.add 'atom-workspace',
@@ -61,26 +63,23 @@ class LoginView extends View
 
   # Tear down any state and detach
   destroy: ->
-    @remove()
+    panelToDestroy = @panel
+    @panel = null
+    panelToDestroy?.destroy()
+
     @disposables.dispose()
 
   show: =>
-    if !@hasParent()
-      @panel = atom.workspace.addModalPanel(item: this.element)
-      @emailEditor.editor.click()
+    @panel.show()
+    @emailEditor.editor.click()
 
   hide: ->
-    if @hasParent()
-      @detach()
-      @unlockUi()
-      @clearErrors()
-      @emailModel.setText ''
-      @passwordModel.setText ''
-      @errorLabel.hide()
-
-      panelToDestroy = @panel
-      @panel = null
-      panelToDestroy?.destroy()
+    @panel.hide()
+    @unlockUi()
+    @clearErrors()
+    @emailModel.setText ''
+    @passwordModel.setText ''
+    @errorLabel.hide()
 
   cancel: (event, element) =>
     if !!@loginPromise

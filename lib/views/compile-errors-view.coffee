@@ -1,4 +1,4 @@
-SelectListView = require('atom').SelectListView
+SelectListView = require('atom-space-pen-views').SelectListView
 
 $ = null
 $$ = null
@@ -13,11 +13,20 @@ class CompileErrorsView extends SelectListView
   initialize: ->
     super
 
-    {$, $$} = require 'atom'
+    {$, $$} = require 'atom-space-pen-views'
     {Subscriber} = require 'emissary'
+    {CompositeDisposable} = require 'atom'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', =>
+        @hide()
+      'core:close', =>
+        console.log 'close'
+        @hide()
 
     @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-compile-errors-view'
@@ -53,23 +62,22 @@ class CompileErrorsView extends SelectListView
 
   destroy: ->
     @remove()
+    @disposables.dispose()
 
   show: =>
-    if !@hasParent()
-      SettingsHelper ?= require '../utils/settings-helper'
+    SettingsHelper ?= require '../utils/settings-helper'
 
-      atom.workspaceView.append(this)
+    @panel.show()
 
-      compileStatus = SettingsHelper.getLocal 'compile-status'
-      if compileStatus?.errors
-        @setItems compileStatus.errors
-      else
-        @setLoading 'There were no compile errors'
-      @focusFilterEditor()
+    compileStatus = SettingsHelper.getLocal 'compile-status'
+    if compileStatus?.errors
+      @setItems compileStatus.errors
+    else
+      @setLoading 'There were no compile errors'
+    @focusFilterEditor()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   fixInoFile: (filename) ->
     fs ?= require 'fs-plus'
@@ -93,7 +101,7 @@ class CompileErrorsView extends SelectListView
     filename = @fixInoFile item.file
 
     # Open file with error in editor
-    opening = atom.workspaceView.open filename, { searchAllPanes: true }
+    opening = atom.workspace.open filename, { searchAllPanes: true }
     opening.done (editor) =>
       editor.setCursorBufferPosition [item.row-1, item.col-1],
     @cancel()
