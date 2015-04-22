@@ -1,16 +1,19 @@
 {WorkspaceView, $} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
+SelectPortView = require '../../lib/views/select-port-view'
 
 describe 'Select Port View', ->
   activationPromise = null
   sparkIde = null
   selectPortView = null
   originalProfile = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
+      selectPortView = new SelectPortView()
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -25,46 +28,28 @@ describe 'Select Port View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe '', ->
-    it 'tests hiding and showing', ->
+  describe 'tests hiding and showing', ->
+    it 'checks command hooks', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      selectPortView.show()
 
-      # Test core:cancel
-      sparkIde.identifyCore()
+      spyOn(selectPortView, 'hide').andCallThrough()
+      atom.commands.dispatch workspaceElement, 'core:cancel'
+      expect(selectPortView.hide).toHaveBeenCalled()
 
-      waitsFor ->
-        !sparkIde.listPortsPromise
+      # selectPortView.show()
+      # selectPortView.hide.reset()
+      # atom.commands.dispatch workspaceElement, 'core:close'
+      # expect(selectPortView.hide).toHaveBeenCalled()
 
-      runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
-        atom.workspaceView.trigger 'core:cancel'
-        expect(atom.workspaceView.find('#spark-dev-select-port-view')).not.toExist()
+      jasmine.unspy selectPortView, 'hide'
+      selectPortView.hide()
+      SettingsHelper.clearCredentials()
 
-        # Test core:close
-        sparkIde.identifyCore()
-
-      waitsFor ->
-        !sparkIde.listPortsPromise
-
-      runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
-        atom.workspaceView.trigger 'core:close'
-        expect(atom.workspaceView.find('#spark-dev-select-port-view')).not.toExist()
-
-        SettingsHelper.clearCredentials()
-
-
+  describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-
-      sparkIde.identifyCore()
-
-      waitsFor ->
-        !sparkIde.listPortsPromise
-
-      runs ->
-        selectPortView = sparkIde.selectPortView
-        expect(atom.workspaceView.find('#spark-dev-select-port-view')).toExist()
+      selectPortView.show()
 
       waitsFor ->
         !selectPortView.listPortsPromise
@@ -79,5 +64,5 @@ describe 'Select Port View', ->
         expect(devices.eq(0).find('.secondary-line').text()).toEqual('/dev/cu.usbmodemfa1234')
         expect(devices.eq(1).find('.secondary-line').text()).toEqual('/dev/cu.usbmodemfab1234')
 
+        selectPortView.hide()
         SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'

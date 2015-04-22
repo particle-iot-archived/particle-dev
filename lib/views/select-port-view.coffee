@@ -1,4 +1,4 @@
-SelectListView = require('atom').SelectListView
+{SelectListView} = require 'atom-space-pen-views'
 
 $ = null
 $$ = null
@@ -10,11 +10,20 @@ class SelectPortView extends SelectListView
   initialize: (delegate) ->
     super
 
-    {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
+    {$, $$} = require 'atom-space-pen-views'
+    {CompositeDisposable, Emitter} = require 'atom'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+
+    @disposables = new CompositeDisposable
+    @emitter = new Emitter
+
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', =>
+        @hide()
+      'core:close', =>
+        @hide()
 
     @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-select-port-view'
@@ -23,20 +32,19 @@ class SelectPortView extends SelectListView
     @delegate = delegate
 
   destroy: ->
-    @remove()
+    @panel.hide()
+    @disposables.dispose()
 
   show: =>
-    if !@hasParent()
-      atom.workspaceView.append(this)
+    @panel.show()
 
-      @setItems []
-      @setLoading 'Listing ports...'
-      @listPorts()
-      @focusFilterEditor()
+    @setItems []
+    @setLoading 'Listing ports...'
+    @listPorts()
+    @focusFilterEditor()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   viewForItem: (item) ->
     $$ ->
@@ -45,8 +53,8 @@ class SelectPortView extends SelectListView
         @div class: 'secondary-line', item.comName
 
   confirmed: (item) ->
-    # TODO: Test this
-    atom.workspaceView.trigger @delegate, [item.comName]
+    # TODO: Cover it with tests
+    @emitter.emit @delegate, {port: item.comName}
     @cancel()
 
   getFilterKey: ->
