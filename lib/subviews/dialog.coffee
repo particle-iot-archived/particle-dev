@@ -16,13 +16,14 @@ class Dialog extends View
     @model = @miniEditor.editor.getModel()
     atom.commands.add @element,
       'core:confirm': => @onConfirm(@model.getText())
-      'core:cancel': => @cancel()
+      'core:cancel': => @close()
     @model.onDidChange => @showError()
     @model.setText(initialText)
     @model.onWillInsertText (event) =>
       if not @enabled
         event.cancel()
     @enabled = true
+    @panel = atom.workspace.addModalPanel(item: this.element, visible: false)
 
     if hideOnBlur
       @miniEditor.editor.on 'blur', => @close()
@@ -31,18 +32,17 @@ class Dialog extends View
       @model.setSelectedBufferRange([[0, 0], [0, initialText.length]])
 
   attach: ->
-    @panel = atom.workspace.addModalPanel(item: this.element)
+    @panel.show()
     @miniEditor.editor.focus()
     @model.scrollToCursorPosition()
 
-  close: ->
+  destroy: ->
     panelToDestroy = @panel
     @panel = null
     panelToDestroy?.destroy()
-    atom.workspace.getActivePane().activate()
 
-  cancel: ->
-    @close()
+  close: ->
+    @panel.hide()
     atom.workspace.getActivePane().activate()
 
   showError: (message='') ->

@@ -17,39 +17,40 @@ class RenameCoreView extends Dialog
 
     @renamePromise = null
     @prop 'id', 'spark-dev-rename-core-view'
+    @workspaceElement = atom.views.getView(atom.workspace)
 
   onConfirm: (newName) ->
     SettingsHelper ?= require '../utils/settings-helper'
     _s ?= require 'underscore.string'
 
-    @miniEditor.removeClass 'editor-error'
+    @miniEditor.editor.removeClass 'editor-error'
     newName = _s.trim(newName)
     if newName == ''
-      @miniEditor.addClass 'editor-error'
+      @miniEditor.editor.addClass 'editor-error'
     else
-      @miniEditor.hiddenInput.attr 'disabled', 'disabled'
-
       spark ?= require 'spark'
       spark.login { accessToken: SettingsHelper.get('access_token') }
-      workspace = atom.workspaceView
       @renamePromise = spark.renameCore SettingsHelper.getLocal('current_core'), newName
-      @setLoading true
+      @miniEditor.setLoading true
+      @miniEditor.setEnabled false
+
       @renamePromise.done (e) =>
+        @miniEditor.setLoading false
         if !@renamePromise
           return
 
-        atom.workspaceView = workspace
         SettingsHelper.setLocal 'current_core_name', newName
-        atom.workspaceView.trigger 'spark-dev:update-core-status'
-        atom.workspaceView.trigger 'spark-dev:update-menu'
+
+        atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
+        atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
         @renamePromise = null
 
         @close()
 
       , (e) =>
-        @setLoading false
+        @miniEditor.setLoading false
         @renamePromise = null
-        @miniEditor.hiddenInput.removeAttr 'disabled'
+        @miniEditor.setEnabled true
         if e.code == 'ENOTFOUND'
           message = 'Error while connecting to ' + e.hostname
         else

@@ -357,7 +357,7 @@ module.exports =
     @RenameCoreView ?= require './views/rename-core-view'
     @renameCoreView = new @RenameCoreView(@SettingsHelper.getLocal 'current_core_name')
 
-    @renameCoreView.attach()
+    @renameCoreView.show()
 
   # Remove current core from user's account
   removeCore: -> @coreRequired =>
@@ -395,7 +395,7 @@ module.exports =
     @claimCoreView = null
     @initView 'claim-core'
 
-    @claimCoreView.attach()
+    @claimCoreView.show()
 
   # Identify core via serial
   identifyCore: (port=null) -> @loginRequired =>

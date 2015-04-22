@@ -4,7 +4,7 @@ SerialHelper = require '../../lib/utils/serial-helper'
 ListeningModeView = require '../../lib/views/listening-mode-view'
 require 'serialport'
 
-fdescribe 'Listening Mode View', ->
+describe 'Listening Mode View', ->
   activationPromise = null
   sparkIde = null
   listeningModeView = null
