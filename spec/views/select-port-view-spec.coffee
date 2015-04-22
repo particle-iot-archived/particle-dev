@@ -13,7 +13,7 @@ describe 'Select Port View', ->
     workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
-      selectPortView = new SelectPortView()
+      selectPortView = new SelectPortView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...

@@ -1,4 +1,4 @@
-SelectListView = require('atom').SelectListView
+{SelectListView} = require 'atom-space-pen-views'
 
 $ = null
 $$ = null
@@ -10,32 +10,38 @@ class SelectWifiView extends SelectListView
   initialize: ->
     super
 
-    {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
-
+    {$, $$} = require 'atom-space-pen-views'
+    {CompositeDisposable, Emitter} = require 'atom'
     @cp = require 'child_process'
     _s ?= require 'underscore.string'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
-    @addClass 'overlay from-top'
+    @disposables = new CompositeDisposable
+    @emitter = new Emitter
+
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', =>
+        @hide()
+      'core:close', =>
+        @hide()
+
     @prop 'id', 'spark-dev-select-wifi-view'
 
     @port = null
 
   destroy: ->
-    @remove()
+    @panel.hide()
+    @disposables.dispose()
 
   show: =>
-    if !@hasParent()
-      atom.workspaceView.append(this)
+    @panel.show()
 
-      @listNetworks()
+    @listNetworks()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   viewForItem: (item) ->
     security = null
@@ -59,11 +65,14 @@ class SelectWifiView extends SelectListView
 
   confirmed: (item) ->
     @cancel()
-
     if item.security
-      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port, item.ssid, item.security]
+      @emitter.emit 'spark-dev:enter-wifi-credentials',
+        port: @port
+        ssid: item.ssid
+        security: item.security
     else
-      atom.workspaceView.trigger 'spark-dev:enter-wifi-credentials', [@port]
+      @emitter.emit 'spark-dev:enter-wifi-credentials',
+        port: @port
 
   getPlatform: ->
     process.platform
@@ -76,7 +85,6 @@ class SelectWifiView extends SelectListView
       @setItems(networks.concat @items)
       @removeClass 'loading'
       @focusFilterEditor()
-      @filterEditorView.hiddenInput.focus()
     else
       @setLoading()
 

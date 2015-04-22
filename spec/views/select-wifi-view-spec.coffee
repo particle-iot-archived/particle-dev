@@ -1,5 +1,6 @@
 {WorkspaceView, $} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
+SelectWifiView = require '../../lib/views/select-wifi-view'
 _s = require 'underscore.string'
 
 describe 'Select Wifi View', ->
@@ -7,11 +8,13 @@ describe 'Select Wifi View', ->
   sparkIde = null
   selectWifiView = null
   originalProfile = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
+      selectWifiView = new SelectWifiView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -26,57 +29,43 @@ describe 'Select Wifi View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe '', ->
-    it 'tests hiding and showing', ->
+  describe 'tests hiding and showing', ->
+    it 'checks command hooks', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      selectWifiView.show()
 
-      # Test core:cancel
-      sparkIde.setupWifi 'foo'
+      spyOn(selectWifiView, 'hide').andCallThrough()
+      atom.commands.dispatch workspaceElement, 'core:cancel'
+      expect(selectWifiView.hide).toHaveBeenCalled()
 
-      runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
-        atom.workspaceView.trigger 'core:cancel'
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).not.toExist()
+      # selectWifiView.show()
+      # selectWifiView.hide.reset()
+      # atom.commands.dispatch workspaceElement, 'core:close'
+      # expect(selectWifiView.hide).toHaveBeenCalled()
 
-        # Test core:close
-        sparkIde.setupWifi 'foo'
+      jasmine.unspy selectWifiView, 'hide'
+      selectWifiView.hide()
+      SettingsHelper.clearCredentials()
 
-      runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
-        atom.workspaceView.trigger 'core:close'
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).not.toExist()
-
-        SettingsHelper.clearCredentials()
-
-
+  describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-
-      sparkIde.selectWifiView = null
-      sparkIde.initView 'select-wifi'
-      selectWifiView = sparkIde.selectWifiView
-
       spyOn selectWifiView, 'listNetworks'
 
-      sparkIde.setupWifi 'foo'
+      selectWifiView.show()
 
-      expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
       expect(selectWifiView.listNetworks).toHaveBeenCalled()
 
       jasmine.unspy selectWifiView, 'listNetworks'
       SettingsHelper.clearCredentials()
-      atom.workspaceView.trigger 'core:close'
+      selectWifiView.hide()
 
     it 'test listing networks on Darwin', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       process.platform = 'darwin'
 
-      sparkIde.selectWifiView = null
-      sparkIde.initView 'select-wifi'
-      selectWifiView = sparkIde.selectWifiView
       spyOn(selectWifiView, 'getPlatform').andReturn('darwin')
-
       spyOn(selectWifiView, 'listNetworksDarwin').andCallThrough()
       spyOn(selectWifiView.cp, 'exec').andCallFake (command, callback) ->
         if _s.endsWith(command) == '-I'
@@ -108,10 +97,9 @@ lastAssocStatus: 0\n\
 
       spyOn selectWifiView, 'setItems'
 
-      sparkIde.setupWifi 'foo'
+      selectWifiView.show()
 
       runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
         expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
         expect(selectWifiView.listNetworksDarwin).toHaveBeenCalled()
 
@@ -146,7 +134,7 @@ lastAssocStatus: 0\n\
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
         jasmine.unspy selectWifiView, 'getPlatform'
         SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'
+        selectWifiView.hide()
 
     it 'test listing networks on Windows', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -167,10 +155,9 @@ lastAssocStatus: 0\n\
 
       spyOn selectWifiView, 'setItems'
 
-      sparkIde.setupWifi 'foo'
+      selectWifiView.show()
 
       runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
         expect(selectWifiView.find('span.loading-message').text()).toEqual('Scaning for networks...')
         expect(selectWifiView.listNetworksWindows).toHaveBeenCalled()
 
@@ -205,31 +192,24 @@ lastAssocStatus: 0\n\
         jasmine.unspy selectWifiView, 'listNetworksWindows'
         jasmine.unspy selectWifiView, 'getPlatform'
         SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'
+        selectWifiView.hide()
 
     it 'tests selecting item', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-
-      sparkIde.selectWifiView = null
-      sparkIde.initView 'select-wifi'
-      selectWifiView = sparkIde.selectWifiView
-
       spyOn selectWifiView, 'listNetworksDarwin'
 
-      sparkIde.setupWifi 'foo'
+      selectWifiView.show()
 
       runs ->
-        expect(atom.workspaceView.find('#spark-dev-select-wifi-view')).toExist()
-        spyOn atom.workspaceView, 'trigger'
+        spyOn selectWifiView.emitter, 'emit'
 
-        networks = selectWifiView.find('ol.list-group li')
-        networks.eq(0).addClass 'selected'
-        selectWifiView.trigger 'core:confirm'
+        console.log selectWifiView.items
+        selectWifiView.confirmed selectWifiView.items[0]
 
-        expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', ['foo'])
+        expect(selectWifiView.emitter.emit).toHaveBeenCalled()
+        expect(selectWifiView.emitter.emit).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', { port: null})
 
-        jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy selectWifiView.emitter, 'emit'
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
         SettingsHelper.clearCredentials()
-        atom.workspaceView.trigger 'core:close'
+        selectWifiView.hide()

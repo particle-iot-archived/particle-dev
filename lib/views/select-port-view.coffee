@@ -54,7 +54,8 @@ class SelectPortView extends SelectListView
 
   confirmed: (item) ->
     # TODO: Cover it with tests
-    @emitter.emit @delegate, {port: item.comName}
+    @emitter.emit @delegate,
+      port: item.comName
     @cancel()
 
   getFilterKey: ->
