@@ -1,4 +1,4 @@
-SelectListView = require('atom').SelectListView
+{SelectListView} = require 'atom-space-pen-views'
 
 $ = null
 $$ = null
@@ -11,33 +11,38 @@ class SelectCoreView extends SelectListView
   initialize: ->
     super
 
-    {$, $$} = require 'atom'
-    {Subscriber} = require 'emissary'
+    {$, $$} = require 'atom-space-pen-views'
+    {CompositeDisposable} = require 'atom'
     SettingsHelper = require '../utils/settings-helper'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', => @hide()
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', =>
+        @hide()
+      'core:close', =>
+        @hide()
 
     @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-select-core-view'
     @listDevicesPromise = null
 
-
   destroy: ->
-    @remove()
+    @panel.hide()
+    @disposables.dispose()
 
   show: =>
-    if !@hasParent()
-      atom.workspaceView.append(this)
+    @panel.show()
 
-      @setItems []
-      @setLoading 'Loading devices...'
-      @loadCores()
-      @focusFilterEditor()
+    @setItems []
+    @setLoading 'Loading devices...'
+    @loadCores()
+    @focusFilterEditor()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   # Here you specify the view for an item
   viewForItem: (item) ->
@@ -53,8 +58,8 @@ class SelectCoreView extends SelectListView
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name
 
-    atom.workspaceView.trigger 'spark-dev:update-core-status'
-    atom.workspaceView.trigger 'spark-dev:update-menu'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
+    atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
 
     @cancel()
 

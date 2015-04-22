@@ -8,18 +8,20 @@ describe 'Select Core View', ->
   selectCoreView = null
   originalProfile = null
   sparkIde = null
+  workspaceElement = null
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
+      sparkIde.selectCoreView = null
+      SparkStub.stubSuccess spark, 'listDevices'
       sparkIde.initView 'select-core'
+      selectCoreView = sparkIde.selectCoreView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
     SettingsHelper.setProfile 'spark-dev-test'
-
-    SparkStub.stubSuccess spark, 'listDevices'
 
     waitsForPromise ->
       activationPromise
@@ -27,32 +29,29 @@ describe 'Select Core View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe '', ->
-    it 'tests hiding and showing', ->
+  describe 'tests hiding and showing', ->
+    it 'checks command hooks', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      selectCoreView.show()
 
-      # Test core:cancel
-      sparkIde.selectCore()
-      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
-      atom.workspaceView.trigger 'core:cancel'
-      expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
+      spyOn(selectCoreView, 'hide').andCallThrough()
+      atom.commands.dispatch workspaceElement, 'core:cancel'
+      expect(selectCoreView.hide).toHaveBeenCalled()
 
-      # # Test core:close
-      sparkIde.selectCore()
-      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
-      atom.workspaceView.trigger 'core:close'
-      expect(atom.workspaceView.find('#spark-dev-select-core-view')).not.toExist()
+      # selectCoreView.show()
+      # selectCoreView.hide.reset()
+      # atom.commands.dispatch workspaceElement, 'core:close'
+      # expect(selectCoreView.hide).toHaveBeenCalled()
 
+      jasmine.unspy selectCoreView, 'hide'
+      selectCoreView.hide()
       SettingsHelper.clearCredentials()
 
-
+  describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
+      selectCoreView.show()
 
-      sparkIde.selectCore()
-      selectCoreView = sparkIde.selectCoreView
-
-      expect(atom.workspaceView.find('#spark-dev-select-core-view')).toExist()
       expect(selectCoreView.find('div.loading').css('display')).toEqual('block')
       expect(selectCoreView.find('span.loading-message').text()).toEqual('Loading devices...')
       expect(selectCoreView.find('ol.list-group li').length).toEqual(0)
@@ -80,25 +79,24 @@ describe 'Select Core View', ->
 
     it 'tests choosing core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      sparkIde.selectCore()
-      selectCoreView = sparkIde.selectCoreView
+      selectCoreView.show()
 
       waitsFor ->
         !selectCoreView.listDevicesPromise
 
       runs ->
         spyOn SettingsHelper, 'setCurrentCore'
-        spyOn atom.workspaceView, 'trigger'
+        spyOn(atom.commands, 'dispatch').andCallThrough()
         devices = selectCoreView.find('ol.list-group li')
         devices.eq(0).addClass 'selected'
-        selectCoreView.trigger 'core:confirm'
+
+        atom.commands.dispatch selectCoreView.element, 'core:confirm'
 
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('51ff6e065067545724680187', 'Online Core')
-        expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
 
-        jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy atom.commands, 'dispatch'
         jasmine.unspy SettingsHelper, 'setCurrentCore'
         SettingsHelper.clearCredentials()

@@ -58,7 +58,7 @@ class CompileErrorsView extends SelectListView
     errors
 
   destroy: ->
-    @remove()
+    @panel.hide()
     @disposables.dispose()
 
   show: =>
