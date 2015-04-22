@@ -1,8 +1,7 @@
-SelectListView = require('atom-space-pen-views').SelectListView
+{SelectListView} = require('atom-space-pen-views')
 
 $ = null
 $$ = null
-Subscriber = null
 SerialHelper = null
 SettingsHelper = null
 fs = null
@@ -14,7 +13,6 @@ class CompileErrorsView extends SelectListView
     super
 
     {$, $$} = require 'atom-space-pen-views'
-    {Subscriber} = require 'emissary'
     {CompositeDisposable} = require 'atom'
 
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
@@ -25,7 +23,6 @@ class CompileErrorsView extends SelectListView
       'core:cancel', =>
         @hide()
       'core:close', =>
-        console.log 'close'
         @hide()
 
     @addClass 'overlay from-top'

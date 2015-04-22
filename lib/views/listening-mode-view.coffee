@@ -1,11 +1,11 @@
-{View} = require 'atom'
+{View} = require 'atom-space-pen-views'
 SerialHelper = null
 Subscriber = null
 
 module.exports =
 class ListeningModeView extends View
   @content: ->
-    @div class: 'overlay from-top', =>
+    @div =>
       @h1 'Waiting for core...'
       @p =>
         @img src: 'atom://spark-dev/images/listening.gif'
@@ -14,10 +14,17 @@ class ListeningModeView extends View
         @button click: 'cancel', class: 'btn', 'Cancel'
 
   initialize: (delegate) ->
-    {Subscriber} = require 'emissary'
+    {CompositeDisposable} = require 'atom'
     SerialHelper = require '../utils/serial-helper'
 
     @prop 'id', 'spark-dev-listening-mode-view'
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', => @cancel()
+      'core:close', => @cancel()
 
     # Interval for automatic dialog dismissal
     @interval = setInterval =>
@@ -25,31 +32,27 @@ class ListeningModeView extends View
       promise.done (ports) =>
         if ports.length > 0
           # Hide dialog
-          atom.workspaceView.trigger 'core:cancel'
+          @cancel()
           # Try to identify found ports
-          atom.workspaceView.trigger delegate
+          atom.commands.dispatch workspaceElement, delegate
       , (e) =>
         console.error e
     , 1000
 
-    # Subscribe to Atom's core:cancel core:close events
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      clearInterval @interval
-      @hide()
-
   serialize: ->
 
   destroy: ->
-    @detach()
+    cancel()
+    panelToDestroy = @panel
+    @panel = null
+    panelToDestroy?.destroy()
 
   show: ->
-    if !@hasParent()
-      atom.workspaceView.append(this)
+    @panel.show()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   cancel: (event, element) ->
-    atom.workspaceView.trigger 'core:cancel'
+    clearInterval @interval
+    @hide()
