@@ -1,4 +1,3 @@
-{WorkspaceView, $} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
 SerialHelper = require '../../lib/utils/serial-helper'
 ListeningModeView = require '../../lib/views/listening-mode-view'

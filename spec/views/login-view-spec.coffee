@@ -1,4 +1,4 @@
-{WorkspaceView, $} = require 'atom-space-pen-views'
+{$} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require('spark-dev-spec-stubs').spark
 spark = require 'spark'

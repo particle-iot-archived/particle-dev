@@ -1,4 +1,3 @@
-{WorkspaceView} = require 'atom-space-pen-views'
 _s = require 'underscore.string'
 spark = require 'spark'
 fs = require 'fs-plus'
