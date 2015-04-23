@@ -8,6 +8,7 @@ describe 'Rename Core View', ->
   originalProfile = null
   sparkIde = null
   renameCoreView = null
+  workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
@@ -54,29 +55,29 @@ describe 'Rename Core View', ->
 
     it 'renames the core', ->
       SparkStub.stubSuccess spark, 'renameCore'
-      sparkIde.renameCore()
-      renameCoreView = sparkIde.renameCoreView
+      renameCoreView = new RenameCoreView('Foo')
+      renameCoreView.show()
 
-      editor = renameCoreView.miniEditor.getEditor()
+      editor = renameCoreView.miniEditor.editor.getModel()
 
       editor.setText 'Bar'
+      spyOn(atom.commands, 'dispatch').andCallThrough()
       spyOn renameCoreView, 'close'
-      spyOn atom.workspaceView, 'trigger'
-      renameCoreView.trigger 'core:confirm'
+      atom.commands.dispatch renameCoreView.miniEditor.editor.element, 'core:confirm'
 
       waitsFor ->
         !renameCoreView.renamePromise
 
       runs ->
         expect(SettingsHelper.getLocal('current_core_name')).toBe('Bar')
-        expect(atom.workspaceView.trigger).toHaveBeenCalled()
-        expect(atom.workspaceView.trigger.calls.length).toEqual(2)
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-core-status')
-        expect(atom.workspaceView.trigger).toHaveBeenCalledWith('spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalled()
+        expect(atom.commands.dispatch.calls.length).toEqual(3)
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
         expect(renameCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy renameCoreView, 'close'
-        jasmine.unspy atom.workspaceView, 'trigger'
+        jasmine.unspy atom.commands, 'dispatch'
         renameCoreView.close()
 
     it 'checks null core name', ->
