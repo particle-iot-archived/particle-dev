@@ -33,9 +33,9 @@ class LoginView extends View
     SettingsHelper = require '../utils/settings-helper'
 
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
+    @workspaceElement = atom.views.getView(atom.workspace)
 
     @disposables = new CompositeDisposable
-    @workspaceElement = atom.views.getView(atom.workspace)
     @disposables.add atom.commands.add 'atom-workspace',
       'core:cancel', =>
         atom.commands.dispatch @workspaceElement, 'spark-dev:cancel-login'
@@ -47,7 +47,6 @@ class LoginView extends View
 
     @emailModel = @emailEditor.editor.getModel()
     @passwordModel = @passwordEditor.editor.getModel()
-
     passwordElement = $(@passwordEditor.editor.element.rootElement)
     passwordElement.find('div.lines').addClass('password-lines')
     @passwordModel.onDidChange =>
@@ -57,6 +56,9 @@ class LoginView extends View
 
       passwordElement.find('#password-style').remove()
       passwordElement.append('<style id="password-style">.password-lines .line span.text:before {content:"' + string + '";}</style>')
+    @disposables.add atom.commands.add @passwordEditor.editor.element,
+      'core:confirm': =>
+        @login()
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
