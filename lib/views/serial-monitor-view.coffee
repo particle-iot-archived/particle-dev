@@ -1,5 +1,6 @@
-{View, TextEditorView} = require 'atom'
-{Emitter} = require 'event-kit'
+{View} = require 'atom-space-pen-views'
+{Disposable, CompositeDisposable} = require 'atom'
+MiniEditor = require '../subviews/mini-editor'
 $ = null
 $$ = null
 SettingsHelper = null
@@ -19,13 +20,13 @@ class SerialMonitorView extends View
         @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
-        @subview 'input', new TextEditorView(mini: true, placeholderText: 'Enter string to send')
+        @subview 'input', new MiniEditor('Enter string to send')
 
   initialize: (serializeState) ->
-    {$, $$} = require 'atom'
+    {$, $$} = require 'atom-space-pen-views'
     SettingsHelper = require '../utils/settings-helper'
 
-    @emitter = new Emitter
+    @disposables = new CompositeDisposable
 
     @currentPort = null
     @refreshSerialPorts()
@@ -44,24 +45,24 @@ class SerialMonitorView extends View
 
     @port = null
 
-    @input.hiddenInput.on 'keydown', (e) =>
-      if e.which == 13
+    @disposables.add atom.commands.add @input.editor.element,
+      'core:confirm': =>
         if @isPortOpen()
-          @port.write @input.getText() + "\n"
-          @input.setText ''
-      true
-    @input.hiddenInput.attr 'disabled', 'disabled'
+          @port.write @input.editor.getText() + "\n"
+          @input.editor.setText ''
+    @input.setEnabled false
+
+  destroy: ->
+    @disposables?.dispose()
 
   serialize: ->
 
   getTitle: ->
     'Serial monitor'
 
-  onDidChangeTitle: (callback) ->
-    @emitter.on 'did-change-title', callback
-
-  onDidChangeModified: (callback) ->
-    @emitter.on 'did-change-modified', callback
+  # TODO: Remove both of these post 1.0
+  onDidChangeTitle: (callback) -> new Disposable()
+  onDidChangeModified: (callback) -> new Disposable()
 
   getUri: ->
     'spark-dev://editor/serial-monitor'
@@ -119,31 +120,31 @@ class SerialMonitorView extends View
     @refreshPortsButton.attr 'disabled', 'disabled'
     @baudratesSelect.attr 'disabled', 'disabled'
     @connectButton.text 'Disconnect'
-    @input.hiddenInput.removeAttr 'disabled'
+    @input.setEnabled true
 
     @port = new serialport.SerialPort @currentPort, {
       baudrate: @currentBaudrate
     }, false
 
-    @port.on 'close', =>
+    @port?.on 'close', =>
       @disconnect()
 
-    @port.on 'error', (e) =>
+    @port?.on 'error', (e) =>
       console.error e
       @disconnect()
 
-    @port.on 'data', (data) =>
+    @port?.on 'data', (data) =>
       @appendText data.toString(), false
 
-    @port.open()
-    @input.hiddenInput.focus()
+    @port?.open()
+    @input.editor.element.focus()
 
   disconnect: ->
     @portsSelect.removeAttr 'disabled'
     @refreshPortsButton.removeAttr 'disabled'
     @baudratesSelect.removeAttr 'disabled'
     @connectButton.text 'Connect'
-    @input.hiddenInput.attr 'disabled', 'disabled'
+    @input.setEnabled false
 
     if @isPortOpen()
       @port.close()

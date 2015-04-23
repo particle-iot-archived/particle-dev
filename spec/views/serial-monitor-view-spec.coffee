@@ -5,17 +5,23 @@ describe 'Serial Monitor View', ->
   activationPromise = null
   originalProfile = null
   sparkIde = null
-  cloudVariablesAndFunctionsView = null
+  workspaceElement = null
+  serialMonitorView = null
+
+  initView = ->
+    sparkIde.serialMonitorView = null
+    sparkIde.initView 'serial-monitor'
+    serialMonitorView = sparkIde.serialMonitorView
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView
+    workspaceElement = atom.views.getView(atom.workspace)
 
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
 
     activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
       sparkIde = mainModule
-      sparkIde.serialMonitorView = null
+      initView()
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
@@ -32,168 +38,110 @@ describe 'Serial Monitor View', ->
 
     afterEach ->
 
-    it 'checks hiding and showing', ->
-      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
-
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
-
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
-
-        expect(atom.workspaceView.find('#spark-dev-serial-monitor')).toExist()
-        @serialMonitorView.close()
-        expect(atom.workspaceView.find('#spark-dev-serial-monitor')).not.toExist()
-
     it 'checks listing ports and baudrates', ->
-      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
+      # Test ports
+      require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
+      serialMonitorView.nullifySerialport()
 
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+      serialMonitorView.refreshSerialPorts()
+      options = serialMonitorView.portsSelect.find 'option'
 
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
+      expect(options.length).toEqual(1)
+      expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
+      expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
 
-        # Test ports
-        require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
-        @serialMonitorView.nullifySerialport()
+      require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
+      serialMonitorView.nullifySerialport()
+      serialMonitorView.find('#refresh-ports-button').click()
 
-        @serialMonitorView.refreshSerialPorts()
-        options = @serialMonitorView.portsSelect.find 'option'
+      options = serialMonitorView.portsSelect.find 'option'
 
-        expect(options.length).toEqual(1)
-        expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
-        expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
+      expect(options.length).toEqual(2)
+      expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
+      expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
 
-        require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportMultiplePorts
-        @serialMonitorView.nullifySerialport()
-        @serialMonitorView.find('#refresh-ports-button').click()
+      expect(options[1].text).toEqual('/dev/cu.usbmodemfab1234')
+      expect(options[1].value).toEqual('/dev/cu.usbmodemfab1234')
 
-        options = @serialMonitorView.portsSelect.find 'option'
+      # Test baudrates
+      options = serialMonitorView.baudratesSelect.find 'option'
+      expect(options.length).toEqual(12)
 
-        expect(options.length).toEqual(2)
-        expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
-        expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
+      idx = 0
+      for baudrate in [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
+        expect(options[idx].text).toEqual(baudrate.toString())
+        expect(options[idx].value).toEqual(baudrate.toString())
+        idx++
 
-        expect(options[1].text).toEqual('/dev/cu.usbmodemfab1234')
-        expect(options[1].value).toEqual('/dev/cu.usbmodemfab1234')
-
-        # Test baudrates
-        options = @serialMonitorView.baudratesSelect.find 'option'
-        expect(options.length).toEqual(12)
-
-        idx = 0
-        for baudrate in [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
-          expect(options[idx].text).toEqual(baudrate.toString())
-          expect(options[idx].value).toEqual(baudrate.toString())
-          idx++
-
-        @serialMonitorView.close()
+      # serialMonitorView.close()
 
     it 'checks blocking UI on connection', ->
-      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
+      expect(serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.connectButton.text()).toEqual('Connect')
+      expect(serialMonitorView.input.enabled).toBe(false)
 
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+      serialMonitorView.connectButton.click()
 
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
+      expect(serialMonitorView.portsSelect.attr('disabled')).toEqual('disabled')
+      expect(serialMonitorView.refreshPortsButton.attr('disabled')).toEqual('disabled')
+      expect(serialMonitorView.baudratesSelect.attr('disabled')).toEqual('disabled')
+      expect(serialMonitorView.connectButton.text()).toEqual('Disconnect')
+      expect(serialMonitorView.input.enabled).toBe(true)
 
-        expect(@serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
-        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toEqual('disabled')
+      serialMonitorView.connectButton.click()
 
-        @serialMonitorView.connectButton.click()
+      expect(serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
+      expect(serialMonitorView.connectButton.text()).toEqual('Connect')
+      expect(serialMonitorView.input.enabled).toBe(false)
 
-        expect(@serialMonitorView.portsSelect.attr('disabled')).toEqual('disabled')
-        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toEqual('disabled')
-        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toEqual('disabled')
-        expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
-        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toBeUndefined()
+      serialMonitorView.connectButton.click()
 
-        @serialMonitorView.connectButton.click()
+      # Test disconnecting on error
+      expect(serialMonitorView.connectButton.text()).toEqual('Disconnect')
+      spyOn console, 'error'
+      serialMonitorView.port.emit 'error'
 
-        expect(@serialMonitorView.portsSelect.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.refreshPortsButton.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.baudratesSelect.attr('disabled')).toBeUndefined()
-        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
-        expect(@serialMonitorView.input.hiddenInput.attr('disabled')).toEqual('disabled')
+      expect(serialMonitorView.connectButton.text()).toEqual('Connect')
+      expect(console.error).toHaveBeenCalled()
 
-        @serialMonitorView.connectButton.click()
-
-        # Test disconnecting on error
-        expect(@serialMonitorView.connectButton.text()).toEqual('Disconnect')
-        spyOn console, 'error'
-        @serialMonitorView.port.emit 'error'
-
-        expect(@serialMonitorView.connectButton.text()).toEqual('Connect')
-        expect(console.error).toHaveBeenCalled()
-
-        jasmine.unspy console, 'error'
-        @serialMonitorView.close()
+      jasmine.unspy console, 'error'
+      # serialMonitorView.close()
 
     it 'checks serial communication', ->
-      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
+      serialMonitorView.connectButton.click()
 
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+      # Test receiving data
+      serialMonitorView.port.emit 'data', 'foo'
+      expect(serialMonitorView.output.text()).toEqual('foo')
 
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
+      # Test sending data
+      spyOn serialMonitorView.port, 'write'
+      spyOn(serialMonitorView, 'isPortOpen').andReturn true
 
-        @serialMonitorView.connectButton.click()
+      serialMonitorView.input.editor.setText 'foo'
+      atom.commands.dispatch serialMonitorView.input.editor.element, 'core:confirm'
 
-        # Test receiving data
-        @serialMonitorView.port.emit 'data', 'foo'
-        expect(@serialMonitorView.output.text()).toEqual('foo')
+      expect(serialMonitorView.port.write).toHaveBeenCalled()
 
-        # Test sending data
-        spyOn @serialMonitorView.port, 'write'
-        spyOn(@serialMonitorView, 'isPortOpen').andReturn true
-
-        @serialMonitorView.input.setText 'foo'
-        event = $.Event 'keydown'
-        event.which = 13
-
-        @serialMonitorView.input.hiddenInput.trigger event
-        expect(@serialMonitorView.port.write).toHaveBeenCalled()
-
-        jasmine.unspy @serialMonitorView.port, 'write'
-        jasmine.unspy @serialMonitorView, 'isPortOpen'
-        @serialMonitorView.close()
+      jasmine.unspy serialMonitorView.port, 'write'
+      jasmine.unspy serialMonitorView, 'isPortOpen'
+      # serialMonitorView.close()
 
     it 'checks default port and baudrate', ->
       SettingsHelper.set 'serial_port', null
       SettingsHelper.set 'serial_baudrate', null
+      initView()
 
-      atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
+      expect(serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfa1234')
+      expect(serialMonitorView.baudratesSelect.val()).toEqual('9600')
 
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
+      SettingsHelper.set 'serial_port', '/dev/cu.usbmodemfab1234'
+      SettingsHelper.set 'serial_baudrate', 115200
+      initView()
 
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
-
-        expect(@serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfa1234')
-        expect(@serialMonitorView.baudratesSelect.val()).toEqual('9600')
-
-        SettingsHelper.set 'serial_port', '/dev/cu.usbmodemfab1234'
-        SettingsHelper.set 'serial_baudrate', 115200
-
-        @serialMonitorView.close()
-        sparkIde.serialMonitorView == null
-
-        atom.workspaceView.trigger 'spark-dev:show-serial-monitor'
-
-      waitsFor ->
-        !!sparkIde.serialMonitorView && sparkIde.serialMonitorView.hasParent()
-
-      runs ->
-        @serialMonitorView = sparkIde.serialMonitorView
-
-        expect(@serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfab1234')
-        expect(@serialMonitorView.baudratesSelect.val()).toEqual('115200')
-
-        @serialMonitorView.close()
+      expect(serialMonitorView.portsSelect.val()).toEqual('/dev/cu.usbmodemfab1234')
+      expect(serialMonitorView.baudratesSelect.val()).toEqual('115200')

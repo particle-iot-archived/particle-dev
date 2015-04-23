@@ -203,7 +203,6 @@ lastAssocStatus: 0\n\
       runs ->
         spyOn selectWifiView.emitter, 'emit'
 
-        console.log selectWifiView.items
         selectWifiView.confirmed selectWifiView.items[0]
 
         expect(selectWifiView.emitter.emit).toHaveBeenCalled()
