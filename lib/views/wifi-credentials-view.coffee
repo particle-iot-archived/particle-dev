@@ -1,8 +1,7 @@
-{View, TextEditorView} = require 'atom'
+{$, View, TextEditorView} = require 'atom-space-pen-views'
 
 $ = null
 _s = null
-Subscriber = null
 SettingsHelper = null
 validator = null
 SerialHelper = null
@@ -39,16 +38,16 @@ class WifiCredentialsView extends View
         @span class: 'three-quarters inline-block hidden', outlet: 'spinner'
 
   initialize: (serializeState) ->
-    {Subscriber} = require 'emissary'
-    $ ?= require('atom').$
-
+    {CompositeDisposable} = require 'atom'
     _s ?= require 'underscore.string'
     SettingsHelper = require '../utils/settings-helper'
     SerialHelper = require '../utils/serial-helper'
 
-    @subscriber = new Subscriber()
-    @subscriber.subscribeToCommand atom.workspaceView, 'core:cancel core:close', ({target}) =>
-      @remove()
+
+    @disposables = new CompositeDisposable
+    @disposables.add atom.commands.add 'atom-workspace',
+      'core:cancel', => @remove()
+      'core:close', => @remove()
 
     @security = '0'
     @passwordEditor.addClass 'hidden'
@@ -62,6 +61,7 @@ class WifiCredentialsView extends View
   # Tear down any state and detach
   destroy: ->
     @remove()
+    @disposables.dispose()
 
   show: (ssid=null, security=null) =>
     if !@hasParent()

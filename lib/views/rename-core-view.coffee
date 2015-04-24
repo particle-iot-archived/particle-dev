@@ -1,4 +1,4 @@
-Dialog = require '../subviews/dialog'
+{Dialog} = require 'spark-dev-views'
 SettingsHelper = null
 _s = null
 spark = null

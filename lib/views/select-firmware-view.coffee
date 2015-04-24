@@ -1,4 +1,4 @@
-SelectListView = require('atom').SelectListView
+{SelectListView} = require 'atom-space-pen-views'
 
 $ = null
 $$ = null
