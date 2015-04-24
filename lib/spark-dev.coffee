@@ -229,10 +229,10 @@ module.exports =
   # Open view in bottom panel
   openPane: (uri) ->
     uri = 'spark-dev://editor/' + uri
-    pane = atom.workspace.paneForUri uri
+    pane = atom.workspace.paneForURI uri
 
     if pane?
-      pane.activateItemForUri uri
+      pane.activateItemForURI uri
     else
       if atom.workspace.getPanes().length == 1
         pane = atom.workspace.getActivePane().splitDown()
