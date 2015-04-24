@@ -24,6 +24,9 @@
     "when": "*",
     "xtend": "*"
   },
+  "packageDependencies": {
+    "toolbar": "^0.0.15"
+  },
   "consumedServices": {
     "status-bar": {
       "versions": {
