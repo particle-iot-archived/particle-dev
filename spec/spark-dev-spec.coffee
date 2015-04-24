@@ -521,21 +521,21 @@ describe 'Main Tests', ->
     describe 'when there already is open panel', ->
       it 'switches to it', ->
         activateItemForUriSpy = jasmine.createSpy 'activateItemForUri'
-        spyOn(atom.workspace, 'paneForUri').andReturn
-          activateItemForUri: activateItemForUriSpy
+        spyOn(atom.workspace, 'paneForURI').andReturn
+          activateItemForURI: activateItemForUriSpy
 
         sparkIde.openPane 'foo'
 
-        expect(atom.workspace.paneForUri).toHaveBeenCalled()
-        expect(atom.workspace.paneForUri).toHaveBeenCalledWith(url)
+        expect(atom.workspace.paneForURI).toHaveBeenCalled()
+        expect(atom.workspace.paneForURI).toHaveBeenCalledWith(url)
         expect(activateItemForUriSpy).toHaveBeenCalled()
         expect(activateItemForUriSpy).toHaveBeenCalledWith(url)
 
-        jasmine.unspy atom.workspace, 'paneForUri'
+        jasmine.unspy atom.workspace, 'paneForURI'
 
     describe 'when there is no panel', ->
       it 'opens new one', ->
-        spyOn(atom.workspace, 'paneForUri').andReturn null
+        spyOn(atom.workspace, 'paneForURI').andReturn null
         spyOn atom.workspace, 'open'
 
         # Without splitted panels, split
@@ -575,5 +575,5 @@ describe 'Main Tests', ->
 
         jasmine.unspy atom.workspace, 'getPanes'
         jasmine.unspy atom.workspace, 'getActivePane'
-        jasmine.unspy atom.workspace, 'paneForUri'
+        jasmine.unspy atom.workspace, 'paneForURI'
         jasmine.unspy atom.workspace, 'open'
