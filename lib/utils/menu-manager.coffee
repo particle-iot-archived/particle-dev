@@ -35,9 +35,6 @@ module.exports =
           label: 'Remove ' + SettingsHelper.getLocal('current_core_name') + '...',
           command: 'spark-dev:remove-device'
         },{
-          label: 'Show cloud variables and functions',
-          command: 'spark-dev:show-cloud-variables-and-functions'
-        },{
           label: 'Flash ' + SettingsHelper.getLocal('current_core_name') + ' via the cloud',
           command: 'spark-dev:flash-cloud'
         }]

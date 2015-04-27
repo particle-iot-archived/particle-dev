@@ -100,7 +100,7 @@ describe 'MenuManager tests', ->
 
       ideMenu = MenuManager.getMenu()
 
-      expect(ideMenu.submenu.length).toBe(15)
+      expect(ideMenu.submenu.length).toBe(14)
       idx = 3
 
       expect(ideMenu.submenu[idx].label).toBe('Rename Foo...')
@@ -108,9 +108,6 @@ describe 'MenuManager tests', ->
 
       expect(ideMenu.submenu[idx].label).toBe('Remove Foo...')
       expect(ideMenu.submenu[idx++].command).toBe('spark-dev:remove-device')
-
-      expect(ideMenu.submenu[idx].label).toBe('Show cloud variables and functions')
-      expect(ideMenu.submenu[idx++].command).toBe('spark-dev:show-cloud-variables-and-functions')
 
       expect(ideMenu.submenu[idx].label).toBe('Flash Foo via the cloud')
       expect(ideMenu.submenu[idx++].command).toBe('spark-dev:flash-cloud')

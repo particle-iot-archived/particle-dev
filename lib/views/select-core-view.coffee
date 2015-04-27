@@ -61,7 +61,7 @@ class SelectCoreView extends SelectListView
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
 
-    @cancel()
+    @hide()
 
   getFilterKey: ->
     'name'
