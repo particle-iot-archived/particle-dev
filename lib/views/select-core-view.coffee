@@ -19,19 +19,17 @@ class SelectCoreView extends SelectListView
 
     @disposables = new CompositeDisposable
     @workspaceElement = atom.views.getView(atom.workspace)
-    @disposables.add atom.commands.add 'atom-workspace',
-      'core:cancel', =>
-        @hide()
-      'core:close', =>
-        @hide()
 
     @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-select-core-view'
     @listDevicesPromise = null
 
   destroy: ->
-    @panel.hide()
+    @hide()
     @disposables.dispose()
+
+  cancelled: ->
+    @hide()
 
   show: =>
     @panel.show()
@@ -57,11 +55,9 @@ class SelectCoreView extends SelectListView
 
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name
-
+    @hide()
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
-
-    @hide()
 
   getFilterKey: ->
     'name'

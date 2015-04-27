@@ -1,4 +1,5 @@
-{$, View, TextEditorView} = require 'atom-space-pen-views'
+{View, $} = require 'atom-space-pen-views'
+{MiniEditor} = require 'spark-dev-views'
 
 $ = null
 _s = null
@@ -9,14 +10,14 @@ SerialHelper = null
 module.exports =
 class WifiCredentialsView extends View
   @content: ->
-    @div id: 'spark-dev-wifi-credentials-view', class: 'overlay from-top', =>
+    @div id: 'spark-dev-wifi-credentials-view', =>
       @div class: 'block', =>
         @span 'Enter WiFi Credentials '
         @span class: 'text-subtle', =>
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'ssidEditor', new TextEditorView(mini: true, placeholderText: 'SSID')
+      @subview 'ssidEditor', new MiniEditor('SSID')
       @div class: 'security', =>
         @label =>
           @input type: 'radio', name: 'security', value: '0', checked: 'checked', change: 'change'
@@ -30,7 +31,7 @@ class WifiCredentialsView extends View
         @label =>
           @input type: 'radio', name: 'security', value: '3', change: 'change'
           @span 'WPA2'
-      @subview 'passwordEditor', new TextEditorView(mini: true, placeholderText: 'and a password?')
+      @subview 'passwordEditor', new MiniEditor('and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'save', id: 'saveButton', class: 'btn btn-primary', outlet: 'saveButton', 'Save'
@@ -43,11 +44,17 @@ class WifiCredentialsView extends View
     SettingsHelper = require '../utils/settings-helper'
     SerialHelper = require '../utils/serial-helper'
 
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+    @workspaceElement = atom.views.getView(atom.workspace)
 
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
       'core:cancel', => @remove()
       'core:close', => @remove()
+
+    @disposables.add atom.commands.add @passwordEditor.editor.element,
+      'core:confirm': =>
+        @save()
 
     @security = '0'
     @passwordEditor.addClass 'hidden'
@@ -60,23 +67,25 @@ class WifiCredentialsView extends View
 
   # Tear down any state and detach
   destroy: ->
-    @remove()
+    panelToDestroy = @panel
+    @panel = null
+    panelToDestroy?.destroy()
+
     @disposables.dispose()
 
   show: (ssid=null, security=null) =>
-    if !@hasParent()
-      atom.workspaceView.append(this)
-      if ssid
-        @ssidEditor.getEditor().setText ssid
-      else
-        @ssidEditor.focus()
+    @panel.show()
+    if ssid
+      @ssidEditor.editor.getModel().setText ssid
+    else
+      @ssidEditor.editor.click()
 
-      if security
-        input = @find 'input[name=security][value=' + security + ']'
-        input.attr 'checked', 'checked'
-        input.change()
+    if security
+      input = @find 'input[name=security][value=' + security + ']'
+      input.attr 'checked', 'checked'
+      input.change()
 
-      @errorLabel.hide()
+    @errorLabel.hide()
 
   hide: ->
     if @hasParent()
@@ -94,8 +103,8 @@ class WifiCredentialsView extends View
 
   # Remove errors from inputs
   clearErrors: ->
-    @ssidEditor.removeClass 'editor-error'
-    @passwordEditor.removeClass 'editor-error'
+    @ssidEditor.editor.removeClass 'editor-error'
+    @passwordEditor.editor.removeClass 'editor-error'
 
   change: ->
     @security = @find('input[name=security]:checked').val()
@@ -104,7 +113,7 @@ class WifiCredentialsView extends View
       @passwordEditor.addClass 'hidden'
     else
       @passwordEditor.removeClass 'hidden'
-      @passwordEditor.focus()
+      @passwordEditor.editor.click()
 
   # Test input's values
   validateInputs: ->
@@ -112,35 +121,35 @@ class WifiCredentialsView extends View
 
     @clearErrors()
 
-    @ssid = _s.trim(@ssidEditor.getText())
-    @password = _s.trim(@passwordEditor.getText())
+    @ssid = _s.trim(@ssidEditor.editor.getModel().getText())
+    @password = _s.trim(@passwordEditor.editor.getModel().getText())
 
     isOk = true
 
     if @ssid == ''
-      @ssidEditor.addClass 'editor-error'
+      @ssidEditor.editor.addClass 'editor-error'
       isOk = false
 
     if (@security != '0') && (@password == '')
-      @passwordEditor.addClass 'editor-error'
+      @passwordEditor.editor.addClass 'editor-error'
       isOk = false
 
     isOk
 
   # Unlock inputs and buttons
   unlockUi: ->
-    @ssidEditor.hiddenInput.removeAttr 'disabled'
+    @ssidEditor.setEnabled true
     @find('input[name=security]').removeAttr 'disabled'
-    @passwordEditor.hiddenInput.removeAttr 'disabled'
+    @passwordEditor.setEnabled true
     @saveButton.removeAttr 'disabled'
 
   save: ->
     if !@validateInputs()
       return false
 
-    @ssidEditor.hiddenInput.attr 'disabled', 'disabled'
+    @ssidEditor.setEnabled false
     @find('input[name=security]').attr 'disabled', 'disabled'
-    @passwordEditor.hiddenInput.attr 'disabled', 'disabled'
+    @passwordEditor.setEnabled false
     @saveButton.attr 'disabled', 'disabled'
     @spinner.removeClass 'hidden'
     @errorLabel.hide()

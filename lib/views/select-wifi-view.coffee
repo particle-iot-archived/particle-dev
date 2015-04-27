@@ -18,22 +18,17 @@ class SelectWifiView extends SelectListView
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
     @disposables = new CompositeDisposable
-    @emitter = new Emitter
-
     @workspaceElement = atom.views.getView(atom.workspace)
-    @disposables.add atom.commands.add 'atom-workspace',
-      'core:cancel', =>
-        @hide()
-      'core:close', =>
-        @hide()
 
     @prop 'id', 'spark-dev-select-wifi-view'
-
     @port = null
 
   destroy: ->
-    @panel.hide()
+    @hide()
     @disposables.dispose()
+
+  cancelled: ->
+    @hide()
 
   show: =>
     @panel.show()
@@ -64,14 +59,14 @@ class SelectWifiView extends SelectListView
         @div item.ssid
 
   confirmed: (item) ->
-    @cancel()
+    @hide()
     if item.security
-      @emitter.emit 'spark-dev:enter-wifi-credentials',
+      atom.sparkDev.emitter.emit 'spark-dev:enter-wifi-credentials',
         port: @port
         ssid: item.ssid
         security: item.security
     else
-      @emitter.emit 'spark-dev:enter-wifi-credentials',
+      atom.sparkDev.emitter.emit 'spark-dev:enter-wifi-credentials',
         port: @port
 
   getPlatform: ->
@@ -91,7 +86,6 @@ class SelectWifiView extends SelectListView
   listNetworks: ->
     @addClass 'loading'
     @focusFilterEditor()
-
     @items = [{
       ssid: 'Enter SSID manually',
       security: null,

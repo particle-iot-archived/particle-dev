@@ -16,7 +16,6 @@ class SelectPortView extends SelectListView
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
     @disposables = new CompositeDisposable
-    @emitter = new Emitter
 
     @workspaceElement = atom.views.getView(atom.workspace)
     @disposables.add atom.commands.add 'atom-workspace',
@@ -53,10 +52,10 @@ class SelectPortView extends SelectListView
         @div class: 'secondary-line', item.comName
 
   confirmed: (item) ->
+    @hide()
     # TODO: Cover it with tests
-    @emitter.emit @delegate,
+    atom.sparkDev.emitter.emit @delegate,
       port: item.comName
-    @cancel()
 
   getFilterKey: ->
     'comName'

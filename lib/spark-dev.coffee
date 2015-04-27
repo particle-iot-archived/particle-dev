@@ -54,6 +54,8 @@ module.exports =
     {CompositeDisposable, Emitter} = require 'atom'
     @disposables = new CompositeDisposable
     @emitter = new Emitter
+    atom.sparkDev =
+      emitter: @emitter
 
     # Initialize status bar view
     @statusView = new @StatusView()

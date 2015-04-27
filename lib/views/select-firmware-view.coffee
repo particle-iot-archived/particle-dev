@@ -13,30 +13,31 @@ class SelectFirmwareView extends SelectListView
   initialize: ->
     super
 
-    {$, $$} = require 'atom'
-    {CompositeDisposable} = require 'atom'
+    {$, $$} = require 'atom-space-pen-views'
+    {CompositeDisposable, Emitter} = require 'atom'
     path ?= require 'path'
     fs ?= require 'fs-plus'
 
-    @disposables = new CompositeDisposable
-    @disposables.add atom.commands.add 'atom-workspace',
-      'core:cancel': => @hide()
-      'core:close': => @hide()
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
-    @addClass 'overlay from-top'
+    @disposables = new CompositeDisposable
+    @workspaceElement = atom.views.getView(atom.workspace)
+
     @prop 'id', 'spark-dev-select-firmware-view'
 
   destroy: ->
-    @remove()
+    @hide()
+    @disposables.dispose()
+
+  cancelled: ->
+    @hide()
 
   show: =>
-    if !@hasParent()
-      atom.workspaceView.append(this)
-      @focusFilterEditor()
+    @panel.show()
+    @focusFilterEditor()
 
   hide: ->
-    if @hasParent()
-      @detach()
+    @panel.hide()
 
   viewForItem: (item) ->
     $$ ->
@@ -46,5 +47,6 @@ class SelectFirmwareView extends SelectListView
         @div class: 'secondary-line', stats.ctime.toLocaleString()
 
   confirmed: (item) ->
-    atom.workspaceView.trigger 'spark-dev:flash-cloud', [item]
-    @cancel()
+    hide()
+    atom.sparkDev.emitter.emit 'spark-dev:flash-cloud',
+      firmware: item

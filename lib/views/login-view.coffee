@@ -1,4 +1,4 @@
-{View, TextEditorView, $} = require 'atom-space-pen-views'
+{View, $} = require 'atom-space-pen-views'
 {MiniEditor} = require 'spark-dev-views'
 
 CompositeDisposable = null
