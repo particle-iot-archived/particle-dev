@@ -75,7 +75,7 @@ describe 'Claim Core View', ->
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null)
         expect(atom.commands.dispatch).toHaveBeenCalled()
-        expect(atom.commands.dispatch.calls.length).toEqual(3)
+        expect(atom.commands.dispatch.calls.length).toEqual(4)
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
         expect(claimCoreView.close).toHaveBeenCalled()

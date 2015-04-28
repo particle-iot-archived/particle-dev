@@ -28,24 +28,6 @@ describe 'Select Wifi View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe 'tests hiding and showing', ->
-    it 'checks command hooks', ->
-      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      selectWifiView.show()
-
-      spyOn(selectWifiView, 'hide').andCallThrough()
-      atom.commands.dispatch workspaceElement, 'core:cancel'
-      expect(selectWifiView.hide).toHaveBeenCalled()
-
-      # selectWifiView.show()
-      # selectWifiView.hide.reset()
-      # atom.commands.dispatch workspaceElement, 'core:close'
-      # expect(selectWifiView.hide).toHaveBeenCalled()
-
-      jasmine.unspy selectWifiView, 'hide'
-      selectWifiView.hide()
-      SettingsHelper.clearCredentials()
-
   describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -200,14 +182,14 @@ lastAssocStatus: 0\n\
       selectWifiView.show()
 
       runs ->
-        spyOn selectWifiView.emitter, 'emit'
+        spyOn sparkIde.emitter, 'emit'
 
         selectWifiView.confirmed selectWifiView.items[0]
 
-        expect(selectWifiView.emitter.emit).toHaveBeenCalled()
-        expect(selectWifiView.emitter.emit).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', { port: null})
+        expect(sparkIde.emitter.emit).toHaveBeenCalled()
+        expect(sparkIde.emitter.emit).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', { port: null})
 
-        jasmine.unspy selectWifiView.emitter, 'emit'
+        jasmine.unspy sparkIde.emitter, 'emit'
         jasmine.unspy selectWifiView, 'listNetworksDarwin'
         SettingsHelper.clearCredentials()
         selectWifiView.hide()

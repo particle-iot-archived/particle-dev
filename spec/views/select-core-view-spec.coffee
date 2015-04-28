@@ -28,24 +28,6 @@ describe 'Select Core View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe 'tests hiding and showing', ->
-    it 'checks command hooks', ->
-      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      selectCoreView.show()
-
-      spyOn(selectCoreView, 'hide').andCallThrough()
-      atom.commands.dispatch workspaceElement, 'core:cancel'
-      expect(selectCoreView.hide).toHaveBeenCalled()
-
-      # selectCoreView.show()
-      # selectCoreView.hide.reset()
-      # atom.commands.dispatch workspaceElement, 'core:close'
-      # expect(selectCoreView.hide).toHaveBeenCalled()
-
-      jasmine.unspy selectCoreView, 'hide'
-      selectCoreView.hide()
-      SettingsHelper.clearCredentials()
-
   describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'

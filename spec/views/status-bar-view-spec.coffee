@@ -185,7 +185,7 @@ describe 'Status Bar Tests', ->
       expect(statusBarItem.find('#spark-compile-working').css('display')).toBe('none')
       expect(statusBarItem.find('#spark-compile-failed').css('display')).toBe('none')
       expect(statusBarItem.find('#spark-compile-success').css('display')).not.toBe('none')
-      expect(statusBarItem.find('#spark-compile-success').text()).toBe('Success! Firmware saved to foo.bin')
+      expect(statusBarItem.find('#spark-compile-success').text()).toBe('Success!')
 
       # Test clicking on filename
       spyOn statusView, 'showFile'
