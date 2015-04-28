@@ -174,7 +174,7 @@ class StatusBarView extends View
         subElement.show()
       else
         statusElement.find('#spark-compile-success')
-                     .text('Success! Firmware saved to ' + compileStatus.filename)
+                     .text('Success!')
                      .show()
 
   setStatus: (text, type = null) ->

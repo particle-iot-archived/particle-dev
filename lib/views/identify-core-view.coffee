@@ -14,4 +14,3 @@ class IdentifyCoreView extends Dialog
 
     @claimPromise = null
     @prop 'id', 'spark-dev-identify-core-view'
-    @miniEditor.hiddenInput.attr 'disabled', 'disabled'

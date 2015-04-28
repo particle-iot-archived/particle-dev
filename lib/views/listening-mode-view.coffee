@@ -34,7 +34,7 @@ class ListeningModeView extends View
           # Hide dialog
           @cancel()
           # Try to identify found ports
-          atom.commands.dispatch workspaceElement, delegate
+          atom.commands.dispatch @workspaceElement, delegate
       , (e) =>
         console.error e
     , 1000
