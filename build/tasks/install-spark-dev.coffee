@@ -45,7 +45,8 @@ module.exports = (grunt) ->
         else
           command = '../../apm/node_modules/atom-package-manager/bin/apm'
 
-        cp.safeExec command + ' install . --verbose', options, ->
+        verbose = if !grunt.option('verbose') '' else ' --verbose'
+        cp.safeExec command + ' install' + verbose, options, ->
           packages.packageDependencies['spark-dev'] = grunt.config.get('sparkDevVersion')
           fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
           done()

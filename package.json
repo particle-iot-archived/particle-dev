@@ -12,7 +12,7 @@
     "atom-space-pen-views": "^2.0.3",
     "fs-plus": "^2.0.4",
     "glob": "^4.2.1",
-    "pathwatcher": "^4.1.2",
+    "pathwatcher": "^3.3.3",
     "request": "*",
     "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
     "spark": "*",
