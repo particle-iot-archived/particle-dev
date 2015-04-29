@@ -1,31 +1,13 @@
---- atom.old.coffee	2014-12-12 13:05:12.000000000 +0100
-+++ atom.coffee	2014-12-12 13:04:57.000000000 +0100
-@@ -78,7 +78,7 @@
-   #
-   # Returns the absolute path to ~/.atom
-   @getConfigDirPath: ->
--    @configDirPath ?= fs.absolute('~/.atom')
-+    @configDirPath ?= fs.absolute('~/.sparkdev')
- 
-   # Get the path to Atom's storage directory.
-   #
-@@ -199,6 +199,8 @@
-     # Still set NODE_PATH since tasks may need it.
-     process.env.NODE_PATH = exportsPath
- 
-+    process.env.ATOM_HOME = @getConfigDirPath()
-+
-     # Make react.js faster
-     process.env.NODE_ENV ?= 'production' unless devMode
- 
-@@ -470,12 +472,6 @@
+--- atom.coffee.orig	2015-04-28 13:24:33.000000000 +0100
++++ atom.coffee	2015-04-28 13:24:47.000000000 +0100
+@@ -578,12 +578,6 @@
    startEditorWindow: ->
-     {resourcePath, safeMode} = @getLoadSettings()
+     {safeMode} = @getLoadSettings()
  
 -    CommandInstaller = require './command-installer'
--    CommandInstaller.installAtomCommand resourcePath, false, (error) ->
+-    CommandInstaller.installAtomCommand false, (error) ->
 -      console.warn error.message if error?
--    CommandInstaller.installApmCommand resourcePath, false, (error) ->
+-    CommandInstaller.installApmCommand false, (error) ->
 -      console.warn error.message if error?
 -
      dimensions = @restoreWindowDimensions()

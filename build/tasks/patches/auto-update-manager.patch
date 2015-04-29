@@ -1,10 +1,15 @@
---- auto-update-manager.old.coffee	2014-10-23 12:38:55.000000000 +0200
-+++ auto-update-manager.coffee	2014-10-23 12:45:09.000000000 +0200
-@@ -15,7 +15,7 @@
-
-   constructor: (@version) ->
-     @state = IdleState
--    @feedUrl = "https://atom.io/api/updates?version=#{@version}"
-+    @feedUrl = "https://spark-ide-updates.herokuapp.com?version=#{@version}"
-
+--- auto-update-manager.coffee.orig	2015-04-28 14:17:49.000000000 +0100
++++ auto-update-manager.coffee	2015-04-28 14:55:12.000000000 +0100
+@@ -20,10 +20,10 @@
+     if process.platform is 'win32'
+       # Squirrel for Windows can't handle query params
+       # https://github.com/Squirrel/Squirrel.Windows/issues/132
+-      @feedUrl = 'https://atom.io/api/updates'
++      @feedUrl = 'https://spark-ide-updates.herokuapp.com'
+     else
+       @iconPath = path.resolve(__dirname, '..', '..', 'resources', 'atom.png')
+-      @feedUrl = "https://atom.io/api/updates?version=#{@version}"
++      @feedUrl = "https://spark-ide-updates.herokuapp.com?version=#{@version}"
+ 
      process.nextTick => @setupAutoUpdater()
+ 

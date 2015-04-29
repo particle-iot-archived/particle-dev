@@ -59,13 +59,13 @@ module.exports = (grunt) ->
     tasks = tasks.concat [
       'download-atom',
       'inject-packages',
+      'install-unpublished-packages',
       'bootstrap-atom',
       'copy-resources',
     ]
 
   tasks = tasks.concat [
     'install-spark-dev',
-    'install-unpublished-packages',
     'patch-code',
     'build-app',
     'package-app'

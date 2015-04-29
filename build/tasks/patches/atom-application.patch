@@ -1,25 +1,33 @@
---- atom-application.coffee.orig	2014-11-17 19:07:38.000000000 +0100
-+++ atom-application.coffee	2014-11-17 19:24:34.000000000 +0100
-@@ -16,9 +16,9 @@
+--- atom-application.coffee.orig	2015-04-28 13:06:24.000000000 +0100
++++ atom-application.coffee	2015-04-28 13:09:36.000000000 +0100
+@@ -17,9 +17,9 @@
  
- socketPath =
+ DefaultSocketPath =
    if process.platform is 'win32'
 -    '\\\\.\\pipe\\atom-sock'
 +    '\\\\.\\pipe\\sparkdev-sock'
    else
--    path.join(os.tmpdir(), 'atom.sock')
-+    path.join(os.tmpdir(), 'sparkdev.sock')
+-    path.join(os.tmpdir(), "atom-#{process.env.USER}.sock")
++    path.join(os.tmpdir(), "sparkdev-#{process.env.USER}.sock")
  
  # The application's singleton class.
  #
-@@ -154,8 +154,8 @@
+@@ -167,13 +167,13 @@
        atomWindow ?= @focusedWindow()
        atomWindow?.browserWindow.inspectElement(x, y)
  
 -    @on 'application:open-documentation', -> require('shell').openExternal('https://atom.io/docs/latest/?app')
--    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://atom.io/terms')
+-    @on 'application:open-discussions', -> require('shell').openExternal('https://discuss.atom.io')
 +    @on 'application:open-documentation', -> require('shell').openExternal('http://docs.spark.io/dev/')
++    @on 'application:open-discussions', -> require('shell').openExternal('https://community.spark.io/')
+     @on 'application:open-roadmap', -> require('shell').openExternal('https://atom.io/roadmap?app')
+     @on 'application:open-faq', -> require('shell').openExternal('https://atom.io/faq')
+-    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://atom.io/terms')
+-    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/atom/atom/blob/master/CONTRIBUTING.md#submitting-issues')
+-    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/issues?q=+is%3Aissue+user%3Aatom')
 +    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://www.spark.io/tos')
++    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues/new')
++    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues')
+ 
      @on 'application:install-update', -> @autoUpdateManager.install()
      @on 'application:check-for-update', => @autoUpdateManager.check()
- 

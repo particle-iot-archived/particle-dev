@@ -22,13 +22,12 @@ module.exports = (grunt) ->
     done = @async()
 
     pathFile 'atom-application.patch', 'src/browser/atom-application.coffee', ->
-      pathFile 'npmrc.patch', '.npmrc', ->
-        pathFile 'atom.patch', 'src/atom.coffee', ->
+      pathFile 'atom.patch', 'src/atom.coffee', ->
+        pathFile 'main.patch', 'src/browser/main.coffee', ->
           pathFile 'auto-update-manager.patch', 'src/browser/auto-update-manager.coffee', ->
             pathFile 'atom-window.patch', 'src/browser/atom-window.coffee', ->
               pathFile 'workspace.patch', 'src/workspace.coffee', ->
-                pathFile 'settings-view.patch', 'node_modules/settings-view/lib/settings-view.coffee', ->
-                 pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
+                pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
                   if process.platform is 'darwin'
                     pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
                       pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee', ->
