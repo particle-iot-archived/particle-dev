@@ -4,7 +4,7 @@ cp = require 'child_process'
 workDir = null
 
 pathFile = (patchFile, targetFile, callback) ->
-  console.log 'Applying ' + patchFile
+  console.log ' Applying ' + patchFile
   patchFile = path.join(__dirname, 'patches', patchFile)
   targetFile = path.join(workDir, targetFile.replace('/', path.sep))
 
@@ -21,6 +21,11 @@ module.exports = (grunt) ->
     workDir = grunt.config.get('workDir')
     done = @async()
 
+    # Remove broken spec
+    fs.removeSync path.join(workDir, 'node_modules', 'coffeestack', 'spec')
+    fs.removeSync path.join(workDir, 'node_modules', 'exception-reporting', 'node_modules', 'coffeestack', 'spec')
+
+    # Patching
     pathFile 'atom-application.patch', 'src/browser/atom-application.coffee', ->
       pathFile 'atom.patch', 'src/atom.coffee', ->
         pathFile 'main.patch', 'src/browser/main.coffee', ->
