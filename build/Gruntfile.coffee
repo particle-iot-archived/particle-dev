@@ -10,7 +10,14 @@ module.exports = (grunt) ->
     workDir = grunt.option('workDir')
   else
     # temp.track()
-    workDir = temp.mkdirSync 'spark-dev'
+    if process.platform is 'win32'
+      affixes =
+        prefix: 'spark-dev'
+        suffix: ''
+        dir: process.cwd().split(path.sep)[0]
+      workDir = temp.mkdirSync affixes
+    else
+      workDir = temp.mkdirSync 'spark-dev'
 
   grunt.log.writeln '(i) Work dir is ' + workDir
 
