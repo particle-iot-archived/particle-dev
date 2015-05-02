@@ -1,6 +1,6 @@
 {View} = require 'atom-space-pen-views'
 {Disposable, CompositeDisposable} = require 'atom'
-{MiniEditor} = require 'spark-dev-views'
+{MiniEditorView} = require 'spark-dev-views'
 $ = null
 $$ = null
 SettingsHelper = null
@@ -20,7 +20,7 @@ class SerialMonitorView extends View
         @button class: 'btn pull-right', click: 'clearOutput', 'Clear'
       @div class: 'panel-body', outlet: 'variables', =>
         @pre outlet: 'output'
-        @subview 'input', new MiniEditor('Enter string to send')
+        @subview 'input', new MiniEditorView('Enter string to send')
 
   initialize: (serializeState) ->
     {$, $$} = require 'atom-space-pen-views'

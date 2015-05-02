@@ -1,9 +1,9 @@
-{Dialog} = require 'spark-dev-views'
+{DialogView} = require 'spark-dev-views'
 SettingsHelper = null
 _s = null
 
 module.exports =
-class IdentifyCoreView extends Dialog
+class IdentifyCoreView extends DialogView
   constructor: (coreID) ->
     super
       prompt: 'Your device ID is:'

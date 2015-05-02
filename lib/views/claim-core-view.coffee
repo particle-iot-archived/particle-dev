@@ -1,9 +1,9 @@
-{Dialog} = require 'spark-dev-views'
+{DialogView} = require 'spark-dev-views'
 SettingsHelper = null
 _s = null
 
 module.exports =
-class ClaimCoreView extends Dialog
+class ClaimCoreView extends DialogView
   constructor: ->
     super
       prompt: 'Enter device ID (hex string)'

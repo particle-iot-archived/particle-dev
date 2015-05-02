@@ -17,7 +17,7 @@
     "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
     "spark": "*",
     "spark-dev-spec-stubs": "git://github.com/spark/spark-dev-spec-stubs.git#master",
-    "spark-dev-views": "git://github.com/spark/spark-dev-views.git#master",
+    "spark-dev-views": "git://github.com/spark/spark-dev-views.git#v0.0.2",
     "underscore.string": "*",
     "validator": "*",
     "when": "*",

@@ -1,5 +1,5 @@
 {View, $} = require 'atom-space-pen-views'
-{MiniEditor} = require 'spark-dev-views'
+{MiniEditorView} = require 'spark-dev-views'
 
 $ = null
 _s = null
@@ -17,7 +17,7 @@ class WifiCredentialsView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'ssidEditor', new MiniEditor('SSID')
+      @subview 'ssidEditor', new MiniEditorView('SSID')
       @div class: 'security', =>
         @label =>
           @input type: 'radio', name: 'security', value: '0', checked: 'checked', change: 'change'
@@ -31,7 +31,7 @@ class WifiCredentialsView extends View
         @label =>
           @input type: 'radio', name: 'security', value: '3', change: 'change'
           @span 'WPA2'
-      @subview 'passwordEditor', new MiniEditor('and a password?')
+      @subview 'passwordEditor', new MiniEditorView('and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'save', id: 'saveButton', class: 'btn btn-primary', outlet: 'saveButton', 'Save'

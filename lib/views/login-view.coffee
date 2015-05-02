@@ -1,5 +1,5 @@
 {View, $} = require 'atom-space-pen-views'
-{MiniEditor} = require 'spark-dev-views'
+{MiniEditorView} = require 'spark-dev-views'
 
 CompositeDisposable = null
 _s = null
@@ -18,8 +18,8 @@ class LoginView extends View
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
           @span ' key'
-      @subview 'emailEditor', new MiniEditor('Could I please have an email address?')
-      @subview 'passwordEditor', new MiniEditor('and a password?')
+      @subview 'emailEditor', new MiniEditorView('Could I please have an email address?')
+      @subview 'passwordEditor', new MiniEditorView('and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'

@@ -1,10 +1,10 @@
-{Dialog} = require 'spark-dev-views'
+{DialogView} = require 'spark-dev-views'
 SettingsHelper = null
 _s = null
 spark = null
 
 module.exports =
-class RenameCoreView extends Dialog
+class RenameCoreView extends DialogView
   constructor: (@initialName) ->
     if !@initialName
       @initialName = ''
