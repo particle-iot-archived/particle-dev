@@ -1,43 +1,21 @@
-{SelectListView} = require 'atom-space-pen-views'
+{SelectView} = require 'spark-dev-views'
 
-$ = null
 $$ = null
-CompositeDisposable = null
 SerialHelper = null
 SettingsHelper = null
 fs = null
 path = null
 
 module.exports =
-class SelectFirmwareView extends SelectListView
+class SelectFirmwareView extends SelectView
   initialize: ->
     super
 
-    {$, $$} = require 'atom-space-pen-views'
-    {CompositeDisposable, Emitter} = require 'atom'
+    {$$} = require 'atom-space-pen-views'
     path ?= require 'path'
     fs ?= require 'fs-plus'
 
-    @panel = atom.workspace.addModalPanel(item: this, visible: false)
-
-    @disposables = new CompositeDisposable
-    @workspaceElement = atom.views.getView(atom.workspace)
-
     @prop 'id', 'spark-dev-select-firmware-view'
-
-  destroy: ->
-    @hide()
-    @disposables.dispose()
-
-  cancelled: ->
-    @hide()
-
-  show: =>
-    @panel.show()
-    @focusFilterEditor()
-
-  hide: ->
-    @panel.hide()
 
   viewForItem: (item) ->
     $$ ->

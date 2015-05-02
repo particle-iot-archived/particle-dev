@@ -1,46 +1,26 @@
-{SelectListView} = require 'atom-space-pen-views'
+{SelectView} = require 'spark-dev-views'
 
-$ = null
 $$ = null
 spark = null
 Subscriber = null
 SettingsHelper = null
 
 module.exports =
-class SelectCoreView extends SelectListView
+class SelectCoreView extends SelectView
   initialize: ->
     super
 
-    {$, $$} = require 'atom-space-pen-views'
-    {CompositeDisposable} = require 'atom'
+    {$$} = require 'atom-space-pen-views'
     SettingsHelper = require '../utils/settings-helper'
 
-    @panel = atom.workspace.addModalPanel(item: this, visible: false)
-
-    @disposables = new CompositeDisposable
-    @workspaceElement = atom.views.getView(atom.workspace)
-
-    @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-select-core-view'
     @listDevicesPromise = null
 
-  destroy: ->
-    @hide()
-    @disposables.dispose()
-
-  cancelled: ->
-    @hide()
-
   show: =>
-    @panel.show()
-
     @setItems []
     @setLoading 'Loading devices...'
     @loadCores()
-    @focusFilterEditor()
-
-  hide: ->
-    @panel.hide()
+    super
 
   # Here you specify the view for an item
   viewForItem: (item) ->

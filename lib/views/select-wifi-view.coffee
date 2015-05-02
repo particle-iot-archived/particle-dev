@@ -1,42 +1,23 @@
-{SelectListView} = require 'atom-space-pen-views'
+{SelectView} = require 'spark-dev-views'
 
-$ = null
 $$ = null
-Subscriber = null
 _s = null
 
 module.exports =
-class SelectWifiView extends SelectListView
+class SelectWifiView extends SelectView
   initialize: ->
     super
 
-    {$, $$} = require 'atom-space-pen-views'
-    {CompositeDisposable, Emitter} = require 'atom'
+    {$$} = require 'atom-space-pen-views'
     @cp = require 'child_process'
     _s ?= require 'underscore.string'
-
-    @panel = atom.workspace.addModalPanel(item: this, visible: false)
-
-    @disposables = new CompositeDisposable
-    @workspaceElement = atom.views.getView(atom.workspace)
 
     @prop 'id', 'spark-dev-select-wifi-view'
     @port = null
 
-  destroy: ->
-    @hide()
-    @disposables.dispose()
-
-  cancelled: ->
-    @hide()
-
   show: =>
-    @panel.show()
-
     @listNetworks()
-
-  hide: ->
-    @panel.hide()
+    super
 
   viewForItem: (item) ->
     security = null

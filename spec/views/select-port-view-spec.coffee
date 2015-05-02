@@ -27,24 +27,6 @@ describe 'Select Port View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe 'tests hiding and showing', ->
-    it 'checks command hooks', ->
-      SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      selectPortView.show()
-
-      spyOn(selectPortView, 'hide').andCallThrough()
-      atom.commands.dispatch workspaceElement, 'core:cancel'
-      expect(selectPortView.hide).toHaveBeenCalled()
-
-      # selectPortView.show()
-      # selectPortView.hide.reset()
-      # atom.commands.dispatch workspaceElement, 'core:close'
-      # expect(selectPortView.hide).toHaveBeenCalled()
-
-      jasmine.unspy selectPortView, 'hide'
-      selectPortView.hide()
-      SettingsHelper.clearCredentials()
-
   describe '', ->
     it 'tests loading items', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
