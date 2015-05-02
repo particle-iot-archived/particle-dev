@@ -24,12 +24,17 @@
     "xtend": "*"
   },
   "packageDependencies": {
-    "toolbar": "0.0.15"
+    "tool-bar": "0.1.0"
   },
   "consumedServices": {
     "status-bar": {
       "versions": {
         "^1.0.0": "consumeStatusBar"
+      }
+    },
+    "tool-bar": {
+      "versions": {
+        "^0.1.0": "consumeToolBar"
       }
     }
   }

@@ -112,30 +112,9 @@ module.exports =
         return
 
     # Updating toolbar
-    try
-      atom.packages.activatePackage('toolbar')
-        .then (pkg) =>
-          @toolbar = pkg.mainModule
-          @toolbar.appendSpacer()
-          @flashButton = @toolbar.appendButton 'flash', 'spark-dev:flash-cloud', 'Compile and upload code using cloud', 'ion'
-          @compileButton = @toolbar.appendButton 'checkmark-circled', 'spark-dev:compile-cloud', 'Compile and show errors if any', 'ion'
-
-          @toolbar.appendSpacer()
-
-          @toolbar.appendButton 'document-text', ->
-            require('shell').openExternal('http://docs.spark.io/')
-          , 'Opens reference at docs.spark.io', 'ion'
-          @coreButton = @toolbar.appendButton 'pinpoint', 'spark-dev:select-device', 'Select which device you want to work on', 'ion'
-          @wifiButton = @toolbar.appendButton 'wifi', 'spark-dev:setup-wifi', 'Setup device\'s WiFi credentials', 'ion'
-          @toolbar.appendButton 'usb', 'spark-dev:show-serial-monitor', 'Show serial monitor', 'ion'
-
-          @updateToolbarButtons()
-
-      @disposables.add atom.commands.add 'atom-workspace',
-        'spark-dev:update-login-status': => @updateToolbarButtons()
-        'spark-dev:update-core-status': => @updateToolbarButtons()
-
-    catch
+    @disposables.add atom.commands.add 'atom-workspace',
+      'spark-dev:update-login-status': => @updateToolbarButtons()
+      'spark-dev:update-core-status': => @updateToolbarButtons()
 
     # Monitoring changes in settings
     settings ?= require './vendor/settings'
@@ -172,6 +151,47 @@ module.exports =
   consumeStatusBar: (statusBar) ->
     @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
     @statusView.updateLoginStatus()
+
+  consumeToolBar: (toolBar) ->
+    @toolBar = toolBar 'spark-dev-tool-bar'
+
+    @toolBar.addSpacer()
+    @flashButton = @toolBar.addButton
+      icon: 'flash'
+      callback: 'spark-dev:flash-cloud'
+      tooltip: 'Compile and upload code using cloud'
+      iconset: 'ion'
+    @compileButton = @toolBar.addButton
+      icon: 'checkmark-circled'
+      callback: 'spark-dev:compile-cloud'
+      tooltip: 'Compile and show errors if any'
+      iconset: 'ion'
+
+    @toolBar.addSpacer()
+
+    @toolBar.addButton
+      icon: 'document-text'
+      callback: ->
+        require('shell').openExternal('http://docs.spark.io/')
+      tooltip: 'Opens reference at docs.spark.io'
+      iconset: 'ion'
+    @coreButton = @toolBar.addButton
+      icon: 'pinpoint'
+      callback: 'spark-dev:select-device'
+      tooltip: 'Select which device you want to work on'
+      iconset: 'ion'
+    @wifiButton = @toolBar.addButton
+      icon: 'wifi'
+      callback: 'spark-dev:setup-wifi'
+      tooltip: 'Setup device\'s WiFi credentials'
+      iconset: 'ion'
+    @toolBar.addButton
+      icon: 'usb'
+      callback: 'spark-dev:show-serial-monitor'
+      tooltip: 'Show serial monitor'
+      iconset: 'ion'
+
+    @updateToolbarButtons()
 
   config:
     # Delete .bin file after flash
