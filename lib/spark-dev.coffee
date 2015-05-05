@@ -485,7 +485,8 @@ module.exports =
           files = fs.listSync rootPath
           for file in files
             if _s.startsWith(path.basename(file), 'firmware') and _s.endsWith(file, '.bin')
-              fs.unlinkSync file
+              if fs.existsSync file
+                fs.unlinkSync file
 
         filename = 'firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
@@ -557,7 +558,8 @@ module.exports =
         @statusView.clearAfter 5000
 
         if atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
-          fs.unlink firmware
+          if fs.existsSync firmware
+            fs.unlink firmware
 
         @flashCorePromise = null
       , (e) =>
