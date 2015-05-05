@@ -1,6 +1,5 @@
-{SelectListView} = require('atom-space-pen-views')
+{SelectView} = require 'spark-dev-views'
 
-$ = null
 $$ = null
 SerialHelper = null
 SettingsHelper = null
@@ -8,25 +7,18 @@ fs = null
 path = null
 
 module.exports =
-class CompileErrorsView extends SelectListView
+class CompileErrorsView extends SelectView
   initialize: ->
     super
 
-    {$, $$} = require 'atom-space-pen-views'
+    {$$} = require 'atom-space-pen-views'
     {CompositeDisposable} = require 'atom'
 
-    @panel = atom.workspace.addModalPanel(item: this, visible: false)
-
-    @disposables = new CompositeDisposable
-    @workspaceElement = atom.views.getView(atom.workspace)
-    @disposables.add atom.commands.add 'atom-workspace',
-      'core:cancel', =>
-        @hide()
-      'core:close', =>
-        @hide()
-
-    @addClass 'overlay from-top'
     @prop 'id', 'spark-dev-compile-errors-view'
+
+  @fixFilePath: (filename) ->
+    splitFilename = filename.split path.sep
+    path.join.apply this, splitFilename.slice(2)
 
   # Parse gcc errors into array
   @parseErrors: (raw) ->
@@ -38,7 +30,7 @@ class CompileErrorsView extends SelectListView
       result = line.match /^([^:]+):(\d+):(\d+):\s(\w+\s*\w*):(.*)$/
       if result and result[4].indexOf('error') > -1
         errors.push {
-          file: result[1],
+          file: @fixFilePath(result[1]),
           row: result[2],
           col: result[3],
           type: result[4],
@@ -49,7 +41,7 @@ class CompileErrorsView extends SelectListView
         if result
           # This is probably "undefined" error
           errors.push {
-            file: path.basename(result[1]),
+            file: path.basename(@fixFilePath(result[1])),
             row: result[2],
             col: 0,
             type: 'error',
@@ -57,24 +49,15 @@ class CompileErrorsView extends SelectListView
           }
     errors
 
-  destroy: ->
-    @panel.hide()
-    @disposables.dispose()
-
   show: =>
     SettingsHelper ?= require '../utils/settings-helper'
-
-    @panel.show()
 
     compileStatus = SettingsHelper.getLocal 'compile-status'
     if compileStatus?.errors
       @setItems compileStatus.errors
     else
       @setLoading 'There were no compile errors'
-    @focusFilterEditor()
-
-  hide: ->
-    @panel.hide()
+    super
 
   fixInoFile: (filename) ->
     fs ?= require 'fs-plus'
@@ -101,7 +84,7 @@ class CompileErrorsView extends SelectListView
     opening = atom.workspace.open filename, { searchAllPanes: true }
     opening.done (editor) =>
       editor.setCursorBufferPosition [item.row-1, item.col-1],
-    @cancel()
+    @hide()
 
   getFilterKey: ->
     'message'
