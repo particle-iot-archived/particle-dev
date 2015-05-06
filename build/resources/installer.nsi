@@ -15,6 +15,7 @@ Section "Spark Dev (required)"
   SectionIn RO
   SetOutPath $INSTDIR
 
+  RMDir /r "$INSTDIR"
   File /r "\\?\${SOURCE}\*.*"
 
   CreateShortCut "$DESKTOP\Spark Dev.lnk" "$INSTDIR\atom.exe" ""
@@ -41,6 +42,6 @@ Section "Uninstall"
 
   Delete "$SMPROGRAMS\Spark Dev\*.*"
 
-  RMDir "$SMPROGRAMS\Spark Dev"
-  RMDir "$INSTDIR"
+  RMDir /r "$SMPROGRAMS\Spark Dev"
+  RMDir /r "$INSTDIR"
 SectionEnd
