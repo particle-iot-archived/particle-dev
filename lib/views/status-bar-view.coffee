@@ -8,18 +8,19 @@ spark = null
 module.exports =
 class StatusBarView extends View
   @content: ->
-    @div class: 'inline-block', id: 'spark-dev-status-bar-view', =>
-      @img src: 'atom://spark-dev/images/spark.png', id: 'spark-icon'
-      @span id: 'spark-login-status'
-      @span id: 'spark-current-core', class: 'hidden', =>
+    @div =>
+      @div id: 'spark-icon', class: 'inline-block', outlet: 'logoTile', =>
+        @img src: 'atom://spark-dev/images/spark.png'
+      @div id: 'spark-login-status', class: 'inline-block', outlet: 'loginStatusTile'
+      @div id: 'spark-current-core', class: 'inline-block hidden', outlet: 'currentCoreTile', =>
         @a click: 'selectCore'
-      @span id: 'spark-compile-status', class: 'hidden', =>
+      @span id: 'spark-compile-status', class: 'inline-block hidden', outlet: 'compileStatusTile', =>
         @span id: 'spark-compile-working', =>
           @span class: 'three-quarters'
           @a 'Compiling in the cloud...'
         @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
         @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'
-      @span id: 'spark-log'
+      @span id: 'spark-log', class: 'inline-block', outlet: 'logTile'
 
   initialize: (serializeState) ->
     {$} = require('atom-space-pen-views')
@@ -44,6 +45,13 @@ class StatusBarView extends View
   # Tear down any state and detach
   destroy: ->
 
+  addTiles: (statusBar) ->
+    statusBar.addLeftTile(item: @logoTile, priority: 100)
+    statusBar.addLeftTile(item: @loginStatusTile, priority: 100)
+    statusBar.addLeftTile(item: @currentCoreTile, priority: 100)
+    statusBar.addLeftTile(item: @compileStatusTile, priority: 100)
+    statusBar.addLeftTile(item: @logTile, priority: 100)
+
   # Callback triggering selecting core command
   selectCore: ->
     atom.commands.dispatch @workspaceElement, 'spark-dev:select-device'
@@ -64,8 +72,8 @@ class StatusBarView extends View
     if !SettingsHelper.hasCurrentCore()
       return
 
-    statusElement = this.find('#spark-current-core a')
-    statusElement.parent().removeClass 'online'
+    statusElement = @currentCoreTile.find('a')
+    @currentCoreTile.removeClass 'online'
 
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
@@ -85,7 +93,7 @@ class StatusBarView extends View
         @updateCoreStatus()
       else
         if e.connected
-          statusElement.parent().addClass 'online'
+          @currentCoreTile.addClass 'online'
 
         SettingsHelper.setLocal 'current_core_name', e.name
         if !e.name
@@ -113,7 +121,7 @@ class StatusBarView extends View
 
   # Update current core's status
   updateCoreStatus: ->
-    statusElement = this.find('#spark-current-core a')
+    statusElement = @currentCoreTile.find('a')
 
     if SettingsHelper.hasCurrentCore()
       currentCore = SettingsHelper.getLocal('current_core_name')
@@ -123,74 +131,66 @@ class StatusBarView extends View
 
       @getCurrentCoreStatus()
     else
-      statusElement.parent().removeClass 'online'
+      @currentCoreTile.removeClass 'online'
       statusElement.text 'No devices selected'
 
   # Update login status
   updateLoginStatus: ->
-    statusElement = this.find('#spark-login-status')
-    statusElement.empty()
-
-    ideMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark Dev'
+    @loginStatusTile.empty()
 
     if SettingsHelper.isLoggedIn()
       username = SettingsHelper.get('username')
-      statusElement.text(username)
+      @loginStatusTile.text(username)
 
-      this.find('#spark-current-core').removeClass 'hidden'
+      @currentCoreTile.removeClass 'hidden'
       @updateCoreStatus()
     else
       loginButton = $('<a/>').text('Click to log in to Spark Cloud...')
-      statusElement.append loginButton
+      @loginStatusTile.append loginButton
       loginButton.on 'click', =>
         atom.commands.dispatch @workspaceElement, 'spark-dev:login'
 
-      this.find('#spark-current-core').addClass 'hidden'
+      @currentCoreTile.addClass 'hidden'
 
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
 
   updateCompileStatus: ->
-    statusElement = this.find('#spark-compile-status')
-    statusElement.addClass 'hidden'
+    @compileStatusTile.addClass 'hidden'
     compileStatus = SettingsHelper.getLocal 'compile-status'
 
     if !!compileStatus
-      statusElement.removeClass 'hidden'
-      statusElement.find('>').hide()
+      @compileStatusTile.removeClass 'hidden'
+      @compileStatusTile.find('>').hide()
 
       if !!compileStatus.working
-        statusElement.find('#spark-compile-working').show()
+        @compileStatusTile.find('#spark-compile-working').show()
       else if !!compileStatus.errors
-        subElement = statusElement.find('#spark-compile-failed')
+        subElement = @compileStatusTile.find('#spark-compile-failed')
         if compileStatus.errors.length == 1
           subElement.text('One error')
         else
           subElement.text(compileStatus.errors.length + ' errors')
         subElement.show()
       else if !!compileStatus.error
-        subElement = statusElement.find('#spark-compile-failed')
+        subElement = @compileStatusTile.find('#spark-compile-failed')
         subElement.text(compileStatus.error)
         subElement.show()
       else
-        statusElement.find('#spark-compile-success')
-                     .text('Success!')
-                     .show()
+        @compileStatusTile.find('#spark-compile-success')
+                          .text('Success!')
+                          .show()
 
   setStatus: (text, type = null) ->
-      el = this.find('#spark-log')
-      el.text(text)
+      @logTile.text(text)
         .removeClass()
 
       if type
-        el.addClass('text-' + type)
+        @logTile.addClass('text-' + type)
 
   clear: ->
-    el = this.find('#spark-log')
-    self = @
-    el.fadeOut ->
-      self.setStatus ''
-      el.show()
+    @logTile.fadeOut =>
+      @setStatus ''
+      logTile.show()
 
   clearAfter: (delay) ->
     setTimeout =>

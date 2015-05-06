@@ -6,7 +6,58 @@
 @import "progress";
 @import "octicons";
 @import "animations";
+@import "utilities";
 
+
+#spark-icon {
+  > img {
+    width: 16px;
+    height: 16px;
+    margin-top: -2px;
+
+  }
+}
+
+#spark-current-core {
+  &:before {
+    .core-dot();
+    content: " ";
+    margin-right: 5px;
+    margin-bottom: -1px;
+  }
+
+  &.online:before {
+    .breathing-cyan();
+  }
+
+  &.core-online {
+    &:before {
+      .breathing-cyan();
+    }
+  }
+}
+
+#spark-compile-status {
+  #spark-compile-working .three-quarters {
+    width: 16px;
+    height: 16px;
+    border-size: 4px;
+    border-radius: 8px;
+    margin-top: -2px;
+    margin-right: 5px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+
+  #spark-compile-failed {
+    color: @text-color-error;
+
+    &:before {
+      margin-right: 5px;
+      top: 0;
+    }
+  }
+}
 
 #spark-dev-status-bar-view {
   margin-right: 10px;
@@ -16,53 +67,6 @@
 
     &:first-child {
       margin-left: 5px;
-    }
-  }
-
-  #spark-icon {
-    width: 16px;
-    height: 16px;
-    margin-top: -2px;
-  }
-
-  #spark-current-core {
-    &:before {
-      .core-dot();
-      content: " ";
-      margin-right: 5px;
-      margin-bottom: -1px;
-    }
-
-    &.online:before {
-      .breathing-cyan();
-    }
-
-    &.core-online {
-      &:before {
-        .breathing-cyan();
-      }
-    }
-  }
-
-  #spark-compile-status {
-    #spark-compile-working .three-quarters {
-      width: 16px;
-      height: 16px;
-      border-size: 4px;
-      border-radius: 8px;
-      margin-top: -2px;
-      margin-right: 5px;
-      vertical-align: middle;
-      display: inline-block;
-    }
-
-    #spark-compile-failed {
-      color: @text-color-error;
-
-      &:before {
-        margin-right: 5px;
-        top: 0;
-      }
     }
   }
 

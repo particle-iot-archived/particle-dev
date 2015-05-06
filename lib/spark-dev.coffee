@@ -149,7 +149,8 @@ module.exports =
   serialize: ->
 
   consumeStatusBar: (statusBar) ->
-    @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
+    @statusView.addTiles statusBar
+    # @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
     @statusView.updateLoginStatus()
 
   consumeToolBar: (toolBar) ->
