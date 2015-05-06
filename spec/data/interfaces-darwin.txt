@@ -1,0 +1,15 @@
+     agrCtlRSSI: -61
+     agrExtRSSI: 0
+    agrCtlNoise: -95
+    agrExtNoise: 0
+          state: running
+        op mode: station
+     lastTxRate: 150
+        maxRate: 300
+lastAssocStatus: 0
+    802.11 auth: open
+      link auth: wpa2-psk
+          BSSID: 0:25:bc:8a:19:64
+           SSID: foo
+            MCS: 7
+        channel: 40,-1

@@ -1,0 +1,20 @@
+                            SSID BSSID             RSSI CHANNEL HT CC SECURITY (auth/unicast/group)
+                     BTHub3-FM46 cc:96:a0:0c:87:97 -58  11      Y  -- WPA(PSK/AES,TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
+                 BTWiFi-with-FON 62:96:a0:0c:87:90 -60  11      Y  -- NONE
+                             foo 00:25:ac:8a:19:6a -52  5       Y  PL WPA(PSK/TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
+                        SKYCA72F 4c:17:eb:9c:a7:30 -61  11      Y  -- WPA(PSK/AES,TKIP/TKIP)
+                        SKYA393B 7c:4c:a5:bc:97:3d -73  11      Y  -- WPA2(PSK/AES/AES)
+                 TALKTALK-441D23 28:10:7b:44:1d:23 -75  8       Y  GB WPA(PSK/TKIP,AES/TKIP) WPA2(PSK/TKIP,AES/TKIP)
+                     BTHub4-P6GH 40:f2:01:07:88:ba -86  6       Y  GB WPA(PSK/AES,TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
+                        BTWifi-X 62:f2:01:48:e0:6c -79  6       Y  GB WPA(802.1x/AES,TKIP/TKIP) WPA2(802.1x/AES,TKIP/TKIP)
+                 BTWifi-with-FON 42:f2:01:48:e0:6c -82  6       Y  GB NONE
+                     BTHub5-27WT 00:f2:01:48:e0:6c -78  6       Y  GB WPA2(PSK/AES/AES)
+              Relish_Home_823D38 f8:35:dd:82:3d:36 -81  4,+1    Y  TW WEP
+                 BTWifi-with-FON 02:01:3b:98:66:1a -52  1       Y  -- NONE
+                     BTHub3-P98X 00:01:3b:98:66:1a -52  1       Y  -- WPA(PSK/AES,TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
+             EE-BrightBox-qwa4e4 50:7e:5d:65:53:df -57  1       Y  -- WPA(PSK/AES,TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
+                        BTWifi-X 44:d3:ca:6c:a1:62 -73  1       N  -- WPA(802.1x/TKIP/TKIP) WPA2(802.1x/AES/TKIP)
+                        BTWifi-X 22:f2:01:48:e0:6d -87  44      Y  GB WPA(802.1x/AES,TKIP/TKIP) WPA2(802.1x/AES,TKIP/TKIP)
+                 BTWifi-with-FON 02:f2:01:48:e0:6d -88  44      Y  GB NONE
+                     BTHub5-532Z 00:f2:01:48:e0:6d -88  44      Y  GB WPA2(PSK/AES/AES)
+                             foo 00:22:bc:1a:19:64 -52  40,-1   Y  PL WPA(PSK/TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)
