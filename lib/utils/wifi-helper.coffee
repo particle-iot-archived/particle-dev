@@ -40,10 +40,9 @@ module.exports =
 					currentSsid = currentSsid[1]
 			cb currentSsid
 
-	sortNetworks: (networks, currentFirst) ->
-		# TODO: Current first
+	sortNetworks: (networks, currentSsid) ->
 		networks.sort (a, b) =>
-			if currentFirst
+			if currentSsid
 				if a.ssid == currentSsid
 					return -1000
 				if b.ssid == currentSsid
@@ -52,18 +51,30 @@ module.exports =
 			parseInt(b.rssi) - parseInt(a.rssi)
 		return networks
 
-	listNetworks: (currentFirst=true) ->
+	listNetworksDfd: (currentSsid=null) ->
 		dfd = whenjs.defer()
+
 		switch @getPlatform()
 			when 'darwin'
 				@listNetworksDarwin (networks) =>
-					dfd.resolve @sortNetworks(networks, currentFirst)
+					dfd.resolve @sortNetworks(networks, currentSsid)
 			when 'win32'
 				@listNetworksWindows (networks) =>
-					dfd.resolve @sortNetworks(networks, currentFirst)
+					dfd.resolve @sortNetworks(networks, currentSsid)
 			else
 				dfd.reject 'Current platform is not supported'
 		dfd.promise
+
+	listNetworks: (currentFirst=true) ->
+		if currentFirst
+			pipeline [
+				=>
+					@getCurrentSsid()
+				(currentSsid) =>
+					@listNetworksDfd currentSsid
+			]
+		else
+			@listNetworksDfd()
 
 	listNetworksDarwin: (cb) ->
 		@cp.exec '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s', (error, stdout, stderr) =>

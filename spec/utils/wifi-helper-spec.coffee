@@ -1,3 +1,5 @@
+whenjs = require 'when'
+
 describe 'getting current SSID when', ->
 	WifiHelper = null
 
@@ -126,19 +128,19 @@ describe 'listing available networks when', ->
 		runs ->
 			expect(WifiHelper.cp.exec).toHaveBeenCalled()
 			expect(WifiHelper.cp.exec.calls[0].args[0]).toEqual('/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -s')
-			expect(networks.length).toEqual(14)
-			expect(networks[2].ssid).toEqual('foo')
-			expect(networks[2].bssid).toEqual('00:25:ac:8a:19:6a')
-			expect(networks[2].rssi).toEqual('-52')
-			expect(networks[2].channel).toEqual('5')
-			expect(networks[2].ht).toEqual('Y')
-			expect(networks[2].cc).toEqual('PL')
-			expect(networks[2].security_string).toEqual('WPA(PSK/TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)')
-			expect(networks[2].security).toEqual(3)
+			expect(networks.length).toEqual(13)
+			expect(networks[1].ssid).toEqual('foo')
+			expect(networks[1].bssid).toEqual('00:25:ac:8a:19:6a')
+			expect(networks[1].rssi).toEqual('-60')
+			expect(networks[1].channel).toEqual('5')
+			expect(networks[1].ht).toEqual('Y')
+			expect(networks[1].cc).toEqual('PL')
+			expect(networks[1].security_string).toEqual('WPA(PSK/TKIP/TKIP) WPA2(PSK/AES,TKIP/TKIP)')
+			expect(networks[1].security).toEqual(3)
 
-			expect(networks[1].security).toEqual(0)
-			expect(networks[3].security).toEqual(2)
-			expect(networks[10].security).toEqual(1)
+			expect(networks[9].security).toEqual(0)
+			expect(networks[2].security).toEqual(2)
+			expect(networks[8].security).toEqual(1)
 
 	it 'runs on Windows', (done) ->
 		stdout = fs.readFileSync __dirname + '/../data/networks-win.txt'
@@ -171,4 +173,49 @@ describe 'listing available networks when', ->
 			expect(networks[2].security).toEqual(0)
 			expect(networks[4].security).toEqual(1)
 
-# TODO: Test sorting
+describe 'sorts networks when', ->
+	WifiHelper = null
+
+	beforeEach ->
+		WifiHelper = require '../../lib/utils/wifi-helper'
+		delete require.cache[require.resolve('../../lib/utils/wifi-helper')]
+
+	it 'they have to be ordered by signal strength', ->
+		stdout = fs.readFileSync __dirname + '/../data/networks-darwin.txt'
+		WifiHelper.getPlatform = -> 'darwin'
+		WifiHelper.cp =
+			exec: jasmine.createSpy().andCallFake (cmd, cb) ->
+				cb null, stdout.toString(), null
+
+		promise = WifiHelper.listNetworks false
+
+		waitsFor ->
+			promise.inspect().state == 'fulfilled'
+
+		runs ->
+			status = promise.inspect()
+			networks = status.value
+			expect(networks[0].ssid).toEqual('BTWifi-with-FON')
+			expect(networks[1].ssid).toEqual('BTHub3-P98X')
+			expect(networks[2].ssid).toEqual('EE-BrightBox-qwa4e4')
+
+	it 'wants current SSID to be first', ->
+		stdout = fs.readFileSync __dirname + '/../data/networks-darwin.txt'
+		WifiHelper.getPlatform = -> 'darwin'
+		WifiHelper.cp =
+			exec: jasmine.createSpy().andCallFake (cmd, cb) ->
+				cb null, stdout.toString(), null
+		WifiHelper.getCurrentSsid = jasmine.createSpy().andCallFake ->
+			whenjs.resolve 'foo'
+
+		promise = WifiHelper.listNetworks true
+
+		waitsFor ->
+			promise.inspect().state == 'fulfilled'
+
+		runs ->
+			status = promise.inspect()
+			networks = status.value
+			expect(networks[0].ssid).toEqual('foo')
+			expect(networks[1].ssid).toEqual('BTWifi-with-FON')
+			expect(networks[2].ssid).toEqual('BTHub3-P98X')
