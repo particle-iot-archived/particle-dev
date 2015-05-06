@@ -190,7 +190,7 @@ class StatusBarView extends View
   clear: ->
     @logTile.fadeOut =>
       @setStatus ''
-      logTile.show()
+      @logTile.show()
 
   clearAfter: (delay) ->
     setTimeout =>
