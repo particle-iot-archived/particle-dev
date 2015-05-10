@@ -27,15 +27,18 @@ module.exports =
       }]
 
       if SettingsHelper.hasCurrentCore()
+        currentCoreName = SettingsHelper.getLocal('current_core_name')
+        if !currentCoreName
+          currentCoreName = 'Unnamed'
         # Menu items depending on current core
         devMenu.submenu = devMenu.submenu.concat [{
-          label: 'Rename ' + SettingsHelper.getLocal('current_core_name') + '...',
+          label: 'Rename ' + currentCoreName + '...',
           command: 'spark-dev:rename-device'
         },{
-          label: 'Remove ' + SettingsHelper.getLocal('current_core_name') + '...',
+          label: 'Remove ' + currentCoreName + '...',
           command: 'spark-dev:remove-device'
         },{
-          label: 'Flash ' + SettingsHelper.getLocal('current_core_name') + ' via the cloud',
+          label: 'Flash ' + currentCoreName + ' via the cloud',
           command: 'spark-dev:flash-cloud'
         }]
 
