@@ -69,7 +69,7 @@ class SerialMonitorView extends View
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()
-    pane.destroy()
+    pane?.destroy()
 
   appendText: (text, appendNewline=true) ->
     at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 > @output[0].scrollHeight)
