@@ -48,6 +48,17 @@ class SelectCoreView extends SelectView
 
     @listDevicesPromise = spark.listDevices()
     @listDevicesPromise.done (e) =>
+      e.sort (a, b) =>
+        if !a.name
+          a.name = ''
+        if !b.name
+          b.name = ''
+        order = (b.connected - a.connected) * 1000
+        if a.name.toLowerCase() < b.name.toLowerCase()
+          order -= 1
+        else if a.name.toLowerCase() > b.name.toLowerCase()
+          order += 1
+        order
       @setItems e
       @listDevicesPromise = null
     , (e) =>
