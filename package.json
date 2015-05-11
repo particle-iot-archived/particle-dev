@@ -15,7 +15,7 @@
     "pathwatcher": "^3.3.3",
     "request": "*",
     "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
-    "spark": "*",
+    "spark": "^0.5.2",
     "spark-dev-spec-stubs": "git://github.com/spark/spark-dev-spec-stubs.git#master",
     "spark-dev-views": "git://github.com/spark/spark-dev-views.git#master",
     "underscore.string": "*",
