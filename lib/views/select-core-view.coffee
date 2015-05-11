@@ -30,11 +30,13 @@ class SelectCoreView extends SelectView
 
     $$ ->
       @li class: 'two-lines core-line', =>
-        @div class: 'primary-line ' + (if item.connected then 'core-online' else 'core-offline'), name
+        connectedClass = if item.connected then 'core-online' else 'core-offline'
+        @div class: 'primary-line ' + connectedClass, =>
+          @span class: 'platform-icon platform-icon-' + item.productId, name
         @div class: 'secondary-line no-icon', item.id
 
   confirmed: (item) ->
-    SettingsHelper.setCurrentCore item.id, item.name
+    SettingsHelper.setCurrentCore item.id, item.name, item.productId
     @hide()
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
@@ -59,6 +61,7 @@ class SelectCoreView extends SelectView
         else if a.name.toLowerCase() > b.name.toLowerCase()
           order += 1
         order
+
       @setItems e
       @listDevicesPromise = null
     , (e) =>

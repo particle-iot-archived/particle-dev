@@ -55,14 +55,14 @@ module.exports =
     !!@get('access_token')
 
   # Set current core's ID and name
-  setCurrentCore: (id, name) ->
+  setCurrentCore: (id, name, platform=0) ->
     @setLocal 'current_core', id
     @setLocal 'current_core_name', name
+    @setLocal 'current_core_platform', platform
 
   # Clear current core
   clearCurrentCore: ->
-    @setLocal 'current_core', null
-    @setLocal 'current_core_name', null
+    @setCurrentCore null, null, null
 
   # True if there is current core set
   hasCurrentCore: ->

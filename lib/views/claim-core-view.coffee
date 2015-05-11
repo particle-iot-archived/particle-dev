@@ -47,7 +47,7 @@ class ClaimCoreView extends DialogView
             return
 
           # Set current core in settings
-          SettingsHelper.setCurrentCore e.id, null
+          SettingsHelper.setCurrentCore e.id, null, 0
 
           # Refresh UI
           atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'

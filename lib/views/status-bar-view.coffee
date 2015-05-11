@@ -12,8 +12,9 @@ class StatusBarView extends View
       @div id: 'spark-icon', class: 'inline-block', outlet: 'logoTile', =>
         @img src: 'atom://spark-dev/images/spark.png'
       @div id: 'spark-login-status', class: 'inline-block', outlet: 'loginStatusTile'
-      @div id: 'spark-current-core', class: 'inline-block hidden', outlet: 'currentCoreTile', =>
-        @a click: 'selectCore'
+      @div id: 'spark-current-device', class: 'inline-block hidden', outlet: 'currentCoreTile', =>
+        @span class: 'platform-icon', outlet: 'platformIcon', title: 'Current target platform', =>
+          @a click: 'selectCore'
       @span id: 'spark-compile-status', class: 'inline-block hidden', outlet: 'compileStatusTile', =>
         @span id: 'spark-compile-working', =>
           @span class: 'three-quarters'
@@ -33,6 +34,9 @@ class StatusBarView extends View
 
     @getAttributesPromise = null
     @interval = null
+
+    # Defaults to Core
+    @platformIcon.addClass 'platform-icon-0'
 
     @disposables.add atom.commands.add 'atom-workspace',
       'spark-dev:update-login-status': => @updateLoginStatus()
@@ -122,17 +126,21 @@ class StatusBarView extends View
   # Update current core's status
   updateCoreStatus: ->
     statusElement = @currentCoreTile.find('a')
+    @platformIcon.removeClass()
+    @platformIcon.addClass 'platform-icon'
 
     if SettingsHelper.hasCurrentCore()
       currentCore = SettingsHelper.getLocal('current_core_name')
       if !currentCore
         currentCore = 'Unnamed'
       statusElement.text currentCore
+      @platformIcon.addClass 'platform-icon-' + SettingsHelper.getLocal('current_core_platform')
 
       @getCurrentCoreStatus()
     else
       @currentCoreTile.removeClass 'online'
       statusElement.text 'No devices selected'
+      @platformIcon.addClass 'platform-icon-0'
 
   # Update login status
   updateLoginStatus: ->

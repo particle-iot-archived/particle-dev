@@ -8,21 +8,21 @@
 @import "animations";
 @import "utilities";
 
+@import "variables";
 
 #spark-icon {
   > img {
     width: 16px;
     height: 16px;
     margin-top: -2px;
-
   }
 }
 
-#spark-current-core {
+#spark-current-device {
   &:before {
     .core-dot();
     content: " ";
-    margin-right: 5px;
+    margin-right: 10px;
     margin-bottom: -1px;
   }
 
@@ -35,6 +35,41 @@
       .breathing-cyan();
     }
   }
+}
+
+#spark-dev-select-core-view {
+  .core-online::before, .core-offline::before {
+    margin-bottom: -1px;
+  }
+}
+
+.platform-icon::before {
+  display: inline-block;
+  content: '?';
+  background: #666;
+  color: #fff;
+  border-radius: @platform-icon-size / 2;
+  width: @platform-icon-size;
+  height: @platform-icon-size;
+  line-height: @platform-icon-size;
+  text-align: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.platform-icon-0::before {
+  content: 'C';
+  background: @color-core;
+}
+
+.platform-icon-6::before {
+  content: 'P';
+  background: @color-photon;
+}
+
+.platform-icon-999::before {
+  content: 'E';
+  background: @color-electron;
 }
 
 #spark-compile-status {
@@ -318,7 +353,6 @@ atom-text-editor.editor-error {
 }
 
 /* Flashing core dot */
-
 .core-dot {
   width: 10px;
   height: 10px;
