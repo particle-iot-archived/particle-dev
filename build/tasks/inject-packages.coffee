@@ -21,5 +21,6 @@ module.exports = (grunt) ->
     injectPackage 'release-notes'
     injectPackage 'exception-reporting'
     injectPackage 'metrics'
+    injectPackage 'deprecation-cop'
 
     injectDependency 'coffeestack', 'git+https://github.com/spark/coffeestack.git#master'
