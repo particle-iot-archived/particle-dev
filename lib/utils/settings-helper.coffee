@@ -67,3 +67,6 @@ module.exports =
   # True if there is current core set
   hasCurrentCore: ->
     !!@getLocal('current_core')
+
+  getApiUrl: ->
+    @get 'apiUrl'

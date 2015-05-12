@@ -230,8 +230,11 @@ module.exports =
       return
 
     @spark ?= require 'spark'
-    @spark.login { accessToken: @SettingsHelper.get('access_token') }
+    @spark.login
+      accessToken: @SettingsHelper.get('access_token')
 
+    if @SettingsHelper.getApiUrl()
+      @spark.api.baseUrl = @SettingsHelper.getApiUrl()
     callback()
 
   # "Decorator" which runs callback only when user is logged in and has core selected
@@ -354,6 +357,14 @@ module.exports =
     , (e) =>
       console.error e
 
+  getCurrentPlatform: ->
+    currentPlatform = 'core'
+    if @SettingsHelper.hasCurrentCore()
+      switch @SettingsHelper.getLocal('current_core_platform')
+        when 6 then currentPlatform = 'photon'
+
+    currentPlatform
+
   # Show login dialog
   login: ->
     @initView 'login'
@@ -472,7 +483,12 @@ module.exports =
       atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
       return
 
-    @compileCloudPromise = @spark.compileCode files
+    options = {}
+    if @SettingsHelper.hasCurrentCore()
+      options.deviceID = @SettingsHelper.getLocal('current_core')
+    currentPlatform = @getCurrentPlatform()
+
+    @compileCloudPromise = @spark.compileCode files, options
     @compileCloudPromise.done (e) =>
       if !e
         return
@@ -485,11 +501,11 @@ module.exports =
           # Remove old firmwares
           files = fs.listSync rootPath
           for file in files
-            if _s.startsWith(path.basename(file), 'firmware') and _s.endsWith(file, '.bin')
+            if _s.startsWith(path.basename(file), currentPlatform + '_firmware') and _s.endsWith(file, '.bin')
               if fs.existsSync file
                 fs.unlinkSync file
 
-        filename = 'firmware_' + (new Date()).getTime() + '.bin';
+        filename = currentPlatform + '_firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
         @downloadBinaryPromise.done (e) =>
@@ -532,12 +548,15 @@ module.exports =
   flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>
     fs ?= require 'fs-plus'
     path ?= require 'path'
+    _s ?= require 'underscore.string'
     utilities ?= require './vendor/utilities'
 
+    currentPlatform = @getCurrentPlatform()
     rootPath = atom.project.getPaths()[0]
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
-      return (utilities.getFilenameExt(file).toLowerCase() == '.bin')
+      return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
+             (_s.startsWith(path.basename(file), currentPlatform))
 
     if files.length == 0
       # If no firmware file, compile
