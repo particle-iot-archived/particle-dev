@@ -41,7 +41,7 @@ describe 'Select Wifi View', ->
       SettingsHelper.clearCredentials()
       selectWifiView.hide()
 
-    it 'test listing networks on Darwin', ->
+    xit 'test listing networks on Darwin', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       process.platform = 'darwin'
@@ -117,7 +117,7 @@ lastAssocStatus: 0\n\
         SettingsHelper.clearCredentials()
         selectWifiView.hide()
 
-    it 'test listing networks on Windows', ->
+    xit 'test listing networks on Windows', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       sparkIde.selectWifiView = null
       sparkIde.initView 'select-wifi'
@@ -177,7 +177,6 @@ lastAssocStatus: 0\n\
 
     it 'tests selecting item', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      spyOn selectWifiView, 'listNetworksDarwin'
 
       selectWifiView.show()
 
@@ -190,6 +189,5 @@ lastAssocStatus: 0\n\
         expect(sparkIde.emitter.emit).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', { port: null})
 
         jasmine.unspy sparkIde.emitter, 'emit'
-        jasmine.unspy selectWifiView, 'listNetworksDarwin'
         SettingsHelper.clearCredentials()
         selectWifiView.hide()

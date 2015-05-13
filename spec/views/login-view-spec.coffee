@@ -28,33 +28,14 @@ describe 'Login View', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-    atom.commands.dispatch workspaceElement, 'spark-dev:cancel-login'
-
-  describe 'tests hiding and showing', ->
-    it 'checks command hooks', ->
-      spyOn(loginView.panel, 'show').andCallThrough()
-      loginView.show()
-      expect(loginView.panel.show).toHaveBeenCalled()
-
-      spyOn(atom.commands, 'dispatch').andCallThrough()
-      atom.commands.dispatch workspaceElement, 'core:cancel'
-      expect(atom.commands.dispatch).toHaveBeenCalled()
-      expect(atom.commands.dispatch).toHaveBeenCalledWith workspaceElement, 'spark-dev:cancel-login'
-
-      # atom.commands.dispatch.reset()
-      # atom.commands.dispatch workspaceElement, 'core:close'
-      # expect(atom.commands.dispatch).toHaveBeenCalled()
-      # expect(atom.commands.dispatch).toHaveBeenCalledWith workspaceElement, 'spark-dev:cancel-login'
-
-      jasmine.unspy atom.commands, 'dispatch'
-      loginView.hide()
-
   describe 'when Login View is activated', ->
     beforeEach ->
+      spyOn atom.commands, 'dispatch'
       loginView.show()
 
     afterEach ->
       loginView.hide()
+      jasmine.unspy atom.commands, 'dispatch'
 
     it 'tests empty values', ->
       context = $(loginView.element)
@@ -65,6 +46,7 @@ describe 'Login View', ->
 
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(true)
+      expect(atom.commands.dispatch).not.toHaveBeenCalled()
 
 
     it 'tests invalid values', ->
@@ -78,6 +60,7 @@ describe 'Login View', ->
 
       expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(true)
+      expect(atom.commands.dispatch).not.toHaveBeenCalled()
 
 
     it 'tests valid values', ->
@@ -101,6 +84,7 @@ describe 'Login View', ->
         expect(context.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
         expect(context.find('.editor:eq(1)').hasClass('editor-error')).toBe(false)
         expect(loginView.spinner.hasClass('hidden')).toBe(true)
+        expect(atom.commands.dispatch).toHaveBeenCalled()
 
         expect(SettingsHelper.get('username')).toEqual('foo@bar.baz')
         expect(SettingsHelper.get('access_token')).toEqual('0123456789abcdef0123456789abcdef')

@@ -43,6 +43,7 @@ describe 'Select Core View', ->
       runs ->
         devices = selectCoreView.find('ol.list-group li')
         expect(devices.length).toEqual(3)
+
         expect(devices.eq(0).find('.primary-line').hasClass('core-online')).toEqual(true)
         expect(devices.eq(1).find('.primary-line').hasClass('core-offline')).toEqual(true)
         expect(devices.eq(2).find('.primary-line').hasClass('core-offline')).toEqual(true)
@@ -67,14 +68,14 @@ describe 'Select Core View', ->
 
       runs ->
         spyOn SettingsHelper, 'setCurrentCore'
-        spyOn(atom.commands, 'dispatch').andCallThrough()
+        spyOn atom.commands, 'dispatch'
         devices = selectCoreView.find('ol.list-group li')
         devices.eq(0).addClass 'selected'
 
-        atom.commands.dispatch selectCoreView.element, 'core:confirm'
+        selectCoreView.confirmed selectCoreView.items[0]
 
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
-        expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('51ff6e065067545724680187', 'Online Core')
+        expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('51ff6e065067545724680187', 'Online Core', 0)
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
 

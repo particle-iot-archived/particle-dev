@@ -65,6 +65,7 @@ class ClaimCoreView extends DialogView
       , (e) =>
         @setLoading false
         # Show error
+        return
         @miniEditor.setEnabled true
 
         if e.code == 'ENOTFOUND'

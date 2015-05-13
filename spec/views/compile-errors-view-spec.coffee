@@ -17,22 +17,6 @@ describe 'Compile Errors View', ->
     waitsForPromise ->
       activationPromise
 
-  describe 'tests hiding and showing', ->
-    it 'checks command hooks', ->
-      compileErrorsView.show()
-
-      spyOn(compileErrorsView, 'hide').andCallThrough()
-      atom.commands.dispatch workspaceElement, 'core:cancel'
-      expect(compileErrorsView.hide).toHaveBeenCalled()
-
-      # compileErrorsView.show()
-      # compileErrorsView.hide.reset()
-      # atom.commands.dispatch workspaceElement, 'core:close'
-      # expect(compileErrorsView.hide).toHaveBeenCalled()
-
-      jasmine.unspy compileErrorsView, 'hide'
-      compileErrorsView.hide()
-
   describe '', ->
     it 'tests showing without errors', ->
       compileErrorsView.show()
@@ -90,7 +74,6 @@ describe 'Compile Errors View', ->
       )
       expect(editorSpy).toHaveBeenCalled()
       expect(editorSpy).toHaveBeenCalledWith([0, 1])
-      expect(compileErrorsView.cancel).toHaveBeenCalled()
 
       jasmine.unspy compileErrorsView, 'cancel'
       jasmine.unspy atom.workspace, 'open'

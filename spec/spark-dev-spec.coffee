@@ -186,7 +186,7 @@ describe 'Main Tests', ->
       require 'serialport'
       require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
 
-      spyOn SerialHelper, 'askForCoreID'
+      spyOn(SerialHelper, 'askForCoreID').andCallThrough()
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       sparkIde.identifyCore()
@@ -293,7 +293,7 @@ describe 'Main Tests', ->
       runs ->
         compileStatus = SettingsHelper.getLocal 'compile-status'
         expect(compileStatus.filename).not.toBeUndefined()
-        expect(_s.startsWith(compileStatus.filename, 'firmware')).toBe(true)
+        expect(_s.startsWith(compileStatus.filename, 'core_firmware')).toBe(true)
         expect(_s.endsWith(compileStatus.filename, '.bin')).toBe(true)
         expect(atom.commands.dispatch).toHaveBeenCalled()
         expect(atom.commands.dispatch.calls.length).toEqual(2)
@@ -303,7 +303,7 @@ describe 'Main Tests', ->
         # Test leaving old firmwares
         @originalDeleteOldFirmwareAfterCompile = atom.config.get 'spark-dev.deleteOldFirmwareAfterCompile'
         atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', false
-        fs.openSync atom.project.getPaths()[0] + '/firmware_123.bin', 'w'
+        fs.openSync atom.project.getPaths()[0] + '/core_firmware_123.bin', 'w'
         sparkIde.compileCloud()
 
       waitsFor ->
@@ -313,7 +313,7 @@ describe 'Main Tests', ->
         !sparkIde.downloadBinaryPromise
 
       runs ->
-        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware_123.bin')).toBe(true)
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware_123.bin')).toBe(true)
 
         # Test leaving only latest firmware
         atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', true
@@ -326,7 +326,7 @@ describe 'Main Tests', ->
         !sparkIde.downloadBinaryPromise
 
       runs ->
-        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware_123.bin')).toBe(false)
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware_123.bin')).toBe(false)
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
@@ -421,7 +421,7 @@ describe 'Main Tests', ->
       atom.config.set 'spark-dev.deleteFirmwareAfterFlash', false
 
       atom.config.get('spark-dev.deleteFirmwareAfterFlash')
-      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/core_firmware.bin', 'w'
       spyOn sparkIde.statusView, 'setStatus'
       spyOn sparkIde.statusView, 'clearAfter'
       SparkStub.stubSuccess spark, 'flashCore'
@@ -441,7 +441,7 @@ describe 'Main Tests', ->
         # Test removing firmware
         atom.config.set 'spark-dev.deleteFirmwareAfterFlash', false
         sparkIde.flashCloud()
-        expect(fs.existsSync(atom.project.getPaths()[0] + '/firmware.bin')).toBe(true)
+        expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware.bin')).toBe(true)
 
         jasmine.unspy sparkIde.statusView, 'clearAfter'
         jasmine.unspy sparkIde.statusView, 'setStatus'
@@ -453,13 +453,13 @@ describe 'Main Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       atom.config.set 'spark-dev.deleteFirmwareAfterFlash', true
-      firmwarePath = atom.project.getPaths()[0] + '/firmware.bin'
+      firmwarePath = atom.project.getPaths()[0] + '/core_firmware.bin'
       SparkStub.stubSuccess spark, 'flashCore'
       fs.openSync firmwarePath, 'w'
 
-      sparkIde.flashCloud 'firmware.bin'
+      sparkIde.flashCloud 'core_firmware.bin'
       expect(sparkIde.spark.flashCore).toHaveBeenCalled()
-      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['firmware.bin'])
+      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['core_firmware.bin'])
 
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
@@ -469,8 +469,8 @@ describe 'Main Tests', ->
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       SparkStub.stubSuccess spark, 'flashCore'
 
-      fs.openSync atom.project.getPaths()[0] + '/firmware.bin', 'w'
-      fs.openSync atom.project.getPaths()[0] + '/firmware2.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/core_firmware.bin', 'w'
+      fs.openSync atom.project.getPaths()[0] + '/core_firmware2.bin', 'w'
 
       sparkIde.initView 'select-firmware'
       spyOn sparkIde.selectFirmwareView, 'setItems'
@@ -479,13 +479,13 @@ describe 'Main Tests', ->
       sparkIde.flashCloud()
       expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalled()
       expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalledWith([
-          atom.project.getPaths()[0] + '/firmware2.bin',
-          atom.project.getPaths()[0] + '/firmware.bin'
+          atom.project.getPaths()[0] + '/core_firmware2.bin',
+          atom.project.getPaths()[0] + '/core_firmware.bin'
         ])
       expect(sparkIde.selectFirmwareView.show).toHaveBeenCalled()
 
-      fs.unlinkSync atom.project.getPaths()[0] + '/firmware.bin'
-      fs.unlinkSync atom.project.getPaths()[0] + '/firmware2.bin'
+      fs.unlinkSync atom.project.getPaths()[0] + '/core_firmware.bin'
+      fs.unlinkSync atom.project.getPaths()[0] + '/core_firmware2.bin'
       jasmine.unspy sparkIde.selectFirmwareView, 'setItems'
       jasmine.unspy sparkIde.selectFirmwareView, 'show'
       SettingsHelper.clearCurrentCore()
@@ -494,13 +494,13 @@ describe 'Main Tests', ->
     it 'tests showing error for offline core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      firmwarePath = atom.project.getPaths()[0] + '/firmware.bin'
+      firmwarePath = atom.project.getPaths()[0] + '/core_firmware.bin'
       fs.openSync firmwarePath, 'w'
 
       SparkStub.stubOffline spark, 'flashCore'
       spyOn sparkIde.statusView, 'setStatus'
 
-      sparkIde.flashCloud 'firmware.bin'
+      sparkIde.flashCloud 'core_firmware.bin'
 
       waitsFor ->
         !sparkIde.flashCorePromise

@@ -62,20 +62,19 @@ describe 'Claim Core View', ->
 
       editor = claimCoreView.miniEditor.editor.getModel()
 
-      editor.setText '0123456789abcdef0123456789abcdef'
       spyOn claimCoreView, 'close'
-      spyOn(atom.commands, 'dispatch').andCallThrough()
+      spyOn atom.commands, 'dispatch'
       spyOn SettingsHelper, 'setCurrentCore'
-      atom.commands.dispatch claimCoreView.miniEditor.element, 'core:confirm'
+      claimCoreView.onConfirm '0123456789abcdef0123456789abcdef'
 
       waitsFor ->
         !claimCoreView.claimPromise
 
       runs ->
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
-        expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null)
+        expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null, 0)
         expect(atom.commands.dispatch).toHaveBeenCalled()
-        expect(atom.commands.dispatch.calls.length).toEqual(4)
+        expect(atom.commands.dispatch.calls.length).toEqual(2)
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
         expect(claimCoreView.close).toHaveBeenCalled()

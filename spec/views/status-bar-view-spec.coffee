@@ -2,7 +2,7 @@ SettingsHelper = require '../../lib/utils/settings-helper'
 SparkStub = require('spark-dev-spec-stubs').spark
 spark = require 'spark'
 
-describe 'Status Bar Tests', ->
+xdescribe 'Status Bar Tests', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null

@@ -52,9 +52,9 @@ class SelectCoreView extends SelectView
     @listDevicesPromise.done (e) =>
       e.sort (a, b) =>
         if !a.name
-          a.name = ''
+          a.name = 'Unnamed'
         if !b.name
-          b.name = ''
+          b.name = 'Unnamed'
         order = (b.connected - a.connected) * 1000
         if a.name.toLowerCase() < b.name.toLowerCase()
           order -= 1

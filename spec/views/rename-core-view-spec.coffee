@@ -29,12 +29,14 @@ describe 'Rename Core View', ->
 
   describe '', ->
     beforeEach ->
+      spyOn atom.commands, 'dispatch'
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
 
     afterEach ->
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
+      jasmine.unspy atom.commands, 'dispatch'
 
     it 'checks if empty name would cause an error', ->
       renameCoreView = new RenameCoreView('Foo')
@@ -43,10 +45,9 @@ describe 'Rename Core View', ->
       editor = renameCoreView.miniEditor.editor.getModel()
       expect(editor.getText()).toBe('Foo')
 
-      editor.setText ''
       spyOn renameCoreView, 'close'
       expect(renameCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(false)
-      atom.commands.dispatch renameCoreView.miniEditor.editor.element, 'core:confirm'
+      renameCoreView.onConfirm ''
       expect(renameCoreView.find('.editor:eq(0)').hasClass('editor-error')).toBe(true)
       expect(renameCoreView.close).not.toHaveBeenCalled()
 
@@ -60,10 +61,8 @@ describe 'Rename Core View', ->
 
       editor = renameCoreView.miniEditor.editor.getModel()
 
-      editor.setText 'Bar'
-      spyOn(atom.commands, 'dispatch').andCallThrough()
       spyOn renameCoreView, 'close'
-      atom.commands.dispatch renameCoreView.miniEditor.editor.element, 'core:confirm'
+      renameCoreView.onConfirm 'Bar'
 
       waitsFor ->
         !renameCoreView.renamePromise
@@ -71,13 +70,12 @@ describe 'Rename Core View', ->
       runs ->
         expect(SettingsHelper.getLocal('current_core_name')).toBe('Bar')
         expect(atom.commands.dispatch).toHaveBeenCalled()
-        expect(atom.commands.dispatch.calls.length).toEqual(4)
+        expect(atom.commands.dispatch.calls.length).toEqual(2)
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
         expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
         expect(renameCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy renameCoreView, 'close'
-        jasmine.unspy atom.commands, 'dispatch'
         renameCoreView.close()
 
     it 'checks null core name', ->

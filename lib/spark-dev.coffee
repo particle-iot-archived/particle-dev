@@ -235,6 +235,7 @@ module.exports =
 
     if @SettingsHelper.getApiUrl()
       @spark.api.baseUrl = @SettingsHelper.getApiUrl()
+
     callback()
 
   # "Decorator" which runs callback only when user is logged in and has core selected
