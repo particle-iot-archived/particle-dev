@@ -27,7 +27,7 @@ describe 'MenuManager tests', ->
       expect(ideMenu.submenu.length).toBe(3)
       idx = 0
 
-      expect(ideMenu.submenu[idx].label).toBe('Log in to Spark Cloud...')
+      expect(ideMenu.submenu[idx].label).toBe('Log in to Particle Cloud...')
       expect(ideMenu.submenu[idx++].command).toBe('spark-dev:login')
 
       expect(ideMenu.submenu[idx++].type).toBe('separator')

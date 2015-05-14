@@ -5,7 +5,7 @@
    # open.
    updateWindowTitle: =>
 -    appName = 'Atom'
-+    appName = 'Spark Dev'
++    appName = 'Particle Dev'
      projectPaths = atom.project?.getPaths() ? []
      if item = @getActivePaneItem()
        itemPath = item.getPath?()

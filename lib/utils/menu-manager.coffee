@@ -4,7 +4,7 @@ module.exports =
   # Get root menu
   getMenu: ->
     devMenu = atom.menu.template.filter (value) ->
-      value.label == 'Spark'
+      value.label == 'Particle'
 
     devMenu[0]
 
@@ -65,7 +65,7 @@ module.exports =
     else
       # Logged out user can only log in
       devMenu.submenu = [{
-        label: 'Log in to Spark Cloud...',
+        label: 'Log in to Particle Cloud...',
         command: 'spark-dev:login'
       }]
 

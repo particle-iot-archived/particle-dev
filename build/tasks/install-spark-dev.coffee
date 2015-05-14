@@ -11,7 +11,7 @@ module.exports = (grunt) ->
     done = @async()
     workDir = grunt.config.get('workDir')
 
-    tarballUrl = 'https://github.com/spark/spark-dev/archive/v' + grunt.config.get('sparkDevVersion') + '.tar.gz'
+    tarballUrl = 'https://github.com/spark/spark-dev/archive/v' + grunt.config.get('particleDevVersion') + '.tar.gz'
     tarballPath = path.join(workDir, 'sparkdev.tar.gz')
     sparkDevPath = path.join(workDir, 'node_modules', 'spark-dev')
     r = request(tarballUrl)
@@ -31,7 +31,7 @@ module.exports = (grunt) ->
         # Build serialport
         packageJson = path.join(workDir, 'package.json')
         packages = JSON.parse(fs.readFileSync(packageJson))
-        packages.version = grunt.config.get('sparkDevVersion')
+        packages.version = grunt.config.get('particleDevVersion')
         process.chdir(sparkDevPath);
         env = process.env
         env['ATOM_NODE_VERSION'] = packages.atomShellVersion
@@ -47,7 +47,7 @@ module.exports = (grunt) ->
 
         verbose = if !grunt.option('verbose') then '' else ' --verbose'
         cp.safeExec command + ' install' + verbose, options, ->
-          packages.packageDependencies['spark-dev'] = grunt.config.get('sparkDevVersion')
+          packages.packageDependencies['spark-dev'] = grunt.config.get('particleDevVersion')
           fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
           done()
 

@@ -12,13 +12,13 @@ module.exports = (grunt) ->
     if process.platform is 'darwin'
       command = 'ditto -ck --rsrc --sequesterRsrc --keepParent ' +
                 '"' + installDir + '" ' +
-                '"' + path.dirname(installDir) + path.sep + 'spark-dev-mac.zip"'
+                '"' + path.dirname(installDir) + path.sep + 'particle-dev-mac.zip"'
       console.log command
       cp.safeExec command, ->
         done()
 
     else if process.platform is 'win32'
-      outFile = path.join(path.dirname(installDir), 'spark-dev-windows.exe')
+      outFile = path.join(path.dirname(installDir), 'particle-dev-windows.exe')
       installerFile = path.join('resources', 'installer.nsi')
       command = 'makensis /DSOURCE="' + installDir +
                   '" /DOUT_FILE="' + outFile + '" ' +

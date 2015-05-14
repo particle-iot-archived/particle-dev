@@ -153,7 +153,7 @@ class StatusBarView extends View
       @currentCoreTile.removeClass 'hidden'
       @updateCoreStatus()
     else
-      loginButton = $('<a/>').text('Click to log in to Spark Cloud...')
+      loginButton = $('<a/>').text('Click to log in to Particle Cloud...')
       @loginStatusTile.append loginButton
       loginButton.on 'click', =>
         atom.commands.dispatch @workspaceElement, 'spark-dev:login'

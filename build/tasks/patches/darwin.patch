@@ -4,10 +4,10 @@
  'menu': [
    {
 -    label: 'Atom'
-+    label: 'Spark Dev'
++    label: 'Particle Dev'
      submenu: [
 -      { label: 'About Atom', command: 'application:about' }
-+      { label: 'About Spark Dev', command: 'application:about' }
++      { label: 'About Particle Dev', command: 'application:about' }
        { label: 'View License', command: 'application:open-license' }
        { label: 'VERSION', enabled: false }
        { label: 'Restart and Install Update', command: 'application:install-update', visible: false}
@@ -16,7 +16,7 @@
        { label: 'Services', submenu: [] }
        { type: 'separator' }
 -      { label: 'Hide Atom', command: 'application:hide' }
-+      { label: 'Hide Spark Dev', command: 'application:hide' }
++      { label: 'Hide Particle Dev', command: 'application:hide' }
        { label: 'Hide Others', command: 'application:hide-other-applications' }
        { label: 'Show All', command: 'application:unhide-all-applications' }
        { type: 'separator' }
@@ -25,7 +25,7 @@
          submenu: [
            { label: 'Open In Dev Mode...', command: 'application:open-dev' }
 -          { label: 'Run Atom Specs', command: 'application:run-all-specs' }
-+          { label: 'Run Spark Dev Specs', command: 'application:run-all-specs' }
++          { label: 'Run Particle Dev Specs', command: 'application:run-all-specs' }
            { label: 'Run Package Specs', command: 'window:run-package-specs' }
            { label: 'Toggle Developer Tools', command: 'window:toggle-dev-tools' }
          ]

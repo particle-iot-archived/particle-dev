@@ -3,9 +3,9 @@
 @@ -69,7 +69,7 @@
  setupAtomHome = ->
    return if process.env.ATOM_HOME
- 
+
 -  atomHome = path.join(app.getHomeDir(), '.atom')
-+  atomHome = path.join(app.getHomeDir(), '.sparkdev')
++  atomHome = path.join(app.getHomeDir(), '.particledev')
    try
      atomHome = fs.realpathSync(atomHome)
    process.env.ATOM_HOME = atomHome

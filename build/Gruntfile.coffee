@@ -25,7 +25,7 @@ module.exports = (grunt) ->
     cp = require 'child_process'
     cp.exec 'open ' + workDir
 
-  appName = 'Spark Dev'
+  appName = 'Particle Dev'
   installDir = path.join(__dirname, '..', 'dist', process.platform, appName)
   if process.platform is 'darwin'
     installDir += '.app'
@@ -41,22 +41,22 @@ module.exports = (grunt) ->
   grunt.log.writeln '(i) Atom version is ' + atomVersion
 
   # Get Spark Dev version from options/latest tag
-  if !!grunt.option('sparkDevVersion')
-    sparkDevVersion = grunt.option('sparkDevVersion')
+  if !!grunt.option('particleDevVersion')
+    particleDevVersion = grunt.option('particleDevVersion')
   else
     request = require 'sync-request'
     response = request 'get', 'https://api.github.com/repos/spark/spark-dev/releases',
       headers:
-        'User-Agent': 'Spark Dev build script'
+        'User-Agent': 'Particle Dev build script'
 
     releases = JSON.parse response.getBody()
-    sparkDevVersion = releases[0].tag_name.substring(1)
-  grunt.log.writeln '(i) Spark Dev version is ' + sparkDevVersion
+    particleDevVersion = releases[0].tag_name.substring(1)
+  grunt.log.writeln '(i) Particle Dev version is ' + particleDevVersion
 
   grunt.initConfig
     workDir: workDir
     atomVersion: atomVersion
-    sparkDevVersion: sparkDevVersion
+    particleDevVersion: particleDevVersion
     appName: appName
     installDir: installDir
 

@@ -13,7 +13,7 @@ class LoginView extends View
   @content: ->
     @div id: 'spark-dev-login-view', =>
       @div class: 'block', =>
-        @span 'Log in to Spark Cloud '
+        @span 'Log in to Particle Cloud '
         @span class: 'text-subtle', =>
           @text 'Close this dialog with the '
           @span class: 'highlight', 'esc'
