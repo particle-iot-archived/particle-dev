@@ -25,6 +25,6 @@ class SelectFirmwareView extends SelectView
         @div class: 'secondary-line', stats.ctime.toLocaleString()
 
   confirmed: (item) ->
-    hide()
+    @hide()
     atom.sparkDev.emitter.emit 'spark-dev:flash-cloud',
       firmware: item
