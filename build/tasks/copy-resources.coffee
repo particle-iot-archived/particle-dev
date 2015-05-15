@@ -12,6 +12,7 @@ module.exports = (grunt) ->
     workDir = grunt.config.get 'workDir'
 
     copyResource 'atom.png', 'resources/atom.png'
+    copyResource 'config.cson', 'dot-atom/config.cson'
 
     if process.platform is 'darwin'
       copyResource 'sparkdev.icns', 'resources/mac/atom.icns'
