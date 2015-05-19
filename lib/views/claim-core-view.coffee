@@ -58,6 +58,8 @@ class ClaimCoreView extends DialogView
         else
           @miniEditor.setEnabled true
           @miniEditor.editor.addClass 'editor-error'
+          if e.errors.length == 2
+            delete e.errors[1]
           @showError e.errors
 
           @claimPromise = null
