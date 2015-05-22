@@ -462,9 +462,6 @@ module.exports =
     if !!@compileCloudPromise
       return
 
-    @SettingsHelper.setLocal 'compile-status', {working: true}
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
-
     # Including files
     fs ?= require 'fs-plus'
     path ?= require 'path'
@@ -476,6 +473,14 @@ module.exports =
     files = @processDirIncludes rootPath
     process.chdir rootPath
     files = (path.relative(rootPath, file) for file in files)
+
+    if files.length == 0
+      @statusView.setStatus 'No .ino/.cpp file to compile', 'warning'
+      @statusView.clearAfter 5000
+      return
+
+    @SettingsHelper.setLocal 'compile-status', {working: true}
+    atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
 
     invalidFiles = files.filter (file) ->
       path.basename(file).indexOf(' ') > -1
