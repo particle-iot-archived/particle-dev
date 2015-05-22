@@ -366,6 +366,12 @@ module.exports =
 
     currentPlatform
 
+  requestErrorHandler: (error) ->
+    if error.message == 'invalid_token'
+      @statusView.setStatus 'Token expired. Log in again', 'error'
+      @statusView.clearAfter 5000
+      @logout()
+
   # Show login dialog
   login: ->
     @initView 'login'
@@ -384,6 +390,9 @@ module.exports =
   # Show user's cores list
   selectCore: -> @loginRequired =>
     @initView 'select-core'
+    @selectCoreView.spark ?= @spark
+    @selectCoreView.requestErrorHandler = (error) =>
+      @requestErrorHandler error
 
     @selectCoreView.show()
 
@@ -412,6 +421,7 @@ module.exports =
         @removePromise = null
       , (e) =>
         @removePromise = null
+        @requestErrorHandler e
         if e.code == 'ENOTFOUND'
           message = 'Error while connecting to ' + e.hostname
         else
@@ -520,7 +530,7 @@ module.exports =
           else
             @downloadBinaryPromise = null
         , (e) =>
-          console.error e
+          @requestErrorHandler e
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
@@ -535,7 +545,7 @@ module.exports =
         atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
         @compileCloudPromise = null
     , (e) =>
-      console.error e
+      @requestErrorHandler e
       @SettingsHelper.setLocal 'compile-status', null
       atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
 
@@ -584,6 +594,7 @@ module.exports =
 
         @flashCorePromise = null
       , (e) =>
+        @requestErrorHandler e
         if e.code == 'ECONNRESET'
           @statusView.setStatus 'Device seems to be offline', 'error'
         else

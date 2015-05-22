@@ -15,6 +15,8 @@ class SelectCoreView extends SelectView
 
     @prop 'id', 'spark-dev-select-core-view'
     @listDevicesPromise = null
+    @spark = null
+    @requestErrorHandler = null
 
   show: =>
     @setItems []
@@ -45,10 +47,7 @@ class SelectCoreView extends SelectView
     'name'
 
   loadCores: ->
-    spark ?= require 'spark'
-    spark.login { accessToken: SettingsHelper.get('access_token') }
-
-    @listDevicesPromise = spark.listDevices()
+    @listDevicesPromise = @spark.listDevices()
     @listDevicesPromise.done (e) =>
       e.sort (a, b) =>
         if !a.name
@@ -67,3 +66,4 @@ class SelectCoreView extends SelectView
     , (e) =>
       # TODO: Error handling
       @listDevicesPromise = null
+      @requestErrorHandler e

@@ -17,6 +17,10 @@ describe 'Select Core View', ->
       SparkStub.stubSuccess spark, 'listDevices'
       sparkIde.initView 'select-core'
       selectCoreView = sparkIde.selectCoreView
+      selectCoreView.spark = require 'spark'
+      selectCoreView.spark.login
+        accessToken: '0123456789abcdef0123456789abcdef'
+      selectCoreView.requestErrorHandler = ->
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
