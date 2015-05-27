@@ -20,4 +20,4 @@ Particle Dev for Windows does not currently automatically update when a new rele
 
 ## Using
 
-See [our documentation](http://docs.particle.io/dev) to learn about how to use Particle Dev for software development.
+See [our documentation](http://docs.particle.io/core/dev) to learn about how to use Particle Dev for software development.
