@@ -7,6 +7,8 @@ cp = require '../../script/utils/child-process-wrapper.js'
 workDir = null
 
 module.exports = (grunt) ->
+  {injectPackage, injectDependency} = require('./task-helpers')(grunt)
+
   grunt.registerTask 'install-spark-dev', 'Installs Spark Dev package', ->
     done = @async()
     workDir = grunt.config.get('workDir')
@@ -31,7 +33,6 @@ module.exports = (grunt) ->
         # Build serialport
         packageJson = path.join(workDir, 'package.json')
         packages = JSON.parse(fs.readFileSync(packageJson))
-        packages.version = grunt.config.get('particleDevVersion')
         process.chdir(sparkDevPath);
         env = process.env
         env['ATOM_NODE_VERSION'] = packages.atomShellVersion
@@ -47,8 +48,7 @@ module.exports = (grunt) ->
 
         verbose = if !grunt.option('verbose') then '' else ' --verbose'
         cp.safeExec command + ' install' + verbose, options, ->
-          packages.packageDependencies['spark-dev'] = grunt.config.get('particleDevVersion')
-          fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
+          injectPackage 'spark-dev', grunt.config.get('particleDevVersion')
           done()
 
     r.pipe(fs.createWriteStream(tarballPath))

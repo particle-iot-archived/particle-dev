@@ -14,7 +14,7 @@ module.exports = (grunt) ->
     injectPackage 'maximize-panes', '0.1.0'
     injectPackage 'move-panes', '0.1.2'
     injectPackage 'swap-panes', '0.1.0'
-    injectPackage 'tool-bar', '0.1.6'
+    injectPackage 'tool-bar', '0.1.7'
     injectPackage 'tool-bar-main', '0.0.8'
     injectPackage 'monokai', '0.14.0'
     injectPackage 'welcome'

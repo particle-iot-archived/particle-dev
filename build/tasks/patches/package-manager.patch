@@ -1,0 +1,11 @@
+--- package-manager.coffee.orig	2015-06-09 13:33:14.000000000 +0100
++++ package-manager.coffee	2015-06-09 16:23:23.000000000 +0100
+@@ -64,7 +64,7 @@
+       loadThemes = false
+ 
+     args = ['featured', '--json']
+-    version = atom.getVersion()
++    version = '0.207.0'
+     args.push('--themes') if loadThemes
+     args.push('--compatible', version) if semver.valid(version)
+     errorMessage = 'Fetching featured packages failed.'

@@ -11,9 +11,10 @@ installPackage = (owner, name, version, callback) ->
   tarballPath = path.join(workDir, 'name.tar.gz')
   r = request(tarballUrl)
   r.on 'end', ->
+    destination = path.join(workDir, 'node_modules', name)
     decompress = new Decompress()
     decompress.src tarballPath
-    decompress.dest path.join(workDir, 'node_modules', name)
+    decompress.dest destination
     decompress.use(Decompress.targz({ strip: 1 }))
     decompress.run (error) ->
       if error
@@ -21,6 +22,12 @@ installPackage = (owner, name, version, callback) ->
 
       fs.unlinkSync tarballPath
       injectPackage name, version
+
+      # set readme field
+      packageJson = path.join(destination, 'package.json')
+      packages = JSON.parse(fs.readFileSync(packageJson))
+      packages.readme = 'ERROR: No README data found!'
+      fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
 
       options =
         cwd: path.join(workDir, 'node_modules', name)

@@ -1,6 +1,6 @@
---- atom.coffee.orig	2015-04-28 13:24:33.000000000 +0100
-+++ atom.coffee	2015-04-28 13:24:47.000000000 +0100
-@@ -578,12 +578,6 @@
+--- atom.coffee.orig	2015-06-09 13:12:20.000000000 +0100
++++ atom.coffee	2015-06-09 16:18:43.000000000 +0100
+@@ -590,12 +590,6 @@
    startEditorWindow: ->
      {safeMode} = @getLoadSettings()
  
@@ -10,6 +10,6 @@
 -    CommandInstaller.installApmCommand false, (error) ->
 -      console.warn error.message if error?
 -
-     dimensions = @restoreWindowDimensions()
      @loadConfig()
      @keymaps.loadBundledKeymaps()
+     @themes.loadBaseStylesheets()
