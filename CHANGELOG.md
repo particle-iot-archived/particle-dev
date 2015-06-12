@@ -1,3 +1,25 @@
+## 0.0.25
+* Fixed [#80](https://github.com/spark/spark-dev/issues/80)
+
+## 0.0.24
+* Fixed [#72](https://github.com/spark/spark-dev/issues/72)
+* Fixed [#76](https://github.com/spark/spark-dev/issues/76)
+* Fixed [#81](https://github.com/spark/spark-dev/issues/81)
+* Fixed [#85](https://github.com/spark/spark-dev/issues/85)
+
+## 0.0.23
+* Support for the Photon
+* Fixed [#84](https://github.com/spark/spark-dev/issues/84)
+* Fixed [#83](https://github.com/spark/spark-dev/issues/83)
+* Fixed [#82](https://github.com/spark/spark-dev/issues/82)
+* Fixed [#64](https://github.com/spark/spark-dev/issues/64)
+
+## 0.0.22
+* Fixed clipped status bar
+* Fixed error when flashed multiple times in a row
+* Fixes errors list
+* Fixed Windows installer (Module version mismatch error)
+
 ## 0.0.21
 * Updated Atom to 0.187.0
 * Fixed [#43](https://github.com/spark/spark-dev/issues/43)
