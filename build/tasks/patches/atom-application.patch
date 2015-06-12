@@ -1,7 +1,7 @@
---- atom-application.coffee.orig	2015-04-28 13:06:24.000000000 +0100
-+++ atom-application.coffee	2015-04-28 13:09:36.000000000 +0100
+--- atom-application.coffee.orig	2015-06-11 15:20:35.000000000 +0100
++++ atom-application.coffee	2015-06-11 15:36:35.000000000 +0100
 @@ -17,9 +17,9 @@
-
+ 
  DefaultSocketPath =
    if process.platform is 'win32'
 -    '\\\\.\\pipe\\atom-sock'
@@ -9,13 +9,26 @@
    else
 -    path.join(os.tmpdir(), "atom-#{process.env.USER}.sock")
 +    path.join(os.tmpdir(), "particledev-#{process.env.USER}.sock")
-
+ 
  # The application's singleton class.
  #
-@@ -167,13 +167,13 @@
+@@ -71,9 +71,10 @@
+     @pidsToOpenWindows = {}
+     @pathsToOpen ?= []
+     @windows = []
++    @particleDevVersion = '#{particleDevVersion}'
+ 
+-    @autoUpdateManager = new AutoUpdateManager(@version, options.test)
+-    @applicationMenu = new ApplicationMenu(@version, @autoUpdateManager)
++    @autoUpdateManager = new AutoUpdateManager(@particleDevVersion, options.test)
++    @applicationMenu = new ApplicationMenu(@particleDevVersion, @autoUpdateManager)
+     @atomProtocolHandler = new AtomProtocolHandler(@resourcePath, @safeMode)
+ 
+     @listenForArgumentsFromNewProcess()
+@@ -178,13 +179,13 @@
        atomWindow ?= @focusedWindow()
        atomWindow?.browserWindow.inspectElement(x, y)
-
+ 
 -    @on 'application:open-documentation', -> require('shell').openExternal('https://atom.io/docs/latest/?app')
 -    @on 'application:open-discussions', -> require('shell').openExternal('https://discuss.atom.io')
 +    @on 'application:open-documentation', -> require('shell').openExternal('http://docs.particle.io/dev/')
@@ -28,6 +41,6 @@
 +    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://www.particle.io/tos')
 +    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues/new')
 +    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues')
-
-     @on 'application:install-update', -> @autoUpdateManager.install()
+ 
+     @on 'application:install-update', => @autoUpdateManager.install()
      @on 'application:check-for-update', => @autoUpdateManager.check()
