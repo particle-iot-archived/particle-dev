@@ -1,4 +1,5 @@
 whenjs = require 'when'
+fs = require 'fs-plus'
 
 describe 'getting current SSID when', ->
 	WifiHelper = null
