@@ -18,6 +18,7 @@ installPackage = (owner, name, version, callback) ->
     decompress.use(Decompress.targz({ strip: 1 }))
     decompress.run (error) ->
       if error
+        console.log 'Error while decompressing archive:', error
         throw error
 
       fs.unlinkSync tarballPath
@@ -33,6 +34,8 @@ installPackage = (owner, name, version, callback) ->
         cwd: path.join(workDir, 'node_modules', name)
       cp.safeExec 'npm install', options, ->
         callback()
+  r.on 'error', (err) ->
+    console.log 'Error while fetching package:', err
 
   r.pipe(fs.createWriteStream(tarballPath))
 
