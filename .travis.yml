@@ -6,7 +6,7 @@ notifications:
 addons:
   artifacts:
     paths:
-      - $(ls "$TRAVIS_BUILD_DIR/dist/darwin/*.zip" | tr "\n" ":")
+      - $(ls dist/darwin/*.zip)
     debug: true
 before_script: ./script/add-key
 script:
