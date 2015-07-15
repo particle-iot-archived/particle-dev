@@ -12,12 +12,12 @@ module.exports = (grunt) ->
     # temp.track()
     if process.platform is 'win32'
       affixes =
-        prefix: 'spark-dev'
+        prefix: 'particle-dev'
         suffix: ''
         dir: process.cwd().split(path.sep)[0]
       workDir = temp.mkdirSync affixes
     else
-      workDir = temp.mkdirSync 'spark-dev'
+      workDir = temp.mkdirSync 'particle-dev'
 
   grunt.log.writeln '(i) Work dir is ' + workDir
 
@@ -40,17 +40,16 @@ module.exports = (grunt) ->
       atomVersion = _s.trim(value)
   grunt.log.writeln '(i) Atom version is ' + atomVersion
 
-  # Get Spark Dev version from options/latest tag
+  # Get Particle Dev version from options/current sources
   if !!grunt.option('particleDevVersion')
     particleDevVersion = grunt.option('particleDevVersion')
+  else if !!process.env.TRAVIS_TAG
+    # Drop the "v" from tag name
+    particleDevVersion = process.env.TRAVIS_TAG.slice(1)
   else
-    request = require 'sync-request'
-    response = request 'get', 'https://api.github.com/repos/spark/spark-dev/releases',
-      headers:
-        'User-Agent': 'Particle Dev build script'
-
-    releases = JSON.parse response.getBody()
-    particleDevVersion = releases[0].tag_name.substring(1)
+    packageJson = path.join(__dirname, '..', 'package.json')
+    packageObject = JSON.parse(fs.readFileSync(packageJson))
+    particleDevVersion = packageObject.version + '-dev'
   grunt.log.writeln '(i) Particle Dev version is ' + particleDevVersion
 
   grunt.initConfig
@@ -71,10 +70,10 @@ module.exports = (grunt) ->
       'bootstrap-atom',
       'copy-resources',
       'install-spark-dev',
+      'patch-code',
     ]
 
   tasks = tasks.concat [
-    'patch-code',
     'build-app',
     'package-app'
   ]

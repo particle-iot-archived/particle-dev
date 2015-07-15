@@ -1,4 +1,5 @@
 #!/bin/sh
+# Based on build-package.sh
 
 source .atomrc
 
