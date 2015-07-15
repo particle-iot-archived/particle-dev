@@ -4,6 +4,7 @@ notifications:
     on_success: never
     on_failure: change
 before_script: ./script/add-key
-script: ./script/run-ci-specs
+script:
+  - ./script/run-ci-specs
+  - ./script/build
 after_script: ./script/remove-key
-after_success: ./script/build
