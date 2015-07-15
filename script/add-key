@@ -2,3 +2,4 @@
 security create-keychain -p $XCODE_KEYCHAIN_PASSWORD $XCODE_KEYCHAIN
 security import ./build/resources/cert.cer -k ~/Library/Keychains/$XCODE_KEYCHAIN -T /usr/bin/codesign
 security import ./build/resources/key.p12 -k ~/Library/Keychains/$XCODE_KEYCHAIN -P $KEY_PASSWORD -T /usr/bin/codesign
+security list-keychains -d user -s login.keychain $XCODE_KEYCHAIN
