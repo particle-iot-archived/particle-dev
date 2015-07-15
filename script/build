@@ -2,11 +2,13 @@
 var cp = require('./utils/child-process-wrapper.js');
 var path = require('path');
 
+var binSuffix = (process.platform === 'win32' ? '.cmd' : '');
+
 process.chdir('build');
 console.log('Bootstrapping build...');
-cp.safeSpawn('npm', ['install'], function(){
+cp.safeSpawn('npm' + binSuffix, ['install'], function(){
 	process.chdir(path.dirname(__dirname));
-	var gruntPath = path.join('build', 'node_modules', '.bin', 'grunt') + (process.platform === 'win32' ? '.cmd' : '');
+	var gruntPath = path.join('build', 'node_modules', '.bin', 'grunt') + binSuffix;
 	var args = ['--gruntfile', path.resolve('build', 'Gruntfile.coffee')];
 	args = args.concat(process.argv.slice(2));
 	console.log('Building using ' + gruntPath);
