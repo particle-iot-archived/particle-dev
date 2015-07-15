@@ -3,6 +3,11 @@ notifications:
   email:
     on_success: never
     on_failure: change
+addons:
+  artifacts:
+    paths:
+      - $(ls "$TRAVIS_BUILD_DIR/dist/darwin/*.zip" | tr "\n" ":")
+    debug: true
 before_script: ./script/add-key
 script:
   - ./script/run-ci-specs
