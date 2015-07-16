@@ -1,5 +1,6 @@
 cp = require '../../script/utils/child-process-wrapper.js'
 path = require 'path'
+fs = require 'fs-extra'
 workDir = null
 
 module.exports = (grunt) ->
@@ -9,11 +10,13 @@ module.exports = (grunt) ->
     process.chdir(path.join(__dirname, '..'))
     installDir = grunt.config.get('installDir')
     particleDevVersion = grunt.config.get('particleDevVersion')
+    outDir = path.join(path.dirname(installDir), 'out')
+    fs.mkdirSync outDir
 
     if process.platform is 'darwin'
       command = 'ditto -ck --rsrc --sequesterRsrc --keepParent ' +
                 '"' + installDir + '" ' +
-                '"' + path.dirname(installDir) + path.sep +
+                '"' + outDir + path.sep +
                 'particle-dev-mac-' + particleDevVersion + '.zip"'
       console.log command
       cp.safeExec command, ->
@@ -21,7 +24,7 @@ module.exports = (grunt) ->
 
     else if process.platform is 'win32'
       outFilename = 'particle-dev-windows-' + particleDevVersion + '.exe'
-      outFile = path.join(path.dirname(installDir), outFilename)
+      outFile = path.join(outDir, outFilename)
       installerFile = path.join('resources', 'installer.nsi')
       command = 'makensis /DSOURCE="' + installDir +
                   '" /DOUT_FILE="' + outFile + '" ' +
