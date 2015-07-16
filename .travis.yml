@@ -11,6 +11,7 @@ deploy:
   bucket: dev.artifacts.particle.io
   local-dir: dist/darwin
   acl: public_read
+  all_branches: true
 before_script: ./script/add-key
 script:
 - ./script/run-ci-specs
