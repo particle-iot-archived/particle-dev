@@ -1,6 +1,6 @@
---- atom-application.coffee.orig	2015-06-11 15:20:35.000000000 +0100
-+++ atom-application.coffee	2015-06-11 15:36:35.000000000 +0100
-@@ -17,9 +17,9 @@
+--- atom-application.coffee.orig	2015-07-20 13:25:42.000000000 +0100
++++ atom-application.coffee	2015-07-20 13:37:47.000000000 +0100
+@@ -19,9 +19,9 @@
  
  DefaultSocketPath =
    if process.platform is 'win32'
@@ -12,7 +12,7 @@
  
  # The application's singleton class.
  #
-@@ -71,9 +71,10 @@
+@@ -73,9 +73,10 @@
      @pidsToOpenWindows = {}
      @pathsToOpen ?= []
      @windows = []
@@ -25,22 +25,22 @@
      @atomProtocolHandler = new AtomProtocolHandler(@resourcePath, @safeMode)
  
      @listenForArgumentsFromNewProcess()
-@@ -178,13 +179,13 @@
+@@ -177,13 +178,13 @@
        atomWindow ?= @focusedWindow()
        atomWindow?.browserWindow.inspectElement(x, y)
  
--    @on 'application:open-documentation', -> require('shell').openExternal('https://atom.io/docs/latest/?app')
--    @on 'application:open-discussions', -> require('shell').openExternal('https://discuss.atom.io')
-+    @on 'application:open-documentation', -> require('shell').openExternal('http://docs.particle.io/dev/')
-+    @on 'application:open-discussions', -> require('shell').openExternal('https://community.particle.io/')
-     @on 'application:open-roadmap', -> require('shell').openExternal('https://atom.io/roadmap?app')
-     @on 'application:open-faq', -> require('shell').openExternal('https://atom.io/faq')
--    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://atom.io/terms')
--    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/atom/atom/blob/master/CONTRIBUTING.md#submitting-issues')
--    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/issues?q=+is%3Aissue+user%3Aatom')
-+    @on 'application:open-terms-of-use', -> require('shell').openExternal('https://www.particle.io/tos')
-+    @on 'application:report-issue', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues/new')
-+    @on 'application:search-issues', -> require('shell').openExternal('https://github.com/spark/spark-dev/issues')
+-    @on 'application:open-documentation', -> shell.openExternal('https://atom.io/docs/latest/?app')
+-    @on 'application:open-discussions', -> shell.openExternal('https://discuss.atom.io')
++    @on 'application:open-documentation', -> shell.openExternal('http://docs.particle.io/photon/dev/')
++    @on 'application:open-discussions', -> shell.openExternal('https://community.particle.io/')
+     @on 'application:open-roadmap', -> shell.openExternal('https://atom.io/roadmap?app')
+     @on 'application:open-faq', -> shell.openExternal('https://atom.io/faq')
+-    @on 'application:open-terms-of-use', -> shell.openExternal('https://atom.io/terms')
+-    @on 'application:report-issue', -> shell.openExternal('https://github.com/atom/atom/blob/master/CONTRIBUTING.md#submitting-issues')
+-    @on 'application:search-issues', -> shell.openExternal('https://github.com/issues?q=+is%3Aissue+user%3Aatom')
++    @on 'application:open-terms-of-use', -> shell.openExternal('https://www.particle.io/tos')
++    @on 'application:report-issue', -> shell.openExternal('https://github.com/spark/spark-dev/issues/new')
++    @on 'application:search-issues', -> shell.openExternal('https://github.com/spark/spark-dev/issues')
  
-     @on 'application:install-update', => @autoUpdateManager.install()
-     @on 'application:check-for-update', => @autoUpdateManager.check()
+     @on 'application:install-update', =>
+       @quitting = true
