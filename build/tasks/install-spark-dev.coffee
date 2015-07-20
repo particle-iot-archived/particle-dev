@@ -10,7 +10,7 @@ workDir = null
 module.exports = (grunt) ->
   {injectPackage, injectDependency} = require('./task-helpers')(grunt)
 
-  grunt.registerTask 'install-spark-dev', 'Installs Spark Dev package', ->
+  grunt.registerTask 'install-spark-dev', 'Installs Particle Dev package', ->
     done = @async()
     workDir = grunt.config.get('workDir')
     particleDevPath = path.join(workDir, 'node_modules', 'spark-dev')
