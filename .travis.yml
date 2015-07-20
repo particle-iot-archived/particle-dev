@@ -3,17 +3,6 @@ notifications:
   email:
     on_success: never
     on_failure: change
-deploy:
-  provider: s3
-  access_key_id: AKIAJG4TZUXVS5SHRZSQ
-  secret_access_key:
-    secure: jv3eJjCZ7Jf/eTjysqTzrLETNC6W3zG6Mp+X2Fh5ESpv44npZ20F5mbsqbhD5BwI1tn59XzCR6hg2/k2x0zLhfwa1W1BWWJOS43DwYoUrTOCIZhhesvKIdztt4BoL/DqKlj137RRoTqxx4BZu3cRa6y97MunT33/+dznHv+WMsg=
-  bucket: dev.artifacts.particle.io
-  local_dir: dist
-  dot_match: "**/*.zip"
-  acl: public_read
-  on:
-    all_branches: true
 before_script: ./script/add-key
 script:
 - ./script/run-ci-specs
