@@ -1,0 +1,17 @@
+--- set-version-task.coffee.orig	2015-07-21 16:17:22.000000000 +0100
++++ set-version-task.coffee	2015-07-21 17:13:29.000000000 +0100
+@@ -44,10 +44,10 @@
+         shellExePath = path.join(shellAppDir, 'atom.exe')
+ 
+         strings =
+-          CompanyName: 'GitHub, Inc.'
+-          FileDescription: 'Atom'
+-          LegalCopyright: 'Copyright (C) 2015 GitHub, Inc. All rights reserved'
+-          ProductName: 'Atom'
++          CompanyName: 'Particle Industries, Inc.'
++          FileDescription: 'Particle Dev'
++          LegalCopyright: 'Copyright (C) 2015 Particle Industries, Inc. All rights reserved'
++          ProductName: 'Particle Dev'
+           ProductVersion: version
+ 
+         rcedit = require('rcedit')

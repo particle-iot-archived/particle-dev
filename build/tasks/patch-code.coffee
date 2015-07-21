@@ -44,13 +44,15 @@ module.exports = (grunt) ->
                 pathFile 'Gruntfile.patch', 'build/Gruntfile.coffee', ->
                   pathFile 'codesign-task.patch', 'build/tasks/codesign-task.coffee', ->
                     pathFile 'publish-build-task.patch', 'build/tasks/publish-build-task.coffee', ->
-                      if process.platform is 'darwin'
-                        pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
-                          pathFile 'darwin.patch', 'menus/darwin.cson', ->
-                            done()
-                      else if process.platform is 'win32'
-                        pathFile 'win32.patch', 'menus/win32.cson', ->
-                          done()
-                      else
-                        pathFile 'linux.patch', 'menus/linux.cson', ->
-                          done()
+                      pathFile 'set-version-task.patch', 'build/tasks/set-version-task.coffee', ->
+                        pathFile 'set-version.patch', 'script/set-version', ->
+                          if process.platform is 'darwin'
+                            pathFile 'atom-Info.patch', 'resources/mac/atom-Info.plist', ->
+                              pathFile 'darwin.patch', 'menus/darwin.cson', ->
+                                done()
+                          else if process.platform is 'win32'
+                            pathFile 'win32.patch', 'menus/win32.cson', ->
+                              done()
+                          else
+                            pathFile 'linux.patch', 'menus/linux.cson', ->
+                              done()
