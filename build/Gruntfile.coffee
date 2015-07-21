@@ -26,9 +26,7 @@ module.exports = (grunt) ->
     cp.exec 'open ' + workDir
 
   appName = 'Particle Dev'
-  installDir = path.join(__dirname, '..', 'dist', process.platform, appName)
-  if process.platform is 'darwin'
-    installDir += '.app'
+  buildDir = path.join(__dirname, '..', 'dist', process.platform)
 
   # Get Atom Version from .atomrc
   atomrc = fs.readFileSync(path.join(__dirname, '..', '.atomrc')).toString()
@@ -57,7 +55,7 @@ module.exports = (grunt) ->
     atomVersion: atomVersion
     particleDevVersion: particleDevVersion
     appName: appName
-    installDir: installDir
+    buildDir: buildDir
 
   tasks = []
 

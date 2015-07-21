@@ -8,7 +8,7 @@ module.exports = (grunt) ->
 
     process.chdir(grunt.config.get('workDir'))
 
-    installDir = grunt.config.get('installDir')
+    buildDir = grunt.config.get('buildDir')
 
     if !!process.env.TRAVIS
       tasks = 'set-version check-licenses lint generate-asar '
@@ -21,11 +21,9 @@ module.exports = (grunt) ->
       if not grunt.option('no-codesign')
         tasks += 'codesign '
 
-      tasks += 'install'
-
     command = path.join('build', 'node_modules', '.bin', 'grunt') +
               ' --gruntfile ' + path.join('build', 'Gruntfile.coffee') +
-              ' --install-dir "' + installDir + '" ' +
+              ' --build-dir "' + buildDir + '" ' +
               tasks
 
     grunt.log.writeln '(i) Build command is ' + command
