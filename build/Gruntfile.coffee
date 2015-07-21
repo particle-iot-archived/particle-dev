@@ -75,7 +75,6 @@ module.exports = (grunt) ->
 
   tasks = tasks.concat [
     'build-app',
-    'package-app'
   ]
 
   grunt.registerTask('default', tasks)
