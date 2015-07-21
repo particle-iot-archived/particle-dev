@@ -11,7 +11,8 @@ module.exports = (grunt) ->
     buildDir = grunt.config.get('buildDir')
 
     if !!process.env.TRAVIS
-      tasks = 'set-version check-licenses lint generate-asar '
+      tasks = 'download-atom-shell download-atom-shell-chromedriver build '
+      tasks += 'set-version check-licenses lint generate-asar '
       tasks += 'mkdeb ' if process.platform is 'linux'
       tasks += 'create-windows-installer ' if process.platform is 'win32'
       tasks += 'codesign publish-build'
