@@ -1,5 +1,14 @@
 --- codesign-task.coffee.old	2015-07-20 15:37:26.000000000 +0100
-+++ codesign-task.coffee	2015-07-20 15:37:31.000000000 +0100
++++ codesign-task.coffee	2015-07-21 11:15:39.000000000 +0100
+@@ -26,7 +26,7 @@
+     switch process.platform
+       when 'darwin'
+         cmd = 'codesign'
+-        args = ['--deep', '--force', '--verbose', '--sign', 'Developer ID Application: GitHub', grunt.config.get('atom.shellAppDir')]
++        args = ['--deep', '--force', '--verbose', '--sign', 'Developer ID Application: Spark Labs, Inc.', grunt.config.get('atom.shellAppDir')]
+         spawn {cmd, args}, (error) -> callback(error)
+       when 'win32'
+         spawn {cmd: 'taskkill', args: ['/F', '/IM', 'atom.exe']}, ->
 @@ -36,7 +36,7 @@
            spawn {cmd, args}, (error) ->
              return callback(error) if error?
