@@ -1,5 +1,14 @@
---- Gruntfile.coffee.orig	2015-04-28 16:54:20.000000000 +0100
-+++ Gruntfile.coffee	2015-04-28 17:03:33.000000000 +0100
+--- Gruntfile.coffee.orig	2015-07-20 13:25:06.000000000 +0100
++++ Gruntfile.coffee	2015-07-21 12:42:12.000000000 +0100
+@@ -36,7 +36,7 @@
+ 
+   [major, minor, patch] = packageJson.version.split('.')
+   tmpDir = os.tmpdir()
+-  appName = if process.platform is 'darwin' then 'Atom.app' else 'Atom'
++  appName = if process.platform is 'darwin' then 'Particle Dev.app' else 'Particle Dev'
+   buildDir = grunt.option('build-dir') ? path.join(tmpDir, 'atom-build')
+   buildDir = path.resolve(buildDir)
+   installDir = grunt.option('install-dir')
 @@ -76,6 +76,8 @@
        ]
        dest: appDir
@@ -9,3 +18,18 @@
  
    lessConfig =
      options:
+@@ -214,11 +216,11 @@
+     'create-windows-installer':
+       appDirectory: shellAppDir
+       outputDirectory: path.join(buildDir, 'installer')
+-      authors: 'GitHub Inc.'
++      authors: 'Particle Industries, Inc.'
+       loadingGif: path.resolve(__dirname, '..', 'resources', 'win', 'loading.gif')
+-      iconUrl: 'https://raw.githubusercontent.com/atom/atom/master/resources/win/atom.ico'
++      iconUrl: 'https://raw.githubusercontent.com/spark/spark-dev/master/build/resources/sparkdev.ico'
+       setupIcon: path.resolve(__dirname, '..', 'resources', 'win', 'atom.ico')
+-      remoteReleases: 'https://atom.io/api/updates'
++      remoteReleases: 'https://updates.particle.io'
+ 
+     shell:
+       'kill-atom':
