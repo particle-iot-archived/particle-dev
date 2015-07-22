@@ -1,32 +1,18 @@
-temp = require 'temp'
 path = require 'path'
-fs = require 'fs'
+fs = require 'fs-extra'
 _s = require 'underscore.string'
 
 module.exports = (grunt) ->
   grunt.loadTasks('tasks')
 
-  if !!grunt.option('workDir')
-    workDir = grunt.option('workDir')
-  else
-    # temp.track()
-    if process.platform is 'win32'
-      affixes =
-        prefix: 'particle-dev'
-        suffix: ''
-        dir: process.cwd().split(path.sep)[0]
-      workDir = temp.mkdirSync affixes
-    else
-      workDir = temp.mkdirSync 'particle-dev'
-
-  grunt.log.writeln '(i) Work dir is ' + workDir
-
-  if grunt.option('showWorkDir')
-    cp = require 'child_process'
-    cp.exec 'open ' + workDir
-
   appName = 'Particle Dev'
+  workDir = path.join(__dirname, '..', 'dist', 'atom-work-dir')
   buildDir = path.join(__dirname, '..', 'dist', process.platform)
+
+
+  if fs.existsSync(workDir) && !!grunt.option('keepAtomWorkDir')
+    fs.removeSync(workDir)
+  fs.ensureDirSync(workDir)
 
   # Get Atom Version from .atomrc
   atomrc = fs.readFileSync(path.join(__dirname, '..', '.atomrc')).toString()
