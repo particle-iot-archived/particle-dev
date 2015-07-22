@@ -5,6 +5,9 @@ notifications:
     on_failure: change
 before_script: ./script/add-key
 script:
-- ./script/run-ci-specs
 - ./script/build
+# - ./script/run-ci-specs
 after_script: ./script/remove-key
+cache:
+  directories:
+    - build/node_modules
