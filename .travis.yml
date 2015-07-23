@@ -3,7 +3,9 @@ notifications:
   email:
     on_success: never
     on_failure: change
-before_script: ./script/add-key
+before_script:
+- ./script/add-key
+- ./script/set-env
 script:
 - ./script/build
 # - ./script/run-ci-specs

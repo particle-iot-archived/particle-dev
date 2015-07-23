@@ -4,13 +4,7 @@ var path = require('path');
 
 var binSuffix = (process.platform === 'win32' ? '.cmd' : '');
 
-// Export env variables
-if (!!process.env.TRAVIS_BRANCH) {
-	process.env['JANKY_BRANCH'] = process.env.TRAVIS_BRANCH;
-}
-if (!!process.env.TRAVIS_COMMIT) {
-	process.env['JANKY_SHA1'] = process.env.TRAVIS_COMMIT;
-}
+console.log('Building', process.env.JANKY_BRANCH, '@', process.env.TRAVIS_COMMIT);
 
 process.chdir('build');
 console.log('Bootstrapping build...');
