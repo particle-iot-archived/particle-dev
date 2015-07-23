@@ -4,7 +4,7 @@ var path = require('path');
 
 var binSuffix = (process.platform === 'win32' ? '.cmd' : '');
 
-console.log('Building', process.env.JANKY_BRANCH, '@', process.env.TRAVIS_COMMIT);
+console.log('Building', process.env.JANKY_BRANCH, '@', process.env.JANKY_SHA1);
 
 process.chdir('build');
 console.log('Bootstrapping build...');

@@ -5,7 +5,8 @@ notifications:
     on_failure: change
 before_script:
 - ./script/add-key
-- ./script/set-env
+- export JANKY_BRANCH=$TRAVIS_BRANCH
+- export JANKY_SHA1=$TRAVIS_COMMIT
 script:
 - ./script/build
 # - ./script/run-ci-specs
