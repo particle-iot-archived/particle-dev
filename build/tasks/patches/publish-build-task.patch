@@ -7,12 +7,12 @@
 -        {assetName: 'atom-mac.zip', sourcePath: 'Atom.app'}
 -        {assetName: 'atom-mac-symbols.zip', sourcePath: 'Atom.breakpad.syms'}
 -        {assetName: 'atom-api.json', sourcePath: 'atom-api.json'}
-+        {assetName: "particle-dev-mac-#{version}.zip", sourcePath: 'Particle Dev.app'}
++        {assetName: "particle-dev-mac-#{version}.zip", sourcePath: '"Particle Dev.app"'}
        ]
      when 'win32'
 -      assets = [{assetName: 'atom-windows.zip', sourcePath: 'Atom'}]
 -      for squirrelAsset in ['AtomSetup.exe', 'RELEASES', "atom-#{version}-full.nupkg", "atom-#{version}-delta.nupkg"]
-+      assets = [{assetName: "particle-dev-windows-#{version}.zip", sourcePath: 'Particle Dev'}]
++      assets = [{assetName: "particle-dev-windows-#{version}.zip", sourcePath: '"Particle Dev"'}]
 +      for squirrelAsset in ['ParticleDevSetup.exe', 'RELEASES', "particle-dev-#{version}-full.nupkg", "particle-dev-#{version}-delta.nupkg"]
          cp path.join(buildDir, 'installer', squirrelAsset), path.join(buildDir, squirrelAsset)
          assets.push({assetName: squirrelAsset, sourcePath: assetName})
