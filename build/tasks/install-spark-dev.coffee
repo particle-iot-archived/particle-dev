@@ -15,8 +15,8 @@ module.exports = (grunt) ->
     workDir = grunt.config.get('workDir')
     particleDevPath = path.join(workDir, 'node_modules', 'spark-dev')
     particleDevVersion = grunt.config.get('particleDevVersion')
-    isDev = particleDevVersion.indexOf('-dev') > -1
-    particleDevVersion = particleDevVersion.replace('-dev', '')
+    isDev = particleDevVersion.indexOf('-') > -1
+    particleDevVersion = particleDevVersion.split('-')[0]
 
     installDependencies = (done) ->
       # Build serialport

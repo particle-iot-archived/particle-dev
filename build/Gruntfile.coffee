@@ -33,7 +33,7 @@ module.exports = (grunt) ->
   else
     packageJson = path.join(__dirname, '..', 'package.json')
     packageObject = JSON.parse(fs.readFileSync(packageJson))
-    particleDevVersion = packageObject.version + '-dev'
+    particleDevVersion = packageObject.version + '-' + process.env.JANKY_SHA1
   grunt.log.writeln '(i) Particle Dev version is ' + particleDevVersion
 
   grunt.initConfig
