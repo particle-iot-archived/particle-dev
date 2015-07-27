@@ -19,3 +19,10 @@ module.exports = (grunt) ->
     else
       packages.dependencies[name] = version
     fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
+
+  copyExcluding: (src, dest, exclude=[]) ->
+    exclude.push '.', '..'
+    contents = fs.readdirSync src
+    for file in contents
+      if file not in exclude
+        fs.copySync path.join(src, file), path.join(dest, file)

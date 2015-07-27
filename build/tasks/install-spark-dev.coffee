@@ -8,13 +8,15 @@ _s = require 'underscore.string'
 workDir = null
 
 module.exports = (grunt) ->
-  {injectPackage, injectDependency} = require('./task-helpers')(grunt)
+  {injectPackage, injectDependency, copyExcluding} = require('./task-helpers')(grunt)
 
   grunt.registerTask 'install-spark-dev', 'Installs Particle Dev package', ->
     done = @async()
     workDir = grunt.config.get('workDir')
     particleDevPath = path.join(workDir, 'node_modules', 'spark-dev')
-    particleDevVersion = grunt.config.get('particleDevVersion').replace('-dev', '')
+    particleDevVersion = grunt.config.get('particleDevVersion')
+    isDev = particleDevVersion.indexOf('-dev') > -1
+    particleDevVersion = particleDevVersion.replace('-dev', '')
 
     installDependencies = (done) ->
       # Build serialport
@@ -38,9 +40,10 @@ module.exports = (grunt) ->
         injectPackage 'spark-dev', particleDevVersion
         done()
 
-    if _s.endsWith(particleDevVersion, '-dev')
+    if isDev
       # Copy current sources
-      fs.copySync path.join(__dirname, '..', '..'), particleDevPath
+      exclude = ['.git', 'build', 'dist']
+      copyExcluding path.join(__dirname, '..', '..'), particleDevPath, exclude
       installDependencies done
     else
       # Download the release
