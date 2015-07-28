@@ -5,7 +5,7 @@ notifications:
     on_failure: change
 before_script:
 - ./script/add-key
-- export JANKY_BRANCH=$TRAVIS_BRANCH
+- export JANKY_BRANCH=master
 - export JANKY_SHA1=`git rev-parse --short HEAD`
 script:
 - ./script/build
