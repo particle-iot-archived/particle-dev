@@ -1,7 +1,7 @@
 --- Gruntfile.coffee.orig	2015-07-20 13:25:06.000000000 +0100
 +++ Gruntfile.coffee	2015-07-21 12:42:12.000000000 +0100
 @@ -36,7 +36,7 @@
- 
+
    [major, minor, patch] = packageJson.version.split('.')
    tmpDir = os.tmpdir()
 -  appName = if process.platform is 'darwin' then 'Atom.app' else 'Atom'
@@ -15,7 +15,7 @@
        ext: '.js'
 +      options:
 +        sourceMap: true
- 
+
    lessConfig =
      options:
 @@ -214,11 +216,11 @@
@@ -29,7 +29,7 @@
 +      iconUrl: 'https://raw.githubusercontent.com/spark/spark-dev/master/build/resources/sparkdev.ico'
        setupIcon: path.resolve(__dirname, '..', 'resources', 'win', 'atom.ico')
 -      remoteReleases: 'https://atom.io/api/updates'
-+      remoteReleases: 'https://updates.particle.io'
- 
++      remoteReleases: 'https://particle-dev-updates.herokuapp.com'
+
      shell:
        'kill-atom':
