@@ -14,3 +14,5 @@ after_script: ./script/remove-key
 cache:
   directories:
     - build/node_modules
+    - dist/atom-work-dir/node_modules
+sudo: false
