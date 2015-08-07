@@ -5,7 +5,7 @@
    [major, minor, patch] = packageJson.version.split('.')
    tmpDir = os.tmpdir()
 -  appName = if process.platform is 'darwin' then 'Atom.app' else 'Atom'
-+  appName = if process.platform is 'darwin' then 'Particle Dev.app' else 'Particle Dev'
++  appName = if process.platform is 'darwin' then 'Particle Dev.app' else 'ParticleDev'
    buildDir = grunt.option('build-dir') ? path.join(tmpDir, 'atom-build')
    buildDir = path.resolve(buildDir)
    installDir = grunt.option('install-dir')
