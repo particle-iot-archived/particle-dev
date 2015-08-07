@@ -29,7 +29,7 @@
 +      iconUrl: 'https://raw.githubusercontent.com/spark/spark-dev/master/build/resources/sparkdev.ico'
        setupIcon: path.resolve(__dirname, '..', 'resources', 'win', 'atom.ico')
 -      remoteReleases: 'https://atom.io/api/updates'
-+      remoteReleases: 'https://particle-dev-updates.herokuapp.com'
++      remoteReleases: 'https://github.com/spark/spark-dev'
 
      shell:
        'kill-atom':

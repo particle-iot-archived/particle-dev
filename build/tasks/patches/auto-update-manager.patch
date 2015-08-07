@@ -5,10 +5,10 @@
        # Squirrel for Windows can't handle query params
        # https://github.com/Squirrel/Squirrel.Windows/issues/132
 -      @feedUrl = 'https://atom.io/api/updates'
-+      @feedUrl = 'https://particle-dev-updates.herokuapp.com'
++      @feedUrl = 'https://updates.particle.io'
      else
        @iconPath = path.resolve(__dirname, '..', '..', 'resources', 'atom.png')
 -      @feedUrl = "https://atom.io/api/updates?version=#{@version}"
-+      @feedUrl = "https://spark-ide-updates.herokuapp.com?version=#{@version}"
++      @feedUrl = "https://updates.particle.io?version=#{@version}"
 
      process.nextTick => @setupAutoUpdater()
