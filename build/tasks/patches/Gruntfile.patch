@@ -1,5 +1,5 @@
 --- Gruntfile.coffee.orig	2015-08-07 16:32:41.000000000 +0100
-+++ Gruntfile.coffee	2015-08-07 16:40:10.000000000 +0100
++++ Gruntfile.coffee	2015-08-07 16:48:22.000000000 +0100
 @@ -36,7 +36,7 @@
  
    [major, minor, patch] = packageJson.version.split('.')
@@ -18,7 +18,7 @@
  
    lessConfig =
      options:
-@@ -215,11 +217,11 @@
+@@ -215,11 +217,12 @@
        installer:
          appDirectory: shellAppDir
          outputDirectory: path.join(buildDir, 'installer')
@@ -30,6 +30,7 @@
          setupIcon: path.resolve(__dirname, '..', 'resources', 'win', 'atom.ico')
 -        remoteReleases: 'https://atom.io/api/updates'
 +        remoteReleases: 'https://github.com/spark/spark-dev'
++        productName: 'ParticleDev'
  
      shell:
        'kill-atom':
