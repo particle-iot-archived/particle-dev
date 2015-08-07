@@ -12,6 +12,7 @@
     "request": "^2.48.0",
     "sync-request": "^1.0.1",
     "temp": "^0.8.1",
-    "underscore.string": "^2.4.0"
+    "underscore.string": "^2.4.0",
+    "when": "^3.7.3"
   }
 }

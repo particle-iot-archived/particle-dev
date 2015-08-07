@@ -1,33 +1,43 @@
 cp = require '../../script/utils/child-process-wrapper.js'
 path = require 'path'
+whenjs = require 'when'
+sequence = require 'when/sequence'
 workDir = null
+_grunt = null
+
+runAtomTask = (task, cb) ->
+  dfd = whenjs.defer()
+  buildDir = _grunt.config.get('buildDir')
+  command = path.join('build', 'node_modules', '.bin', 'grunt') +
+            ' --gruntfile ' + path.join('build', 'Gruntfile.coffee') +
+            ' --build-dir "' + buildDir + '" ' + task
+
+  cp.safeExec command, (result) ->
+    dfd.resolve result
+  , (error) ->
+    _grunt.log.writeln error
+    dfd.reject error
+  dfd.promise
 
 module.exports = (grunt) ->
+  _grunt = grunt
   grunt.registerTask 'build-app', 'Builds executable', ->
     done = @async()
 
     process.chdir(grunt.config.get('workDir'))
 
-    buildDir = grunt.config.get('buildDir')
+    tasks = [
+      'download-atom-shell',
+      'download-atom-shell-chromedriver',
+      'build',
+      'set-version',
+      'check-licenses',
+      'lint',
+      'generate-asar'
+    ]
 
-    if !!process.env.TRAVIS
-      tasks = 'download-atom-shell download-atom-shell-chromedriver build '
-      tasks += 'set-version check-licenses lint generate-asar '
-      tasks += 'mkdeb ' if process.platform is 'linux'
-      tasks += 'create-windows-installer ' if process.platform is 'win32'
-      tasks += 'codesign publish-build'
-    else
-      tasks = 'download-atom-shell download-atom-shell-chromedriver build set-version generate-asar '
-
-      if not grunt.option('no-codesign')
-        tasks += 'codesign '
-
-    command = path.join('build', 'node_modules', '.bin', 'grunt') +
-              ' --gruntfile ' + path.join('build', 'Gruntfile.coffee') +
-              ' --build-dir "' + buildDir + '" ' +
-              tasks
-
-    grunt.log.writeln '(i) Build command is ' + command
-
-    cp.safeExec command, ->
+    tasks.push('mkdeb') if process.platform is 'linux'
+    tasks.push('create-windows-installer') if process.platform is 'win32'
+    tasks.push('codesign', 'publish-build')
+    sequence(runAtomTask.bind(this, task) for task in tasks).done ->
       done()
