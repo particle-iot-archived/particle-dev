@@ -53,7 +53,7 @@ module.exports = (grunt) ->
       'install-unpublished-packages',
       'bootstrap-atom',
       'copy-resources',
-      'install-spark-dev',
+      'install-particle-dev',
       'patch-code',
     ]
 
