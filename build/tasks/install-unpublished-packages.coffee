@@ -47,7 +47,7 @@ module.exports = (grunt) ->
     done = @async()
 
     # installPackage 'spark', 'welcome-spark', '0.27.0', ->
-    installPackage 'spark', 'release-notes-spark', '0.52.0', ->
+    installPackage 'spark', 'particle-dev-release-notes', '0.53.0', ->
       installPackage 'spark', 'language-spark', '0.3.1', ->
         installPackage 'spark', 'exception-reporting', '0.36.0', ->
           installPackage 'spark', 'spark-dev-cloud-functions', '0.0.5', ->
