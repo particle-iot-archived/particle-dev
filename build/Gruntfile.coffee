@@ -6,8 +6,13 @@ module.exports = (grunt) ->
   grunt.loadTasks('tasks')
 
   appName = 'Particle Dev'
-  workDir = path.join(__dirname, '..', 'dist', 'atom-work-dir')
-  buildDir = path.join(__dirname, '..', 'dist', process.platform)
+  if process.platform == 'win32'
+    root = process.cwd().split(path.sep)[0]
+    workDir = path.join(root, 'atom-work-dir')
+    buildDir = path.join(root, 'particle-dev-' + process.platform)
+  else
+    workDir = path.join(__dirname, '..', 'dist', 'atom-work-dir')
+    buildDir = path.join(__dirname, '..', 'dist', process.platform)
 
 
   if fs.existsSync(workDir) && !!grunt.option('keepAtomWorkDir')
