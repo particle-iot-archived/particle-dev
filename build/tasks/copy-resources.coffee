@@ -15,6 +15,6 @@ module.exports = (grunt) ->
     copyResource 'config.cson', 'dot-atom/config.cson'
 
     if process.platform is 'darwin'
-      copyResource 'sparkdev.icns', 'resources/mac/atom.icns'
+      copyResource 'particle-dev.icns', 'resources/mac/atom.icns'
     else if process.platform is 'win32'
-      copyResource 'sparkdev.ico', 'resources/win/atom.ico'
+      copyResource 'particle-dev.ico', 'resources/win/atom.ico'
