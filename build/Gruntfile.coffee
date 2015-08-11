@@ -14,8 +14,7 @@ module.exports = (grunt) ->
     workDir = path.join(__dirname, '..', 'dist', 'atom-work-dir')
     buildDir = path.join(__dirname, '..', 'dist', process.platform)
 
-
-  if fs.existsSync(workDir) && !!grunt.option('keepAtomWorkDir')
+  if fs.existsSync(workDir) && !grunt.option('keepAtomWorkDir')
     fs.removeSync(workDir)
   fs.ensureDirSync(workDir)
 
