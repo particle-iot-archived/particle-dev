@@ -15,8 +15,8 @@ runAtomTask = (task, cb) ->
   cp.safeExec command, (result) ->
     dfd.resolve result
   , (error) ->
-    _grunt.log.writeln error
     dfd.reject error
+    _grunt.fail.fatal error
   dfd.promise
 
 module.exports = (grunt) ->
