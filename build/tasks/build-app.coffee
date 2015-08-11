@@ -13,10 +13,12 @@ runAtomTask = (task, cb) ->
             ' --build-dir "' + buildDir + '" ' + task
 
   cp.safeExec command, (result) ->
-    dfd.resolve result
-  , (error) ->
-    dfd.reject error
-    _grunt.fail.fatal error
+    if !!result
+      dfd.reject result
+      _grunt.fail.fatal result
+    else
+      dfd.resolve result
+
   dfd.promise
 
 module.exports = (grunt) ->
