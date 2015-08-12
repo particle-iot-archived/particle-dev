@@ -5,28 +5,15 @@ sequence = require 'when/sequence'
 workDir = null
 _grunt = null
 
-runAtomTask = (task, cb) ->
-  dfd = whenjs.defer()
-  buildDir = _grunt.config.get('buildDir')
-  command = path.join('build', 'node_modules', '.bin', 'grunt') +
-            ' --gruntfile ' + path.join('build', 'Gruntfile.coffee') +
-            ' --build-dir "' + buildDir + '" ' + task
-
-  cp.safeExec command, (result) ->
-    if !!result
-      dfd.reject result
-      _grunt.fail.fatal result
-    else
-      dfd.resolve result
-
-  dfd.promise
-
 module.exports = (grunt) ->
   _grunt = grunt
   grunt.registerTask 'build-app', 'Builds executable', ->
-    done = @async()
+    workDir = grunt.config.get('workDir')
 
-    process.chdir(grunt.config.get('workDir'))
+    # Register Atom's tasks
+    process.chdir path.join(workDir, 'build')
+    grunt.loadTasks 'Gruntfile.coffee'
+    grunt.loadTasks '.'
 
     tasks = [
       'download-atom-shell',
@@ -38,8 +25,11 @@ module.exports = (grunt) ->
       'generate-asar'
     ]
 
+    if process.platform is 'win32'
+      tasks.push('codesign:exe')
+      tasks.push('create-windows-installer:installer')
+      tasks.push('codesign:installer')
+    tasks.push('codesign:app') if process.platform is 'darwin'
     tasks.push('mkdeb') if process.platform is 'linux'
-    tasks.push('create-windows-installer') if process.platform is 'win32'
-    tasks.push('codesign', 'publish-build')
-    sequence(runAtomTask.bind(this, task) for task in tasks).done ->
-      done()
+    tasks.push('publish-build')
+    grunt.task.run(tasks)

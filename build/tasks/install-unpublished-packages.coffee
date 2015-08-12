@@ -7,7 +7,7 @@ injectPackage = null
 workDir = null
 
 installPackage = (owner, name, version, callback) ->
-  tarballUrl = 'https://github.com/' + owner + '/' + name + '/archive/master.tar.gz'
+  tarballUrl = "https://github.com/#{owner}/#{name}/archive/master.tar.gz"
   tarballPath = path.join(workDir, 'name.tar.gz')
   r = request(tarballUrl)
   r.on 'end', ->
