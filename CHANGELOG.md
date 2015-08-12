@@ -1,5 +1,9 @@
 ## 0.0.25
+**Windows users**: Please uninstall previous versions of Particle Dev before installing this one.
+
+* Updated Atom to [1.0.5](https://github.com/atom/atom/releases/tag/v1.0.5)
 * Fixed [#80](https://github.com/spark/spark-dev/issues/80)
+* Added auto update on Windows
 
 ## 0.0.24
 * Fixed [#72](https://github.com/spark/spark-dev/issues/72)
