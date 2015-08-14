@@ -31,9 +31,10 @@ module.exports = (grunt) ->
   # Get Particle Dev version from options/current sources
   if !!grunt.option('particleDevVersion')
     particleDevVersion = grunt.option('particleDevVersion')
-  else if !!process.env.TRAVIS_TAG
+  else if !!process.env.TRAVIS_TAG or !!process.env.APPVEYOR_REPO_TAG_NAME
+    tag = process.env.TRAVIS_TAG ? process.env.APPVEYOR_REPO_TAG_NAME
     # Drop the "v" from tag name
-    particleDevVersion = process.env.TRAVIS_TAG.slice(1)
+    particleDevVersion = tag.slice(1)
   else
     packageJson = path.join(__dirname, '..', 'package.json')
     packageObject = JSON.parse(fs.readFileSync(packageJson))
