@@ -1,7 +1,7 @@
 --- Gruntfile.coffee.orig	2015-08-07 16:32:41.000000000 +0100
 +++ Gruntfile.coffee	2015-08-07 16:48:22.000000000 +0100
 @@ -36,7 +36,7 @@
- 
+
    [major, minor, patch] = packageJson.version.split('.')
    tmpDir = os.tmpdir()
 -  appName = if process.platform is 'darwin' then 'Atom.app' else 'Atom'
@@ -15,10 +15,10 @@
        ext: '.js'
 +      options:
 +        sourceMap: true
- 
+
    lessConfig =
      options:
-@@ -215,11 +217,12 @@
+@@ -215,11 +217,13 @@
        installer:
          appDirectory: shellAppDir
          outputDirectory: path.join(buildDir, 'installer')
@@ -31,6 +31,7 @@
 -        remoteReleases: 'https://atom.io/api/updates'
 +        remoteReleases: 'https://github.com/spark/spark-dev'
 +        productName: 'ParticleDev'
- 
++        name: 'particle-dev'
+
      shell:
        'kill-atom':
