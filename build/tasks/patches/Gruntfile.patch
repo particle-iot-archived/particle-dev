@@ -18,7 +18,7 @@
 
    lessConfig =
      options:
-@@ -215,11 +217,13 @@
+@@ -215,11 +217,14 @@
        installer:
          appDirectory: shellAppDir
          outputDirectory: path.join(buildDir, 'installer')
@@ -32,6 +32,7 @@
 +        remoteReleases: 'https://github.com/spark/spark-dev'
 +        productName: 'ParticleDev'
 +        name: 'particle-dev'
++        exe: 'atom.exe'
 
      shell:
        'kill-atom':
