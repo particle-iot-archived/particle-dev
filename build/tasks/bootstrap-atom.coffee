@@ -7,5 +7,5 @@ module.exports = (grunt) ->
 
     process.chdir(grunt.config.get('workDir'))
 
-    cp.safeExec 'node script/bootstrap', ->
+    cp.safeExec 'node script/bootstrap --no-quiet', ->
       done()
