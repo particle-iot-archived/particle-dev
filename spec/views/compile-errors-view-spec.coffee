@@ -30,15 +30,15 @@ describe 'Compile Errors View', ->
     it 'tests loading and selecting items', ->
       SettingsHelper.setLocal 'compile-status', {errors: [
         {
-          message: 'Foo',
-          file: 'foo.ino',
-          row: 1,
-          col: 2
+          text: 'Foo',
+          filename: 'foo.ino',
+          line: 1,
+          column: 2
         },{
-          message: 'Bar',
-          file: 'bar.ino',
-          row: 3,
-          col: 4
+          text: 'Bar',
+          filename: 'bar.ino',
+          line: 3,
+          column: 4
         }
       ]}
       atom.project.setPaths [path.join(__dirname, '..', 'data', 'sampleproject')]

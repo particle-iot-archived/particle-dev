@@ -6,6 +6,7 @@ utilities = null
 path = null
 _s = null
 url = null
+errorParser = null
 
 module.exports =
   # Local modules for JIT require
@@ -539,8 +540,9 @@ module.exports =
       else
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
-        errors = @CompileErrorsView.parseErrors(e.errors[0])
-
+        errorParser ?= require 'gcc-output-parser'
+        errors = errorParser.parseString(e.errors[0]).filter (message) ->
+          message.type.indexOf('error') > -1
         if errors.length == 0
           @SettingsHelper.setLocal 'compile-status', {error: e.output}
         else
