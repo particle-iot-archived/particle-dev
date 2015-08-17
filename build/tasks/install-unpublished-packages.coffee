@@ -29,11 +29,8 @@ installPackage = (owner, name, version, callback) ->
       packages = JSON.parse(fs.readFileSync(packageJson))
       packages.readme = 'ERROR: No README data found!'
       fs.writeFileSync(packageJson, JSON.stringify(packages, null, '  '))
+      callback()
 
-      options =
-        cwd: path.join(workDir, 'node_modules', name)
-      cp.safeExec 'npm install', options, ->
-        callback()
   r.on 'error', (err) ->
     console.log 'Error while fetching package:', err
 
