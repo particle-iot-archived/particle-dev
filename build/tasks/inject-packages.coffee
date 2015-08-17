@@ -17,10 +17,16 @@ module.exports = (grunt) ->
     injectPackage 'tool-bar', '0.1.8'
     injectPackage 'tool-bar-main', '0.0.8'
     injectPackage 'monokai', '0.18.0'
-    injectPackage 'welcome'
+
+    injectPackage 'particle-dev-release-notes', '0.53.2'
+    injectPackage 'language-particle', '0.3.4'
+    injectPackage 'particle-dev-exception-reporting', '0.36.1'
+    injectPackage 'particle-dev-cloud-functions', '0.0.9'
+    injectPackage 'particle-dev-cloud-variables', '0.0.8'
+
+    # Disable folowing packages:
+    # injectPackage 'welcome'
     injectPackage 'feedback'
-    injectPackage 'release-notes'
-    injectPackage 'exception-reporting'
     injectPackage 'metrics'
     injectPackage 'deprecation-cop'
 

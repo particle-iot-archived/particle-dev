@@ -62,7 +62,6 @@ module.exports = (grunt) ->
       'sleep',
       'patch-atom-version',
       'inject-packages',
-      'install-unpublished-packages',
       'bootstrap-atom',
       'copy-resources',
       'install-particle-dev',
