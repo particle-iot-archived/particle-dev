@@ -50,9 +50,16 @@ module.exports = (grunt) ->
 
   tasks = []
 
+  grunt.registerTask 'sleep', 'Sleeps for a moment', ->
+    done = @async()
+    setTimeout ->
+      done()
+    , 1000 * 60 # Minute
+
   if !grunt.option('keepAtomWorkDir')
     tasks = tasks.concat [
       'download-atom',
+      'sleep'
       'patch-atom-version',
       'inject-packages',
       'install-unpublished-packages',
