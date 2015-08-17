@@ -1,6 +1,6 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
 RenameCoreView = require '../../lib/views/rename-core-view'
-SparkStub = require('spark-dev-spec-stubs').spark
+SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
 describe 'Rename Core View', ->

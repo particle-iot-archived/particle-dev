@@ -22,7 +22,7 @@ describe 'Listening Mode View', ->
     SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
     # Mock serial
-    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportNoPorts
+    require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportNoPorts
 
     waitsForPromise ->
       activationPromise

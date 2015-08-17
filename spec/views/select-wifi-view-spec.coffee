@@ -20,7 +20,7 @@ describe 'Select Wifi View', ->
     SettingsHelper.setProfile 'spark-dev-test'
 
     # Mock serial
-    require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
+    require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportSuccess
 
     waitsForPromise ->
       activationPromise

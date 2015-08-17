@@ -1,5 +1,5 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
-SparkStub = require('spark-dev-spec-stubs').spark
+SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
 describe 'Select Core View', ->

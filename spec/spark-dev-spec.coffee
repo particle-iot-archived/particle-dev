@@ -4,7 +4,7 @@ fs = require 'fs-plus'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
 utilities = require '../lib/vendor/utilities'
-SparkStub = require('spark-dev-spec-stubs').spark
+SparkStub = require('particle-dev-spec-stubs').spark
 
 describe 'Main Tests', ->
   activationPromise = null
@@ -184,7 +184,7 @@ describe 'Main Tests', ->
   describe 'when identifyCore() method is called and there is only one core', ->
     it 'checks if it is identified', ->
       require 'serialport'
-      require.cache[require.resolve('serialport')].exports = require('spark-dev-spec-stubs').serialportSuccess
+      require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportSuccess
 
       spyOn(SerialHelper, 'askForCoreID').andCallThrough()
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
