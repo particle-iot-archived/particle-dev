@@ -59,7 +59,7 @@ module.exports = (grunt) ->
   if !grunt.option('keepAtomWorkDir')
     tasks = tasks.concat [
       'download-atom',
-      'sleep'
+      'sleep',
       'patch-atom-version',
       'inject-packages',
       'install-unpublished-packages',
