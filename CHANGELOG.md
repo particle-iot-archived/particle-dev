@@ -3,6 +3,7 @@
 
 * Updated Atom to [1.0.5](https://github.com/atom/atom/releases/tag/v1.0.5)
 * Fixed [#80](https://github.com/spark/spark-dev/issues/80)
+* Fixed [#97](https://github.com/spark/spark-dev/issues/97)
 * Added auto update on Windows
 
 ## 0.0.24
