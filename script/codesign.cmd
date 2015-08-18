@@ -1,1 +1,0 @@
-"%SIGNTOOL_PATH%" sign %*

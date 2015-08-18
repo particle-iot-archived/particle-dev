@@ -1,8 +1,0 @@
-"*":
-  "tool-bar":
-    position: "Left"
-  core:
-    themes: [
-      "one-dark-ui"
-      "monokai"
-    ]
