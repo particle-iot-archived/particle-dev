@@ -6,13 +6,13 @@ Particle Dev is a professional, open source, hackable IDE, designed for use with
 
 ## Installing
 
-### Mac OS X
+### Mac OS X *(10.8 or later)*
 
 Download the latest [Particle Dev release](https://github.com/spark/spark-dev/releases/latest).
 
 Particle Dev will automatically update when a new release is available.
 
-### Windows
+### Windows *(7 or later)*
 
 Download the latest [Particle Dev release](https://github.com/spark/spark-dev/releases/latest).
 
