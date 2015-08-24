@@ -23,12 +23,24 @@ Particle Dev for Windows does not currently automatically update when a new rele
 Currently there isn't a standalone Particle Dev build for Linux. It is possible to use Particle's packages with Atom though. To do so you need to:
 
 1. [Download Atom for your distribution](https://github.com/atom/atom/releases/latest)
-2. Install following packages:
+2. Install dependencies
+ ##### Ubuntu / Debian
+ `$ sudo apt-get install build-essential`
+ 
+ ##### Fedora / CentOS / RHEL
+ `$ sudo dnf --assumeyes install make gcc gcc-c++ glibc-devel`
+ 
+ ##### Arch
+ `$ sudo pacman -S --needed gconf base-devel`
+ 
+ ##### openSUSE
+ `$ sudo zypper install make gcc gcc-c++ glibc-devel`
+3. Install following packages:
   * [spark-dev](https://atom.io/packages/spark-dev)
   * [particle-dev-cloud-functions](https://atom.io/packages/particle-dev-cloud-functions)
   * [particle-dev-cloud-variables](https://atom.io/packages/particle-dev-cloud-variables)
   * [tool-bar](https://atom.io/packages/tool-bar)
-3. Run following in terminal:
+4. Run following in terminal:
 
   ```bash
   $ cd ~/.atom/packages/spark-dev
@@ -38,7 +50,7 @@ Currently there isn't a standalone Particle Dev build for Linux. It is possible 
   $ apm install .
   $ apm rebuild-module-cache
   ```
-4. Go to Atom, hit `Cmd+Shift+P`, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
+5. Go to Atom, hit `Cmd+Shift+P`, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
 
 ## Using
 
