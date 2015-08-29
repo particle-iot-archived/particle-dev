@@ -25,32 +25,32 @@ Currently there isn't a standalone Particle Dev build for Linux. It is possible 
 1. [Download Atom for your distribution](https://github.com/atom/atom/releases/latest)
 2. Install dependencies
  ##### Ubuntu / Debian
- `$ sudo apt-get install build-essential`
+ `sudo apt-get install build-essential`
  
  ##### Fedora / CentOS / RHEL
- `$ sudo dnf --assumeyes install make gcc gcc-c++ glibc-devel`
+ `sudo dnf --assumeyes install make gcc gcc-c++ glibc-devel`
  
  ##### Arch
- `$ sudo pacman -S --needed gconf base-devel`
+ `sudo pacman -S --needed gconf base-devel`
  
  ##### openSUSE
- `$ sudo zypper install make gcc gcc-c++ glibc-devel`
+ `sudo zypper install make gcc gcc-c++ glibc-devel`
 3. Install following packages:
   * [spark-dev](https://atom.io/packages/spark-dev)
   * [particle-dev-cloud-functions](https://atom.io/packages/particle-dev-cloud-functions)
   * [particle-dev-cloud-variables](https://atom.io/packages/particle-dev-cloud-variables)
   * [tool-bar](https://atom.io/packages/tool-bar)
 4. Run following in terminal:
-
   ```bash
-  $ cd ~/.atom/packages/spark-dev
-  $ npm install nopt
-  $ rm -rf node_modules/serialport
-  $ export ATOM_NODE_VERSION=0.22.3
-  $ apm install .
-  $ apm rebuild-module-cache
+  cd ~/.atom/packages/spark-dev
+  npm install nopt
+  rm -rf node_modules/serialport
+  export ATOM_NODE_VERSION=0.22.3
+  apm install .
+  apm rebuild-module-cache
   ```
-5. Go to Atom, hit `Cmd+Shift+P`, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
+
+5. Go to Atom, hit <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
 
 ## Using
 
