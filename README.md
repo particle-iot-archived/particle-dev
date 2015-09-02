@@ -41,7 +41,6 @@ Currently there isn't a standalone Particle Dev build for Linux. It is possible 
   * [particle-dev-cloud-variables](https://atom.io/packages/particle-dev-cloud-variables)
   * [tool-bar](https://atom.io/packages/tool-bar)
 4. Run following in terminal:
-
   ```bash
   $ cd ~/.atom/packages/spark-dev
   $ npm install nopt
@@ -50,7 +49,8 @@ Currently there isn't a standalone Particle Dev build for Linux. It is possible 
   $ apm install .
   $ apm rebuild-module-cache
   ```
-5. Go to Atom, hit `Cmd+Shift+P`, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
+
+5. Go to Atom, hit <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
 
 ## Using
 
