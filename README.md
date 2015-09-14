@@ -50,7 +50,7 @@ Currently there isn't a standalone Particle Dev build for Linux. It is possible 
   $ apm rebuild-module-cache
   ```
 
-5. Go to Atom, hit <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
+5. Go to Atom, hit <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type `cache` and select `Incompatible Packages: Reload Atom And Recheck Packages`
 
 ## Using
 
