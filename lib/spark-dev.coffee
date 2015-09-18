@@ -364,6 +364,8 @@ module.exports =
     if @SettingsHelper.hasCurrentCore()
       switch @SettingsHelper.getLocal('current_core_platform')
         when 6 then currentPlatform = 'photon'
+        when 8 then currentPlatform = 'p1'
+        when 10 then currentPlatform = 'electron'
 
     currentPlatform
 
@@ -502,7 +504,7 @@ module.exports =
 
     options = {}
     if @SettingsHelper.hasCurrentCore()
-      options.deviceID = @SettingsHelper.getLocal('current_core')
+      options.productID = @SettingsHelper.getLocal('current_core_platform')
     currentPlatform = @getCurrentPlatform()
 
     @compileCloudPromise = @spark.compileCode files, options
