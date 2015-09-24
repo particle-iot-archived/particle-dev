@@ -1,4 +1,4 @@
-{DialogView} = require 'spark-dev-views'
+{DialogView} = require 'particle-dev-views'
 SettingsHelper = null
 _s = null
 

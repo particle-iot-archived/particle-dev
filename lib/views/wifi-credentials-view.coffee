@@ -1,5 +1,5 @@
 {View, $} = require 'atom-space-pen-views'
-{MiniEditorView} = require 'spark-dev-views'
+{MiniEditorView} = require 'particle-dev-views'
 
 $ = null
 _s = null

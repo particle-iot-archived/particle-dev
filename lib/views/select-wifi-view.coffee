@@ -1,4 +1,4 @@
-{SelectView} = require 'spark-dev-views'
+{SelectView} = require 'particle-dev-views'
 
 $$ = null
 _s = null

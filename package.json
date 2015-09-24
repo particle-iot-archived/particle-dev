@@ -18,7 +18,7 @@
     "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
     "spark": "^0.5.9",
     "particle-dev-spec-stubs": "git://github.com/spark/particle-dev-spec-stubs.git#v0.0.2",
-    "spark-dev-views": "git://github.com/spark/spark-dev-views.git#master",
+    "particle-dev-views": "git://github.com/spark/particle-dev-views.git#v0.0.3",
     "underscore.string": "*",
     "validator": "*",
     "when": "*",
