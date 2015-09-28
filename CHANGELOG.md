@@ -1,3 +1,10 @@
+## 0.0.27
+* [#116](https://github.com/spark/spark-dev/issues/116) Fixed
+
+## 0.0.26
+* [#114](https://github.com/spark/spark-dev/issues/114) Add support for P1 and Electron
+* [#108](https://github.com/spark/spark-dev/issues/108) Fixed
+
 ## 0.0.25
 **Windows users**: Please uninstall previous versions of Particle Dev before installing this one.
 
