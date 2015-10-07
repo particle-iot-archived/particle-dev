@@ -25,6 +25,27 @@ To install Particle Dev package you'll need following dependencies:
 
 * [XCode](https://itunes.apple.com/gb/app/xcode/id497799835?mt=12) (you need to run it first finish installation)
 
+###### Linux
+
+* [Download Atom for your distribution](https://github.com/atom/atom/releases/latest)
+* Build dependencies:
+
+	**Ubuntu / Debian**
+
+	`$ sudo apt-get install build-essential`
+
+	**Fedora / CentOS / RHEL**
+
+	`$ sudo dnf --assumeyes install make gcc gcc-c++ glibc-devel`
+
+	**Arch**
+
+	`$ sudo pacman -S --needed gconf base-devel`
+
+	**openSUSE**
+
+	`$ sudo zypper install make gcc gcc-c++ glibc-devel`
+
 ##### Installation
 
 Install following packages:
