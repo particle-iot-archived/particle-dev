@@ -203,13 +203,13 @@ describe 'Main Tests', ->
 
   describe 'cloud compile tests', ->
     it 'checks if nothing is done', ->
-      spyOn(atom.project, 'getPaths').andReturn []
+      spyOn(sparkIde, 'getProjectDir').andReturn null
 
       # For logged out user
       spyOn(SettingsHelper, 'isLoggedIn').andCallThrough()
       sparkIde.compileCloud()
       expect(SettingsHelper.isLoggedIn).toHaveBeenCalled()
-      expect(atom.project.getPaths).not.toHaveBeenCalled()
+      expect(sparkIde.getProjectDir).not.toHaveBeenCalled()
 
       # Not null compileCloudPromise
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -223,14 +223,14 @@ describe 'Main Tests', ->
       sparkIde.compileCloudPromise = null
       sparkIde.compileCloud()
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
-      expect(atom.project.getPaths).toHaveBeenCalled()
+      expect(sparkIde.getProjectDir).toHaveBeenCalled()
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
       SettingsHelper.setLocal 'compile-status', null
       jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
-      jasmine.unspy atom.project, 'getPaths'
+      jasmine.unspy sparkIde, 'getProjectDir'
       SettingsHelper.clearCredentials()
 
     it 'checks if correct files are included', ->
