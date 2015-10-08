@@ -1,3 +1,7 @@
+## 0.0.28
+* [#105](https://github.com/spark/spark-dev/issues/105) Fixed
+* Provide `particle-dev` [service](https://atom.io/docs/v1.0.19/behind-atom-interacting-with-other-packages-via-services)
+
 ## 0.0.27
 * [#116](https://github.com/spark/spark-dev/issues/116) Fixed
 
