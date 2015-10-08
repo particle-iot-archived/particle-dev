@@ -27,6 +27,14 @@
   "packageDependencies": {
     "tool-bar": "0.1.7"
   },
+  "providedServices": {
+    "particle-dev": {
+      "description": "Provides base Particle Dev functions",
+      "versions": {
+        "0.0.1": "provideParticleDev"
+      }
+    }
+  },
   "consumedServices": {
     "status-bar": {
       "versions": {

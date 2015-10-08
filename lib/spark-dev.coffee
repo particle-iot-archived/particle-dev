@@ -149,6 +149,9 @@ module.exports =
 
   serialize: ->
 
+  provideParticleDev: ->
+    @
+
   consumeStatusBar: (statusBar) ->
     @statusView.addTiles statusBar
     # @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
@@ -249,7 +252,7 @@ module.exports =
 
   # "Decorator" which runs callback only when there's project set
   projectRequired: (callback) ->
-    if atom.project.getPaths().length == 0
+    if @getProjectDir() == null
       return
 
     callback()
@@ -369,6 +372,20 @@ module.exports =
 
     currentPlatform
 
+  getProjectDir: ->
+    paths = atom.project.getDirectories()
+    if paths.length == 0
+      return null
+
+    # For now take first directory
+    # FIXME: some way to let user choose which dir to use
+    projectDir = paths[0]
+    if !projectDir.existsSync()
+      return null
+    if !projectDir.isDirectory()
+      return projectDir.getParent().getPath()
+    projectDir.getPath()
+
   requestErrorHandler: (error) ->
     if error.message == 'invalid_token'
       @statusView.setStatus 'Token expired. Log in again', 'error'
@@ -472,7 +489,7 @@ module.exports =
     utilities ?= require './vendor/utilities'
     _s ?= require 'underscore.string'
 
-    rootPath = atom.project.getPaths()[0]
+    rootPath = @getProjectDir()
     files = @processDirIncludes rootPath
     process.chdir rootPath
     files = (path.relative(rootPath, file) for file in files)
@@ -572,7 +589,7 @@ module.exports =
     utilities ?= require './vendor/utilities'
 
     currentPlatform = @getCurrentPlatform()
-    rootPath = atom.project.getPaths()[0]
+    rootPath = @getProjectDir()
     files = fs.listSync(rootPath)
     files = files.filter (file) ->
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
