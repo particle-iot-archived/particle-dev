@@ -380,11 +380,11 @@ describe 'Main Tests', ->
 
   describe 'cloud flash tests', ->
     it 'checks decorators', ->
-      spyOn(sparkIde, 'coreRequired').andCallThrough()
+      spyOn(sparkIde, 'deviceRequired').andCallThrough()
       spyOn sparkIde, 'projectRequired'
 
       sparkIde.flashCloud()
-      expect(sparkIde.coreRequired).toHaveBeenCalled()
+      expect(sparkIde.deviceRequired).toHaveBeenCalled()
       expect(sparkIde.projectRequired).not.toHaveBeenCalled()
 
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
@@ -394,7 +394,7 @@ describe 'Main Tests', ->
       expect(sparkIde.projectRequired).toHaveBeenCalled()
 
       # Cleanup
-      jasmine.unspy sparkIde, 'coreRequired'
+      jasmine.unspy sparkIde, 'deviceRequired'
       jasmine.unspy sparkIde, 'projectRequired'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
