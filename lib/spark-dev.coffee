@@ -240,7 +240,7 @@ module.exports =
     callback()
 
   # "Decorator" which runs callback only when user is logged in and has core selected
-  coreRequired: (callback) ->
+  deviceRequired: (callback) ->
     @loginRequired =>
       if !@SettingsHelper.hasCurrentCore()
         return
@@ -400,14 +400,14 @@ module.exports =
     @selectCoreView.show()
 
   # Show rename core dialog
-  renameCore: -> @coreRequired =>
+  renameCore: -> @deviceRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
     @renameCoreView = new @RenameCoreView(@SettingsHelper.getLocal 'current_core_name')
 
     @renameCoreView.attach()
 
   # Remove current core from user's account
-  removeCore: -> @coreRequired =>
+  removeCore: -> @deviceRequired =>
     removeButton = 'Remove ' + @SettingsHelper.getLocal('current_core_name')
     buttons = {}
     buttons['Cancel'] = ->
@@ -565,7 +565,7 @@ module.exports =
     @compileErrorsView.show()
 
   # Flash core via the cloud
-  flashCloud: (firmware=null) -> @coreRequired => @projectRequired =>
+  flashCloud: (firmware=null) -> @deviceRequired => @projectRequired =>
     fs ?= require 'fs-plus'
     path ?= require 'path'
     _s ?= require 'underscore.string'
