@@ -379,12 +379,18 @@ module.exports =
 
     # For now take first directory
     # FIXME: some way to let user choose which dir to use
-    projectDir = paths[0]
-    if !projectDir.existsSync()
+    projectPath = paths[0]
+
+    if !projectPath.existsSync()
       return null
-    if !projectDir.isDirectory()
-      return projectDir.getParent().getPath()
-    projectDir.getPath()
+
+    projectDir = projectPath.getPath()
+    if !fs.lstatSync(projectDir).isDirectory()
+      atom.project.removePath(projectDir)
+      projectDir = projectPath.getParent().getPath()
+      atom.project.addPath(projectDir)
+      return projectDir
+    projectPath.getPath()
 
   requestErrorHandler: (error) ->
     if error.message == 'invalid_token'
