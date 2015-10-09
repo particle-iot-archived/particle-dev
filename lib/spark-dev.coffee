@@ -198,6 +198,8 @@ module.exports =
 
     @updateToolbarButtons()
 
+  consumeConsolePanel: (@consolePanel) ->
+
   config:
     # Delete .bin file after flash
     deleteFirmwareAfterFlash:

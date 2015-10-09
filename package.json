@@ -41,6 +41,11 @@
         "^1.0.0": "consumeStatusBar"
       }
     },
+    "console-panel": {
+      "versions": {
+        "^1.0.0": "consumeConsole"
+      }
+    },
     "tool-bar": {
       "versions": {
         "^0.1.0": "consumeToolBar"
