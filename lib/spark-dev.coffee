@@ -145,6 +145,7 @@ module.exports =
       @watchConfig()
 
   deactivate: ->
+    @PathWatcher.close()
     @statusView?.destroy()
     @emitter.dispose()
     @disposables.dispose()
