@@ -256,6 +256,7 @@ module.exports =
   deviceRequired: (callback) ->
     @loginRequired =>
       if !@SettingsHelper.hasCurrentCore()
+        atom.notifications.addInfo 'Please select a device'
         return
 
       callback()
@@ -263,6 +264,7 @@ module.exports =
   # "Decorator" which runs callback only when there's project set
   projectRequired: (callback) ->
     if @getProjectDir() == null
+      atom.notifications.addInfo 'Please open a directory with your project'
       return
 
     callback()
