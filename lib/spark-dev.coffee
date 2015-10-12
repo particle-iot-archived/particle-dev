@@ -76,6 +76,7 @@ module.exports =
       'spark-dev:identify-device': => @identifyCore()
       'spark-dev:compile-cloud': => @compileCloud()
       'spark-dev:flash-cloud': => @flashCloud()
+      'spark-dev:flash-cloud-file': (event) => @flashCloudFile event
       'spark-dev:setup-wifi': => @setupWifi()
       'spark-dev:enter-wifi-credentials': => @enterWifiCredentials()
 
@@ -610,7 +611,7 @@ module.exports =
       return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
              (_s.startsWith(path.basename(file), currentPlatform))
 
-    if files.length == 0
+    if files.length == 0 && (!firmware)
       # If no firmware file, compile
       @emitter.emit 'spark-dev:compile-cloud', {thenFlash: true}
     else if (files.length == 1) || (!!firmware)
@@ -649,6 +650,9 @@ module.exports =
       files.reverse()
       @selectFirmwareView.setItems files
       @selectFirmwareView.show()
+
+  flashCloudFile: (event) ->
+    @flashCloud event.target.dataset.path
 
   # Show serial monitor panel
   showSerialMonitor: ->
