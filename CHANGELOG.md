@@ -1,3 +1,7 @@
+## 0.0.30
+* Added ability to flash selected file
+* Added notifications when device/project isn't selected
+
 ## 0.0.29
 * Fix opening single file on Windows
 
