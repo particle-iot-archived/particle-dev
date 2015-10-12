@@ -9,24 +9,26 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
+    "atom-package-deps": "^2.1.3",
     "atom-space-pen-views": "^2.0.3",
     "fs-plus": "^2.0.4",
     "gcc-output-parser": "^0.0.2",
     "glob": "^4.2.1",
+    "particle-dev-spec-stubs": "git://github.com/spark/particle-dev-spec-stubs.git#v0.0.2",
+    "particle-dev-views": "git://github.com/spark/particle-dev-views.git#v0.0.3",
     "pathwatcher": "^3.3.3",
     "request": "*",
     "serialport": "https://github.com/suda/node-serialport/archive/master.tar.gz",
     "spark": "^0.5.9",
-    "particle-dev-spec-stubs": "git://github.com/spark/particle-dev-spec-stubs.git#v0.0.2",
-    "particle-dev-views": "git://github.com/spark/particle-dev-views.git#v0.0.3",
     "underscore.string": "*",
     "validator": "*",
     "when": "*",
     "xtend": "*"
   },
-  "packageDependencies": {
-    "tool-bar": "0.1.8"
-  },
+  "package-deps": [
+    "tool-bar",
+    "console-panel"
+  ],
   "providedServices": {
     "particle-dev": {
       "description": "Provides base Particle Dev functions",

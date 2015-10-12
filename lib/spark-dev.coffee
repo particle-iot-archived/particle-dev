@@ -51,6 +51,9 @@ module.exports =
     @MenuManager ?= require './utils/menu-manager'
     @PathWatcher ?= require 'pathwatcher'
 
+    # Install packages we depend on
+    require('atom-package-deps').install('spark-dev', true)
+
     @workspaceElement = atom.views.getView(atom.workspace)
     {CompositeDisposable, Emitter} = require 'atom'
     @disposables = new CompositeDisposable
