@@ -164,15 +164,18 @@ module.exports =
     @flashButton = @toolBar.addButton
       icon: 'flash'
       callback: 'spark-dev:flash-cloud'
-      tooltip: 'Compile and upload code using cloud'
+      tooltip: 'Compile in cloud and upload code using cloud'
       iconset: 'ion'
+      priority: 51
     @compileButton = @toolBar.addButton
-      icon: 'checkmark-circled'
+      icon: 'android-cloud-done'
       callback: 'spark-dev:compile-cloud'
-      tooltip: 'Compile and show errors if any'
+      tooltip: 'Compile in cloud and show errors if any'
       iconset: 'ion'
+      priority: 52
 
-    @toolBar.addSpacer()
+    @toolBar.addSpacer
+      priority: 53
 
     @toolBar.addButton
       icon: 'document-text'
@@ -180,21 +183,25 @@ module.exports =
         require('shell').openExternal('http://docs.spark.io/')
       tooltip: 'Opens reference at docs.spark.io'
       iconset: 'ion'
+      priority: 54
     @coreButton = @toolBar.addButton
       icon: 'pinpoint'
       callback: 'spark-dev:select-device'
       tooltip: 'Select which device you want to work on'
       iconset: 'ion'
+      priority: 55
     @wifiButton = @toolBar.addButton
       icon: 'wifi'
       callback: 'spark-dev:setup-wifi'
       tooltip: 'Setup device\'s WiFi credentials'
       iconset: 'ion'
+      priority: 56
     @toolBar.addButton
       icon: 'usb'
       callback: 'spark-dev:show-serial-monitor'
       tooltip: 'Show serial monitor'
       iconset: 'ion'
+      priority: 57
 
     @updateToolbarButtons()
 
