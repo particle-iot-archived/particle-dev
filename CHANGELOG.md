@@ -1,3 +1,6 @@
+## 0.0.31
+* [#122](https://github.com/spark/spark-dev/issues/122) Fixed
+
 ## 0.0.30
 * Added ability to flash selected file
 * Added notifications when device/project isn't selected

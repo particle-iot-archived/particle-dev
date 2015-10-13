@@ -13,7 +13,6 @@ module.exports =
   SettingsHelper: null
   MenuManager: null
   SerialHelper: null
-  PathWatcher: null
   StatusView: null
   LoginView: null
   SelectCoreView: null
@@ -24,6 +23,7 @@ module.exports =
   SelectPortView: null
   CompileErrorsView: null
   SelectFirmwareView: null
+  File: null
 
   statusView: null
   loginView: null
@@ -37,7 +37,6 @@ module.exports =
   selectFirmwareView: null
   spark: null
   toolbar: null
-  watchSubscription: null
 
   removePromise: null
   listPortsPromise: null
@@ -49,7 +48,7 @@ module.exports =
     @StatusView ?= require './views/status-bar-view'
     @SettingsHelper ?= require './utils/settings-helper'
     @MenuManager ?= require './utils/menu-manager'
-    @PathWatcher ?= require 'pathwatcher'
+    {@File} = require 'atom'
 
     # Install packages we depend on
     require('atom-package-deps').install('spark-dev', true)
@@ -133,19 +132,16 @@ module.exports =
 
     if typeof(jasmine) == 'undefined'
       # Don't watch settings during tests
-      @profileSubscription ?= @PathWatcher.watch proFile, (eventType) =>
-        if eventType is 'change' and @profileSubscription?
-          @configSubscription?.close()
-          @configSubscription = null
-          @watchConfig()
-          @updateToolbarButtons()
-          @MenuManager.update()
-          atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+      profileFile = new @File(proFile)
+      profileFile.onDidChange =>
+        @watchConfig()
+        @updateToolbarButtons()
+        @MenuManager.update()
+        atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
 
       @watchConfig()
 
   deactivate: ->
-    @PathWatcher.close()
     @statusView?.destroy()
     @emitter.dispose()
     @disposables.dispose()
@@ -316,12 +312,12 @@ module.exports =
       console.log '!Created ' + settingsFile
       fs.writeFileSync settingsFile, '{}'
 
-    @configSubscription ?= @PathWatcher.watch settingsFile, (eventType) =>
-      if eventType is 'change' and @configSubscription? and @accessToken != @SettingsHelper.get('access_token')
-        @accessToken = @SettingsHelper.get 'access_token'
-        @updateToolbarButtons()
-        @MenuManager.update()
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+    configFile = new @File(settingsFile)
+    configFile.onDidChange =>
+      @accessToken = @SettingsHelper.get 'access_token'
+      @updateToolbarButtons()
+      @MenuManager.update()
+      atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
 
   processDirIncludes: (dirname) ->
     settings ?= require './vendor/settings'
