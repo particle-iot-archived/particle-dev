@@ -50,6 +50,7 @@ To install Particle Dev package you'll need following dependencies:
 
 Install following packages:
 
+* [console-panel](https://atom.io/packages/console-panel)
 * [tool-bar](https://atom.io/packages/tool-bar)
 * [spark-dev](https://atom.io/packages/spark-dev)
 * [particle-dev-cloud-functions](https://atom.io/packages/particle-dev-cloud-functions)
