@@ -1,3 +1,8 @@
+## 0.0.32
+* [#111](https://github.com/spark/spark-dev/issues/111) Fixed
+* [#132](https://github.com/spark/spark-dev/issues/132) Fixed
+* Warning Electron users about OTA update
+
 ## 0.0.31
 * [#122](https://github.com/spark/spark-dev/issues/122) Fixed
 
