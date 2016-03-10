@@ -623,29 +623,51 @@ module.exports =
       if !firmware
         firmware = files[0]
 
-      process.chdir rootPath
-      firmware = path.relative rootPath, firmware
+      flashDevice = =>
+        process.chdir rootPath
+        firmware = path.relative rootPath, firmware
 
-      @statusView.setStatus 'Flashing via the cloud...'
+        @statusView.setStatus 'Flashing via the cloud...'
 
-      @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
-      @flashCorePromise.done (e) =>
-        @statusView.setStatus e.status + '...'
-        @statusView.clearAfter 5000
+        @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
+        @flashCorePromise.done (e) =>
+          if e.ok
+            @statusView.setStatus e.status + '...'
+            @statusView.clearAfter 5000
 
-        if atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
-          if fs.existsSync firmware
-            fs.unlink firmware
+            if atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
+              if fs.existsSync firmware
+                fs.unlink firmware
+          else
+            error = e.errors?[0]?.error
+            @statusView.setStatus error, 'error'
+            @statusView.clearAfter 5000
 
-        @flashCorePromise = null
-      , (e) =>
-        @requestErrorHandler e
-        if e.code == 'ECONNRESET'
-          @statusView.setStatus 'Device seems to be offline', 'error'
-        else
-          @statusView.setStatus e.message, 'error'
-        @statusView.clearAfter 5000
-        @flashCorePromise = null
+          @flashCorePromise = null
+        , (e) =>
+          @requestErrorHandler e
+          if e.code == 'ECONNRESET'
+            @statusView.setStatus 'Device seems to be offline', 'error'
+          else
+            @statusView.setStatus e.message, 'error'
+          @statusView.clearAfter 5000
+          @flashCorePromise = null
+
+      if @SettingsHelper.getLocal('current_core_platform') == 10
+        atom.confirm
+          message: 'Flashing over cellular'
+          detailedMessage: 'You\'re trying to flash your app to ' +
+            @SettingsHelper.getLocal('current_core_name') +
+            ' over cellular. This will use at least a few KB from your
+            data plan. ' +
+            'Instead it\'s recommended to flash
+            it via USB.'
+          buttons:
+            'Cancel': ->
+            'Flash OTA anyway': =>
+              flashDevice()
+      else
+        flashDevice()
     else
       # If multiple firmware files, show select
       @initView 'select-firmware'
