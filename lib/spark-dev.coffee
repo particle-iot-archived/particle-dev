@@ -181,8 +181,8 @@ module.exports =
     @toolBar.addButton
       icon: 'document-text'
       callback: ->
-        require('shell').openExternal('http://docs.spark.io/')
-      tooltip: 'Opens reference at docs.spark.io'
+        require('shell').openExternal('https://docs.particle.io/')
+      tooltip: 'Opens reference at docs.particle.io'
       iconset: 'ion'
       priority: 54
     @coreButton = @toolBar.addButton
