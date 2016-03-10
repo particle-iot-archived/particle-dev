@@ -289,6 +289,7 @@ module.exports =
 
   # Enables/disables toolbar buttons based on log in state
   updateToolbarButtons: ->
+    return unless @compileButton
     if @SettingsHelper.isLoggedIn()
       @compileButton.setEnabled true
       @coreButton.setEnabled true
