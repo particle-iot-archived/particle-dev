@@ -165,13 +165,13 @@ module.exports =
     @flashButton = @toolBar.addButton
       icon: 'flash'
       callback: 'spark-dev:flash-cloud'
-      tooltip: 'Compile in cloud and upload code using cloud'
+      tooltip: 'Flash'
       iconset: 'ion'
       priority: 51
     @compileButton = @toolBar.addButton
       icon: 'android-cloud-done'
       callback: 'spark-dev:compile-cloud'
-      tooltip: 'Compile in cloud and show errors if any'
+      tooltip: 'Verify'
       iconset: 'ion'
       priority: 52
 
@@ -188,7 +188,7 @@ module.exports =
     @coreButton = @toolBar.addButton
       icon: 'pinpoint'
       callback: 'spark-dev:select-device'
-      tooltip: 'Select which device you want to work on'
+      tooltip: 'Devices'
       iconset: 'ion'
       priority: 55
     @wifiButton = @toolBar.addButton
