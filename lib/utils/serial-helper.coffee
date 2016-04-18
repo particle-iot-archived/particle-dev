@@ -14,10 +14,11 @@ module.exports =
 
     cores = []
     serialport.list (err, ports) ->
-      for port in ports
-        if (port.manufacturer && port.manufacturer.indexOf("Spark") >= 0) ||
-            (port.pnpId && port.pnpId.indexOf("Spark_Core") >= 0)
-          cores.push port
+      if ports
+        for port in ports
+          if (port.manufacturer && port.manufacturer.indexOf("Spark") >= 0) ||
+              (port.pnpId && port.pnpId.indexOf("Spark_Core") >= 0)
+            cores.push port
 
       if !cores.length
         for port in ports
