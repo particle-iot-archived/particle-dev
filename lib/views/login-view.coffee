@@ -25,7 +25,7 @@ class LoginView extends View
         @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
         @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
         @span class: 'three-quarters inline-block hidden', outlet: 'spinner'
-        @a href: 'https://build.spark.io/forgot-password', class: 'pull-right', 'Forgot password?'
+        @a href: 'https://build.particle.io/forgot-password', class: 'pull-right', 'Forgot password?'
 
   initialize: (serializeState) ->
     {CompositeDisposable} = require 'atom'
