@@ -579,13 +579,17 @@ module.exports =
         # Handle errors
         @CompileErrorsView ?= require './views/compile-errors-view'
         errorParser ?= require 'gcc-output-parser'
-        errors = errorParser.parseString(e.errors[0]).filter (message) ->
-          message.type.indexOf('error') > -1
-        if errors.length == 0
-          @SettingsHelper.setLocal 'compile-status', {error: e.output}
+        if e.errors && e.errors.length
+          errors = errorParser.parseString(e.errors[0]).filter (message) ->
+            message.type.indexOf('error') > -1
+
+          if errors.length == 0
+            @SettingsHelper.setLocal 'compile-status', {error: e.output}
+          else
+            @SettingsHelper.setLocal 'compile-status', {errors: errors}
+            atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
         else
-          @SettingsHelper.setLocal 'compile-status', {errors: errors}
-          atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
+          @SettingsHelper.setLocal 'compile-status', {error: e.output}
 
         atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
         @compileCloudPromise = null
