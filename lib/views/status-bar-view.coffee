@@ -82,7 +82,7 @@ class StatusBarView extends View
     spark = require 'spark'
     spark.login { accessToken: SettingsHelper.get('access_token') }
     @getAttributesPromise = spark.getAttributes SettingsHelper.getLocal('current_core')
-    @getAttributesPromise.done (e) =>
+    @getAttributesPromise.then (e) =>
       SettingsHelper.setLocal 'variables', {}
       SettingsHelper.setLocal 'functions', []
 

@@ -358,7 +358,7 @@ module.exports =
     @ListeningModeView ?= require './views/listening-mode-view'
     @SerialHelper ?= require './utils/serial-helper'
     @listPortsPromise = @SerialHelper.listPorts()
-    @listPortsPromise.done (ports) =>
+    @listPortsPromise.then (ports) =>
       @listPortsPromise = null
       if ports.length == 0
         # If there are no ports, show dialog with animation how to enter listening mode
@@ -450,7 +450,7 @@ module.exports =
 
     buttons['Remove ' + @SettingsHelper.getLocal('current_core_name')] = =>
       @removePromise = @spark.removeCore @SettingsHelper.getLocal('current_core')
-      @removePromise.done (e) =>
+      @removePromise.then (e) =>
         if !@removePromise
           return
         @SettingsHelper.clearCurrentCore()
@@ -488,7 +488,7 @@ module.exports =
     else
       @SerialHelper ?= require './utils/serial-helper'
       promise = @SerialHelper.askForCoreID port
-      promise.done (coreID) =>
+      promise.then (coreID) =>
         @IdentifyCoreView ?= require './views/identify-core-view'
         @identifyCoreView = new @IdentifyCoreView coreID
         @identifyCoreView.attach()
@@ -544,7 +544,7 @@ module.exports =
     currentPlatform = @getCurrentPlatform()
 
     @compileCloudPromise = @spark.compileCode files, options
-    @compileCloudPromise.done (e) =>
+    @compileCloudPromise.then (e) =>
       if !e
         return
 
@@ -563,7 +563,7 @@ module.exports =
         filename = currentPlatform + '_firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
-        @downloadBinaryPromise.done (e) =>
+        @downloadBinaryPromise.then (e) =>
           @SettingsHelper.setLocal 'compile-status', {filename: filename}
           atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
           if !!thenFlash
@@ -634,7 +634,7 @@ module.exports =
         @statusView.setStatus 'Flashing via the cloud...'
 
         @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
-        @flashCorePromise.done (e) =>
+        @flashCorePromise.then (e) =>
           if e.ok
             @statusView.setStatus e.status + '...'
             @statusView.clearAfter 5000

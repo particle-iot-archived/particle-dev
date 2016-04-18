@@ -40,7 +40,7 @@ class ClaimCoreView extends DialogView
       # Claim core via API
       @claimPromise = spark.claimCore deviceID
       @setLoading true
-      @claimPromise.done (e) =>
+      @claimPromise.then (e) =>
         @miniEditor.setLoading false
         if e.ok
           if !@claimPromise

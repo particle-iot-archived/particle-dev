@@ -34,7 +34,7 @@ class RenameCoreView extends DialogView
       @miniEditor.setLoading true
       @miniEditor.setEnabled false
 
-      @renamePromise.done (e) =>
+      @renamePromise.then (e) =>
         @miniEditor.setLoading false
         if !@renamePromise
           return

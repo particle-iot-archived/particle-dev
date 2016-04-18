@@ -136,7 +136,7 @@ class LoginView extends View
 
     spark = require 'spark'
     @loginPromise = spark.login { username:@email, password:@password }
-    @loginPromise.done (e) =>
+    @loginPromise.then (e) =>
       @spinner.addClass 'hidden'
       if !@loginPromise
         return

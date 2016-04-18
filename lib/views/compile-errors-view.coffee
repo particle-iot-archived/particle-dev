@@ -56,7 +56,7 @@ class CompileErrorsView extends SelectView
 
     # Open file with error in editor
     opening = atom.workspace.open filename, { searchAllPanes: true }
-    opening.done (editor) =>
+    opening.then (editor) =>
       editor.setCursorBufferPosition [item.line-1, item.column-1],
     @hide()
 

@@ -29,7 +29,7 @@ class ListeningModeView extends View
     # Interval for automatic dialog dismissal
     @interval = setInterval =>
       promise = SerialHelper.listPorts()
-      promise.done (ports) =>
+      promise.then (ports) =>
         if ports.length > 0
           # Hide dialog
           @cancel()

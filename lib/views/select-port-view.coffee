@@ -39,7 +39,7 @@ class SelectPortView extends SelectView
   listPorts: ->
     SerialHelper = require '../utils/serial-helper'
     @listPortsPromise = SerialHelper.listPorts()
-    @listPortsPromise.done (ports) =>
+    @listPortsPromise.then (ports) =>
       @setItems ports
       @listPortsPromise = null
     , (e) =>

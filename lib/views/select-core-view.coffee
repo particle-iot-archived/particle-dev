@@ -48,7 +48,7 @@ class SelectCoreView extends SelectView
 
   loadCores: ->
     @listDevicesPromise = @spark.listDevices()
-    @listDevicesPromise.done (e) =>
+    @listDevicesPromise.then (e) =>
       e.sort (a, b) =>
         if !a.name
           a.name = 'Unnamed'
