@@ -22,10 +22,10 @@ class LoginView extends View
       @subview 'passwordEditor', new MiniEditorView('and a password?')
       @div class: 'text-error block', outlet: 'errorLabel'
       @div class: 'block', =>
-        @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', 'Log in'
-        @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', 'Cancel'
+        @button click: 'login', id: 'loginButton', class: 'btn btn-primary', outlet: 'loginButton', tabindex: 3, 'Log in'
+        @button click: 'cancel', id: 'cancelButton', class: 'btn', outlet: 'cancelButton', tabindex: 4, 'Cancel'
         @span class: 'three-quarters inline-block hidden', outlet: 'spinner'
-        @a href: 'https://build.particle.io/forgot-password', class: 'pull-right', 'Forgot password?'
+        @a href: 'https://build.particle.io/forgot-password', class: 'pull-right', tabindex: 5, 'Forgot password?'
 
   initialize: (serializeState) ->
     {CompositeDisposable} = require 'atom'
@@ -46,7 +46,9 @@ class LoginView extends View
     @loginPromise = null
 
     @emailModel = @emailEditor.editor.getModel()
+    @emailEditor.editor.element.setAttribute('tabindex', 1)
     @passwordModel = @passwordEditor.editor.getModel()
+    @passwordEditor.editor.element.setAttribute('tabindex', 2)
     passwordElement = $(@passwordEditor.editor.element.rootElement)
     passwordElement.find('div.lines').addClass('password-lines')
     @passwordModel.onDidChange =>
@@ -73,7 +75,7 @@ class LoginView extends View
 
   show: =>
     @panel.show()
-    @emailEditor.editor.click()
+    @emailEditor.editor.focus()
 
   hide: ->
     @panel.hide()
