@@ -71,9 +71,18 @@ class SerialMonitorView extends View
     pane = atom.workspace.paneForUri @getUri()
     pane?.destroy()
 
+  escapeHtml: (unsafe) ->
+    unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+
   appendText: (text, appendNewline=true) ->
     at_bottom = (@output.scrollTop() + @output.innerHeight() + 10 > @output[0].scrollHeight)
 
+    text = @escapeHtml text
     text = text.replace "\r", ''
     if appendNewline
       text += "\n"
