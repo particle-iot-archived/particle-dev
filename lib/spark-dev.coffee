@@ -219,6 +219,11 @@ module.exports =
       type: 'boolean'
       default: true
 
+    # Save all files before compile
+    saveAllBeforeCompile:
+      type: 'boolean'
+      default: true
+
     # Files ignored when compiling
     filesExcludedFromCompile:
       type: 'string'
@@ -518,6 +523,9 @@ module.exports =
       @statusView.clearAfter 5000
       return
 
+    if atom.config.get('spark-dev.saveAllBeforeCompile')
+      atom.commands.dispatch @workspaceElement, 'window:save-all'
+
     @SettingsHelper.setLocal 'compile-status', {working: true}
     atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
 
@@ -635,17 +643,17 @@ module.exports =
 
         @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
         @flashCorePromise.then (e) =>
-          if e.ok
+          if e.ok == false
+            error = e.errors?[0]?.error
+            @statusView.setStatus error, 'error'
+            @statusView.clearAfter 5000
+          else
             @statusView.setStatus e.status + '...'
             @statusView.clearAfter 5000
 
             if atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
               if fs.existsSync firmware
                 fs.unlink firmware
-          else
-            error = e.errors?[0]?.error
-            @statusView.setStatus error, 'error'
-            @statusView.clearAfter 5000
 
           @flashCorePromise = null
         , (e) =>
