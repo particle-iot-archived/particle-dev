@@ -1,25 +1,26 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
 RenameCoreView = require '../../lib/views/rename-core-view'
+packageName = require '../../lib/utils/package-helper'
 SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
 describe 'Rename Core View', ->
   activationPromise = null
   originalProfile = null
-  sparkIde = null
+  main = null
   renameCoreView = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      sparkIde.initView 'rename-core'
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      main.initView 'rename-core'
       renameCoreView = new RenameCoreView()
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     waitsForPromise ->
       activationPromise
@@ -71,8 +72,8 @@ describe 'Rename Core View', ->
         expect(SettingsHelper.getLocal('current_core_name')).toBe('Bar')
         expect(atom.commands.dispatch).toHaveBeenCalled()
         expect(atom.commands.dispatch.calls.length).toEqual(2)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-core-status")
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-menu")
         expect(renameCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy renameCoreView, 'close'
@@ -82,4 +83,4 @@ describe 'Rename Core View', ->
       SparkStub.stubSuccess spark, 'renameCore'
 
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', null
-      sparkIde.renameCore()
+      main.renameCore()

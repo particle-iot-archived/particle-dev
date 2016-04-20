@@ -1,18 +1,19 @@
 path = require 'path'
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
 
 describe 'Compile Errors View', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   compileErrorsView = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      sparkIde.initView 'compile-errors'
-      compileErrorsView = sparkIde.compileErrorsView
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      main.initView 'compile-errors'
+      compileErrorsView = main.compileErrorsView
 
     waitsForPromise ->
       activationPromise
@@ -28,7 +29,7 @@ describe 'Compile Errors View', ->
       compileErrorsView.hide()
 
     it 'tests loading and selecting items', ->
-      SettingsHelper.setLocal 'compile-status', {errors: [
+      errors = [
         {
           text: 'Foo',
           filename: 'foo.ino',
@@ -40,18 +41,19 @@ describe 'Compile Errors View', ->
           line: 3,
           column: 4
         }
-      ]}
+      ]
+      SettingsHelper.setLocal 'compile-status', {errors: errors}
       atom.project.setPaths [path.join(__dirname, '..', 'data', 'sampleproject')]
       compileErrorsView.show()
 
-      errors = compileErrorsView.find('ol.list-group li')
-      expect(errors.length).toEqual(2)
+      errorElements = compileErrorsView.find('ol.list-group li')
+      expect(errorElements.length).toEqual(2)
 
-      expect(errors.eq(0).find('.primary-line').text()).toEqual('Foo')
-      expect(errors.eq(1).find('.primary-line').text()).toEqual('Bar')
+      expect(errorElements.eq(0).find('.primary-line').text()).toEqual('Foo')
+      expect(errorElements.eq(1).find('.primary-line').text()).toEqual('Bar')
 
-      expect(errors.eq(0).find('.secondary-line').text()).toEqual('foo.ino:1:2')
-      expect(errors.eq(1).find('.secondary-line').text()).toEqual('bar.ino:3:4')
+      expect(errorElements.eq(0).find('.secondary-line').text()).toEqual('foo.ino:1:2')
+      expect(errorElements.eq(1).find('.secondary-line').text()).toEqual('bar.ino:3:4')
 
       # Test selecting
       editorSpy = jasmine.createSpy 'setCursorBufferPosition'
@@ -65,8 +67,8 @@ describe 'Compile Errors View', ->
       spyOn(compileErrorsView, 'cancel').andCallThrough()
 
       expect(atom.workspace.open).not.toHaveBeenCalled()
-      errors.eq(0).addClass 'selected'
-      atom.commands.dispatch compileErrorsView.element, 'core:confirm'
+
+      compileErrorsView.confirmed(errors[0])
       expect(atom.workspace.open).toHaveBeenCalled()
       expect(atom.workspace.open).toHaveBeenCalledWith(
         'foo.ino',

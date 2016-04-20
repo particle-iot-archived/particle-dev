@@ -14,6 +14,7 @@
     "fs-plus": "^2.0.4",
     "gcc-output-parser": "^0.0.2",
     "glob": "^4.2.1",
+    "jquery": "^2.0.0",
     "particle-dev-spec-stubs": "git://github.com/spark/particle-dev-spec-stubs.git#v0.0.2",
     "particle-dev-views": "git://github.com/spark/particle-dev-views.git#v0.0.3",
     "request": "*",

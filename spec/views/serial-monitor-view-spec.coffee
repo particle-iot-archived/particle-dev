@@ -1,16 +1,18 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
+$ = jQuery = require 'jquery'
 
 describe 'Serial Monitor View', ->
   activationPromise = null
   originalProfile = null
-  sparkIde = null
+  main = null
   workspaceElement = null
   serialMonitorView = null
 
   initView = ->
-    sparkIde.serialMonitorView = null
-    sparkIde.initView 'serial-monitor'
-    serialMonitorView = sparkIde.serialMonitorView
+    main.serialMonitorView = null
+    main.initView 'serial-monitor'
+    serialMonitorView = main.serialMonitorView
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
@@ -18,13 +20,13 @@ describe 'Serial Monitor View', ->
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportMultiplePorts
 
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
       initView()
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     waitsForPromise ->
       activationPromise
@@ -44,10 +46,9 @@ describe 'Serial Monitor View', ->
 
       serialMonitorView.refreshSerialPorts()
       options = serialMonitorView.portsSelect.find 'option'
-
       expect(options.length).toEqual(1)
-      expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
-      expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
+      expect(options.text()).toEqual('/dev/cu.usbmodemfa1234')
+      expect(options.val()).toEqual('/dev/cu.usbmodemfa1234')
 
       require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportMultiplePorts
       serialMonitorView.nullifySerialport()
@@ -56,11 +57,11 @@ describe 'Serial Monitor View', ->
       options = serialMonitorView.portsSelect.find 'option'
 
       expect(options.length).toEqual(2)
-      expect(options[0].text).toEqual('/dev/cu.usbmodemfa1234')
-      expect(options[0].value).toEqual('/dev/cu.usbmodemfa1234')
+      expect($(options[0]).text()).toEqual('/dev/cu.usbmodemfa1234')
+      expect($(options[0]).val()).toEqual('/dev/cu.usbmodemfa1234')
 
-      expect(options[1].text).toEqual('/dev/cu.usbmodemfab1234')
-      expect(options[1].value).toEqual('/dev/cu.usbmodemfab1234')
+      expect($(options[1]).text()).toEqual('/dev/cu.usbmodemfab1234')
+      expect($(options[1]).val()).toEqual('/dev/cu.usbmodemfab1234')
 
       # Test baudrates
       options = serialMonitorView.baudratesSelect.find 'option'
@@ -68,8 +69,8 @@ describe 'Serial Monitor View', ->
 
       idx = 0
       for baudrate in [300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200]
-        expect(options[idx].text).toEqual(baudrate.toString())
-        expect(options[idx].value).toEqual(baudrate.toString())
+        expect($(options[idx]).text()).toEqual(baudrate.toString())
+        expect($(options[idx]).val()).toEqual(baudrate.toString())
         idx++
 
       # serialMonitorView.close()

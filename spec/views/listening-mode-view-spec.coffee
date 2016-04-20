@@ -1,23 +1,24 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
 SerialHelper = require '../../lib/utils/serial-helper'
+packageName = require '../../lib/utils/package-helper'
 ListeningModeView = require '../../lib/views/listening-mode-view'
 require 'serialport'
 
 describe 'Listening Mode View', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   listeningModeView = null
   originalProfile = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
