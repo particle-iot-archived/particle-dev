@@ -3,7 +3,7 @@
   "main": "./lib/main",
   "version": "0.0.33",
   "description": "Professional, hackable IDE for Particle, based on Github's Atom",
-  "repository": "https://github.com/spark/spark-dev",
+  "repository": "https://github.com/spark/particle-dev",
   "license": "Apache-2.0",
   "engines": {
     "atom": ">0.50.0"

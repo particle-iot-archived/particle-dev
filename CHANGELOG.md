@@ -1,3 +1,15 @@
+## 0.1.0
+* Rename package to `particle-dev`
+* Use `~/.particle` directory for storing credentials
+
+## 0.0.33
+* Fix [#123](https://github.com/spark/spark-dev/issues/123)
+* Fix [#125](https://github.com/spark/spark-dev/issues/125)
+* Fix [#126](https://github.com/spark/spark-dev/issues/126)
+* Fix [#135](https://github.com/spark/spark-dev/issues/135)
+* Fix [#136](https://github.com/spark/spark-dev/issues/136)
+* Add option to autosave files when compiling [#31](https://github.com/spark/spark-dev/issues/31)
+
 ## 0.0.32
 * [#111](https://github.com/spark/spark-dev/issues/111) Fixed
 * [#132](https://github.com/spark/spark-dev/issues/132) Fixed

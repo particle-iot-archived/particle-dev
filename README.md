@@ -2,7 +2,7 @@
 
 Particle Dev is a professional, open source, hackable IDE, designed for use with the Particle devices.
 
-[![Build Status](https://travis-ci.org/spark/spark-dev.svg?branch=master)](https://travis-ci.org/spark/spark-dev)
+[![Build Status](https://travis-ci.org/spark/particle-dev.svg?branch=master)](https://travis-ci.org/spark/particle-dev)
 
 ## Installing
 
@@ -52,11 +52,11 @@ Install following packages:
 
 * [console-panel](https://atom.io/packages/console-panel)
 * [tool-bar](https://atom.io/packages/tool-bar)
-* [spark-dev](https://atom.io/packages/spark-dev)
+* [particle-dev](https://atom.io/packages/particle-dev)
 * [particle-dev-cloud-functions](https://atom.io/packages/particle-dev-cloud-functions)
 * [particle-dev-cloud-variables](https://atom.io/packages/particle-dev-cloud-variables)
 
-After installation of `spark-dev` package, restart Atom. If you see a red bug icon in status bar, click it, then click `Rebuild Modules` button and `Restart Atom` again.
+After installation of `particle-dev` package, restart Atom. If you see a red bug icon in status bar, click it, then click `Rebuild Modules` button and `Restart Atom` again.
 
 ## Usage
 
