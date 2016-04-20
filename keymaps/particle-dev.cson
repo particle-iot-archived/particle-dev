@@ -1,0 +1,9 @@
+'.platform-darwin':
+  'cmd-u': 'particle-dev:flash-cloud'
+  'cmd-r': 'particle-dev:compile-cloud'
+  'cmd-shift-m': 'particle-dev:show-serial-monitor'
+
+'.platform-win32, .platform-linux':
+  'ctrl-u': 'particle-dev:flash-cloud'
+  'ctrl-r': 'particle-dev:compile-cloud'
+  'ctrl-shift-m': 'particle-dev:show-serial-monitor'
