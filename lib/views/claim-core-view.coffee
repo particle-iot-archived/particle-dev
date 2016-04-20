@@ -1,4 +1,5 @@
 {DialogView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 SettingsHelper = null
 _s = null
 
@@ -13,7 +14,7 @@ class ClaimCoreView extends DialogView
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', 'spark-dev-claim-core-view'
+    @prop 'id', "#{packageName()}-claim-core-view"
     @workspaceElement = atom.views.getView(atom.workspace)
 
   # When deviceID is submited
@@ -50,8 +51,8 @@ class ClaimCoreView extends DialogView
           SettingsHelper.setCurrentCore e.id, null, 0
 
           # Refresh UI
-          atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
-          atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+          atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
+          atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
 
           @claimPromise = null
           @close()

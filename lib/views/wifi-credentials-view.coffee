@@ -1,5 +1,6 @@
 {View, $} = require 'atom-space-pen-views'
 {MiniEditorView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $ = null
 _s = null
@@ -10,7 +11,7 @@ SerialHelper = null
 module.exports =
 class WifiCredentialsView extends View
   @content: ->
-    @div id: 'spark-dev-wifi-credentials-view', =>
+    @div id: "#{packageName()}-wifi-credentials-view", =>
       @div class: 'block', =>
         @span 'Enter WiFi Credentials '
         @span class: 'text-subtle', =>

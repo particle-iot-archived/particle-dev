@@ -1,4 +1,6 @@
 {View} = require('atom-space-pen-views')
+packageName = require '../utils/package-helper'
+
 CompositeDisposable = null
 shell = null
 $ = null
@@ -10,7 +12,7 @@ class StatusBarView extends View
   @content: ->
     @div =>
       @div id: 'spark-icon', class: 'inline-block', outlet: 'logoTile', =>
-        @img src: 'atom://spark-dev/images/spark.png'
+        @img src: "atom://#{packageName()}/images/spark.png"
       @div id: 'spark-login-status', class: 'inline-block', outlet: 'loginStatusTile'
       @div id: 'spark-current-device', class: 'inline-block hidden', outlet: 'currentCoreTile', =>
         @span class: 'platform-icon', outlet: 'platformIcon', title: 'Current target platform', =>
@@ -38,10 +40,11 @@ class StatusBarView extends View
     # Defaults to Core
     @platformIcon.addClass 'platform-icon-0'
 
-    @disposables.add atom.commands.add 'atom-workspace',
-      'spark-dev:update-login-status': => @updateLoginStatus()
-      'spark-dev:update-core-status': => @updateCoreStatus()
-      'spark-dev:update-compile-status': => @updateCompileStatus()
+    commands = {}
+    commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
+    commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
+    commands["#{packageName()}:update-compile-status"] = => @updateCompileStatus()
+    @disposables.add atom.commands.add 'atom-workspace', commands
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -58,11 +61,11 @@ class StatusBarView extends View
 
   # Callback triggering selecting core command
   selectCore: ->
-    atom.commands.dispatch @workspaceElement, 'spark-dev:select-device'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:select-device"
 
   # Callback triggering showing compile errors command
   showErrors: =>
-    atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:show-compile-errors"
 
   # Opening file in Finder/Explorer
   showFile: =>
@@ -114,13 +117,13 @@ class StatusBarView extends View
             @updateCoreStatus()
           , 30000
 
-      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, "#{packageName()}:core-status-updated"
       @getAttributesPromise = null
 
     , (e) =>
       console.error e
 
-      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, "#{packageName()}:core-status-updated"
       @getAttributesPromise = null
 
   # Update current core's status
@@ -156,11 +159,11 @@ class StatusBarView extends View
       loginButton = $('<a/>').text('Click to log in to Particle Cloud...')
       @loginStatusTile.append loginButton
       loginButton.on 'click', =>
-        atom.commands.dispatch @workspaceElement, 'spark-dev:login'
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:login"
 
       @currentCoreTile.addClass 'hidden'
 
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
 
   updateCompileStatus: ->
     @compileStatusTile.addClass 'hidden'

@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 SerialHelper = null
@@ -14,7 +15,7 @@ class CompileErrorsView extends SelectView
     {$$} = require 'atom-space-pen-views'
     {CompositeDisposable} = require 'atom'
 
-    @prop 'id', 'spark-dev-compile-errors-view'
+    @prop 'id', "#{packageName()}-compile-errors-view"
 
   fixFilePath: (filename) ->
     splitFilename = filename.split path.sep

@@ -1,6 +1,8 @@
 {View} = require 'atom-space-pen-views'
 {Disposable, CompositeDisposable} = require 'atom'
 {MiniEditorView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
+
 $ = null
 $$ = null
 SettingsHelper = null
@@ -9,7 +11,7 @@ serialport = null
 module.exports =
 class SerialMonitorView extends View
   @content: ->
-    @div id: 'spark-dev-serial-monitor', class: 'panel', =>
+    @div id: "#{packageName()}-serial-monitor", class: 'panel', =>
       @div class: 'panel-heading', =>
         @select outlet: 'portsSelect', change: 'portSelected', =>
           @option value: '', 'No port selected'
@@ -65,7 +67,7 @@ class SerialMonitorView extends View
   onDidChangeModified: (callback) -> new Disposable()
 
   getUri: ->
-    'spark-dev://editor/serial-monitor'
+    "#{packageName()}://editor/serial-monitor"
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()

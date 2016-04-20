@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 Subscriber = null
@@ -11,7 +12,7 @@ class SelectPortView extends SelectView
 
     {$$} = require 'atom-space-pen-views'
 
-    @prop 'id', 'spark-dev-select-port-view'
+    @prop 'id', "#{packageName()}-select-port-view"
     @listPortsPromise = null
     @delegate = delegate
 

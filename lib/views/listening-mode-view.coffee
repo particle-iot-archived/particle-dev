@@ -1,4 +1,5 @@
 {View} = require 'atom-space-pen-views'
+packageName = require '../utils/package-helper'
 SerialHelper = null
 Subscriber = null
 
@@ -8,8 +9,8 @@ class ListeningModeView extends View
     @div =>
       @h1 'Waiting for core...'
       @p =>
-        @img src: 'atom://spark-dev/images/listening.gif'
-      @p 'Check if your core is connected via USB and it\'s in listening mode (LED blinking blue).'
+        @img src: "atom://#{packageName()}/images/listening.gif"
+      @p "Check if your core is connected via USB and it's in listening mode (LED blinking blue)."
       @div class: 'block', =>
         @button click: 'cancel', class: 'btn', 'Cancel'
 
@@ -17,7 +18,7 @@ class ListeningModeView extends View
     {CompositeDisposable} = require 'atom'
     SerialHelper = require '../utils/serial-helper'
 
-    @prop 'id', 'spark-dev-listening-mode-view'
+    @prop 'id', "#{packageName()}-listening-mode-view"
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
     @disposables = new CompositeDisposable

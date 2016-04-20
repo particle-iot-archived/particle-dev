@@ -1,4 +1,5 @@
 {DialogView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 SettingsHelper = null
 _s = null
 
@@ -13,4 +14,4 @@ class IdentifyCoreView extends DialogView
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', 'spark-dev-identify-core-view'
+    @prop 'id', "#{packageName()}-identify-core-view"

@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 SerialHelper = null
@@ -15,7 +16,7 @@ class SelectFirmwareView extends SelectView
     path ?= require 'path'
     fs ?= require 'fs-plus'
 
-    @prop 'id', 'spark-dev-select-firmware-view'
+    @prop 'id', "#{packageName()}-select-firmware-view"
 
   viewForItem: (item) ->
     $$ ->
@@ -26,5 +27,5 @@ class SelectFirmwareView extends SelectView
 
   confirmed: (item) ->
     @hide()
-    atom.sparkDev.emitter.emit 'spark-dev:flash-cloud',
+    atom.sparkDev.emitter.emit "#{packageName()}:flash-cloud",
       firmware: item

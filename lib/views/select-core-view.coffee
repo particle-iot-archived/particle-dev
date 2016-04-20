@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 spark = null
@@ -13,7 +14,7 @@ class SelectCoreView extends SelectView
     {$$} = require 'atom-space-pen-views'
     SettingsHelper = require '../utils/settings-helper'
 
-    @prop 'id', 'spark-dev-select-core-view'
+    @prop 'id', "#{packageName()}-select-core-view"
     @listDevicesPromise = null
     @spark = null
     @requestErrorHandler = null
@@ -40,8 +41,8 @@ class SelectCoreView extends SelectView
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name, item.productId
     @hide()
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
 
   getFilterKey: ->
     'name'
