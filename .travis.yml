@@ -3,16 +3,5 @@ notifications:
   email:
     on_success: never
     on_failure: change
-before_script:
-- ./script/add-key
-- export JANKY_BRANCH=master
-- export JANKY_SHA1=`git rev-parse --short HEAD`
-script:
-- ./script/build
-# - ./script/run-ci-specs
-after_script: ./script/remove-key
-cache:
-  directories:
-    - build/node_modules
-    - dist/atom-work-dir/node_modules
+script: 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
 sudo: false
