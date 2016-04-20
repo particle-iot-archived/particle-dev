@@ -15,7 +15,8 @@ class CompileErrorsView extends SelectView
     {$$} = require 'atom-space-pen-views'
     {CompositeDisposable} = require 'atom'
 
-    @prop 'id', "#{packageName()}-compile-errors-view"
+    @prop 'id', 'compile-errors-view'
+    @addClass packageName()
 
   fixFilePath: (filename) ->
     splitFilename = filename.split path.sep

@@ -17,7 +17,8 @@ class RenameCoreView extends DialogView
       hideOnBlur: false
 
     @renamePromise = null
-    @prop 'id', "#{packageName()}-rename-core-view"
+    @prop 'id', 'rename-core-view'
+    @addClass packageName()
     @workspaceElement = atom.views.getView(atom.workspace)
 
   onConfirm: (newName) ->

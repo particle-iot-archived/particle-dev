@@ -14,7 +14,8 @@ class ClaimCoreView extends DialogView
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', "#{packageName()}-claim-core-view"
+    @prop 'id', 'claim-core-view'
+    @addClass packageName()
     @workspaceElement = atom.views.getView(atom.workspace)
 
   # When deviceID is submited

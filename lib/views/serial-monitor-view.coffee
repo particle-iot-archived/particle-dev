@@ -11,7 +11,7 @@ serialport = null
 module.exports =
 class SerialMonitorView extends View
   @content: ->
-    @div id: "#{packageName()}-serial-monitor", class: 'panel', =>
+    @div id: 'serial-monitor', class: 'panel ' + packageName(), =>
       @div class: 'panel-heading', =>
         @select outlet: 'portsSelect', change: 'portSelected', =>
           @option value: '', 'No port selected'

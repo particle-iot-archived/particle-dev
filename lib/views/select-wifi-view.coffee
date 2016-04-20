@@ -15,7 +15,8 @@ class SelectWifiView extends SelectView
     _s ?= require 'underscore.string'
     WifiHelper ?= require '../utils/wifi-helper'
 
-    @prop 'id', "#{packageName()}-select-wifi-view"
+    @prop 'id', 'select-wifi-view'
+    @addClass packageName()
     @port = null
 
   show: =>

@@ -11,7 +11,7 @@ SerialHelper = null
 module.exports =
 class WifiCredentialsView extends View
   @content: ->
-    @div id: "#{packageName()}-wifi-credentials-view", =>
+    @div id: 'wifi-credentials-view', class: packageName(), =>
       @div class: 'block', =>
         @span 'Enter WiFi Credentials '
         @span class: 'text-subtle', =>

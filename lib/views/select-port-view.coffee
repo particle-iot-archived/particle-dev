@@ -12,7 +12,8 @@ class SelectPortView extends SelectView
 
     {$$} = require 'atom-space-pen-views'
 
-    @prop 'id', "#{packageName()}-select-port-view"
+    @prop 'id', 'select-port-view'
+    @addClass packageName()
     @listPortsPromise = null
     @delegate = delegate
 

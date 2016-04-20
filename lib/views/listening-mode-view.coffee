@@ -18,7 +18,8 @@ class ListeningModeView extends View
     {CompositeDisposable} = require 'atom'
     SerialHelper = require '../utils/serial-helper'
 
-    @prop 'id', "#{packageName()}-listening-mode-view"
+    @prop 'id', 'listening-mode-view'
+    @addClass packageName()
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
 
     @disposables = new CompositeDisposable

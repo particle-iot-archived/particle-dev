@@ -1,0 +1,36 @@
+@import "variables";
+
+.platform-icon::before {
+  display: inline-block;
+  content: '?';
+  background: #666;
+  color: #fff;
+  border-radius: @platform-icon-size / 2;
+  width: @platform-icon-size;
+  height: @platform-icon-size;
+  line-height: @platform-icon-size;
+  text-align: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.platform-icon-0::before {
+  content: 'C';
+  background: @color-core;
+}
+
+.platform-icon-6::before {
+  content: 'P';
+  background: @color-photon;
+}
+
+.platform-icon-8::before {
+  content: 'P1';
+  background: @color-photon;
+  font-size: 8px;
+}
+
+.platform-icon-10::before {
+  content: 'E';
+  background: @color-electron;
+}

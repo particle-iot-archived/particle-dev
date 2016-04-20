@@ -14,7 +14,8 @@ class SelectCoreView extends SelectView
     {$$} = require 'atom-space-pen-views'
     SettingsHelper = require '../utils/settings-helper'
 
-    @prop 'id', "#{packageName()}-select-core-view"
+    @prop 'id', 'select-core-view'
+    @addClass packageName()
     @listDevicesPromise = null
     @spark = null
     @requestErrorHandler = null

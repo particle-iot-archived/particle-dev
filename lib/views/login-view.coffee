@@ -12,7 +12,7 @@ validator = null
 module.exports =
 class LoginView extends View
   @content: ->
-    @div id: "#{packageName()}-login-view", =>
+    @div id: 'login-view', class: packageName(), =>
       @div class: 'block', =>
         @span 'Log in to Particle Cloud '
         @span class: 'text-subtle', =>

@@ -14,4 +14,5 @@ class IdentifyCoreView extends DialogView
       hideOnBlur: false
 
     @claimPromise = null
-    @prop 'id', "#{packageName()}-identify-core-view"
+    @prop 'id', 'identify-core-view'
+    @addClass packageName()

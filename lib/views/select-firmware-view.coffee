@@ -16,7 +16,8 @@ class SelectFirmwareView extends SelectView
     path ?= require 'path'
     fs ?= require 'fs-plus'
 
-    @prop 'id', "#{packageName()}-select-firmware-view"
+    @prop 'id', 'select-firmware-view'
+    @addClass packageName()
 
   viewForItem: (item) ->
     $$ ->
