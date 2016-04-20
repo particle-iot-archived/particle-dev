@@ -1,11 +1,12 @@
 {$} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
 SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
 describe 'Login View', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   loginView = null
   originalProfile = null
   workspaceElement = null
@@ -13,14 +14,14 @@ describe 'Login View', ->
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
 
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      sparkIde.initView 'login'
-      loginView = sparkIde.loginView
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      main.initView 'login'
+      loginView = main.loginView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     waitsForPromise ->
       activationPromise

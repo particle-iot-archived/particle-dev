@@ -1,4 +1,5 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
 SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
@@ -6,17 +7,17 @@ describe 'Select Core View', ->
   activationPromise = null
   selectCoreView = null
   originalProfile = null
-  sparkIde = null
+  main = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      sparkIde.selectCoreView = null
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      main.selectCoreView = null
       SparkStub.stubSuccess spark, 'listDevices'
-      sparkIde.initView 'select-core'
-      selectCoreView = sparkIde.selectCoreView
+      main.initView 'select-core'
+      selectCoreView = main.selectCoreView
       selectCoreView.spark = require 'spark'
       selectCoreView.spark.login
         accessToken: '0123456789abcdef0123456789abcdef'
@@ -24,7 +25,7 @@ describe 'Select Core View', ->
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     waitsForPromise ->
       activationPromise
@@ -80,8 +81,8 @@ describe 'Select Core View', ->
 
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalled()
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('51ff6e065067545724680187', 'Online Core', 0)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-core-status")
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-menu")
 
         jasmine.unspy atom.commands, 'dispatch'
         jasmine.unspy SettingsHelper, 'setCurrentCore'

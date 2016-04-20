@@ -1,0 +1,60 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/stylesheets/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+@import "octicons";
+@import "animations";
+@import "utilities";
+
+@import "variables";
+@import "status-bar";
+@import "platforms";
+@import "views";
+
+atom-text-editor.editor-error {
+  border-color: @background-color-error !important;
+
+  .lines {
+    color: @text-color-error !important;
+  }
+}
+
+/* Dialog. Hardcoded as it is set in particle-dev-views */
+.particle-dev-dialog-view {
+  .loading:before {
+    .three-quarters();
+    position: absolute;
+    content: " ";
+    display: inline-block;
+    margin-top: 2px;
+    right: 13px;
+  }
+
+  .editor-disabled {
+    /* Ugly hack to have a read-only TextEditor */
+    width: 478px;
+    height: 28px;
+    margin-top: -37px;
+    z-index: 100000;
+    position: absolute;
+    display: none;
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+atom-text-editor::shadow .password-lines .line {
+  span.text:before {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    color: @text-color !important;
+  }
+  span.text {
+    color: rgba(0, 0, 0, 0);
+  }
+}

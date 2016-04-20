@@ -1,25 +1,26 @@
 {$} = require 'atom-space-pen-views'
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
 SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
 describe 'Claim Core View', ->
   activationPromise = null
   originalProfile = null
-  sparkIde = null
+  main = null
   claimCoreView = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
 
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      sparkIde.claimCoreView = null
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      main.claimCoreView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     waitsForPromise ->
       activationPromise
@@ -38,8 +39,8 @@ describe 'Claim Core View', ->
 
     it 'checks if empty name would cause an error', ->
       SparkStub.stubSuccess spark, 'claimCore'
-      sparkIde.claimCore()
-      claimCoreView = sparkIde.claimCoreView
+      main.claimCore()
+      claimCoreView = main.claimCoreView
 
       editor = claimCoreView.miniEditor.editor.getModel()
 
@@ -57,8 +58,8 @@ describe 'Claim Core View', ->
 
     it 'checks if proper value passes', ->
       SparkStub.stubSuccess spark, 'claimCore'
-      sparkIde.claimCore()
-      claimCoreView = sparkIde.claimCoreView
+      main.claimCore()
+      claimCoreView = main.claimCoreView
 
       editor = claimCoreView.miniEditor.editor.getModel()
 
@@ -75,8 +76,8 @@ describe 'Claim Core View', ->
         expect(SettingsHelper.setCurrentCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', null, 0)
         expect(atom.commands.dispatch).toHaveBeenCalled()
         expect(atom.commands.dispatch.calls.length).toEqual(2)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-core-status")
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-menu")
         expect(claimCoreView.close).toHaveBeenCalled()
 
         jasmine.unspy claimCoreView, 'close'

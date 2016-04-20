@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 SerialHelper = null
@@ -14,7 +15,8 @@ class CompileErrorsView extends SelectView
     {$$} = require 'atom-space-pen-views'
     {CompositeDisposable} = require 'atom'
 
-    @prop 'id', 'spark-dev-compile-errors-view'
+    @prop 'id', 'compile-errors-view'
+    @addClass packageName()
 
   fixFilePath: (filename) ->
     splitFilename = filename.split path.sep
@@ -56,7 +58,7 @@ class CompileErrorsView extends SelectView
 
     # Open file with error in editor
     opening = atom.workspace.open filename, { searchAllPanes: true }
-    opening.then (editor) =>
+    opening.done (editor) =>
       editor.setCursorBufferPosition [item.line-1, item.column-1],
     @hide()
 

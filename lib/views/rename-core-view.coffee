@@ -1,4 +1,5 @@
 {DialogView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 SettingsHelper = null
 _s = null
 spark = null
@@ -16,7 +17,8 @@ class RenameCoreView extends DialogView
       hideOnBlur: false
 
     @renamePromise = null
-    @prop 'id', 'spark-dev-rename-core-view'
+    @prop 'id', 'rename-core-view'
+    @addClass packageName()
     @workspaceElement = atom.views.getView(atom.workspace)
 
   onConfirm: (newName) ->
@@ -41,8 +43,8 @@ class RenameCoreView extends DialogView
 
         SettingsHelper.setLocal 'current_core_name', newName
 
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
         @renamePromise = null
 
         @close()

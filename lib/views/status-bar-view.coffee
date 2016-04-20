@@ -1,4 +1,6 @@
 {View} = require('atom-space-pen-views')
+packageName = require '../utils/package-helper'
+
 CompositeDisposable = null
 shell = null
 $ = null
@@ -9,19 +11,19 @@ module.exports =
 class StatusBarView extends View
   @content: ->
     @div =>
-      @div id: 'spark-icon', class: 'inline-block', outlet: 'logoTile', =>
-        @img src: 'atom://spark-dev/images/spark.png'
-      @div id: 'spark-login-status', class: 'inline-block', outlet: 'loginStatusTile'
-      @div id: 'spark-current-device', class: 'inline-block hidden', outlet: 'currentCoreTile', =>
+      @div id: 'logo-tile', class: "#{packageName()} inline-block", outlet: 'logoTile', =>
+        @img src: "atom://#{packageName()}/images/logo.png"
+      @div id: 'login-status-tile', class: "#{packageName()} inline-block", outlet: 'loginStatusTile'
+      @div id: 'current-device-tile', class: "#{packageName()} inline-block hidden", outlet: 'currentCoreTile', =>
         @span class: 'platform-icon', outlet: 'platformIcon', title: 'Current target platform', =>
           @a click: 'selectCore'
-      @span id: 'spark-compile-status', class: 'inline-block hidden', outlet: 'compileStatusTile', =>
-        @span id: 'spark-compile-working', =>
+      @span id: 'compile-status-tile', class: "#{packageName()} inline-block hidden", outlet: 'compileStatusTile', =>
+        @span id: 'compile-working', =>
           @span class: 'three-quarters'
           @a 'Compiling in the cloud...'
-        @a id: 'spark-compile-failed', click: 'showErrors', class:'icon icon-stop'
-        @a id: 'spark-compile-success', click: 'showFile', class:'icon icon-check'
-      @span id: 'spark-log', class: 'inline-block', outlet: 'logTile'
+        @a id: 'compile-failed', click: 'showErrors', class:'icon icon-stop'
+        @a id: 'compile-success', click: 'showFile', class:'icon icon-check'
+      @span id: 'log-tile', class: "#{packageName()} inline-block", outlet: 'logTile'
 
   initialize: (serializeState) ->
     {$} = require('atom-space-pen-views')
@@ -38,10 +40,11 @@ class StatusBarView extends View
     # Defaults to Core
     @platformIcon.addClass 'platform-icon-0'
 
-    @disposables.add atom.commands.add 'atom-workspace',
-      'spark-dev:update-login-status': => @updateLoginStatus()
-      'spark-dev:update-core-status': => @updateCoreStatus()
-      'spark-dev:update-compile-status': => @updateCompileStatus()
+    commands = {}
+    commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
+    commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
+    commands["#{packageName()}:update-compile-status"] = => @updateCompileStatus()
+    @disposables.add atom.commands.add 'atom-workspace', commands
 
   # Returns an object that can be retrieved when package is activated
   serialize: ->
@@ -58,11 +61,11 @@ class StatusBarView extends View
 
   # Callback triggering selecting core command
   selectCore: ->
-    atom.commands.dispatch @workspaceElement, 'spark-dev:select-device'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:select-device"
 
   # Callback triggering showing compile errors command
   showErrors: =>
-    atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:show-compile-errors"
 
   # Opening file in Finder/Explorer
   showFile: =>
@@ -114,13 +117,13 @@ class StatusBarView extends View
             @updateCoreStatus()
           , 30000
 
-      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, "#{packageName()}:core-status-updated"
       @getAttributesPromise = null
 
     , (e) =>
       console.error e
 
-      atom.commands.dispatch @workspaceElement, 'spark-dev:core-status-updated'
+      atom.commands.dispatch @workspaceElement, "#{packageName()}:core-status-updated"
       @getAttributesPromise = null
 
   # Update current core's status
@@ -156,11 +159,11 @@ class StatusBarView extends View
       loginButton = $('<a/>').text('Click to log in to Particle Cloud...')
       @loginStatusTile.append loginButton
       loginButton.on 'click', =>
-        atom.commands.dispatch @workspaceElement, 'spark-dev:login'
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:login"
 
       @currentCoreTile.addClass 'hidden'
 
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
 
   updateCompileStatus: ->
     @compileStatusTile.addClass 'hidden'
@@ -171,20 +174,20 @@ class StatusBarView extends View
       @compileStatusTile.find('>').hide()
 
       if !!compileStatus.working
-        @compileStatusTile.find('#spark-compile-working').show()
+        @compileStatusTile.find('#compile-working').show()
       else if !!compileStatus.errors
-        subElement = @compileStatusTile.find('#spark-compile-failed')
+        subElement = @compileStatusTile.find('#compile-failed')
         if compileStatus.errors.length == 1
           subElement.text('One error')
         else
           subElement.text(compileStatus.errors.length + ' errors')
         subElement.show()
       else if !!compileStatus.error
-        subElement = @compileStatusTile.find('#spark-compile-failed')
+        subElement = @compileStatusTile.find('#compile-failed')
         subElement.text(compileStatus.error)
         subElement.show()
       else
-        @compileStatusTile.find('#spark-compile-success')
+        @compileStatusTile.find('#compile-success')
                           .text('Success!')
                           .show()
 

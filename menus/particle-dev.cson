@@ -6,5 +6,5 @@
 ],
 'context-menu':
   '.tree-view.full-menu [is="tree-view-file"] [data-name$=".bin"]': [
-    {'label': 'Flash this file OTA', 'command': 'spark-dev:flash-cloud-file'}
+    {'label': 'Flash this file OTA', 'command': 'particle-dev:flash-cloud-file'}
   ]

@@ -1,22 +1,23 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
 SelectPortView = require '../../lib/views/select-port-view'
+packageName = require '../../lib/utils/package-helper'
 
 describe 'Select Port View', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   selectPortView = null
   originalProfile = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
       selectPortView = new SelectPortView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportMultiplePorts

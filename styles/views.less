@@ -1,0 +1,82 @@
+@import "variables";
+
+#select-core-view.@{package-name} {
+  .core-online::before, .core-offline::before {
+    margin-bottom: -1px;
+  }
+}
+
+#login-view.@{package-name} {
+  .btn {
+    margin-right: 10px;
+  }
+
+  a {
+    line-height: 27px;
+  }
+}
+
+#serial-monitor.@{package-name} {
+  margin-bottom: 0;
+
+  #refresh-ports-button {
+    margin-right: 5px;
+    margin-left: -5px;
+    padding: 0 2px;
+
+    &:before {
+      padding-top: 2px;
+    }
+  }
+
+  .panel-heading {
+    padding-top: 0;
+    padding-bottom: 0;
+
+    button {
+      margin: 5px 0 6px;
+      top: 0;
+    }
+
+    select, span {
+      margin-right: 10px;
+    }
+  }
+
+  .panel-body {
+    padding: 0;
+    height: ~"calc(100% - 33px)";
+  }
+
+  pre {
+    height: ~"calc(100% - 27px)";
+    overflow-y: scroll;
+  }
+}
+
+#select-wifi-view.@{package-name} {
+  &.loading {
+    atom-text-editor {
+      display: none
+    }
+  }
+}
+
+#wifi-credentials-view.@{package-name} {
+  .btn {
+    margin-right: 10px;
+  }
+
+  atom-text-editor[mini]::first-child {
+    margin-bottom: 5px !important;
+  }
+
+  .security {
+    margin-bottom: 5px;
+
+    span {
+      margin-right: 10px;
+      margin-left: 5px;
+    }
+  }
+}

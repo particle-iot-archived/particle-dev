@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 Subscriber = null
@@ -11,7 +12,8 @@ class SelectPortView extends SelectView
 
     {$$} = require 'atom-space-pen-views'
 
-    @prop 'id', 'spark-dev-select-port-view'
+    @prop 'id', 'select-port-view'
+    @addClass packageName()
     @listPortsPromise = null
     @delegate = delegate
 
@@ -30,7 +32,7 @@ class SelectPortView extends SelectView
   confirmed: (item) ->
     @hide()
     # TODO: Cover it with tests
-    atom.sparkDev.emitter.emit @delegate,
+    atom.particleDev.emitter.emit @delegate,
       port: item.comName
 
   getFilterKey: ->

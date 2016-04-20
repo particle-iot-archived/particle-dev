@@ -1,4 +1,5 @@
 {SelectView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 $$ = null
 _s = null
@@ -14,7 +15,8 @@ class SelectWifiView extends SelectView
     _s ?= require 'underscore.string'
     WifiHelper ?= require '../utils/wifi-helper'
 
-    @prop 'id', 'spark-dev-select-wifi-view'
+    @prop 'id', 'select-wifi-view'
+    @addClass packageName()
     @port = null
 
   show: =>
@@ -44,12 +46,12 @@ class SelectWifiView extends SelectView
   confirmed: (item) ->
     @hide()
     if item.security
-      atom.sparkDev.emitter.emit 'spark-dev:enter-wifi-credentials',
+      atom.particleDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
         port: @port
         ssid: item.ssid
         security: item.security
     else
-      atom.sparkDev.emitter.emit 'spark-dev:enter-wifi-credentials',
+      atom.particleDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
         port: @port
 
   getPlatform: ->

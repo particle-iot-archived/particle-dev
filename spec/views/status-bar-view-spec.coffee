@@ -1,4 +1,5 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
+packageName = require '../../lib/utils/package-helper'
 SparkStub = require('particle-dev-spec-stubs').spark
 spark = require 'spark'
 
@@ -6,14 +7,14 @@ xdescribe 'Status Bar Tests', ->
   activationPromise = null
   statusBarPromise = null
   originalProfile = null
-  sparkIde = null
+  main = null
   statusView = null
   workspaceElement = null
 
   beforeEach ->
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     SparkStub.stubSuccess spark, 'getAttributes'
 
@@ -24,9 +25,9 @@ xdescribe 'Status Bar Tests', ->
       statusBarPromise
 
     runs ->
-      activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-        sparkIde = mainModule
-        statusView = sparkIde.statusView
+      activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+        main = mainModule
+        statusView = main.statusView
 
     waitsForPromise ->
       activationPromise
@@ -35,7 +36,7 @@ xdescribe 'Status Bar Tests', ->
   afterEach ->
     SettingsHelper.setProfile originalProfile
 
-  describe 'when the spark-dev is activated', ->
+  describe 'when the package is activated', ->
     it 'attaches custom status bar', ->
       expect(statusView).toExist()
       expect(statusView.find('#spark-icon').is(':empty')).toBe(true)
@@ -51,7 +52,7 @@ xdescribe 'Status Bar Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       # Refresh UI
-      sparkIde.statusView.updateLoginStatus()
+      main.statusView.updateLoginStatus()
 
       expect(statusView.find('#spark-login-status a')).not.toExist()
       expect(statusView.find('#spark-login-status').text()).toEqual('foo@bar.baz')
@@ -68,7 +69,7 @@ xdescribe 'Status Bar Tests', ->
       SparkStub.stubSuccess spark, 'getAttributes'
 
       spyOn statusView, 'getCurrentCoreStatus'
-      sparkIde.statusView.updateCoreStatus()
+      main.statusView.updateCoreStatus()
       expect(statusView.find('#spark-current-core a').text()).toBe('Foo')
       expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
@@ -85,7 +86,7 @@ xdescribe 'Status Bar Tests', ->
       SparkStub.stubNullName spark, 'getAttributes'
 
       spyOn statusView, 'getCurrentCoreStatus'
-      sparkIde.statusView.updateCoreStatus()
+      main.statusView.updateCoreStatus()
       expect(statusView.find('#spark-current-core a').text()).toBe('Unnamed')
       expect(statusView.getCurrentCoreStatus).toHaveBeenCalled()
 
@@ -136,7 +137,7 @@ xdescribe 'Status Bar Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       statusBarItem = statusView.find('#spark-compile-status')
       spyOn(SettingsHelper, 'get').andReturn null
-      sparkIde.statusView.updateCompileStatus()
+      main.statusView.updateCompileStatus()
       expect(statusBarItem.hasClass('hidden')).toBe(true)
       jasmine.unspy SettingsHelper, 'get'
 
@@ -202,13 +203,13 @@ xdescribe 'Status Bar Tests', ->
     spyOn atom.commands, 'dispatch'
 
     statusView.find('#spark-login-status a').click()
-    expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:login')
+    expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:login")
 
     SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
     atom.commands.dispatch.reset()
 
     statusView.find('#spark-current-core a').click()
-    expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:select-device')
+    expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:select-device")
 
     jasmine.unspy atom.commands, 'dispatch'
     SettingsHelper.clearCredentials()

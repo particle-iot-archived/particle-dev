@@ -1,23 +1,24 @@
 SettingsHelper = require '../../lib/utils/settings-helper'
 SelectWifiView = require '../../lib/views/select-wifi-view'
+packageName = require '../../lib/utils/package-helper'
 _s = require 'underscore.string'
 
 describe 'Select Wifi View', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   selectWifiView = null
   originalProfile = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
       selectWifiView = new SelectWifiView
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
 
     # Mock serial
     require.cache[require.resolve('serialport')].exports = require('particle-dev-spec-stubs').serialportSuccess
@@ -119,9 +120,9 @@ lastAssocStatus: 0\n\
 
     xit 'test listing networks on Windows', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      sparkIde.selectWifiView = null
-      sparkIde.initView 'select-wifi'
-      selectWifiView = sparkIde.selectWifiView
+      main.selectWifiView = null
+      main.initView 'select-wifi'
+      selectWifiView = main.selectWifiView
       spyOn(selectWifiView, 'getPlatform').andReturn('win32')
 
       spyOn(selectWifiView, 'listNetworksWindows').andCallThrough()
@@ -181,13 +182,13 @@ lastAssocStatus: 0\n\
       selectWifiView.show()
 
       runs ->
-        spyOn sparkIde.emitter, 'emit'
+        spyOn main.emitter, 'emit'
 
         selectWifiView.confirmed selectWifiView.items[0]
 
-        expect(sparkIde.emitter.emit).toHaveBeenCalled()
-        expect(sparkIde.emitter.emit).toHaveBeenCalledWith('spark-dev:enter-wifi-credentials', { port: null})
+        expect(main.emitter.emit).toHaveBeenCalled()
+        expect(main.emitter.emit).toHaveBeenCalledWith("#{packageName()}:enter-wifi-credentials", { port: null})
 
-        jasmine.unspy sparkIde.emitter, 'emit'
+        jasmine.unspy main.emitter, 'emit'
         SettingsHelper.clearCredentials()
         selectWifiView.hide()

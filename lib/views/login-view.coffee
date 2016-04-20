@@ -1,5 +1,6 @@
 {View, $} = require 'atom-space-pen-views'
 {MiniEditorView} = require 'particle-dev-views'
+packageName = require '../utils/package-helper'
 
 CompositeDisposable = null
 _s = null
@@ -11,7 +12,7 @@ validator = null
 module.exports =
 class LoginView extends View
   @content: ->
-    @div id: 'spark-dev-login-view', =>
+    @div id: 'login-view', class: packageName(), =>
       @div class: 'block', =>
         @span 'Log in to Particle Cloud '
         @span class: 'text-subtle', =>
@@ -38,9 +39,9 @@ class LoginView extends View
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
       'core:cancel', =>
-        atom.commands.dispatch @workspaceElement, 'spark-dev:cancel-login'
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:cancel-login"
       'core:close', =>
-        atom.commands.dispatch @workspaceElement, 'spark-dev:cancel-login'
+        atom.commands.dispatch @workspaceElement, "#{packageName()}:cancel-login"
 
 
     @loginPromise = null
@@ -143,7 +144,7 @@ class LoginView extends View
       if !@loginPromise
         return
       SettingsHelper.setCredentials @email, e.access_token
-      atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+      atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"
       @loginPromise = null
 
       @cancel()
@@ -166,4 +167,4 @@ class LoginView extends View
   # Logout
   logout: =>
     SettingsHelper.clearCredentials()
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"

@@ -1,4 +1,5 @@
 @import "ui-variables";
+@import "variables";
 
 /* Three quarters */
 @-webkit-keyframes three-quarters {
@@ -55,4 +56,27 @@
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(359deg); }
+}
+
+/* Flashing core dot */
+.core-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: @text-color-subtle;
+  display: inline-block;
+}
+
+.core-line .primary-line {
+  &:before {
+    .core-dot();
+    content: " ";
+    margin-right: 10px;
+  }
+
+  &.core-online {
+    &:before {
+      .breathing-cyan();
+    }
+  }
 }

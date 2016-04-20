@@ -3,24 +3,27 @@ spark = require 'spark'
 fs = require 'fs-plus'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
+packageName = require '../lib/utils/package-helper'
 utilities = require '../lib/vendor/utilities'
 SparkStub = require('particle-dev-spec-stubs').spark
 
 describe 'Main Tests', ->
   activationPromise = null
-  sparkIde = null
+  main = null
   originalProfile = null
   workspaceElement = null
 
   beforeEach ->
     workspaceElement = atom.views.getView(atom.workspace)
-    activationPromise = atom.packages.activatePackage('spark-dev').then ({mainModule}) ->
-      sparkIde = mainModule
-      # sparkIde.statusView = null
+    activationPromise = atom.packages.activatePackage(packageName()).then ({mainModule}) ->
+      main = mainModule
+      # main.statusView = null
 
     originalProfile = SettingsHelper.getProfile()
     # For tests not to mess up our profile, we have to switch to test one...
-    SettingsHelper.setProfile 'spark-dev-test'
+    SettingsHelper.setProfile 'test'
+    SettingsHelper.setCredentials()
+    atom.project.setPaths([__dirname])
 
     waitsForPromise ->
       activationPromise
@@ -30,96 +33,96 @@ describe 'Main Tests', ->
 
 
   describe 'when the event is triggered, corresponging handler should be called', ->
-    it 'calls login() method for spark-dev:login event', ->
-      spyOn sparkIde, 'login'
-      atom.commands.dispatch workspaceElement, 'spark-dev:login'
-      expect(sparkIde.login).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'login'
+    it 'calls login() method for :login event', ->
+      spyOn main, 'login'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:login"
+      expect(main.login).toHaveBeenCalled()
+      jasmine.unspy main, 'login'
 
-    it 'calls logout() method for spark-dev:logout event', ->
-      spyOn sparkIde, 'logout'
-      atom.commands.dispatch workspaceElement, 'spark-dev:logout'
-      expect(sparkIde.logout).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'logout'
+    it 'calls logout() method for :logout event', ->
+      spyOn main, 'logout'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:logout"
+      expect(main.logout).toHaveBeenCalled()
+      jasmine.unspy main, 'logout'
 
-    it 'calls selectCore() method for spark-dev:select-device event', ->
-      spyOn sparkIde, 'selectCore'
-      atom.commands.dispatch workspaceElement, 'spark-dev:select-device'
-      expect(sparkIde.selectCore).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'selectCore'
+    it 'calls selectCore() method for :select-device event', ->
+      spyOn main, 'selectCore'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:select-device"
+      expect(main.selectCore).toHaveBeenCalled()
+      jasmine.unspy main, 'selectCore'
 
-    it 'calls renameCore() method for spark-dev:rename-device event', ->
-      spyOn sparkIde, 'renameCore'
-      atom.commands.dispatch workspaceElement, 'spark-dev:rename-device'
-      expect(sparkIde.renameCore).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'renameCore'
+    it 'calls renameCore() method for :rename-device event', ->
+      spyOn main, 'renameCore'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:rename-device"
+      expect(main.renameCore).toHaveBeenCalled()
+      jasmine.unspy main, 'renameCore'
 
-    it 'calls removeCore() method for spark-dev:remove-device event', ->
-      spyOn sparkIde, 'removeCore'
-      atom.commands.dispatch workspaceElement, 'spark-dev:remove-device'
-      expect(sparkIde.removeCore).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'removeCore'
+    it 'calls removeCore() method for :remove-device event', ->
+      spyOn main, 'removeCore'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:remove-device"
+      expect(main.removeCore).toHaveBeenCalled()
+      jasmine.unspy main, 'removeCore'
 
-    it 'calls claimCore() method for spark-dev:claim-device event', ->
-      spyOn sparkIde, 'claimCore'
-      atom.commands.dispatch workspaceElement, 'spark-dev:claim-device'
-      expect(sparkIde.claimCore).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'claimCore'
+    it 'calls claimCore() method for :claim-device event', ->
+      spyOn main, 'claimCore'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:claim-device"
+      expect(main.claimCore).toHaveBeenCalled()
+      jasmine.unspy main, 'claimCore'
 
-    it 'calls identifyCore() method for spark-dev:identify-device event', ->
-      spyOn sparkIde, 'identifyCore'
-      atom.commands.dispatch workspaceElement, 'spark-dev:identify-device'
-      expect(sparkIde.identifyCore).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'identifyCore'
+    it 'calls identifyCore() method for :identify-device event', ->
+      spyOn main, 'identifyCore'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:identify-device"
+      expect(main.identifyCore).toHaveBeenCalled()
+      jasmine.unspy main, 'identifyCore'
 
-    it 'calls compileCloud() method for spark-dev:compile-cloud event', ->
-      spyOn sparkIde, 'compileCloud'
-      atom.commands.dispatch workspaceElement, 'spark-dev:compile-cloud'
-      expect(sparkIde.compileCloud).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'compileCloud'
+    it 'calls compileCloud() method for :compile-cloud event', ->
+      spyOn main, 'compileCloud'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:compile-cloud"
+      expect(main.compileCloud).toHaveBeenCalled()
+      jasmine.unspy main, 'compileCloud'
 
-    it 'calls showCompileErrors() method for spark-dev:show-compile-errors event', ->
-      spyOn sparkIde, 'showCompileErrors'
-      atom.commands.dispatch workspaceElement, 'spark-dev:show-compile-errors'
-      expect(sparkIde.showCompileErrors).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'showCompileErrors'
+    it 'calls showCompileErrors() method for :show-compile-errors event', ->
+      spyOn main, 'showCompileErrors'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:show-compile-errors"
+      expect(main.showCompileErrors).toHaveBeenCalled()
+      jasmine.unspy main, 'showCompileErrors'
 
-    it 'calls flashCloud() method for spark-dev:flash-cloud event', ->
-      spyOn sparkIde, 'flashCloud'
-      atom.commands.dispatch workspaceElement, 'spark-dev:flash-cloud'
-      expect(sparkIde.flashCloud).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'flashCloud'
+    it 'calls flashCloud() method for :flash-cloud event', ->
+      spyOn main, 'flashCloud'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:flash-cloud"
+      expect(main.flashCloud).toHaveBeenCalled()
+      jasmine.unspy main, 'flashCloud'
 
-    it 'calls showSerialMonitor() method for spark-dev:show-serial-monitor event', ->
-      spyOn sparkIde, 'showSerialMonitor'
-      atom.commands.dispatch workspaceElement, 'spark-dev:show-serial-monitor'
-      expect(sparkIde.showSerialMonitor).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'showSerialMonitor'
+    it 'calls showSerialMonitor() method for :show-serial-monitor event', ->
+      spyOn main, 'showSerialMonitor'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:show-serial-monitor"
+      expect(main.showSerialMonitor).toHaveBeenCalled()
+      jasmine.unspy main, 'showSerialMonitor'
 
-    it 'calls setupWifi() method for spark-dev:setup-wifi event', ->
-      spyOn sparkIde, 'setupWifi'
-      atom.commands.dispatch workspaceElement, 'spark-dev:setup-wifi'
-      expect(sparkIde.setupWifi).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'setupWifi'
+    it 'calls setupWifi() method for :setup-wifi event', ->
+      spyOn main, 'setupWifi'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:setup-wifi"
+      expect(main.setupWifi).toHaveBeenCalled()
+      jasmine.unspy main, 'setupWifi'
 
-    it 'calls tryFlashUsb() method for spark-dev:try-flash-usb event', ->
-      spyOn sparkIde, 'tryFlashUsb'
-      atom.commands.dispatch workspaceElement, 'spark-dev:try-flash-usb'
-      expect(sparkIde.tryFlashUsb).toHaveBeenCalled()
-      jasmine.unspy sparkIde, 'tryFlashUsb'
+    it 'calls tryFlashUsb() method for :try-flash-usb event', ->
+      spyOn main, 'tryFlashUsb'
+      atom.commands.dispatch workspaceElement, "#{packageName()}:try-flash-usb"
+      expect(main.tryFlashUsb).toHaveBeenCalled()
+      jasmine.unspy main, 'tryFlashUsb'
 
 
   describe 'checks logged out user', ->
-    it 'checks spark-dev:remove-device', ->
+    it 'checks :remove-device', ->
       spyOn atom, 'confirm'
-      sparkIde.removeCore()
+      main.removeCore()
       expect(atom.confirm).not.toHaveBeenCalled()
       jasmine.unspy atom, 'confirm'
 
     it 'does nothing for logged in user without selected core', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       spyOn atom, 'confirm'
-      sparkIde.removeCore()
+      main.removeCore()
 
       expect(atom.confirm).not.toHaveBeenCalled()
 
@@ -130,7 +133,7 @@ describe 'Main Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
       spyOn atom, 'confirm'
-      sparkIde.removeCore()
+      main.removeCore()
 
       expect(atom.confirm).toHaveBeenCalled()
       expect(atom.confirm.calls.length).toEqual(1)
@@ -151,21 +154,21 @@ describe 'Main Tests', ->
 
 
       waitsFor ->
-        !sparkIde.removePromise
+        !main.removePromise
 
       runs ->
         expect(SettingsHelper.clearCurrentCore).toHaveBeenCalled()
         expect(atom.commands.dispatch).toHaveBeenCalled()
         expect(atom.commands.dispatch.calls.length).toEqual(2)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-core-status')
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-menu')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-core-status")
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-menu")
 
         # Test fail
         SparkStub.stubFail spark, 'removeCore'
         args.buttons['Remove Foo']()
 
       waitsFor ->
-        !sparkIde.removePromise
+        !main.removePromise
 
       runs ->
         expect(atom.confirm.calls.length).toEqual(2)
@@ -189,10 +192,10 @@ describe 'Main Tests', ->
       spyOn(SerialHelper, 'askForCoreID').andCallThrough()
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
-      sparkIde.identifyCore()
+      main.identifyCore()
 
       waitsFor ->
-        !sparkIde.listPortsPromise
+        !main.listPortsPromise
 
       runs ->
         expect(SerialHelper.askForCoreID).toHaveBeenCalled()
@@ -203,34 +206,34 @@ describe 'Main Tests', ->
 
   describe 'cloud compile tests', ->
     it 'checks if nothing is done', ->
-      spyOn(sparkIde, 'getProjectDir').andReturn null
+      spyOn(main, 'getProjectDir').andReturn null
 
       # For logged out user
       spyOn(SettingsHelper, 'isLoggedIn').andCallThrough()
-      sparkIde.compileCloud()
+      main.compileCloud()
       expect(SettingsHelper.isLoggedIn).toHaveBeenCalled()
-      expect(sparkIde.getProjectDir).not.toHaveBeenCalled()
+      expect(main.getProjectDir).not.toHaveBeenCalled()
 
       # Not null compileCloudPromise
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       spyOn SettingsHelper, 'set'
-      sparkIde.compileCloudPromise = 'foo'
-      sparkIde.compileCloud()
+      main.compileCloudPromise = 'foo'
+      main.compileCloud()
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(2)
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Empty root directory
-      sparkIde.compileCloudPromise = null
-      sparkIde.compileCloud()
+      main.compileCloudPromise = null
+      main.compileCloud()
       expect(SettingsHelper.isLoggedIn.calls.length).toEqual(3)
-      expect(sparkIde.getProjectDir).toHaveBeenCalled()
+      expect(main.getProjectDir).toHaveBeenCalled()
       expect(SettingsHelper.set).not.toHaveBeenCalled()
 
       # Cleanup
       SettingsHelper.setLocal 'compile-status', null
       jasmine.unspy SettingsHelper, 'set'
       jasmine.unspy SettingsHelper, 'isLoggedIn'
-      jasmine.unspy sparkIde, 'getProjectDir'
+      jasmine.unspy main, 'getProjectDir'
       SettingsHelper.clearCredentials()
 
     it 'checks if correct files are included', ->
@@ -239,10 +242,10 @@ describe 'Main Tests', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
 
       SparkStub.stubSuccess spark, 'compileCode'
-      @originalFilesExcludedFromCompile = atom.config.get 'spark-dev.filesExcludedFromCompile'
-      atom.config.set 'spark-dev.filesExcludedFromCompile', '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
+      @originalFilesExcludedFromCompile = atom.config.get "#{packageName()}.filesExcludedFromCompile"
+      atom.config.set "#{packageName()}.filesExcludedFromCompile", '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
 
-      # sparkIde.compileCloud()
+      # main.compileCloud()
       # # Check if local storage is set to working
       # expect(SettingsHelper.getLocal('compile-status')).toEqual({working:true})
       #
@@ -251,25 +254,25 @@ describe 'Main Tests', ->
       # expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
       #
       # waitsFor ->
-      #   !sparkIde.compileCloudPromise
+      #   !main.compileCloudPromise
       #
       # runs ->
-      #   atom.config.set 'spark-dev.filesExcludedFromCompile', '.ds_store, .jpg, .ino, .bin'
+      #   atom.config.set "#{packageName()}.filesExcludedFromCompile", '.ds_store, .jpg, .ino, .bin'
       #   spark.compileCode.reset()
-      #   sparkIde.compileCloud()
+      #   main.compileCloud()
       #
       #   expect(spark.compileCode).toHaveBeenCalled()
       #   expectedFiles = ['lib.h', 'inner/bar.cpp', 'lib.cpp']
       #   expect(spark.compileCode).toHaveBeenCalledWith(expectedFiles)
       #
       # waitsFor ->
-      #   !sparkIde.compileCloudPromise
+      #   !main.compileCloudPromise
       #
       runs ->
         SettingsHelper.setLocal 'compile-status', null
         SettingsHelper.clearCredentials()
         atom.project.setPaths oldPaths
-        atom.config.set 'spark-dev.filesExcludedFromCompile', @originalFilesExcludedFromCompile
+        atom.config.set "#{packageName()}.filesExcludedFromCompile", @originalFilesExcludedFromCompile
 
         # Remove firmware files
         for file in fs.listSync(__dirname + '/data/sampleproject')
@@ -282,13 +285,13 @@ describe 'Main Tests', ->
       SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.commands, 'dispatch'
-      sparkIde.compileCloud()
+      main.compileCloud()
 
       waitsFor ->
-        !sparkIde.compileCloudPromise
+        !main.compileCloudPromise
 
       waitsFor ->
-        !sparkIde.downloadBinaryPromise
+        !main.downloadBinaryPromise
 
       runs ->
         compileStatus = SettingsHelper.getLocal 'compile-status'
@@ -296,34 +299,34 @@ describe 'Main Tests', ->
         expect(_s.startsWith(compileStatus.filename, 'core_firmware')).toBe(true)
         expect(_s.endsWith(compileStatus.filename, '.bin')).toBe(true)
         expect(atom.commands.dispatch).toHaveBeenCalled()
-        expect(atom.commands.dispatch.calls.length).toEqual(2)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-compile-status')
-        expect(atom.commands.dispatch).not.toHaveBeenCalledWith(workspaceElement, 'spark-dev:flash-cloud')
+        expect(atom.commands.dispatch.calls.length).toEqual(3)
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-compile-status")
+        expect(atom.commands.dispatch).not.toHaveBeenCalledWith(workspaceElement, "#{packageName()}:flash-cloud")
 
         # Test leaving old firmwares
-        @originalDeleteOldFirmwareAfterCompile = atom.config.get 'spark-dev.deleteOldFirmwareAfterCompile'
-        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', false
+        @originalDeleteOldFirmwareAfterCompile = atom.config.get "#{packageName()}.deleteOldFirmwareAfterCompile"
+        atom.config.set "#{packageName()}.deleteOldFirmwareAfterCompile", false
         fs.openSync atom.project.getPaths()[0] + '/core_firmware_123.bin', 'w'
-        sparkIde.compileCloud()
+        main.compileCloud()
 
       waitsFor ->
-        !sparkIde.compileCloudPromise
+        !main.compileCloudPromise
 
       waitsFor ->
-        !sparkIde.downloadBinaryPromise
+        !main.downloadBinaryPromise
 
       runs ->
         expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware_123.bin')).toBe(true)
 
         # Test leaving only latest firmware
-        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', true
-        sparkIde.compileCloud()
+        atom.config.set "#{packageName()}.deleteOldFirmwareAfterCompile", true
+        main.compileCloud()
 
       waitsFor ->
-        !sparkIde.compileCloudPromise
+        !main.compileCloudPromise
 
       waitsFor ->
-        !sparkIde.downloadBinaryPromise
+        !main.downloadBinaryPromise
 
       runs ->
         expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware_123.bin')).toBe(false)
@@ -331,17 +334,17 @@ describe 'Main Tests', ->
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
         SettingsHelper.clearCredentials()
-        atom.config.set 'spark-dev.deleteOldFirmwareAfterCompile', @originalDeleteOldFirmwareAfterCompile
+        atom.config.set "#{packageName()}.deleteOldFirmwareAfterCompile", @originalDeleteOldFirmwareAfterCompile
 
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SparkStub.stubFail spark, 'compileCode'
 
       spyOn atom.commands, 'dispatch'
-      sparkIde.compileCloud()
+      main.compileCloud()
 
       waitsFor ->
-        !sparkIde.compileCloudPromise
+        !main.compileCloudPromise
 
       runs ->
         compileStatus = SettingsHelper.getLocal 'compile-status'
@@ -349,9 +352,9 @@ describe 'Main Tests', ->
         expect(compileStatus.errors.length).toEqual(1)
 
         expect(atom.commands.dispatch).toHaveBeenCalled()
-        expect(atom.commands.dispatch.calls.length).toEqual(3)
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:update-compile-status')
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:show-compile-errors')
+        expect(atom.commands.dispatch.calls.length).toEqual(4)
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:update-compile-status")
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:show-compile-errors")
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
@@ -363,16 +366,16 @@ describe 'Main Tests', ->
       SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.commands, 'dispatch'
-      sparkIde.compileCloud true
+      main.compileCloud true
 
       waitsFor ->
-        !sparkIde.compileCloudPromise
+        !main.compileCloudPromise
 
       waitsFor ->
-        !sparkIde.downloadBinaryPromise
+        !main.downloadBinaryPromise
 
       runs ->
-        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, 'spark-dev:flash-cloud')
+        expect(atom.commands.dispatch).toHaveBeenCalledWith(workspaceElement, "#{packageName()}:flash-cloud")
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
@@ -380,86 +383,86 @@ describe 'Main Tests', ->
 
   describe 'cloud flash tests', ->
     it 'checks decorators', ->
-      spyOn(sparkIde, 'deviceRequired').andCallThrough()
-      spyOn sparkIde, 'projectRequired'
+      spyOn(main, 'deviceRequired').andCallThrough()
+      spyOn main, 'projectRequired'
 
-      sparkIde.flashCloud()
-      expect(sparkIde.deviceRequired).toHaveBeenCalled()
-      expect(sparkIde.projectRequired).not.toHaveBeenCalled()
+      main.flashCloud()
+      expect(main.deviceRequired).toHaveBeenCalled()
+      expect(main.projectRequired).not.toHaveBeenCalled()
 
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
 
-      sparkIde.flashCloud()
-      expect(sparkIde.projectRequired).toHaveBeenCalled()
+      main.flashCloud()
+      expect(main.projectRequired).toHaveBeenCalled()
 
       # Cleanup
-      jasmine.unspy sparkIde, 'deviceRequired'
-      jasmine.unspy sparkIde, 'projectRequired'
+      jasmine.unspy main, 'deviceRequired'
+      jasmine.unspy main, 'projectRequired'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
     it 'tests no firmware files', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      spyOn sparkIde.emitter, 'emit'
-      spyOn sparkIde, 'compileCloud'
+      spyOn main.emitter, 'emit'
+      spyOn main, 'compileCloud'
 
-      sparkIde.flashCloud()
-      expect(sparkIde.emitter.emit).toHaveBeenCalled()
-      expect(sparkIde.emitter.emit).toHaveBeenCalledWith('spark-dev:compile-cloud', {thenFlash: true})
+      main.flashCloud()
+      expect(main.emitter.emit).toHaveBeenCalled()
+      expect(main.emitter.emit).toHaveBeenCalledWith("#{packageName()}:compile-cloud", {thenFlash: true})
 
-      jasmine.unspy sparkIde, 'compileCloud'
-      jasmine.unspy sparkIde.emitter, 'emit'
+      jasmine.unspy main, 'compileCloud'
+      jasmine.unspy main.emitter, 'emit'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
     it 'tests one firmware file', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      originalDeleteFirmwareAfterFlash = atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
-      atom.config.set 'spark-dev.deleteFirmwareAfterFlash', false
+      originalDeleteFirmwareAfterFlash = atom.config.get "#{packageName()}.deleteFirmwareAfterFlash"
+      atom.config.set "#{packageName()}.deleteFirmwareAfterFlash", false
 
-      atom.config.get('spark-dev.deleteFirmwareAfterFlash')
+      atom.config.get("#{packageName()}.deleteFirmwareAfterFlash")
       fs.openSync atom.project.getPaths()[0] + '/core_firmware.bin', 'w'
-      spyOn sparkIde.statusView, 'setStatus'
-      spyOn sparkIde.statusView, 'clearAfter'
+      spyOn main.statusView, 'setStatus'
+      spyOn main.statusView, 'clearAfter'
       SparkStub.stubSuccess spark, 'flashCore'
 
-      sparkIde.flashCloud()
-      expect(sparkIde.statusView.setStatus).toHaveBeenCalled()
-      expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Flashing via the cloud...')
+      main.flashCloud()
+      expect(main.statusView.setStatus).toHaveBeenCalled()
+      expect(main.statusView.setStatus).toHaveBeenCalledWith('Flashing via the cloud...')
 
       waitsFor ->
-        !sparkIde.flashCorePromise
+        !main.flashCorePromise
 
       runs ->
-        expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Update started...')
-        expect(sparkIde.statusView.clearAfter).toHaveBeenCalled()
-        expect(sparkIde.statusView.clearAfter).toHaveBeenCalledWith(5000)
+        expect(main.statusView.setStatus).toHaveBeenCalledWith('Update started...')
+        expect(main.statusView.clearAfter).toHaveBeenCalled()
+        expect(main.statusView.clearAfter).toHaveBeenCalledWith(5000)
 
         # Test removing firmware
-        atom.config.set 'spark-dev.deleteFirmwareAfterFlash', false
-        sparkIde.flashCloud()
+        atom.config.set "#{packageName()}.deleteFirmwareAfterFlash", false
+        main.flashCloud()
         expect(fs.existsSync(atom.project.getPaths()[0] + '/core_firmware.bin')).toBe(true)
 
-        jasmine.unspy sparkIde.statusView, 'clearAfter'
-        jasmine.unspy sparkIde.statusView, 'setStatus'
+        jasmine.unspy main.statusView, 'clearAfter'
+        jasmine.unspy main.statusView, 'setStatus'
         SettingsHelper.clearCurrentCore()
         SettingsHelper.clearCredentials()
-        atom.config.set 'spark-dev.deleteFirmwareAfterFlash', originalDeleteFirmwareAfterFlash
+        atom.config.set "#{packageName()}.deleteFirmwareAfterFlash", originalDeleteFirmwareAfterFlash
 
     it 'tests passing firmware', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
       SettingsHelper.setCurrentCore '0123456789abcdef0123456789abcdef', 'Foo'
-      atom.config.set 'spark-dev.deleteFirmwareAfterFlash', true
+      atom.config.set "#{packageName()}.deleteFirmwareAfterFlash", true
       firmwarePath = atom.project.getPaths()[0] + '/core_firmware.bin'
       SparkStub.stubSuccess spark, 'flashCore'
       fs.openSync firmwarePath, 'w'
 
-      sparkIde.flashCloud 'core_firmware.bin'
-      expect(sparkIde.spark.flashCore).toHaveBeenCalled()
-      expect(sparkIde.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['core_firmware.bin'])
+      main.flashCloud 'core_firmware.bin'
+      expect(main.spark.flashCore).toHaveBeenCalled()
+      expect(main.spark.flashCore).toHaveBeenCalledWith('0123456789abcdef0123456789abcdef', ['core_firmware.bin'])
 
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
@@ -472,22 +475,22 @@ describe 'Main Tests', ->
       fs.openSync atom.project.getPaths()[0] + '/core_firmware.bin', 'w'
       fs.openSync atom.project.getPaths()[0] + '/core_firmware2.bin', 'w'
 
-      sparkIde.initView 'select-firmware'
-      spyOn sparkIde.selectFirmwareView, 'setItems'
-      spyOn sparkIde.selectFirmwareView, 'show'
+      main.initView 'select-firmware'
+      spyOn main.selectFirmwareView, 'setItems'
+      spyOn main.selectFirmwareView, 'show'
 
-      sparkIde.flashCloud()
-      expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalled()
-      expect(sparkIde.selectFirmwareView.setItems).toHaveBeenCalledWith([
+      main.flashCloud()
+      expect(main.selectFirmwareView.setItems).toHaveBeenCalled()
+      expect(main.selectFirmwareView.setItems).toHaveBeenCalledWith([
           atom.project.getPaths()[0] + '/core_firmware2.bin',
           atom.project.getPaths()[0] + '/core_firmware.bin'
         ])
-      expect(sparkIde.selectFirmwareView.show).toHaveBeenCalled()
+      expect(main.selectFirmwareView.show).toHaveBeenCalled()
 
       fs.unlinkSync atom.project.getPaths()[0] + '/core_firmware.bin'
       fs.unlinkSync atom.project.getPaths()[0] + '/core_firmware2.bin'
-      jasmine.unspy sparkIde.selectFirmwareView, 'setItems'
-      jasmine.unspy sparkIde.selectFirmwareView, 'show'
+      jasmine.unspy main.selectFirmwareView, 'setItems'
+      jasmine.unspy main.selectFirmwareView, 'show'
       SettingsHelper.clearCurrentCore()
       SettingsHelper.clearCredentials()
 
@@ -498,25 +501,25 @@ describe 'Main Tests', ->
       fs.openSync firmwarePath, 'w'
 
       SparkStub.stubOffline spark, 'flashCore'
-      spyOn sparkIde.statusView, 'setStatus'
+      spyOn main.statusView, 'setStatus'
 
-      sparkIde.flashCloud 'core_firmware.bin'
+      main.flashCloud 'core_firmware.bin'
 
       waitsFor ->
-        !sparkIde.flashCorePromise
+        !main.flashCorePromise
 
       runs ->
-        expect(sparkIde.statusView.setStatus).toHaveBeenCalled()
-        expect(sparkIde.statusView.setStatus).toHaveBeenCalledWith('Device seems to be offline', 'error')
+        expect(main.statusView.setStatus).toHaveBeenCalled()
+        expect(main.statusView.setStatus).toHaveBeenCalledWith('Device seems to be offline', 'error')
 
-        jasmine.unspy sparkIde.statusView, 'setStatus'
+        jasmine.unspy main.statusView, 'setStatus'
 
         fs.unlinkSync firmwarePath
         SettingsHelper.clearCurrentCore()
         SettingsHelper.clearCredentials()
 
   describe 'open pane tests', ->
-    url = 'spark-dev://editor/foo'
+    url = "#{packageName()}://editor/foo"
 
     describe 'when there already is open panel', ->
       it 'switches to it', ->
@@ -524,7 +527,7 @@ describe 'Main Tests', ->
         spyOn(atom.workspace, 'paneForURI').andReturn
           activateItemForURI: activateItemForUriSpy
 
-        sparkIde.openPane 'foo'
+        main.openPane 'foo'
 
         expect(atom.workspace.paneForURI).toHaveBeenCalled()
         expect(atom.workspace.paneForURI).toHaveBeenCalledWith(url)
@@ -548,7 +551,7 @@ describe 'Main Tests', ->
           splitDown: splitDownSpy
         }
 
-        sparkIde.openPane 'foo'
+        main.openPane 'foo'
 
         expect(splitDownSpy).toHaveBeenCalled()
         expect(activateSpy).toHaveBeenCalled()
@@ -566,7 +569,7 @@ describe 'Main Tests', ->
         activateSpy.reset()
         atom.workspace.open.reset()
 
-        sparkIde.openPane 'foo'
+        main.openPane 'foo'
 
         expect(splitRightSpy).toHaveBeenCalled()
         expect(activateSpy).toHaveBeenCalled()
