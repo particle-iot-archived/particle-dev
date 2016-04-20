@@ -43,12 +43,7 @@ module.exports =
   compileCloudPromise: null
   flashCorePromise: null
 
-  packageName: ->
-    if @_packageName
-      return @_packageName
-
-    pjson = require('../package.json');
-    @_packageName = pjson.name
+  packageName: require './utils/package-helper'
 
   activate: (state) ->
     # Require modules on activation
