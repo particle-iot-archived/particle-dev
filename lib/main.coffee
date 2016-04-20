@@ -59,7 +59,7 @@ module.exports =
     {CompositeDisposable, Emitter} = require 'atom'
     @disposables = new CompositeDisposable
     @emitter = new Emitter
-    atom.sparkDev =
+    atom.particleDev =
       emitter: @emitter
 
     # Initialize status bar view

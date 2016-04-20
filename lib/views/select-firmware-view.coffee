@@ -28,5 +28,5 @@ class SelectFirmwareView extends SelectView
 
   confirmed: (item) ->
     @hide()
-    atom.sparkDev.emitter.emit "#{packageName()}:flash-cloud",
+    atom.particleDev.emitter.emit "#{packageName()}:flash-cloud",
       firmware: item

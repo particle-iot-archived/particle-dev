@@ -46,12 +46,12 @@ class SelectWifiView extends SelectView
   confirmed: (item) ->
     @hide()
     if item.security
-      atom.sparkDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
+      atom.particleDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
         port: @port
         ssid: item.ssid
         security: item.security
     else
-      atom.sparkDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
+      atom.particleDev.emitter.emit "#{packageName()}:enter-wifi-credentials",
         port: @port
 
   getPlatform: ->

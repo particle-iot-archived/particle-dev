@@ -32,7 +32,7 @@ class SelectPortView extends SelectView
   confirmed: (item) ->
     @hide()
     # TODO: Cover it with tests
-    atom.sparkDev.emitter.emit @delegate,
+    atom.particleDev.emitter.emit @delegate,
       port: item.comName
 
   getFilterKey: ->
