@@ -43,6 +43,13 @@ module.exports =
   compileCloudPromise: null
   flashCorePromise: null
 
+  packageName: ->
+    if @_packageName
+      return @_packageName
+
+    pjson = require('../package.json');
+    @_packageName = pjson.name
+
   activate: (state) ->
     # Require modules on activation
     @StatusView ?= require './views/status-bar-view'
@@ -51,7 +58,7 @@ module.exports =
     {@File} = require 'atom'
 
     # Install packages we depend on
-    require('atom-package-deps').install('spark-dev', true)
+    require('atom-package-deps').install(@packageName(), true)
 
     @workspaceElement = atom.views.getView(atom.workspace)
     {CompositeDisposable, Emitter} = require 'atom'
@@ -64,38 +71,39 @@ module.exports =
     @statusView = new @StatusView()
 
     # Hook up commands
-    @disposables.add atom.commands.add 'atom-workspace',
-      'spark-dev:login': => @login()
-      'spark-dev:logout': => @logout()
-      'spark-dev:select-device': => @selectCore()
-      'spark-dev:rename-device': => @renameCore()
-      'spark-dev:remove-device': => @removeCore()
-      'spark-dev:claim-device': => @claimCore()
-      'spark-dev:try-flash-usb': => @tryFlashUsb()
-      'spark-dev:update-menu': => @MenuManager.update()
-      'spark-dev:show-compile-errors': => @showCompileErrors()
-      'spark-dev:show-serial-monitor': => @showSerialMonitor()
-      'spark-dev:identify-device': => @identifyCore()
-      'spark-dev:compile-cloud': => @compileCloud()
-      'spark-dev:flash-cloud': => @flashCloud()
-      'spark-dev:flash-cloud-file': (event) => @flashCloudFile event
-      'spark-dev:setup-wifi': => @setupWifi()
-      'spark-dev:enter-wifi-credentials': => @enterWifiCredentials()
+    commands = {}
+    commands["#{@packageName()}:login"] = => @login()
+    commands["#{@packageName()}:logout"] = => @logout()
+    commands["#{@packageName()}:select-device"] = => @selectCore()
+    commands["#{@packageName()}:rename-device"] = => @renameCore()
+    commands["#{@packageName()}:remove-device"] = => @removeCore()
+    commands["#{@packageName()}:claim-device"] = => @claimCore()
+    commands["#{@packageName()}:try-flash-usb"] = => @tryFlashUsb()
+    commands["#{@packageName()}:update-menu"] = => @MenuManager.update()
+    commands["#{@packageName()}:show-compile-errors"] = => @showCompileErrors()
+    commands["#{@packageName()}:show-serial-monitor"] = => @showSerialMonitor()
+    commands["#{@packageName()}:identify-device"] = => @identifyCore()
+    commands["#{@packageName()}:compile-cloud"] = => @compileCloud()
+    commands["#{@packageName()}:flash-cloud"] = => @flashCloud()
+    commands["#{@packageName()}:flash-cloud-file"] = (event) => @flashCloudFile event
+    commands["#{@packageName()}:setup-wifi"] = => @setupWifi()
+    commands["#{@packageName()}:enter-wifi-credentials"] = => @enterWifiCredentials()
+    @disposables.add atom.commands.add 'atom-workspace', commands
 
     # Hook up events
-    @emitter.on 'spark-dev:identify-device', (event) =>
+    @emitter.on "#{@packageName()}:identify-device", (event) =>
       @identifyCore(event.port)
 
-    @emitter.on 'spark-dev:compile-cloud', (event) =>
+    @emitter.on "#{@packageName()}:compile-cloud", (event) =>
       @compileCloud(event.thenFlash)
 
-    @emitter.on 'spark-dev:flash-cloud', (event) =>
+    @emitter.on "#{@packageName()}:flash-cloud", (event) =>
       @flashCloud(event.firmware)
 
-    @emitter.on 'spark-dev:setup-wifi', (event) =>
+    @emitter.on "#{@packageName()}:setup-wifi", (event) =>
       @setupWifi(event.port)
 
-    @emitter.on 'spark-dev:enter-wifi-credentials', (event) =>
+    @emitter.on "#{@packageName()}:enter-wifi-credentials", (event) =>
       @enterWifiCredentials(event.port, event.ssid, event.security)
 
     # Update menu (default one in CSON file is empty)
@@ -108,7 +116,7 @@ module.exports =
       catch error
         return
 
-      return unless protocol is 'spark-dev:'
+      return unless protocol is "#{@packageName()}:"
 
       try
         @initView pathname.substr(1)
@@ -116,9 +124,10 @@ module.exports =
         return
 
     # Updating toolbar
-    @disposables.add atom.commands.add 'atom-workspace',
-      'spark-dev:update-login-status': => @updateToolbarButtons()
-      'spark-dev:update-core-status': => @updateToolbarButtons()
+    commands = {}
+    commands["#{@packageName()}:update-login-status"] = => @updateToolbarButtons()
+    commands["#{@packageName()}:update-core-status"] = => @updateToolbarButtons()
+    @disposables.add atom.commands.add 'atom-workspace', commands
 
     # Monitoring changes in settings
     settings ?= require './vendor/settings'
@@ -137,7 +146,7 @@ module.exports =
         @watchConfig()
         @updateToolbarButtons()
         @MenuManager.update()
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"
 
       @watchConfig()
 
@@ -159,18 +168,18 @@ module.exports =
     @statusView.updateLoginStatus()
 
   consumeToolBar: (toolBar) ->
-    @toolBar = toolBar 'spark-dev-tool-bar'
+    @toolBar = toolBar "#{@packageName()}-tool-bar"
 
     @toolBar.addSpacer()
     @flashButton = @toolBar.addButton
       icon: 'flash'
-      callback: 'spark-dev:flash-cloud'
+      callback: "#{@packageName()}:flash-cloud"
       tooltip: 'Compile in cloud and upload code using cloud'
       iconset: 'ion'
       priority: 51
     @compileButton = @toolBar.addButton
       icon: 'android-cloud-done'
-      callback: 'spark-dev:compile-cloud'
+      callback: "#{@packageName()}:compile-cloud"
       tooltip: 'Compile in cloud and show errors if any'
       iconset: 'ion'
       priority: 52
@@ -187,19 +196,19 @@ module.exports =
       priority: 54
     @coreButton = @toolBar.addButton
       icon: 'pinpoint'
-      callback: 'spark-dev:select-device'
+      callback: "#{@packageName()}:select-device"
       tooltip: 'Select which device you want to work on'
       iconset: 'ion'
       priority: 55
     @wifiButton = @toolBar.addButton
       icon: 'wifi'
-      callback: 'spark-dev:setup-wifi'
+      callback: "#{@packageName()}:setup-wifi"
       tooltip: 'Setup device\'s WiFi credentials'
       iconset: 'ion'
       priority: 56
     @toolBar.addButton
       icon: 'usb'
-      callback: 'spark-dev:show-serial-monitor'
+      callback: "#{@packageName()}:show-serial-monitor"
       tooltip: 'Show serial monitor'
       iconset: 'ion'
       priority: 57
@@ -276,7 +285,7 @@ module.exports =
 
   # Open view in bottom panel
   openPane: (uri) ->
-    uri = 'spark-dev://editor/' + uri
+    uri = "#{@packageName()}://editor/" + uri
     pane = atom.workspace.paneForURI uri
 
     if pane?
@@ -323,7 +332,7 @@ module.exports =
       @accessToken = @SettingsHelper.get 'access_token'
       @updateToolbarButtons()
       @MenuManager.update()
-      atom.commands.dispatch @workspaceElement, 'spark-dev:update-login-status'
+      atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"
 
   processDirIncludes: (dirname) ->
     settings ?= require './vendor/settings'
@@ -348,7 +357,7 @@ module.exports =
 
     files = utilities.globList dirname, includes
 
-    notSourceExtensions = atom.config.get('spark-dev.filesExcludedFromCompile').split ','
+    notSourceExtensions = atom.config.get("#{@packageName()}.filesExcludedFromCompile").split ','
     ignores = ('**/*' + _s.trim(extension).toLowerCase() for extension in notSourceExtensions)
 
     if fs.existsSync(ignoreFile)
@@ -421,8 +430,9 @@ module.exports =
     @initView 'login'
     # You may ask why commands aren't registered in LoginView?
     # This way, we don't need to require/initialize login view until it's needed.
-    @disposables.add atom.commands.add 'atom-workspace',
-      'spark-dev:cancel-login': => @loginView.cancelCommand()
+    commands = {}
+    commands["#{@packageName}:cancel-login"] = => @loginView.cancelCommand()
+    @disposables.add atom.commands.add 'atom-workspace', commands
     @loginView.show()
 
   # Log out current user
@@ -459,8 +469,8 @@ module.exports =
         if !@removePromise
           return
         @SettingsHelper.clearCurrentCore()
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-core-status'
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-menu'
+        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-core-status"
+        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-menu"
 
         @removePromise = null
       , (e) =>
@@ -489,7 +499,7 @@ module.exports =
   # Identify core via serial
   identifyCore: (port=null) -> @loginRequired =>
     if !port
-      @choosePort('spark-dev:identify-device')
+      @choosePort("#{@packageName()}:identify-device")
     else
       @SerialHelper ?= require './utils/serial-helper'
       promise = @SerialHelper.askForCoreID port
@@ -523,11 +533,11 @@ module.exports =
       @statusView.clearAfter 5000
       return
 
-    if atom.config.get('spark-dev.saveAllBeforeCompile')
+    if atom.config.get("#{@packageName()}.saveAllBeforeCompile")
       atom.commands.dispatch @workspaceElement, 'window:save-all'
 
     @SettingsHelper.setLocal 'compile-status', {working: true}
-    atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
+    atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
 
     invalidFiles = files.filter (file) ->
       path.basename(file).indexOf(' ') > -1
@@ -542,8 +552,8 @@ module.exports =
 
       @CompileErrorsView ?= require './views/compile-errors-view'
       @SettingsHelper.setLocal 'compile-status', {errors: errors}
-      atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
-      atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
+      atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
+      atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       return
 
     options = {}
@@ -560,7 +570,7 @@ module.exports =
         # Download binary
         @compileCloudPromise = null
 
-        if atom.config.get('spark-dev.deleteOldFirmwareAfterCompile')
+        if atom.config.get("#{@packageName()}.deleteOldFirmwareAfterCompile")
           # Remove old firmwares
           files = fs.listSync rootPath
           for file in files
@@ -573,10 +583,10 @@ module.exports =
 
         @downloadBinaryPromise.then (e) =>
           @SettingsHelper.setLocal 'compile-status', {filename: filename}
-          atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
+          atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
           if !!thenFlash
             setTimeout =>
-              atom.commands.dispatch @workspaceElement, 'spark-dev:flash-cloud'
+              atom.commands.dispatch @workspaceElement, "#{@packageName()}:flash-cloud"
               @downloadBinaryPromise = null
             , 500
           else
@@ -595,16 +605,16 @@ module.exports =
             @SettingsHelper.setLocal 'compile-status', {error: e.output}
           else
             @SettingsHelper.setLocal 'compile-status', {errors: errors}
-            atom.commands.dispatch @workspaceElement, 'spark-dev:show-compile-errors'
+            atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
         else
           @SettingsHelper.setLocal 'compile-status', {error: e.output}
 
-        atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
+        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
         @compileCloudPromise = null
     , (e) =>
       @requestErrorHandler e
       @SettingsHelper.setLocal 'compile-status', null
-      atom.commands.dispatch @workspaceElement, 'spark-dev:update-compile-status'
+      atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
 
   # Show compile errors list
   showCompileErrors: ->
@@ -628,7 +638,7 @@ module.exports =
 
     if files.length == 0 && (!firmware)
       # If no firmware file, compile
-      @emitter.emit 'spark-dev:compile-cloud', {thenFlash: true}
+      @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true}
     else if (files.length == 1) || (!!firmware)
       # If one firmware file, flash
 
@@ -651,7 +661,7 @@ module.exports =
             @statusView.setStatus e.status + '...'
             @statusView.clearAfter 5000
 
-            if atom.config.get 'spark-dev.deleteFirmwareAfterFlash'
+            if atom.config.get "#{@packageName()}.deleteFirmwareAfterFlash"
               if fs.existsSync firmware
                 fs.unlink firmware
 
@@ -699,7 +709,7 @@ module.exports =
   # Set up core's WiFi
   setupWifi: (port=null) -> @loginRequired =>
     if !port
-      @choosePort 'spark-dev:setup-wifi'
+      @choosePort "#{@packageName()}:setup-wifi"
     else
       @initView 'select-wifi'
       @selectWifiView.port = port
@@ -715,7 +725,7 @@ module.exports =
     @wifiCredentialsView.show(ssid, security)
 
   tryFlashUsb: -> @projectRequired =>
-    if !atom.commands.registeredCommands['spark-dev-dfu-util:flash-usb']
+    if !atom.commands.registeredCommands["#{@packageName()}-dfu-util:flash-usb"]
       # TODO: Ask for installation
     else
-      atom.commands.dispatch @workspaceElement, 'spark-dev-dfu-util:flash-usb'
+      atom.commands.dispatch @workspaceElement, "#{@packageName()}-dfu-util:flash-usb"
