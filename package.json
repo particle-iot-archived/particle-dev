@@ -1,5 +1,5 @@
 {
-  "name": "spark-dev",
+  "name": "particle-dev",
   "main": "./lib/main",
   "version": "0.0.33",
   "description": "Professional, hackable IDE for Particle, based on Github's Atom",
