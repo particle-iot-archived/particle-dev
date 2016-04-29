@@ -60,4 +60,4 @@ After installation of `particle-dev` package, restart Atom. If you see a red bug
 
 ## Usage
 
-See [our documentation](http://docs.particle.io/core/dev) to learn about how to use Particle Dev for software development.
+See [our documentation](https://docs.particle.io/guide/tools-and-features/dev/) to learn about how to use Particle Dev for software development.
