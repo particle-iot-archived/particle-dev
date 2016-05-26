@@ -1,3 +1,6 @@
+## 0.1.1
+* Fix crash in Particle Dev App
+
 ## 0.1.0
 * Rename package to `particle-dev`
 * Use `~/.particle` directory for storing credentials
