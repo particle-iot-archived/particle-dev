@@ -1,7 +1,7 @@
 {
   "name": "particle-dev",
   "main": "./lib/main",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Professional, hackable IDE for Particle, based on Github's Atom",
   "repository": "https://github.com/spark/particle-dev",
   "license": "Apache-2.0",
