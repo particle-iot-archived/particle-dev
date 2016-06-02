@@ -169,7 +169,7 @@ module.exports =
     @flashButton = @toolBar.addButton
       icon: 'flash'
       callback: "#{@packageName()}:flash-cloud"
-      tooltip: 'Compile in cloud and upload code using cloud'
+      tooltip: 'Flash code using cloud'
       iconset: 'ion'
       priority: 51
     @compileButton = @toolBar.addButton
