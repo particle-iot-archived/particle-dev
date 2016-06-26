@@ -40,7 +40,7 @@
   "consumedServices": {
     "status-bar": {
       "versions": {
-        "^1.0.0": "consumeStatusBar"
+        "^0 || ^1": "consumeStatusBar"
       }
     },
     "console-panel": {
