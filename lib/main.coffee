@@ -151,6 +151,8 @@ module.exports =
     @disposables.dispose()
     @statusBarTile?.destroy()
     @statusBarTile = null
+    @toolBar?.removeItems();
+    @toolBar = null
 
   serialize: ->
 
