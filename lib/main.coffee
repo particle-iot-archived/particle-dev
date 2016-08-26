@@ -214,6 +214,8 @@ module.exports =
 
   consumeConsolePanel: (@consolePanel) ->
 
+  consumeProfiles: (@profileManager) ->
+
   config:
     # Delete .bin file after flash
     deleteFirmwareAfterFlash:
@@ -522,8 +524,6 @@ module.exports =
 
     rootPath = @getProjectDir()
     files = @processDirIncludes rootPath
-    process.chdir rootPath
-    files = (path.relative(rootPath, file) for file in files)
 
     if files.length == 0
       @statusView.setStatus 'No .ino/.cpp file to compile', 'warning'
@@ -553,13 +553,18 @@ module.exports =
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       return
 
-    options = {}
-    if @SettingsHelper.hasCurrentCore()
-      options.productID = @SettingsHelper.getLocal('current_core_platform')
-    currentPlatform = @getCurrentPlatform()
+    process.chdir rootPath
+    filesObject = {}
+    for file in files
+      filesObject[path.relative(rootPath, file)] = fs.readFileSync(file)
 
-    @compileCloudPromise = @spark.compileCode files, options
-    @compileCloudPromise.then (e) =>
+    productId = 0
+    if @SettingsHelper.hasCurrentCore()
+      productId = @SettingsHelper.getLocal('current_core_platform')
+    currentPlatform = @getCurrentPlatform()
+    @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, productId
+    @compileCloudPromise.then (value) =>
+      e = value.body
       if !e
         return
 
@@ -591,27 +596,26 @@ module.exports =
         , (e) =>
           @requestErrorHandler e
       else
-        # Handle errors
-        @CompileErrorsView ?= require './views/compile-errors-view'
-        errorParser ?= require 'gcc-output-parser'
-        if e.errors && e.errors.length
-          errors = errorParser.parseString(e.errors[0]).filter (message) ->
-            message.type.indexOf('error') > -1
+        console.log e
 
-          if errors.length == 0
-            @SettingsHelper.setLocal 'compile-status', {error: e.output}
-          else
-            @SettingsHelper.setLocal 'compile-status', {errors: errors}
-            atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
-        else
+    , (reason) =>
+      e = reason.body
+      @CompileErrorsView ?= require './views/compile-errors-view'
+      errorParser ?= require 'gcc-output-parser'
+      if e.errors && e.errors.length
+        errors = errorParser.parseString(e.errors[0]).filter (message) ->
+          message.type.indexOf('error') > -1
+
+        if errors.length == 0
           @SettingsHelper.setLocal 'compile-status', {error: e.output}
+        else
+          @SettingsHelper.setLocal 'compile-status', {errors: errors}
+          atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
+      else
+        @SettingsHelper.setLocal 'compile-status', {error: e.output}
 
-        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
-        @compileCloudPromise = null
-    , (e) =>
-      @requestErrorHandler e
-      @SettingsHelper.setLocal 'compile-status', null
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
+      @compileCloudPromise = null
 
   # Show compile errors list
   showCompileErrors: ->

@@ -27,7 +27,8 @@
   },
   "package-deps": [
     "tool-bar",
-    "console-panel"
+    "console-panel",
+    "particle-dev-profiles"
   ],
   "providedServices": {
     "particle-dev": {
@@ -51,6 +52,11 @@
     "tool-bar": {
       "versions": {
         "^0 || ^1": "consumeToolBar"
+      }
+    },
+    "particle-dev-profiles": {
+      "versions": {
+        "^0.0.1": "consumeProfiles"
       }
     }
   },

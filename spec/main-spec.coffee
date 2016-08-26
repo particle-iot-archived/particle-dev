@@ -1,6 +1,7 @@
 _s = require 'underscore.string'
 spark = require 'spark'
 fs = require 'fs-plus'
+whenjs = require 'when'
 SettingsHelper = require '../lib/utils/settings-helper'
 SerialHelper = require '../lib/utils/serial-helper'
 packageName = require '../lib/utils/package-helper'
@@ -281,7 +282,14 @@ describe 'Main Tests', ->
 
     it 'checks successful compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubSuccess spark, 'compileCode'
+      spyOn(main.profileManager.apiClient, 'compileCode').andCallFake =>
+        whenjs.resolve
+          body:
+            "ok": true,
+            "binary_id": "53fdb4b3a7ce5fe43d3cf079"
+            "binary_url": "/v1/binaries/53fdb4b3a7ce5fe43d3cf079"
+            "expires_at": "2014-08-28T10:36:35.183Z"
+            "sizeInfo": "   text	   data	    bss	    dec	    hex	filename\n  74960	   1236	  11876	  88072	  15808	build/foo.elf\n"
       SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.commands, 'dispatch'
@@ -333,13 +341,25 @@ describe 'Main Tests', ->
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
+        jasmine.unspy main.profileManager.apiClient, 'compileCode'
         SettingsHelper.clearCredentials()
         atom.config.set "#{packageName()}.deleteOldFirmwareAfterCompile", @originalDeleteOldFirmwareAfterCompile
 
     it 'checks failed compile', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubFail spark, 'compileCode'
-
+      spyOn(main.profileManager.apiClient, 'compileCode').andCallFake =>
+        whenjs.reject
+          body:
+            "ok": false,
+            "errors": [
+              "Blink.cpp: In function 'void setup()':\n"+
+              "      Blink.cpp:11:17: error: 'OUTPUTz' was not declared in this scope\n"+
+              "       void setup() {\n"+
+              "                       ^\n"+
+              "      make: *** [Blink.o] Error 1"
+            ],
+            "output": "App code was invalid",
+            "stdout": "Nothing to be done for `all'"
       spyOn atom.commands, 'dispatch'
       main.compileCloud()
 
@@ -358,11 +378,19 @@ describe 'Main Tests', ->
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
+        jasmine.unspy main.profileManager.apiClient, 'compileCode'
         SettingsHelper.clearCredentials()
 
     it 'checks flashing after compiling', ->
       SettingsHelper.setCredentials 'foo@bar.baz', '0123456789abcdef0123456789abcdef'
-      SparkStub.stubSuccess spark, 'compileCode'
+      spyOn(main.profileManager.apiClient, 'compileCode').andCallFake =>
+        whenjs.resolve
+          body:
+            "ok": true,
+            "binary_id": "53fdb4b3a7ce5fe43d3cf079"
+            "binary_url": "/v1/binaries/53fdb4b3a7ce5fe43d3cf079"
+            "expires_at": "2014-08-28T10:36:35.183Z"
+            "sizeInfo": "   text	   data	    bss	    dec	    hex	filename\n  74960	   1236	  11876	  88072	  15808	build/foo.elf\n"
       SparkStub.stubSuccess spark, 'downloadBinary'
 
       spyOn atom.commands, 'dispatch'
@@ -379,6 +407,7 @@ describe 'Main Tests', ->
 
         SettingsHelper.setLocal 'compile-status', null
         jasmine.unspy atom.commands, 'dispatch'
+        jasmine.unspy main.profileManager.apiClient, 'compileCode'
         SettingsHelper.clearCredentials()
 
   describe 'cloud flash tests', ->
