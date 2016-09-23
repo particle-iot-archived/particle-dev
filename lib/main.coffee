@@ -345,7 +345,8 @@ module.exports =
       "**/*.h",
       "**/*.ino",
       "**/*.cpp",
-      "**/*.c"
+      "**/*.c",
+      "**/*.properties"
     ]
 
     if fs.existsSync(includesFile)
@@ -555,6 +556,7 @@ module.exports =
 
     process.chdir rootPath
     filesObject = {}
+    console.info 'Compiling following files:', files
     for file in files
       filesObject[path.relative(rootPath, file)] = fs.readFileSync(file)
 
@@ -602,7 +604,7 @@ module.exports =
       e = reason.body
       @CompileErrorsView ?= require './views/compile-errors-view'
       errorParser ?= require 'gcc-output-parser'
-      if e.errors && e.errors.length
+      if e?.errors && e.errors.length
         errors = errorParser.parseString(e.errors[0]).filter (message) ->
           message.type.indexOf('error') > -1
 
@@ -612,6 +614,7 @@ module.exports =
           @SettingsHelper.setLocal 'compile-status', {errors: errors}
           atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
       else
+        console.error 'Compilation failed with unexpected reason:', reason
         @SettingsHelper.setLocal 'compile-status', {error: e.output}
 
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
