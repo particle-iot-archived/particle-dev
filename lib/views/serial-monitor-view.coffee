@@ -134,8 +134,9 @@ class SerialMonitorView extends View
     @input.setEnabled true
 
     @port = new serialport.SerialPort @currentPort, {
-      baudrate: @currentBaudrate
-    }, false
+      baudrate: @currentBaudrate,
+      autoOpen: false
+    }
 
     @port?.on 'close', =>
       @disconnect()
