@@ -729,6 +729,7 @@ module.exports =
     @wifiCredentialsView.show(ssid, security)
 
   tryFlashUsb: -> @projectRequired =>
+    atom.notifications.addWarning 'Flashing via USB from Particle Dev has not yet been implemented'
     if !atom.commands.registeredCommands["#{@packageName()}-dfu-util:flash-usb"]
       # TODO: Ask for installation
     else
