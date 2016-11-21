@@ -602,6 +602,7 @@ module.exports =
 
     , (reason) =>
       e = reason.body
+      console.warn('Compilation failed. Reason:', e);
       @CompileErrorsView ?= require './views/compile-errors-view'
       errorParser ?= require 'gcc-output-parser'
       if e?.errors && e.errors.length
