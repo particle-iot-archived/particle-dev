@@ -396,6 +396,7 @@ module.exports =
         when 6 then currentPlatform = 'photon'
         when 8 then currentPlatform = 'p1'
         when 10 then currentPlatform = 'electron'
+        when 31 then currentPlatform = 'raspberrypi'
 
     currentPlatform
 
