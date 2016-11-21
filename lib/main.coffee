@@ -396,6 +396,7 @@ module.exports =
         when 6 then currentPlatform = 'photon'
         when 8 then currentPlatform = 'p1'
         when 10 then currentPlatform = 'electron'
+        when 31 then currentPlatform = 'raspberrypi'
 
     currentPlatform
 
@@ -602,6 +603,7 @@ module.exports =
 
     , (reason) =>
       e = reason.body
+      console.warn('Compilation failed. Reason:', e);
       @CompileErrorsView ?= require './views/compile-errors-view'
       errorParser ?= require 'gcc-output-parser'
       if e?.errors && e.errors.length

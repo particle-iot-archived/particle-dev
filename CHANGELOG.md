@@ -1,3 +1,19 @@
+## 0.1.6
+* Add Raspberry Pi to known platforms
+
+## 0.1.5
+* Fix error when trying to open serial port
+
+## 0.1.4
+* Fix css issues with Atom's One UI style
+* Send project and library metadata when compiling (support libraries V2)
+
+## 0.1.3
+* Support projects with nested directories
+
+## 0.1.2
+* Add Oak, Duo and Bluz platforms
+
 ## 0.1.1
 * Fix crash in Particle Dev App
 
