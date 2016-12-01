@@ -3,9 +3,9 @@ module.exports = ->
     return @_packageName
 
   try
-    pjson = require('../../package.json');
+    pjson = require '../../package.json'
     @_packageName = pjson.name
-  catch error
+  catch
     @_packageName = 'particle-dev'
 
   @_packageName

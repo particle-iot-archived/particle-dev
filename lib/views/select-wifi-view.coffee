@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-_s = null
 WifiHelper = null
 
 module.exports =
@@ -12,7 +11,6 @@ class SelectWifiView extends SelectView
 
     {$$} = require 'atom-space-pen-views'
     @cp = require 'child_process'
-    _s ?= require 'underscore.string'
     WifiHelper ?= require '../utils/wifi-helper'
 
     @prop 'id', 'select-wifi-view'

@@ -68,7 +68,7 @@ class StatusBarView extends View
     atom.commands.dispatch @workspaceElement, "#{packageName()}:show-compile-errors"
 
   # Opening file in Finder/Explorer
-  showFile: =>
+  showFile: ->
     shell ?= require 'shell'
     rootPath = atom.project.getPaths()[0]
     compileStatus = SettingsHelper.getLocal 'compile-status'
@@ -192,11 +192,10 @@ class StatusBarView extends View
                           .show()
 
   setStatus: (text, type = null) ->
-      @logTile.text(text)
-        .removeClass()
+    @logTile.text(text).removeClass()
 
-      if type
-        @logTile.addClass('text-' + type)
+    if type
+      @logTile.addClass('text-' + type)
 
   clear: ->
     @logTile.fadeOut =>

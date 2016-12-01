@@ -4,7 +4,6 @@ packageName = require '../utils/package-helper'
 
 CompositeDisposable = null
 _s = null
-Subscriber = null
 spark = null
 SettingsHelper = null
 validator = null

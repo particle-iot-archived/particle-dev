@@ -1,7 +1,5 @@
 {DialogView} = require 'particle-dev-views'
 packageName = require '../utils/package-helper'
-SettingsHelper = null
-_s = null
 
 module.exports =
 class IdentifyCoreView extends DialogView

@@ -1,7 +1,6 @@
 {View} = require 'atom-space-pen-views'
 packageName = require '../utils/package-helper'
 SerialHelper = null
-Subscriber = null
 
 module.exports =
 class ListeningModeView extends View
@@ -37,14 +36,14 @@ class ListeningModeView extends View
           @cancel()
           # Try to identify found ports
           atom.commands.dispatch @workspaceElement, delegate
-      , (e) =>
+      , (e) ->
         console.error e
     , 1000
 
   serialize: ->
 
   destroy: ->
-    cancel()
+    @cancel()
     panelToDestroy = @panel
     @panel = null
     panelToDestroy?.destroy()
