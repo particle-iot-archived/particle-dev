@@ -74,7 +74,7 @@ module.exports =
         serialPort.removeAllListeners 'open'
         serialPort.removeAllListeners 'data'
 
-    catch ex
+    catch
       dfd.reject 'Serial errors'
 
     whenjs(dfd.promise).ensure ->
@@ -89,7 +89,7 @@ module.exports =
 
     writeAndDrain = (data, callback) ->
       serialPort.write data, ->
-          serialPort.drain callback
+        serialPort.drain callback
 
     if timeout
       failTimer = setTimeout ->
@@ -159,7 +159,8 @@ module.exports =
         , =>
           @serialPromptDfd serialPort, "SSID:", ssid + "\n", 5000, false
         , =>
-          @serialPromptDfd serialPort, "Security 0=unsecured, 1=WEP, 2=WPA, 3=WPA2:", securityType + "\n", 1500, true
+          prompt = "Security 0=unsecured, 1=WEP, 2=WPA, 3=WPA2:"
+          @serialPromptDfd serialPort, prompt, securityType + "\n", 1500, true
         , (result) =>
           passPrompt = "Password:"
           if !result

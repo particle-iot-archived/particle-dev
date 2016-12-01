@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SerialHelper = null
 SettingsHelper = null
 fs = null
 path = null
@@ -13,7 +12,6 @@ class CompileErrorsView extends SelectView
     super
 
     {$$} = require 'atom-space-pen-views'
-    {CompositeDisposable} = require 'atom'
 
     @prop 'id', 'compile-errors-view'
     @addClass packageName()
@@ -58,7 +56,7 @@ class CompileErrorsView extends SelectView
 
     # Open file with error in editor
     opening = atom.workspace.open filename, { searchAllPanes: true }
-    opening.done (editor) =>
+    opening.done (editor) ->
       editor.setCursorBufferPosition [item.line-1, item.column-1],
     @hide()
 

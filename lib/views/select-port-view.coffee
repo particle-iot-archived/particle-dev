@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-Subscriber = null
 SerialHelper = null
 
 module.exports =
@@ -44,5 +43,5 @@ class SelectPortView extends SelectView
     @listPortsPromise.then (ports) =>
       @setItems ports
       @listPortsPromise = null
-    , (e) =>
+    , (e) ->
       console.error e

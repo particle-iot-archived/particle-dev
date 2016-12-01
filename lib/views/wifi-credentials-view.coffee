@@ -1,11 +1,8 @@
-{View, $} = require 'atom-space-pen-views'
+{View} = require 'atom-space-pen-views'
 {MiniEditorView} = require 'particle-dev-views'
 packageName = require '../utils/package-helper'
 
-$ = null
 _s = null
-SettingsHelper = null
-validator = null
 SerialHelper = null
 
 module.exports =
@@ -42,7 +39,6 @@ class WifiCredentialsView extends View
   initialize: (serializeState) ->
     {CompositeDisposable} = require 'atom'
     _s ?= require 'underscore.string'
-    SettingsHelper = require '../utils/settings-helper'
     SerialHelper = require '../utils/serial-helper'
 
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
@@ -118,8 +114,6 @@ class WifiCredentialsView extends View
 
   # Test input's values
   validateInputs: ->
-    validator ?= require 'validator'
-
     @clearErrors()
 
     @ssid = _s.trim(@ssidEditor.editor.getModel().getText())

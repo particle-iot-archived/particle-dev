@@ -2,8 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SerialHelper = null
-SettingsHelper = null
 fs = null
 path = null
 

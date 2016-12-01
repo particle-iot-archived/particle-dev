@@ -3,7 +3,6 @@
 {MiniEditorView} = require 'particle-dev-views'
 packageName = require '../utils/package-helper'
 
-$ = null
 $$ = null
 SettingsHelper = null
 serialport = null
@@ -25,7 +24,7 @@ class SerialMonitorView extends View
         @subview 'input', new MiniEditorView('Enter string to send')
 
   initialize: (serializeState) ->
-    {$, $$} = require 'atom-space-pen-views'
+    {$$} = require 'atom-space-pen-views'
     SettingsHelper = require '../utils/settings-helper'
 
     @disposables = new CompositeDisposable

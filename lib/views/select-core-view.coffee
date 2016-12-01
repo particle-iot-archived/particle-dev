@@ -2,8 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-spark = null
-Subscriber = null
 SettingsHelper = null
 
 module.exports =
@@ -51,7 +49,7 @@ class SelectCoreView extends SelectView
   loadCores: ->
     @listDevicesPromise = @spark.listDevices()
     @listDevicesPromise.then (e) =>
-      e.sort (a, b) =>
+      e.sort (a, b) ->
         if !a.name
           a.name = 'Unnamed'
         if !b.name
