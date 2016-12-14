@@ -282,8 +282,8 @@ module.exports =
 
     callback()
 
-  # Open view in bottom panel
-  openPane: (uri) ->
+  # Open view in a panel
+  openPane: (uri, location='bottom') ->
     uri = "#{@packageName()}://editor/" + uri
     pane = atom.workspace.paneForURI uri
 
@@ -291,11 +291,18 @@ module.exports =
       pane.activateItemForURI uri
     else
       if atom.workspace.getPanes().length == 1
-        pane = atom.workspace.getActivePane().splitDown()
+        switch location
+          when 'bottom' then pane = atom.workspace.getActivePane().splitDown()
+          when 'top' then pane = atom.workspace.getActivePane().splitUp()
+          when 'left' then pane = atom.workspace.getActivePane().splitLeft()
+          when 'right' then pane = atom.workspace.getActivePane().splitRight()
       else
         panes = atom.workspace.getPanes()
         pane = panes.pop()
-        pane = pane.splitRight()
+        if location == 'left'
+          pane = pane.splitLeft()
+        else
+          pane = pane.splitRight()
 
       pane.activate()
       atom.workspace.open uri, searchAllPanes: true

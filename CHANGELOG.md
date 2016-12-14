@@ -1,3 +1,6 @@
+## 0.1.7
+* Add ability to select location when opening a panel via API
+
 ## 0.1.6
 * Add Raspberry Pi to known platforms
 
