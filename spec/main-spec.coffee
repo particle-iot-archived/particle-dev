@@ -609,3 +609,15 @@ describe 'Main Tests', ->
         jasmine.unspy atom.workspace, 'getActivePane'
         jasmine.unspy atom.workspace, 'paneForURI'
         jasmine.unspy atom.workspace, 'open'
+
+  describe 'isProject tests', ->
+    it 'returns true when in project and false if not', ->
+      oldPaths = atom.project.getPaths()
+      atom.project.setPaths [__dirname + '/data/sampleproject']
+      expect(main.isProject()).toBe(true)
+
+      atom.project.setPaths []
+      expect(main.isProject()).toBe(false)
+
+      atom.project.setPaths oldPaths
+      expect(main.isProject()).toBe(false)

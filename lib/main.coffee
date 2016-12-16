@@ -427,6 +427,12 @@ module.exports =
       return projectDir
     projectPath.getPath()
 
+  isProject: ->
+    dir = @getProjectDir()
+    return false unless dir
+    # Poor man's project detection. In the future replace with
+    return fs.existsSync(path.join(dir, 'project.properties'))
+
   requestErrorHandler: (error) ->
     if error.message == 'invalid_token'
       @statusView.setStatus 'Token expired. Log in again', 'error'
