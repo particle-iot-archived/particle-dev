@@ -1,3 +1,6 @@
+## 0.1.8
+* Add `isProject` method
+
 ## 0.1.7
 * Add ability to select location when opening a panel via API
 
