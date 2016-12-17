@@ -93,7 +93,7 @@ module.exports =
       @identifyCore(event.port)
 
     @emitter.on "#{@packageName()}:compile-cloud", (event) =>
-      @compileCloud(event.thenFlash)
+      @compileCloud(event.thenFlash, event.files, event.rootPath)
 
     @emitter.on "#{@packageName()}:flash-cloud", (event) =>
       @flashCloud(event.firmware)
@@ -141,8 +141,10 @@ module.exports =
 
     contextMenus = {
       '.tree-view.full-menu [is="tree-view-file"] [data-name$=".cpp"]':flashExampleMenuItem,
-      '.tree-view.full-menu [is="tree-view-file"] [data-name$=".ino"]':flashExampleMenuItem
-      '.tree-view.full-menu [is="tree-view-directory"]':flashExampleMenuItem
+      '.tree-view.full-menu [is="tree-view-file"] [data-name$=".ino"]':flashExampleMenuItem,
+# when matching the directory, the item is also propagated to all child elements of that directory regardless
+# of their extension, so for now compiling an example is done only from the files themselves
+#      '.tree-view.full-menu [is="tree-view-directory"]':flashExampleMenuItem
     }
 
     @contextMenus.add atom.contextMenu.add contextMenus
@@ -556,11 +558,12 @@ module.exports =
     relative = []
     libraryManager.pathsCommonPrefix files, relative, basePath
     map = {}
-    for i in [0..files.length]
+    for i in [0..files.length-1]
       map[relative[i]] = files[i]
     return map
 
   # Compile current project in the cloud
+  # when updating arguments here, also update the event emitter above
   compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired =>
     if !@canCompileNow
       return
@@ -643,10 +646,8 @@ module.exports =
           @SettingsHelper.setLocal 'compile-status', {filename: filename}
           atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
           if !!thenFlash
-            setTimeout =>
-              atom.commands.dispatch @workspaceElement, "#{@packageName()}:flash-cloud"
-              @downloadBinaryPromise = null
-            , 500
+            # want to explicitly set the file to flash since we cannot assume it from the current project when compiling a library example
+            @emitter.emit "#{@packageName()}:flash-cloud", {firmware: filename}
           else
             @downloadBinaryPromise = null
         , (e) =>
@@ -683,31 +684,37 @@ module.exports =
     @compileErrorsView.show()
 
   # Flash core via the cloud
-  flashCloud: (firmware=null) -> @deviceRequired => @projectRequired =>
+  flashCloud: (firmware=null) -> @deviceRequired =>
     fs ?= require 'fs-plus'
     path ?= require 'path'
     _s ?= require 'underscore.string'
     utilities ?= require './vendor/utilities'
+    console.log 'flashCloud', firmware
 
     currentPlatform = @getCurrentPlatform()
-    rootPath = @getProjectDir()
-    files = fs.listSync(rootPath)
-    files = files.filter (file) ->
-      return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
-             (_s.startsWith(path.basename(file), currentPlatform))
 
-    if files.length == 0 && (!firmware)
+    files = null
+    rootPath = null
+    if firmware
+      files = [firmware]
+    else
+      @projectRequired =>
+        rootPath = @getProjectDir()
+        files = fs.listSync(rootPath)
+        files = files.filter (file) ->
+          return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
+                 (_s.startsWith(path.basename(file), currentPlatform))
+
+    if files.length is 0
       # If no firmware file, compile
       @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true}
-    else if (files.length == 1) || (!!firmware)
+    else if (files.length == 1)
       # If one firmware file, flash
-
-      if !firmware
-        firmware = files[0]
-
+      firmware = files[0]
       flashDevice = =>
-        process.chdir rootPath
-        firmware = path.relative rootPath, firmware
+        if !!rootPath
+          process.chdir rootPath
+          firmware = path.relative rootPath, firmware
 
         @statusView.setStatus 'Flashing via the cloud...'
 
@@ -791,14 +798,15 @@ module.exports =
           example.buildFiles(files)
             .then =>
               console.log('compiling example files', files)
-              @compileCloud true, files.map, files.basePath
+              @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true, files: files.map, rootPath: files.basePath}
+              #@compileCloud true, files.map, files.basePath
 
-  flashCloudFile: (event) ->
+  flashCloudFile: (event) -> @deviceRequired =>
     @flashCloud event.target.dataset.path
 
-  flashCloudExampleFile: (event) ->
+  flashCloudExampleFile: (event) -> @deviceRequired =>
     file = event.target.dataset.path
-    @flashCloudExample file
+    @emitter.emit "#{@packageName()}:flash-cloud-example", {file}
 
   # Show serial monitor panel
   showSerialMonitor: ->
