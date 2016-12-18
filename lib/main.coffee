@@ -556,6 +556,7 @@ module.exports =
 
   mapCommonPrefix: (files, basePath=process.cwd()) ->
     relative = []
+    libraryManager ?= require 'particle-library-manager'
     libraryManager.pathsCommonPrefix files, relative, basePath
     map = {}
     for i in [0..files.length-1]
