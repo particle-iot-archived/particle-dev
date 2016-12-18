@@ -89,6 +89,9 @@ module.exports =
     @emitter.on "#{@packageName()}:identify-device", (event) =>
       @identifyCore(event.port)
 
+    @emitter.on "#{@packageName()}:select-device", (event) =>
+      @selectCore(event.callback)
+
     @emitter.on "#{@packageName()}:compile-cloud", (event) =>
       @compileCloud(event.thenFlash)
 
@@ -268,10 +271,20 @@ module.exports =
   # "Decorator" which runs callback only when user is logged in and has core selected
   deviceRequired: (callback) ->
     @loginRequired =>
+      self = this
       if !@SettingsHelper.hasCurrentCore()
-        atom.notifications.addInfo 'Please select a device'
+        notification = atom.notifications.addInfo('Please select a device', {
+          buttons: [
+            { text: 'Select Device...', onDidClick: () =>
+              # this is NotificationElement (UI), not Notification (the model)
+              # hmm...doesn't seem to even be NotificationElement but the raw DOM object
+              view = atom.views.getView(notification)
+              view.removeNotification()
+              @emitter.emit "#{@packageName()}:select-device", {callback}
+            }
+          ]
+        })
         return
-
       callback()
 
   # "Decorator" which runs callback only when there's project set
@@ -456,13 +469,13 @@ module.exports =
     @loginView.logout()
 
   # Show user's cores list
-  selectCore: -> @loginRequired =>
+  selectCore: (callback) -> @loginRequired =>
     @initView 'select-core'
     @selectCoreView.spark ?= @spark
     @selectCoreView.requestErrorHandler = (error) =>
       @requestErrorHandler error
 
-    @selectCoreView.show()
+    @selectCoreView.show(callback)
 
   # Show rename core dialog
   renameCore: -> @deviceRequired =>
