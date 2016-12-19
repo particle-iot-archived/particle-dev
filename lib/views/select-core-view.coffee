@@ -18,8 +18,9 @@ class SelectCoreView extends SelectView
     @spark = null
     @requestErrorHandler = null
 
-  show: =>
+  show: (next=null) =>
     @setItems []
+    @next = next
     @setLoading 'Loading devices...'
     @loadCores()
     super
@@ -42,6 +43,7 @@ class SelectCoreView extends SelectView
     @hide()
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
+    @next(item) if @next
 
   getFilterKey: ->
     'name'
