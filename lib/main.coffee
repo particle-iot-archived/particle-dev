@@ -7,6 +7,7 @@ path = null
 _s = null
 url = null
 errorParser = null
+libraryManager = null
 
 module.exports =
   # Local modules for JIT require
@@ -58,6 +59,7 @@ module.exports =
     @workspaceElement = atom.views.getView(atom.workspace)
     {CompositeDisposable, Emitter} = require 'atom'
     @disposables = new CompositeDisposable
+    @contextMenus = new CompositeDisposable
     @emitter = new Emitter
     atom.particleDev =
       emitter: @emitter
@@ -81,6 +83,7 @@ module.exports =
     commands["#{@packageName()}:compile-cloud"] = => @compileCloud()
     commands["#{@packageName()}:flash-cloud"] = => @flashCloud()
     commands["#{@packageName()}:flash-cloud-file"] = (event) => @flashCloudFile event
+    commands["#{@packageName()}:flash-cloud-example-file"] = (event) => @flashCloudExampleFile event
     commands["#{@packageName()}:setup-wifi"] = => @setupWifi()
     commands["#{@packageName()}:enter-wifi-credentials"] = => @enterWifiCredentials()
     @disposables.add atom.commands.add 'atom-workspace', commands
@@ -93,10 +96,13 @@ module.exports =
       @selectCore(event.callback)
 
     @emitter.on "#{@packageName()}:compile-cloud", (event) =>
-      @compileCloud(event.thenFlash)
+      @compileCloud(event.thenFlash, event.files, event.rootPath)
 
     @emitter.on "#{@packageName()}:flash-cloud", (event) =>
       @flashCloud(event.firmware)
+
+    @emitter.on "#{@packageName()}:flash-cloud-example", (event) =>
+      @flashCloudExample(event.file)
 
     @emitter.on "#{@packageName()}:setup-wifi", (event) =>
       @setupWifi(event.port)
@@ -127,6 +133,25 @@ module.exports =
     commands["#{@packageName()}:update-core-status"] = => @updateToolbarButtons()
     @disposables.add atom.commands.add 'atom-workspace', commands
 
+    self = @
+    flashExampleMenuItem = [{
+      label: 'Flash Example OTA',
+      command: "#{@packageName()}:flash-cloud-example-file",
+      shouldDisplay: (event) => @isLibraryExampleSync(event.target.dataset.path),
+      created: (event) ->
+        this.enabled = self.canCompileNow()
+    }]
+
+    contextMenus = {
+      '.tree-view.full-menu [is="tree-view-file"] [data-name$=".cpp"]':flashExampleMenuItem,
+      '.tree-view.full-menu [is="tree-view-file"] [data-name$=".ino"]':flashExampleMenuItem,
+# when matching the directory, the item is also propagated to all child elements of that directory regardless
+# of their extension, so for now compiling an example is done only from the files themselves
+#      '.tree-view.full-menu [is="tree-view-directory"]':flashExampleMenuItem
+    }
+
+    @contextMenus.add atom.contextMenu.add contextMenus
+
     # Monitoring changes in settings
     settings ?= require './vendor/settings'
     fs ?= require 'fs-plus'
@@ -152,6 +177,7 @@ module.exports =
     @statusView?.destroy()
     @emitter.dispose()
     @disposables.dispose()
+    @contextMenus.dispose()
     @statusBarTile?.destroy()
     @statusBarTile = null
     @toolBar?.removeItems();
@@ -530,9 +556,22 @@ module.exports =
         @statusView.setStatus e, 'error'
         @statusView.clearAfter 5000
 
+  canCompileNow: ->
+    !@compileCloudPromise
+
+  mapCommonPrefix: (files, basePath=process.cwd()) ->
+    relative = []
+    libraryManager ?= require 'particle-library-manager'
+    libraryManager.pathsCommonPrefix files, relative, basePath
+    map = {}
+    for i in [0..files.length-1]
+      map[relative[i]] = files[i]
+    return map
+
   # Compile current project in the cloud
-  compileCloud: (thenFlash=null) -> @loginRequired => @projectRequired =>
-    if !!@compileCloudPromise
+  # when updating arguments here, also update the event emitter above
+  compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired =>
+    if !@canCompileNow
       return
 
     # Including files
@@ -542,9 +581,13 @@ module.exports =
     utilities ?= require './vendor/utilities'
     _s ?= require 'underscore.string'
 
-    rootPath = @getProjectDir()
-    files = @processDirIncludes rootPath
+    # if the files have been specified explicitly, assume project etc.. has already been checked for
+    rootPath ?= @projectRequired => @getProjectDir()
+    files ?= @processDirIncludes rootPath
 
+    # files may also be a map from logical name to physical file name
+    map = if Array.isArray(files) then @mapCommonPrefix files, rootPath else files
+    files = (v for k, v of map)
     if files.length == 0
       @statusView.setStatus 'No .ino/.cpp file to compile', 'warning'
       @statusView.clearAfter 5000
@@ -574,11 +617,12 @@ module.exports =
       return
 
     process.chdir rootPath
+    libraryManager ?= require 'particle-library-manager'
     filesObject = {}
     console.info 'Compiling following files:', files
-    for file in files
-      filesObject[path.relative(rootPath, file)] = fs.readFileSync(file)
-
+    for server, local of map
+      filesObject[server] = fs.readFileSync(local)
+    console.log 'filesObject', filesObject
     productId = 0
     if @SettingsHelper.hasCurrentCore()
       productId = @SettingsHelper.getLocal('current_core_platform')
@@ -608,10 +652,8 @@ module.exports =
           @SettingsHelper.setLocal 'compile-status', {filename: filename}
           atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
           if !!thenFlash
-            setTimeout =>
-              atom.commands.dispatch @workspaceElement, "#{@packageName()}:flash-cloud"
-              @downloadBinaryPromise = null
-            , 500
+            # want to explicitly set the file to flash since we cannot assume it from the current project when compiling a library example
+            @emitter.emit "#{@packageName()}:flash-cloud", {firmware: filename}
           else
             @downloadBinaryPromise = null
         , (e) =>
@@ -624,6 +666,7 @@ module.exports =
       console.warn('Compilation failed. Reason:', e);
       @CompileErrorsView ?= require './views/compile-errors-view'
       errorParser ?= require 'gcc-output-parser'
+      # todo - also map from server filenames back to local filenames
       if e?.errors && e.errors.length
         errors = errorParser.parseString(e.errors[0]).filter (message) ->
           message.type.indexOf('error') > -1
@@ -647,31 +690,37 @@ module.exports =
     @compileErrorsView.show()
 
   # Flash core via the cloud
-  flashCloud: (firmware=null) -> @deviceRequired => @projectRequired =>
+  flashCloud: (firmware=null) -> @deviceRequired =>
     fs ?= require 'fs-plus'
     path ?= require 'path'
     _s ?= require 'underscore.string'
     utilities ?= require './vendor/utilities'
+    console.log 'flashCloud', firmware
 
     currentPlatform = @getCurrentPlatform()
-    rootPath = @getProjectDir()
-    files = fs.listSync(rootPath)
-    files = files.filter (file) ->
-      return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
-             (_s.startsWith(path.basename(file), currentPlatform))
 
-    if files.length == 0 && (!firmware)
+    files = null
+    rootPath = null
+    if firmware
+      files = [firmware]
+    else
+      @projectRequired =>
+        rootPath = @getProjectDir()
+        files = fs.listSync(rootPath)
+        files = files.filter (file) ->
+          return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
+                 (_s.startsWith(path.basename(file), currentPlatform))
+
+    if files.length is 0
       # If no firmware file, compile
       @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true}
-    else if (files.length == 1) || (!!firmware)
+    else if (files.length == 1)
       # If one firmware file, flash
-
-      if !firmware
-        firmware = files[0]
-
+      firmware = files[0]
       flashDevice = =>
-        process.chdir rootPath
-        firmware = path.relative rootPath, firmware
+        if !!rootPath
+          process.chdir rootPath
+          firmware = path.relative rootPath, firmware
 
         @statusView.setStatus 'Flashing via the cloud...'
 
@@ -722,8 +771,48 @@ module.exports =
       @selectFirmwareView.setItems files
       @selectFirmwareView.show()
 
-  flashCloudFile: (event) ->
+
+  isLibraryExampleSync: (file) ->
+    # todo - move to lib manager
+    path ?= require 'path'
+    fs ?= require 'fs'
+    try
+      stat = fs.statSync file
+      if stat.isFile()
+        file = path.dirname file
+      examples = path.dirname file
+      libroot = path.dirname examples
+      split = examples.split path.sep
+      properties = path.join libroot, 'library.properties'
+      propertiesExists = fs.existsSync properties
+      examplesDirectory = split[split.length-1]
+      propertiesExists and examples and examplesDirectory=='examples'
+    catch ex
+      false
+
+  isLibraryExample: (file) ->
+    libraryManager ?= require 'particle-library-manager'
+    libraryManager.isLibraryExample file
+
+  flashCloudExample: (file) ->
+    libraryManager ?= require('particle-library-manager')
+    libraryManager.isLibraryExample path.basename(file), path.dirname(file)
+      .then (example) =>
+        if example
+          console.log('example is', example)
+          files = {}
+          example.buildFiles(files)
+            .then =>
+              console.log('compiling example files', files)
+              @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true, files: files.map, rootPath: files.basePath}
+              #@compileCloud true, files.map, files.basePath
+
+  flashCloudFile: (event) -> @deviceRequired =>
     @flashCloud event.target.dataset.path
+
+  flashCloudExampleFile: (event) -> @deviceRequired =>
+    file = event.target.dataset.path
+    @emitter.emit "#{@packageName()}:flash-cloud-example", {file}
 
   # Show serial monitor panel
   showSerialMonitor: ->
