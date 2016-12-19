@@ -197,12 +197,6 @@ module.exports =
       tooltip: 'Select which device you want to work on'
       iconset: 'ion'
       priority: 55
-    @wifiButton = @toolBar.addButton
-      icon: 'wifi'
-      callback: "#{@packageName()}:setup-wifi"
-      tooltip: 'Setup device\'s WiFi credentials'
-      iconset: 'ion'
-      priority: 56
     @toolBar.addButton
       icon: 'usb'
       callback: "#{@packageName()}:show-serial-monitor"
@@ -313,7 +307,6 @@ module.exports =
     if @SettingsHelper.isLoggedIn()
       @compileButton.setEnabled true
       @coreButton.setEnabled true
-      @wifiButton.setEnabled true
 
       if @SettingsHelper.hasCurrentCore()
         @flashButton.setEnabled true
@@ -323,7 +316,6 @@ module.exports =
       @flashButton.setEnabled false
       @compileButton.setEnabled false
       @coreButton.setEnabled false
-      @wifiButton.setEnabled false
 
   # Watch config file for changes
   watchConfig: ->
