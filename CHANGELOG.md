@@ -1,3 +1,7 @@
+## 0.1.9
+* Remove Setup WiFi button
+* Add ability to compile library example
+
 ## 0.1.8
 * Add `isProject` method
 
