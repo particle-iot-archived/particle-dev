@@ -173,6 +173,10 @@ module.exports =
 
       @watchConfig()
 
+    @disposables.add @watchEditors()
+    @disposables.add atom.project.onDidChangePaths =>
+      @updateToolbarButtons()
+
   deactivate: ->
     @statusView?.destroy()
     @emitter.dispose()
@@ -347,15 +351,24 @@ module.exports =
       pane.activate()
       atom.workspace.open uri, searchAllPanes: true
 
+  isCompileAvailable: ->
+    return (not @isLibrary() or @isLibraryExampleInFocus())
+
+  isLibraryExampleInFocus: (editor=atom.workspace.getActiveTextEditor()) ->
+    if editor
+      file = editor.getPath()
+      result =  @isLibraryExampleSync(file)
+      return file if result
+
   # Enables/disables toolbar buttons based on log in state
   updateToolbarButtons: ->
     return unless @compileButton
     if @SettingsHelper.isLoggedIn()
-      @compileButton.setEnabled true
+      @compileButton.setEnabled @isCompileAvailable()
       @coreButton.setEnabled true
 
       if @SettingsHelper.hasCurrentCore()
-        @flashButton.setEnabled true
+        @flashButton.setEnabled @isCompileAvailable()
       else
         @flashButton.setEnabled false
     else
@@ -377,6 +390,12 @@ module.exports =
       @updateToolbarButtons()
       @MenuManager.update()
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"
+
+  watchEditors: ->
+    return atom.workspace.onDidStopChangingActivePaneItem  (panel) =>
+      if atom.workspace.isTextEditor(panel) and @isLibrary()
+        @updateToolbarButtons()
+
 
   processDirIncludes: (dirname) ->
     settings ?= require './vendor/settings'
@@ -465,11 +484,16 @@ module.exports =
       return projectDir
     projectPath.getPath()
 
-  isProject: ->
+  existsProjectFile: (file) ->
     dir = @getProjectDir()
-    return false unless dir
-    # Poor man's project detection. In the future replace with
-    return fs.existsSync(path.join(dir, 'project.properties'))
+    return dir and fs.existsSync(path.join(dir, file))
+
+  isProject: ->
+    @existsProjectFile 'project.properties'
+
+  isLibrary: ->
+    @existsProjectFile 'library.properties'
+
 
   requestErrorHandler: (error) ->
     if error.message == 'invalid_token'
@@ -580,6 +604,16 @@ module.exports =
   compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired =>
     if !@canCompileNow
       return
+
+    # this method should be refactored into 2
+    # one part that determines what to compile (from context)
+    # another part that expects the files and everything to compile to be provided
+    # currently they are both bundled here which requires some recursive calls
+    if not files and @isLibrary()
+      focus = @isLibraryExampleInFocus()
+      if focus
+        @flashCloudExample focus, not thenFlash
+        return
 
     # Including files
     fs ?= require 'fs-plus'
@@ -711,6 +745,12 @@ module.exports =
     if firmware
       files = [firmware]
     else
+      if @isLibrary()
+        focus = @isLibraryExampleInFocus()
+        if focus
+          @flashCloudExample focus
+          return
+
       @projectRequired =>
         rootPath = @getProjectDir()
         files = fs.listSync(rootPath)
@@ -801,7 +841,7 @@ module.exports =
     libraryManager ?= require 'particle-library-manager'
     libraryManager.isLibraryExample file
 
-  flashCloudExample: (file) ->
+  flashCloudExample: (file, compileOnly) ->
     libraryManager ?= require('particle-library-manager')
     libraryManager.isLibraryExample path.basename(file), path.dirname(file)
       .then (example) =>
@@ -811,8 +851,7 @@ module.exports =
           example.buildFiles(files)
             .then =>
               console.log('compiling example files', files)
-              @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true, files: files.map, rootPath: files.basePath}
-              #@compileCloud true, files.map, files.basePath
+              @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: not compileOnly, files: files.map, rootPath: files.basePath}
 
   flashCloudFile: (event) -> @deviceRequired =>
     @flashCloud event.target.dataset.path
