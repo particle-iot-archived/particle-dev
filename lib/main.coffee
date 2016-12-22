@@ -202,16 +202,16 @@ module.exports =
       callback: "#{@packageName()}:flash-cloud"
       tooltip: 'Compile in cloud and upload code using cloud'
       iconset: 'ion'
-      priority: 51
+      priority: 510
     @compileButton = @toolBar.addButton
       icon: 'android-cloud-done'
       callback: "#{@packageName()}:compile-cloud"
       tooltip: 'Compile in cloud and show errors if any'
       iconset: 'ion'
-      priority: 52
+      priority: 520
 
     @toolBar.addSpacer
-      priority: 53
+      priority: 530
 
     @toolBar.addButton
       icon: 'document-text'
@@ -219,19 +219,26 @@ module.exports =
         require('shell').openExternal('https://docs.particle.io/')
       tooltip: 'Opens reference at docs.particle.io'
       iconset: 'ion'
-      priority: 54
+      priority: 540
     @coreButton = @toolBar.addButton
       icon: 'pinpoint'
       callback: "#{@packageName()}:select-device"
       tooltip: 'Select which device you want to work on'
       iconset: 'ion'
-      priority: 55
+      priority: 550
+    @toolBar.addButton
+      icon: 'stats-bars'
+      callback: ->
+        require('shell').openExternal('https://console.particle.io/')
+      tooltip: 'Opens Console at console.particle.io'
+      iconset: 'ion'
+      priority: 560
     @toolBar.addButton
       icon: 'usb'
       callback: "#{@packageName()}:show-serial-monitor"
       tooltip: 'Show serial monitor'
       iconset: 'ion'
-      priority: 57
+      priority: 570
 
     @updateToolbarButtons()
 
