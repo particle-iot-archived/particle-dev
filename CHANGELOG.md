@@ -1,3 +1,9 @@
+## 0.1.12
+* Update icons and menu items
+
+## 0.1.10
+* Update `particle-library-manager` to 0.1.4
+
 ## 0.1.9
 * Remove Setup WiFi button
 * Add ability to compile library example
