@@ -174,6 +174,8 @@ module.exports =
       @watchConfig()
 
     @disposables.add @watchEditors()
+    @disposables.add atom.project.onDidChangePaths =>
+      @updateToolbarButtons()
 
   deactivate: ->
     @statusView?.destroy()
