@@ -52,9 +52,9 @@ module.exports =
         label: 'Identify device...',
         command: "#{packageName()}:identify-device"
       },{
-        label: "Setup device's WiFi...",
-        command: "#{packageName()}:setup-wifi"
-      },{
+      #   label: "Setup device's WiFi...",
+      #   command: "#{packageName()}:setup-wifi"
+      # },{
       #   label: 'Flash device via USB',
       #   command: "#{packageName()}:try-flash-usb"
       # },{
