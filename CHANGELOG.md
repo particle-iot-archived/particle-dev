@@ -1,3 +1,10 @@
+## 0.1.14
+* Fix [Case Sensitivity issue](https://github.com/spark/particle-dev/issues/172)
+
+## 0.1.13
+* Flash/compile library example open in tab from toolbar
+* Update the toolbar when the project changes
+
 ## 0.1.12
 * Update icons and menu items
 
