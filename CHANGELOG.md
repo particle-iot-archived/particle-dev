@@ -1,3 +1,7 @@
+## 0.1.15
+* Use `particle-api-js` to list devices
+* Add warning when compiling using libraries against fw older than 0.5.3
+
 ## 0.1.14
 * Fix [Case Sensitivity issue](https://github.com/spark/particle-dev/issues/172)
 

@@ -15,7 +15,7 @@ class SelectCoreView extends SelectView
     @prop 'id', 'select-core-view'
     @addClass packageName()
     @listDevicesPromise = null
-    @spark = null
+    @client = null
     @requestErrorHandler = null
 
   show: (next=null) =>
@@ -35,11 +35,11 @@ class SelectCoreView extends SelectView
       @li class: 'two-lines core-line', =>
         connectedClass = if item.connected then 'core-online' else 'core-offline'
         @div class: 'primary-line ' + connectedClass, =>
-          @span class: 'platform-icon platform-icon-' + item.productId, name
+          @span class: 'platform-icon platform-icon-' + item.platform_id, name
         @div class: 'secondary-line no-icon', item.id
 
   confirmed: (item) ->
-    SettingsHelper.setCurrentCore item.id, item.name, item.productId
+    SettingsHelper.setCurrentCore item.id, item.name, item.platform_id, item.default_build_target
     @hide()
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
@@ -49,8 +49,9 @@ class SelectCoreView extends SelectView
     'name'
 
   loadCores: ->
-    @listDevicesPromise = @spark.listDevices()
-    @listDevicesPromise.then (e) =>
+    @listDevicesPromise = @client.listDevices()
+    @listDevicesPromise.then (value) =>
+      e = value.body
       e.sort (a, b) ->
         if !a.name
           a.name = 'Unnamed'
