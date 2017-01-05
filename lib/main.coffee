@@ -8,6 +8,7 @@ _s = null
 url = null
 errorParser = null
 libraryManager = null
+semver = null
 
 module.exports =
   # Local modules for JIT require
@@ -326,6 +327,19 @@ module.exports =
 
     callback()
 
+  # "Decorator" which tests if we're using at least 0.5.3 when compiling with libraries
+  minBuildTargetRequired: (callback) ->
+    if @isProject() or @isLibrary()
+      semver ?= require 'semver'
+      deafultBuildTarget = @SettingsHelper.getLocal('current_core_default_build_target')
+      if deafultBuildTarget && semver.lt(deafultBuildTarget, '0.5.3')
+        atom.notifications.addError 'You are trying to compile a project using libraries ' +
+          "against firmware version #{deafultBuildTarget} which doesn not support them. " +
+          'Please update your device to 0.5.3 or select a different one.'
+        return
+
+    callback()
+
   # Open view in a panel
   openPane: (uri, location='bottom') ->
     uri = "#{@packageName()}://editor/" + uri
@@ -520,7 +534,7 @@ module.exports =
   # Show user's cores list
   selectCore: (callback) -> @loginRequired =>
     @initView 'select-core'
-    @selectCoreView.spark ?= @spark
+    @selectCoreView.client = @profileManager.apiClient
     @selectCoreView.requestErrorHandler = (error) =>
       @requestErrorHandler error
 
@@ -601,7 +615,7 @@ module.exports =
 
   # Compile current project in the cloud
   # when updating arguments here, also update the event emitter above
-  compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired =>
+  compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired => @minBuildTargetRequired =>
     if !@canCompileNow
       return
 
