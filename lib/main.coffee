@@ -331,8 +331,8 @@ module.exports =
   minBuildTargetRequired: (callback) ->
     if @isProject() or @isLibrary()
       semver ?= require 'semver'
-      deafultBuildTarget = @SettingsHelper.getLocal('current_core_default_build_target')
-      if deafultBuildTarget && semver.lt(deafultBuildTarget, '0.5.3')
+      defaultBuildTarget = @SettingsHelper.getLocal('current_core_default_build_target')
+      if defaultBuildTarget && semver.lt(defaultBuildTarget, '0.5.3')
         atom.notifications.addError 'You are trying to compile a project using libraries ' +
           "against firmware version #{deafultBuildTarget} which doesn not support them. " +
           'Please update your device to 0.5.3 or select a different one.'
