@@ -333,9 +333,7 @@ module.exports =
       semver ?= require 'semver'
       defaultBuildTarget = @SettingsHelper.getLocal('current_core_default_build_target')
       if defaultBuildTarget && semver.lt(defaultBuildTarget, '0.5.3')
-        atom.notifications.addError 'You are trying to compile a project using libraries ' +
-          "against firmware version #{deafultBuildTarget} which doesn not support them. " +
-          'Please update your device to 0.5.3 or select a different one.'
+        atom.notifications.addError 'This project is only compatible with Particle system firmware v0.5.3 or later. You will need to update the system firmware running on your Electron before you can flash this project to your device.'
         return
 
     callback()
