@@ -339,8 +339,8 @@ module.exports =
     callback()
 
   # Open view in a panel
-  openPane: (uri, location='bottom') ->
-    uri = "#{@packageName()}://editor/" + uri
+  openPane: (uri, location='bottom', packageName) ->
+    uri = "#{packageName ? packageName : @packageName()}://editor/" + uri
     pane = atom.workspace.paneForURI uri
 
     if pane?
@@ -505,6 +505,9 @@ module.exports =
 
   isLibrary: ->
     @existsProjectFile 'library.properties'
+
+  isLegacyLibrary: ->
+    @existsProjectFile 'spark.json'
 
 
   requestErrorHandler: (error) ->

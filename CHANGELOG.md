@@ -1,3 +1,7 @@
+## 0.1.16
+* Add `isLegacyLibrary` method
+* Add ability to override package name when opening a pane
+
 ## 0.1.15
 * Use `particle-api-js` to list devices
 * Add warning when compiling using libraries against fw older than 0.5.3
