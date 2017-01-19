@@ -340,7 +340,10 @@ module.exports =
 
   # Open view in a panel
   openPane: (uri, location='bottom', packageName) ->
-    uri = "#{packageName ? packageName : @packageName()}://editor/" + uri
+    if packageName
+      uri = "#{packageName}://editor/" + uri
+    else
+      uri = "#{@packageName()}://editor/" + uri
     pane = atom.workspace.paneForURI uri
 
     if pane?

@@ -1,3 +1,6 @@
+## 0.1.17
+* Fix panels showing up blank
+
 ## 0.1.16
 * Add `isLegacyLibrary` method
 * Add ability to override package name when opening a pane
