@@ -1,3 +1,8 @@
+## 0.1.18
+* Allow choosing any supported target platform without owning the device
+* Set Photon as a default target platform
+* Fix library examples being compiled only for Core
+
 ## 0.1.17
 * Fix panels showing up blank
 

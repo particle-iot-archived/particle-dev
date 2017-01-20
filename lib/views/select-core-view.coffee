@@ -15,7 +15,7 @@ class SelectCoreView extends SelectView
     @prop 'id', 'select-core-view'
     @addClass packageName()
     @listDevicesPromise = null
-    @client = null
+    @profileManager = null
     @requestErrorHandler = null
 
   show: (next=null) =>
@@ -40,6 +40,8 @@ class SelectCoreView extends SelectView
 
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name, item.platform_id, item.default_build_target
+    if item.platform_id
+      @profileManager.currentTargetPlatform = item.platform_id
     @hide()
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"
@@ -49,7 +51,7 @@ class SelectCoreView extends SelectView
     'name'
 
   loadCores: ->
-    @listDevicesPromise = @client.listDevices()
+    @listDevicesPromise = @profileManager.apiClient.listDevices()
     @listDevicesPromise.then (value) =>
       e = value.body
       e.sort (a, b) ->

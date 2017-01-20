@@ -468,16 +468,13 @@ module.exports =
     , (e) =>
       console.error e
 
-  getCurrentPlatform: ->
-    currentPlatform = 'core'
-    if @SettingsHelper.hasCurrentCore()
-      switch @SettingsHelper.getLocal('current_core_platform')
-        when 6 then currentPlatform = 'photon'
-        when 8 then currentPlatform = 'p1'
-        when 10 then currentPlatform = 'electron'
-        when 31 then currentPlatform = 'raspberrypi'
-
-    currentPlatform
+  getPlatformSlug: (id) ->
+    slug = @profileManager.knownTargetPlatforms[id]
+    if slug
+      slug = slug.name
+    else
+      slug = 'Unknown'
+    return _s.underscored slug
 
   getProjectDir: ->
     paths = atom.project.getDirectories()
@@ -538,7 +535,7 @@ module.exports =
   # Show user's cores list
   selectCore: (callback) -> @loginRequired =>
     @initView 'select-core'
-    @selectCoreView.client = @profileManager.apiClient
+    @selectCoreView.profileManager = @profileManager
     @selectCoreView.requestErrorHandler = (error) =>
       @requestErrorHandler error
 
@@ -682,11 +679,10 @@ module.exports =
     for server, local of map
       filesObject[server] = fs.readFileSync(local)
     console.log 'filesObject', filesObject
-    productId = 0
-    if @SettingsHelper.hasCurrentCore()
-      productId = @SettingsHelper.getLocal('current_core_platform')
-    currentPlatform = @getCurrentPlatform()
-    @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, productId
+
+    targetPlatformId = @profileManager.currentTargetPlatform
+    targetPlatformSlug = @getPlatformSlug targetPlatformId
+    @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, targetPlatformId
     @compileCloudPromise.then (value) =>
       e = value.body
       if !e
@@ -700,11 +696,11 @@ module.exports =
           # Remove old firmwares
           files = fs.listSync rootPath
           for file in files
-            if _s.startsWith(path.basename(file), currentPlatform + '_firmware') and _s.endsWith(file, '.bin')
+            if _s.startsWith(path.basename(file), targetPlatformSlug + '_firmware') and _s.endsWith(file, '.bin')
               if fs.existsSync file
                 fs.unlinkSync file
 
-        filename = currentPlatform + '_firmware_' + (new Date()).getTime() + '.bin';
+        filename = targetPlatformSlug + '_firmware_' + (new Date()).getTime() + '.bin';
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
         @downloadBinaryPromise.then (e) =>
@@ -756,7 +752,7 @@ module.exports =
     utilities ?= require './vendor/utilities'
     console.log 'flashCloud', firmware
 
-    currentPlatform = @getCurrentPlatform()
+    targetPlatformSlug = @getPlatformSlug @profileManager.currentTargetPlatform
 
     files = null
     rootPath = null
@@ -774,7 +770,7 @@ module.exports =
         files = fs.listSync(rootPath)
         files = files.filter (file) ->
           return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
-                 (_s.startsWith(path.basename(file), currentPlatform))
+                 (_s.startsWith(path.basename(file), targetPlatformSlug))
 
     if files.length is 0
       # If no firmware file, compile

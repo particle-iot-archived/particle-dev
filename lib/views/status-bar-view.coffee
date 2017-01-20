@@ -37,9 +37,6 @@ class StatusBarView extends View
     @getAttributesPromise = null
     @interval = null
 
-    # Defaults to Core
-    @platformIcon.addClass 'platform-icon-0'
-
     commands = {}
     commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
     commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
@@ -143,7 +140,6 @@ class StatusBarView extends View
     else
       @currentCoreTile.removeClass 'online'
       statusElement.text 'No devices selected'
-      @platformIcon.addClass 'platform-icon-0'
 
   # Update login status
   updateLoginStatus: ->
