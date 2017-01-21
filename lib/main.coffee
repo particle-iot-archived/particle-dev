@@ -614,6 +614,19 @@ module.exports =
       map[relative[i]] = files[i]
     return map
 
+  makeAbsolute: (filename) ->
+    sep = '/'
+    if not filename.startsWith(sep)
+      filename = sep + filename
+    return filename
+
+  mapKeys: (source, mapper) ->
+    result = {}
+    for k,v of source
+      mapped = mapper(k, v)
+      result[mapped] = v
+    return result
+
   # Compile current project in the cloud
   # when updating arguments here, also update the event emitter above
   compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired => @minBuildTargetRequired =>
@@ -642,8 +655,11 @@ module.exports =
     files ?= @processDirIncludes rootPath
 
     # files may also be a map from logical name to physical file name
-    map = if Array.isArray(files) then @mapCommonPrefix files, rootPath else files
-    files = (v for k, v of map)
+    serverLocalFilenameMap = if Array.isArray(files) then @mapCommonPrefix files, rootPath else files
+    # ensure the server files start with a forward slash since the compile job is it's own filesystem
+    # todo - this could move to a common compiler-js-API used by Dev/Cli and third party tools
+    serverLocalFilenameMap = @mapKeys serverLocalFilenameMap, @makeAbsolute
+    files = (v for k, v of serverLocalFilenameMap)
     if files.length == 0
       @statusView.setStatus 'No .ino/.cpp file to compile', 'warning'
       @statusView.clearAfter 5000
@@ -675,10 +691,8 @@ module.exports =
     process.chdir rootPath
     libraryManager ?= require 'particle-library-manager'
     filesObject = {}
-    console.info 'Compiling following files:', files
-    for server, local of map
+    for server, local of serverLocalFilenameMap
       filesObject[server] = fs.readFileSync(local)
-    console.log 'filesObject', filesObject
 
     targetPlatformId = @profileManager.currentTargetPlatform
     targetPlatformSlug = @getPlatformSlug targetPlatformId
@@ -721,10 +735,10 @@ module.exports =
       console.warn('Compilation failed. Reason:', e);
       @CompileErrorsView ?= require './views/compile-errors-view'
       errorParser ?= require 'gcc-output-parser'
-      # todo - also map from server filenames back to local filenames
       if e?.errors && e.errors.length
         errors = errorParser.parseString(e.errors[0]).filter (message) ->
           message.type.indexOf('error') > -1
+        @mapMessageFilenames(errors, serverLocalFilenameMap, rootPath)
 
         if errors.length == 0
           @SettingsHelper.setLocal 'compile-status', {error: e.output}
@@ -737,6 +751,15 @@ module.exports =
 
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       @compileCloudPromise = null
+
+  mapMessageFilenames: (messages, filenameMap, rootPath) ->
+    for message in messages
+      server = message.filename
+      local = filenameMap[server]
+      if local
+        local = path.resolve(rootPath, local)
+        message.serverFilename = server
+        message.filename = local
 
   # Show compile errors list
   showCompileErrors: ->

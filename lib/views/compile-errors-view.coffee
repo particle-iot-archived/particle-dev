@@ -23,6 +23,11 @@ class CompileErrorsView extends SelectView
   fixInoFile: (filename) ->
     fs ?= require 'fs-plus'
     path ?= require 'path'
+    # this logic is borken...can't always assume we can infer the path
+    # if the file exist locally, assume it's good
+    # the view shouldn't be fixing up the filename paths...;-)
+    if fs.existsSync(filename)
+      return filename
 
     rootPath = atom.project.getPaths()[0]
     files = fs.listTreeSync rootPath
