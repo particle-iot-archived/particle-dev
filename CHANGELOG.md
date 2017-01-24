@@ -1,3 +1,6 @@
+## 0.1.19
+* Fix bug causing Core not automatically becoming a build target
+
 ## 0.1.18
 * Allow choosing any supported target platform without owning the device
 * Set Photon as a default target platform

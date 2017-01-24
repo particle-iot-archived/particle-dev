@@ -40,7 +40,7 @@ class SelectCoreView extends SelectView
 
   confirmed: (item) ->
     SettingsHelper.setCurrentCore item.id, item.name, item.platform_id, item.default_build_target
-    if item.platform_id
+    if typeof item.platform_id != 'undefined'
       @profileManager.currentTargetPlatform = item.platform_id
     @hide()
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
