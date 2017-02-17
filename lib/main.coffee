@@ -1,3 +1,5 @@
+whenjs = require 'when'
+pipeline = require 'when/pipeline'
 CompositeDisposable = null
 Emitter = null
 fs = null
@@ -44,6 +46,10 @@ module.exports =
   listPortsPromise: null
   compileCloudPromise: null
   flashCorePromise: null
+  statusBarDefer: whenjs.defer()
+  toolBarDefer: whenjs.defer()
+  profilesDefer: whenjs.defer()
+  consolePanelDefer: whenjs.defer()
 
   packageName: require './utils/package-helper'
 
@@ -66,7 +72,7 @@ module.exports =
       emitter: @emitter
 
     # Initialize status bar view
-    @statusView = new @StatusView()
+    @statusView = new @StatusView(@)
 
     # Hook up commands
     commands = {}
@@ -87,6 +93,7 @@ module.exports =
     commands["#{@packageName()}:flash-cloud-example-file"] = (event) => @flashCloudExampleFile event
     commands["#{@packageName()}:setup-wifi"] = => @setupWifi()
     commands["#{@packageName()}:enter-wifi-credentials"] = => @enterWifiCredentials()
+    commands["#{@packageName()}:select-build-target"] = => @selectBuildTarget()
     @disposables.add atom.commands.add 'atom-workspace', commands
 
     # Hook up events
@@ -197,6 +204,7 @@ module.exports =
     @statusView.addTiles statusBar
     # @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
     @statusView.updateLoginStatus()
+    @statusBarDefer.resolve()
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar "#{@packageName()}-tool-bar"
@@ -246,10 +254,13 @@ module.exports =
       priority: 570
 
     @updateToolbarButtons()
+    @toolBarDefer.resolve @toolBar
 
   consumeConsolePanel: (@consolePanel) ->
+    @consolePanelDefer.resolve @consolePanel
 
   consumeProfiles: (@profileManager) ->
+    @profilesDefer.resolve @profileManager
 
   config:
     # Delete .bin file after flash
@@ -271,6 +282,16 @@ module.exports =
     filesExcludedFromCompile:
       type: 'string'
       default: '.ds_store, .jpg, .gif, .png, .include, .ignore, Thumbs.db, .git, .bin'
+
+    # Show prereleases in build targets
+    showFirmwarePrereleases:
+      type: 'boolean'
+      default: true
+
+    # Allow prereleases to be used as default
+    defaultToFirmwarePrereleases:
+      type: 'boolean'
+      default: false
 
   # Require view's module and initialize it
   initView: (name) ->
@@ -476,6 +497,33 @@ module.exports =
       slug = 'Unknown'
     return _s.underscored slug
 
+  getCurrentBuildTarget: ->
+    @profileManager.getLocal 'current-build-target'
+
+  setCurrentBuildTarget: (value) ->
+    @profileManager.setLocal 'current-build-target', value
+
+  getBuildTargets: ->
+    pipeline [
+      =>
+        return @buildTargets if @buildTargets
+        @profileManager.apiClient.listBuildTargets()
+      , (@buildTargets) =>
+        semver ?= require 'semver'
+
+        @buildTargets.sort (a, b) ->
+          if semver.eq(a.version, b.version)
+            return 0
+          if semver.gt(a.version, b.version)
+            return -1
+          else
+            return 1
+
+        showPrereleases = atom.config.get("#{@packageName()}.showFirmwarePrereleases")
+        @buildTargets.filter (target) =>
+          (target.platform == @profileManager.currentTargetPlatform) && (showPrereleases || !target.prerelease)
+    ]
+
   getProjectDir: ->
     paths = atom.project.getDirectories()
     if paths.length == 0
@@ -535,11 +583,20 @@ module.exports =
   # Show user's cores list
   selectCore: (callback) -> @loginRequired =>
     @initView 'select-core'
-    @selectCoreView.profileManager = @profileManager
+    @selectCoreView.main = @
     @selectCoreView.requestErrorHandler = (error) =>
       @requestErrorHandler error
 
     @selectCoreView.show(callback)
+
+  # Show available build targets list
+  selectBuildTarget: (callback) -> @loginRequired =>
+    @initView 'select-build-target'
+    @selectBuildTargetView.main = @
+    @selectBuildTargetView.requestErrorHandler = (error) =>
+      @requestErrorHandler error
+
+    @selectBuildTargetView.show(callback)
 
   # Show rename core dialog
   renameCore: -> @deviceRequired =>
@@ -695,8 +752,9 @@ module.exports =
       filesObject[server] = fs.readFileSync(local)
 
     targetPlatformId = @profileManager.currentTargetPlatform
-    targetPlatformSlug = @getPlatformSlug targetPlatformId
-    @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, targetPlatformId
+    targetBuild = @getCurrentBuildTarget()
+    targetPlatformSlug = @getPlatformSlug(targetPlatformId) + '_' + targetBuild
+    @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, targetPlatformId, targetBuild
     @compileCloudPromise.then (value) =>
       e = value.body
       if !e
