@@ -1,3 +1,7 @@
+## 0.1.20
+* Add ability to select build target
+* Fix [File path in .ino errors leads to empty editor](https://github.com/spark/particle-dev/issues/185)
+
 ## 0.1.19
 * Fix bug causing Core not automatically becoming a build target
 
