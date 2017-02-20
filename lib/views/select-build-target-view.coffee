@@ -40,6 +40,7 @@ class SelectBuildTargetView extends SelectView
     @main.setCurrentBuildTarget item.version
     @hide()
     atom.commands.dispatch @workspaceElement, "#{packageName()}:update-build-target"
+    @next(item) if @next
 
   getFilterKey: ->
     'version'
