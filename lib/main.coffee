@@ -813,7 +813,7 @@ module.exports =
   mapMessageFilenames: (messages, filenameMap, rootPath) ->
     for message in messages
       server = message.filename
-      local = filenameMap[server]
+      local = filenameMap[server] || filenameMap[server.replace('.cpp', '.ino')]
       if local
         local = path.resolve(rootPath, local)
         message.serverFilename = server
