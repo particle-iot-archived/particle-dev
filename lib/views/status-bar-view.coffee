@@ -15,7 +15,7 @@ class StatusBarView extends View
         @img src: "atom://#{packageName()}/images/logo.png"
       @div id: 'login-status-tile', class: "#{packageName()} inline-block", outlet: 'loginStatusTile'
       @div id: 'current-device-tile', class: "#{packageName()} inline-block hidden", outlet: 'currentCoreTile', =>
-        @span class: 'platform-icon', outlet: 'platformIcon', title: 'Current target platform', =>
+        @span class: 'platform-icon', outlet: 'platformIcon', title: 'Current target device', =>
           @a click: 'selectCore'
       @span id: 'compile-status-tile', class: "#{packageName()} inline-block hidden", outlet: 'compileStatusTile', =>
         @span id: 'compile-working', =>
@@ -24,6 +24,17 @@ class StatusBarView extends View
         @a id: 'compile-failed', click: 'showErrors', class:'icon icon-stop'
         @a id: 'compile-success', click: 'showFile', class:'icon icon-check'
       @span id: 'log-tile', class: "#{packageName()} inline-block", outlet: 'logTile'
+      @div id: 'build-target-tile', class: "#{packageName()} inline-block", =>
+        # TODO: maybe use a beaker icon for prerelease?
+        @span type: 'button', class: 'icon icon-tag inline-block', outlet: 'currentBuildTargetTile', title: 'Current build target', click: 'selectBuildTarget', 'Latest'
+
+  constructor: (@main) ->
+    super
+
+    @main.profilesDefer.promise.then =>
+      @updateBuildTarget()
+      @main.profileManager._onCurrentTargetPlatformChanged =>
+        @updateBuildTarget()
 
   initialize: (serializeState) ->
     {$} = require('atom-space-pen-views')
@@ -41,6 +52,7 @@ class StatusBarView extends View
     commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
     commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
     commands["#{packageName()}:update-compile-status"] = => @updateCompileStatus()
+    commands["#{packageName()}:update-build-target"] = => @updateBuildTarget()
     @disposables.add atom.commands.add 'atom-workspace', commands
 
   # Returns an object that can be retrieved when package is activated
@@ -51,14 +63,19 @@ class StatusBarView extends View
 
   addTiles: (statusBar) ->
     statusBar.addLeftTile(item: @logoTile, priority: 100)
-    statusBar.addLeftTile(item: @loginStatusTile, priority: 100)
-    statusBar.addLeftTile(item: @currentCoreTile, priority: 100)
-    statusBar.addLeftTile(item: @compileStatusTile, priority: 100)
-    statusBar.addLeftTile(item: @logTile, priority: 100)
+    statusBar.addLeftTile(item: @loginStatusTile, priority: 110)
+    statusBar.addLeftTile(item: @currentCoreTile, priority: 120)
+    statusBar.addLeftTile(item: @compileStatusTile, priority: 130)
+    statusBar.addLeftTile(item: @logTile, priority: 140)
+    statusBar.addLeftTile(item: @currentBuildTargetTile, priority: 201)
 
   # Callback triggering selecting core command
   selectCore: ->
     atom.commands.dispatch @workspaceElement, "#{packageName()}:select-device"
+
+  # Callback triggering selecting build target command
+  selectBuildTarget: ->
+    atom.commands.dispatch @workspaceElement, "#{packageName()}:select-build-target"
 
   # Callback triggering showing compile errors command
   showErrors: =>
@@ -186,6 +203,27 @@ class StatusBarView extends View
         @compileStatusTile.find('#compile-success')
                           .text('Success!')
                           .show()
+
+  updateBuildTarget: ->
+    @main.getBuildTargets().then (targets) =>
+      currentBuildTarget = @main.getCurrentBuildTarget()
+      # Clear build target if it doesn't exist for current platform
+      targetExists = targets.reduce (acc, val) =>
+        acc || val.version == currentBuildTarget
+      , false
+      currentBuildTarget = undefined if not targetExists
+
+      if !currentBuildTarget
+        latestVersion = targets.reduce (acc, val) =>
+          acc || (val.version if not val.prerelease || atom.config.get("#{packageName()}.defaultToFirmwarePrereleases"))
+        , undefined
+        currentBuildTarget = latestVersion
+
+      @main.setCurrentBuildTarget currentBuildTarget
+
+      if not currentBuildTarget
+        currentBuildTarget = 'Latest'
+      @currentBuildTargetTile.text currentBuildTarget
 
   setStatus: (text, type = null) ->
     @logTile.text(text).removeClass()
