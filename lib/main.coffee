@@ -731,17 +731,9 @@ module.exports =
     invalidFiles = files.filter (file) ->
       path.basename(file).indexOf(' ') > -1
     if invalidFiles.length
-      errors = []
-      for file in invalidFiles
-        errors.push
-          file: file,
-          message: 'File contains space in its name'
-          row: 0,
-          col: 0
-
-      @CompileErrorsView ?= require './views/compile-errors-view'
-      @SettingsHelper.setLocal 'compile-status', {errors: errors}
-      atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
+      invalidFiles = invalidFiles.reduce (acc, value) -> "#{acc}\n#{value}"
+      atom.notifications.addError("Following files have spaces in their names:\n\n#{invalidFiles}\n\nPlease rename them")
+      @SettingsHelper.setLocal 'compile-status', null
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       return
 
