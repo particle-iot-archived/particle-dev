@@ -853,7 +853,7 @@ module.exports =
           return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
                  (_s.startsWith(path.basename(file), targetPlatformSlug))
 
-    if files.length is 0
+    if not files or files.length is 0
       # If no firmware file, compile
       @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true}
     else if (files.length == 1)
