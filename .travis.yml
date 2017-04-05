@@ -3,5 +3,8 @@ notifications:
   email:
     on_success: never
     on_failure: change
-script: 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
+install: npm install
+script:
+  - npm run test:unit
+  - 'curl -s https://raw.githubusercontent.com/atom/ci/master/build-package.sh | sh'
 sudo: false

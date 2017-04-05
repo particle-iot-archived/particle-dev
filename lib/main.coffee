@@ -11,6 +11,7 @@ url = null
 errorParser = null
 libraryManager = null
 semver = null
+compilationContext = null
 
 module.exports =
   # Local modules for JIT require
@@ -662,28 +663,6 @@ module.exports =
   canCompileNow: ->
     !@compileCloudPromise
 
-  mapCommonPrefix: (files, basePath=process.cwd()) ->
-    relative = []
-    libraryManager ?= require 'particle-library-manager'
-    libraryManager.pathsCommonPrefix files, relative, basePath
-    map = {}
-    for i in [0..files.length-1]
-      map[relative[i]] = files[i]
-    return map
-
-  makeAbsolute: (filename) ->
-    sep = '/'
-    if not filename.startsWith(sep)
-      filename = sep + filename
-    return filename
-
-  mapKeys: (source, mapper) ->
-    result = {}
-    for k,v of source
-      mapped = mapper(k, v)
-      result[mapped] = v
-    return result
-
   # Compile current project in the cloud
   # when updating arguments here, also update the event emitter above
   compileCloud: (thenFlash=null, files=null, rootPath=null) -> @loginRequired => @minBuildTargetRequired =>
@@ -706,20 +685,15 @@ module.exports =
     settings ?= require './vendor/settings'
     utilities ?= require './vendor/utilities'
     _s ?= require 'underscore.string'
+    compilationContext ?= require './contexts/compilation'
 
     # if the files have been specified explicitly, assume project etc.. has already been checked for
     rootPath ?= @projectRequired => @getProjectDir()
     files ?= @processDirIncludes rootPath
+    [files, serverLocalFilenameMap] = compilationContext.mapLocalToServerFilenames(files, rootPath)
 
-    # files may also be a map from logical name to physical file name
-    serverLocalFilenameMap = if Array.isArray(files) then @mapCommonPrefix files, rootPath else files
-    # ensure the server files start with a forward slash since the compile job is it's own filesystem
-    # todo - this could move to a common compiler-js-API used by Dev/Cli and third party tools
-    serverLocalFilenameMap = @mapKeys serverLocalFilenameMap, @makeAbsolute
-    files = (v for k, v of serverLocalFilenameMap)
     if files.length == 0
-      @statusView.setStatus 'No .ino/.cpp file to compile', 'warning'
-      @statusView.clearAfter 5000
+      atom.notifications.addWarning('No .ino/.cpp file to compile')
       return
 
     if atom.config.get("#{@packageName()}.saveAllBeforeCompile")
@@ -731,17 +705,9 @@ module.exports =
     invalidFiles = files.filter (file) ->
       path.basename(file).indexOf(' ') > -1
     if invalidFiles.length
-      errors = []
-      for file in invalidFiles
-        errors.push
-          file: file,
-          message: 'File contains space in its name'
-          row: 0,
-          col: 0
-
-      @CompileErrorsView ?= require './views/compile-errors-view'
-      @SettingsHelper.setLocal 'compile-status', {errors: errors}
-      atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
+      invalidFiles = invalidFiles.reduce (acc, value) -> "#{acc}\n#{value}"
+      atom.notifications.addError("Following files have spaces in their names:\n\n#{invalidFiles}\n\nPlease rename them")
+      @SettingsHelper.setLocal 'compile-status', null
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       return
 
@@ -853,7 +819,7 @@ module.exports =
           return (utilities.getFilenameExt(file).toLowerCase() == '.bin') &&
                  (_s.startsWith(path.basename(file), targetPlatformSlug))
 
-    if files.length is 0
+    if not files or files.length is 0
       # If no firmware file, compile
       @emitter.emit "#{@packageName()}:compile-cloud", {thenFlash: true}
     else if (files.length == 1)
