@@ -1,3 +1,8 @@
+## 0.1.21
+* Fix [Uncaught TypeError: Cannot read property 'length' of null](https://github.com/spark/particle-dev/issues/200)
+* Fix issues with opening a non existing `.ino` file when jumping to a `.cpp` file with an error
+* Parse linker errors
+
 ## 0.1.20
 * Add ability to select build target
 * Fix [File path in .ino errors leads to empty editor](https://github.com/spark/particle-dev/issues/185)
