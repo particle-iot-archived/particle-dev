@@ -23,7 +23,7 @@ To install Particle Dev package you'll need following dependencies:
 
 ###### OS X
 
-* [XCode](https://itunes.apple.com/gb/app/xcode/id497799835?mt=12) (you need to run it first finish installation)
+* [XCode](https://itunes.apple.com/gb/app/xcode/id497799835?mt=12) (you need to run it first in order to finish the installation)
 
 ###### Linux
 
