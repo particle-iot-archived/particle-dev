@@ -19,6 +19,7 @@
     "gcc-output-parser": "^0.0.3",
     "glob": "^4.2.1",
     "jquery": "^2.0.0",
+    "node-analytics": "^1.0.1",
     "particle-dev-spec-stubs": "git://github.com/spark/particle-dev-spec-stubs.git#v0.0.2",
     "particle-dev-views": "git://github.com/spark/particle-dev-views.git#v0.1.0",
     "particle-library-manager": "^0.1.11",
@@ -72,8 +73,10 @@
     "babel-register": "^6.24.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "coffeelint": "^1.16.0",
     "mocha": "^3.2.0",
-    "sinon": "^2.1.0",
+    "sinon": "1.17.7",
+    "sinon-as-promised": "^4.0.3",
     "sinon-chai": "^2.9.0"
   }
 }
