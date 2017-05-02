@@ -954,7 +954,7 @@ module.exports =
       atom.commands.dispatch @workspaceElement, "#{@packageName()}-dfu-util:flash-usb"
 
   analyticsContext: ->
-    @analytics.commandContext()
+    @analytics.commandContext @profileManager, @profileManager.apiClient
 
   runParticleCommand: (site, command) ->
     contextPromise = @analyticsContext()
