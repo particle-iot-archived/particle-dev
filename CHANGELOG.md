@@ -1,3 +1,6 @@
+## 0.1.22
+* Don’t rename `.ino` filenames in errors
+
 ## 0.1.21
 * Fix [Uncaught TypeError: Cannot read property 'length' of null](https://github.com/spark/particle-dev/issues/200)
 * Fix issues with opening a non existing `.ino` file when jumping to a `.cpp` file with an error
