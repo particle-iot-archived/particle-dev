@@ -57,7 +57,7 @@ class LoginView extends View
       ).join ''
 
       passwordElement.find('#password-style').remove()
-      passwordElement.append('<style id="password-style">.password-lines .line span.text:before {content:"' + string + '";}</style>')
+      passwordElement.append('<style id="password-style">.password-lines .line span.syntax--text:before {content:"' + string + '";}</style>')
     @disposables.add atom.commands.add @passwordEditor.editor.element,
       'core:confirm': =>
         @login()
