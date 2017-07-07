@@ -49,7 +49,7 @@ class StatusBarView extends View
     @interval = null
 
     commands = {}
-    commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
+    atom.particleDev.emitter.on 'update-login-status', => @updateLoginStatus()
     commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
     commands["#{packageName()}:update-compile-status"] = => @updateCompileStatus()
     commands["#{packageName()}:update-build-target"] = => @updateBuildTarget()

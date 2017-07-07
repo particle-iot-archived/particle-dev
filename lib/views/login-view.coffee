@@ -143,7 +143,7 @@ class LoginView extends View
       if !@loginPromise
         return
       SettingsHelper.setCredentials @email, e.access_token
-      atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"
+      atom.particleDev.emitter.emit 'update-login-status'
       @loginPromise = null
 
       @cancel()
@@ -166,4 +166,4 @@ class LoginView extends View
   # Logout
   logout: =>
     SettingsHelper.clearCredentials()
-    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"
+    atom.particleDev.emitter.emit 'update-login-status'
