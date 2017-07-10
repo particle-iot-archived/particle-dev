@@ -1,10 +1,3 @@
-'use babel';
-
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
-import chai from 'chai';
-chai.use(sinonChai);
-
 import {expect} from 'chai';
 import path from 'path';
 

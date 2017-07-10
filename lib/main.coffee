@@ -53,9 +53,11 @@ module.exports =
   consolePanelDefer: whenjs.defer()
 
   packageName: require './utils/package-helper'
+  analytics: null
 
   activate: (state) ->
     # Require modules on activation
+    @analytics ?= require './contexts/analytics'
     @StatusView ?= require './views/status-bar-view'
     @SettingsHelper ?= require './utils/settings-helper'
     @MenuManager ?= require './utils/menu-manager'
@@ -950,3 +952,10 @@ module.exports =
       # TODO: Ask for installation
     else
       atom.commands.dispatch @workspaceElement, "#{@packageName()}-dfu-util:flash-usb"
+
+  analyticsContext: ->
+    @analytics.commandContext @profileManager, @profileManager.apiClient
+
+  runParticleCommand: (site, command) ->
+    contextPromise = @analyticsContext()
+    contextPromise.then((context) => site.run(command, context))
