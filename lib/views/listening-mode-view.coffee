@@ -6,10 +6,10 @@ module.exports =
 class ListeningModeView extends View
   @content: ->
     @div =>
-      @h1 'Waiting for core...'
+      @h1 'Waiting for device...'
       @p =>
         @img src: "atom://#{packageName()}/images/listening.gif"
-      @p "Check if your core is connected via USB and it's in listening mode (LED blinking blue)."
+      @p "Check if your device is connected via USB and it's in listening mode (LED blinking blue)."
       @div class: 'block', =>
         @button click: 'cancel', class: 'btn', 'Cancel'
 
