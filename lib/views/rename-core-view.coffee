@@ -1,6 +1,5 @@
 {DialogView} = require 'particle-dev-views'
 packageName = require '../utils/package-helper'
-SettingsHelper = null
 _s = null
 spark = null
 
@@ -17,12 +16,12 @@ class RenameCoreView extends DialogView
       hideOnBlur: false
 
     @renamePromise = null
+    @main = null
     @prop 'id', 'rename-core-view'
     @addClass packageName()
     @workspaceElement = atom.views.getView(atom.workspace)
 
   onConfirm: (newName) ->
-    SettingsHelper ?= require '../utils/settings-helper'
     _s ?= require 'underscore.string'
 
     @miniEditor.editor.removeClass 'editor-error'
@@ -31,8 +30,8 @@ class RenameCoreView extends DialogView
       @miniEditor.editor.addClass 'editor-error'
     else
       spark ?= require 'spark'
-      spark.login { accessToken: SettingsHelper.get('access_token') }
-      @renamePromise = spark.renameCore SettingsHelper.getLocal('current_core'), newName
+      spark.login { accessToken: @main.profileManager.accessToken }
+      @renamePromise = spark.renameCore @main.profileManager.currentDevice.id, newName
       @miniEditor.setLoading true
       @miniEditor.setEnabled false
 
@@ -41,7 +40,9 @@ class RenameCoreView extends DialogView
         if !@renamePromise
           return
 
-        SettingsHelper.setLocal 'current_core_name', newName
+        currentDevice = @main.profileManager.currentDevice
+        currentDevice.name = newName
+        @main.profileManager.currentDevice = currentDevice
 
         atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"
         atom.commands.dispatch @workspaceElement, "#{packageName()}:update-menu"

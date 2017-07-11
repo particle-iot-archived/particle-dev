@@ -5,7 +5,6 @@ packageName = require '../utils/package-helper'
 CompositeDisposable = null
 _s = null
 spark = null
-SettingsHelper = null
 validator = null
 
 module.exports =
@@ -30,7 +29,6 @@ class LoginView extends View
   initialize: (serializeState) ->
     {CompositeDisposable} = require 'atom'
     _s ?= require 'underscore.string'
-    SettingsHelper = require '../utils/settings-helper'
 
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
     @workspaceElement = atom.views.getView(atom.workspace)
@@ -44,6 +42,7 @@ class LoginView extends View
 
 
     @loginPromise = null
+    @main = null
 
     @emailModel = @emailEditor.editor.getModel()
     @emailEditor.editor.element.setAttribute('tabindex', 1)
@@ -142,7 +141,8 @@ class LoginView extends View
       @spinner.addClass 'hidden'
       if !@loginPromise
         return
-      SettingsHelper.setCredentials @email, e.access_token
+      @main.profileManager.username = @email
+      @main.profileManager.accessToken = e.access_token
       atom.particleDev.emitter.emit 'update-login-status'
       @loginPromise = null
 
@@ -165,5 +165,5 @@ class LoginView extends View
 
   # Logout
   logout: =>
-    SettingsHelper.clearCredentials()
+    @main.profileManager.clearCredentials()
     atom.particleDev.emitter.emit 'update-login-status'

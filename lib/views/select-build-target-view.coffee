@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SettingsHelper = null
 semver = null
 
 module.exports =
@@ -11,7 +10,6 @@ class SelectBuildTargetView extends SelectView
     super
 
     {$$} = require 'atom-space-pen-views'
-    SettingsHelper = require '../utils/settings-helper'
 
     @prop 'id', 'select-build-target-view'
     @addClass packageName()

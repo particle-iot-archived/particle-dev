@@ -15,7 +15,6 @@ compilationContext = null
 
 module.exports =
   # Local modules for JIT require
-  SettingsHelper: null
   MenuManager: null
   SerialHelper: null
   StatusView: null
@@ -59,8 +58,6 @@ module.exports =
     # Require modules on activation
     @analytics ?= require './contexts/analytics'
     @StatusView ?= require './views/status-bar-view'
-    @SettingsHelper ?= require './utils/settings-helper'
-    @MenuManager ?= require './utils/menu-manager'
     {@File} = require 'atom'
 
     # Install packages we depend on
@@ -73,9 +70,6 @@ module.exports =
     @emitter = new Emitter
     atom.particleDev =
       emitter: @emitter
-
-    # Initialize status bar view
-    @statusView = new @StatusView(@)
 
     whenjs.all([
       @statusBarDefer.promise
@@ -98,6 +92,12 @@ module.exports =
   serialize: ->
 
   ready: ->
+    # Initialize status bar view
+    @statusView = new @StatusView(@)
+    @statusView.addTiles @statusBar
+    @statusView.updateLoginStatus()
+
+    @MenuManager ?= require('./utils/menu-manager')(@profileManager)
     # Hook up commands
     @_registerCommands()
     # Hook up events
@@ -108,25 +108,8 @@ module.exports =
     @_registerContextMenus()
 
     # Monitoring changes in settings
-    settings ?= require './vendor/settings'
-    fs ?= require 'fs-plus'
-    path ?= require 'path'
-
-    proFile = path.join settings.ensureFolder(), 'profile.json'
-    if !fs.existsSync(proFile)
-      fs.writeFileSync proFile, '{}'
-      console.log '!Created profile ' + proFile
-
-    if typeof(jasmine) == 'undefined'
-      # Don't watch settings during tests
-      profileFile = new @File(proFile)
-      profileFile.onDidChange =>
-        @watchConfig()
-        @updateToolbarButtons()
-        @MenuManager.update()
-        atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"
-
-      @watchConfig()
+    @profileManager.on 'current-profile-changed', => @_onProfileChanged()
+    @profileManager.on 'current-profile-updated', => @_onProfileChanged()
 
     @disposables.add @watchEditors()
     @disposables.add atom.project.onDidChangePaths =>
@@ -135,11 +118,8 @@ module.exports =
   provideParticleDev: ->
     @
 
-  consumeStatusBar: (statusBar) ->
-    @statusView.addTiles statusBar
-    # @statusBarTile = statusBar.addLeftTile(item: @statusView, priority: 100)
-    @statusView.updateLoginStatus()
-    @statusBarDefer.resolve()
+  consumeStatusBar: (@statusBar) ->
+    @statusBarDefer.resolve @statusBar
 
   consumeToolBar: (toolBar) ->
     @toolBar = toolBar "#{@packageName()}-tool-bar"
@@ -244,15 +224,15 @@ module.exports =
 
   # "Decorator" which runs callback only when user is logged in
   loginRequired: (callback) ->
-    if !@SettingsHelper.isLoggedIn()
+    if !@profileManager.isLoggedIn
       return
 
     @spark ?= require 'spark'
     @spark.login
-      accessToken: @SettingsHelper.get('access_token')
+      accessToken: @profileManager.accessToken
 
-    if @SettingsHelper.getApiUrl()
-      @spark.api.baseUrl = @SettingsHelper.getApiUrl()
+    if @profileManager.apiUrl
+      @spark.api.baseUrl = @profileManager.apiUrl
 
     callback()
 
@@ -260,7 +240,7 @@ module.exports =
   deviceRequired: (callback) ->
     @loginRequired =>
       self = this
-      if !@SettingsHelper.hasCurrentCore()
+      if !@profileManager.hasCurrentDevice
         notification = atom.notifications.addInfo('Please select a device', {
           buttons: [
             { text: 'Select Device...', onDidClick: () =>
@@ -287,7 +267,7 @@ module.exports =
   minBuildTargetRequired: (callback) ->
     if @isProject() or @isLibrary()
       semver ?= require 'semver'
-      defaultBuildTarget = @SettingsHelper.getLocal('current_core_default_build_target')
+      defaultBuildTarget = @profileManager.currentDevice.defaultBuildTarget
       if defaultBuildTarget && semver.lt(defaultBuildTarget, '0.5.3')
         atom.notifications.addError 'This project is only compatible with Particle system firmware v0.5.3 or later. You will need to update the system firmware running on your Electron before you can flash this project to your device.'
         return
@@ -334,11 +314,11 @@ module.exports =
   # Enables/disables toolbar buttons based on log in state
   updateToolbarButtons: ->
     return unless @compileButton
-    if @SettingsHelper.isLoggedIn()
+    if @profileManager.isLoggedIn
       @compileButton.setEnabled @isCompileAvailable()
       @coreButton.setEnabled true
 
-      if @SettingsHelper.hasCurrentCore()
+      if @profileManager.hasCurrentDevice
         @flashButton.setEnabled @isCompileAvailable()
       else
         @flashButton.setEnabled false
@@ -347,26 +327,10 @@ module.exports =
       @compileButton.setEnabled false
       @coreButton.setEnabled false
 
-  # Watch config file for changes
-  watchConfig: ->
-    settings.whichProfile()
-    settingsFile = settings.findOverridesFile()
-    if !fs.existsSync(settingsFile)
-      console.log '!Created ' + settingsFile
-      fs.writeFileSync settingsFile, '{}'
-
-    configFile = new @File(settingsFile)
-    configFile.onDidChange =>
-      @accessToken = @SettingsHelper.get 'access_token'
-      @updateToolbarButtons()
-      @MenuManager.update()
-      atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"
-
   watchEditors: ->
     return atom.workspace.onDidStopChangingActivePaneItem  (panel) =>
       if atom.workspace.isTextEditor(panel) and @isLibrary()
         @updateToolbarButtons()
-
 
   processDirIncludes: (dirname) ->
     settings ?= require './vendor/settings'
@@ -512,12 +476,14 @@ module.exports =
     commands = {}
     commands["#{@packageName}:cancel-login"] = => @loginView.cancelCommand()
     @disposables.add atom.commands.add 'atom-workspace', commands
+    @loginView.main = @
     @loginView.show()
 
   # Log out current user
   logout: -> @loginRequired =>
     @initView 'login'
 
+    @loginView.main = @
     @loginView.logout()
 
   # Show user's cores list
@@ -541,22 +507,23 @@ module.exports =
   # Show rename core dialog
   renameCore: -> @deviceRequired =>
     @RenameCoreView ?= require './views/rename-core-view'
-    @renameCoreView = new @RenameCoreView(@SettingsHelper.getLocal 'current_core_name')
+    @renameCoreView = new @RenameCoreView(@profileManager.currentDevice.name)
+    @renameCoreView.main = @
 
     @renameCoreView.attach()
 
   # Remove current core from user's account
   removeCore: -> @deviceRequired =>
-    removeButton = 'Remove ' + @SettingsHelper.getLocal('current_core_name')
+    removeButton = "Remove #{@profileManager.currentDevice.name}"
     buttons = {}
     buttons['Cancel'] = ->
 
-    buttons['Remove ' + @SettingsHelper.getLocal('current_core_name')] = =>
-      @removePromise = @spark.removeCore @SettingsHelper.getLocal('current_core')
+    buttons[removeButton] = =>
+      @removePromise = @spark.removeCore @profileManager.currentDevice.id
       @removePromise.then (e) =>
         if !@removePromise
           return
-        @SettingsHelper.clearCurrentCore()
+        @profileManager.clearCurrentDevice()
         atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-core-status"
         atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-menu"
 
@@ -574,7 +541,7 @@ module.exports =
 
     atom.confirm
       message: 'Removal confirmation'
-      detailedMessage: 'Do you really want to remove ' + @SettingsHelper.getLocal('current_core_name') + '?'
+      detailedMessage: "Do you really want to remove #{@profileManager.currentDevice.name}?"
       buttons: buttons
 
   # Show core claiming dialog
@@ -582,6 +549,7 @@ module.exports =
     @claimCoreView = null
     @initView 'claim-core'
 
+    @claimCoreView.main = @
     @claimCoreView.attach()
 
   # Identify core via serial
@@ -638,7 +606,7 @@ module.exports =
     if atom.config.get("#{@packageName()}.saveAllBeforeCompile")
       atom.commands.dispatch @workspaceElement, 'window:save-all'
 
-    @SettingsHelper.setLocal 'compile-status', {working: true}
+    @profileManager.setLocal 'compile-status', {working: true}
     atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
 
     invalidFiles = files.filter (file) ->
@@ -646,7 +614,7 @@ module.exports =
     if invalidFiles.length
       invalidFiles = invalidFiles.reduce (acc, value) -> "#{acc}\n#{value}"
       atom.notifications.addError("Following files have spaces in their names:\n\n#{invalidFiles}\n\nPlease rename them")
-      @SettingsHelper.setLocal 'compile-status', null
+      @profileManager.setLocal 'compile-status', null
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       return
 
@@ -681,7 +649,7 @@ module.exports =
         @downloadBinaryPromise = @spark.downloadBinary e.binary_url, rootPath + '/' + filename
 
         @downloadBinaryPromise.then (e) =>
-          @SettingsHelper.setLocal 'compile-status', {filename: filename}
+          @profileManager.setLocal 'compile-status', {filename: filename}
           atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
           if !!thenFlash
             # want to explicitly set the file to flash since we cannot assume it from the current project when compiling a library example
@@ -704,13 +672,13 @@ module.exports =
         @mapMessageFilenames(errors, serverLocalFilenameMap, rootPath)
 
         if errors.length == 0
-          @SettingsHelper.setLocal 'compile-status', {error: e.output}
+          @profileManager.setLocal 'compile-status', {error: e.output}
         else
-          @SettingsHelper.setLocal 'compile-status', {errors: errors}
+          @profileManager.setLocal 'compile-status', {errors: errors}
           atom.commands.dispatch @workspaceElement, "#{@packageName()}:show-compile-errors"
       else
         console.error 'Compilation failed with unexpected reason:', reason
-        @SettingsHelper.setLocal 'compile-status', {error: e.output}
+        @profileManager.setLocal 'compile-status', {error: e.output}
 
       atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-compile-status"
       @compileCloudPromise = null
@@ -728,6 +696,7 @@ module.exports =
   showCompileErrors: ->
     @initView 'compile-errors'
 
+    @compileErrorsView.main = @
     @compileErrorsView.show()
 
   # Flash core via the cloud
@@ -771,7 +740,7 @@ module.exports =
 
         @statusView.setStatus 'Flashing via the cloud...'
 
-        @flashCorePromise = @spark.flashCore @SettingsHelper.getLocal('current_core'), [firmware]
+        @flashCorePromise = @spark.flashCore @profileManager.currentDevice.id, [firmware]
         @flashCorePromise.then (e) =>
           if e.ok == false
             error = e.errors?[0]?.error
@@ -795,15 +764,12 @@ module.exports =
           @statusView.clearAfter 5000
           @flashCorePromise = null
 
-      if @SettingsHelper.getLocal('current_core_platform') == 10
+      if @profileManager.currentDevice.platformId == 10
         atom.confirm
           message: 'Flashing over cellular'
-          detailedMessage: 'You\'re trying to flash your app to ' +
-            @SettingsHelper.getLocal('current_core_name') +
-            ' over cellular. This will use at least a few KB from your
-            data plan. ' +
-            'Instead it\'s recommended to flash
-            it via USB.'
+          detailedMessage: "You're trying to flash your app to #{@profileManager.currentDevice.name} over cellular. This will use at least a few KB from your
+            data plan. Instead it's recommended to flash
+            it via USB."
           buttons:
             'Cancel': ->
             'Flash OTA anyway': =>
@@ -817,7 +783,6 @@ module.exports =
       files.reverse()
       @selectFirmwareView.setItems files
       @selectFirmwareView.show()
-
 
   isLibraryExampleSync: (file) ->
     # todo - move to lib manager
@@ -862,7 +827,9 @@ module.exports =
 
   # Show serial monitor panel
   showSerialMonitor: ->
-    @serialMonitorView = null
+    @SerialMonitorView ?= require './views/serial-monitor-view'
+    @serialMonitorView = new @SerialMonitorView(@)
+
     @openPane 'serial-monitor'
 
   # Set up core's WiFi
@@ -978,3 +945,9 @@ module.exports =
     }
 
     @contextMenus.add atom.contextMenu.add contextMenus
+
+  _onProfileChanged: ->
+    @accessToken = @profileManager.accessToken
+    @updateToolbarButtons()
+    @MenuManager.update()
+    atom.commands.dispatch @workspaceElement, "#{@packageName()}:update-login-status"

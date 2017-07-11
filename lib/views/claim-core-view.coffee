@@ -1,6 +1,5 @@
 {DialogView} = require 'particle-dev-views'
 packageName = require '../utils/package-helper'
-SettingsHelper = null
 _s = null
 
 module.exports =
@@ -14,13 +13,13 @@ class ClaimCoreView extends DialogView
       hideOnBlur: false
 
     @claimPromise = null
+    @main = null
     @prop 'id', 'claim-core-view'
     @addClass packageName()
     @workspaceElement = atom.views.getView(atom.workspace)
 
   # When deviceID is submited
   onConfirm: (deviceID) ->
-    SettingsHelper ?= require '../utils/settings-helper'
     _s ?= require 'underscore.string'
 
     # Remove any errors
@@ -37,7 +36,7 @@ class ClaimCoreView extends DialogView
       @miniEditor.setLoading true
 
       spark = require 'spark'
-      spark.login { accessToken: SettingsHelper.get('access_token') }
+      spark.login { accessToken: @main.profileManager.accessToken }
 
       # Claim core via API
       @claimPromise = spark.claimCore deviceID
@@ -49,7 +48,9 @@ class ClaimCoreView extends DialogView
             return
 
           # Set current core in settings
-          SettingsHelper.setCurrentCore e.id, null, 0
+          device = new @main.profileManager.Device()
+          device.id = e.id
+          @main.profileManager.currentDevice = device
 
           # Refresh UI
           atom.commands.dispatch @workspaceElement, "#{packageName()}:update-core-status"

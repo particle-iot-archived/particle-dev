@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SettingsHelper = null
 
 module.exports =
 class SelectCoreView extends SelectView
@@ -10,7 +9,6 @@ class SelectCoreView extends SelectView
     super
 
     {$$} = require 'atom-space-pen-views'
-    SettingsHelper = require '../utils/settings-helper'
 
     @prop 'id', 'select-core-view'
     @addClass packageName()
@@ -39,8 +37,9 @@ class SelectCoreView extends SelectView
         @div class: 'secondary-line no-icon', item.id
 
   confirmed: (item) ->
-    SettingsHelper.setCurrentCore item.id, item.name, item.platform_id, item.default_build_target
-    @main.profileManager.setLocal 'current-device', item
+    device = @main.profileManager.Device.fromApiV1(item)
+    @main.profileManager.currentDevice = device
+
     if typeof item.platform_id != 'undefined'
       @main.profileManager.currentTargetPlatform = item.platform_id
       if item.platform_id == 10 && item.current_build_target
