@@ -2,7 +2,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SettingsHelper = null
 fs = null
 path = null
 
@@ -14,6 +13,7 @@ class CompileErrorsView extends SelectView
     {$$} = require 'atom-space-pen-views'
 
     @prop 'id', 'compile-errors-view'
+    @main = null
     @addClass packageName()
 
   fixFilePath: (filename) ->
@@ -21,9 +21,7 @@ class CompileErrorsView extends SelectView
     path.join.apply this, splitFilename.slice(2)
 
   show: =>
-    SettingsHelper ?= require '../utils/settings-helper'
-
-    compileStatus = SettingsHelper.getLocal 'compile-status'
+    compileStatus = @main.profileManager.getLocal 'compile-status'
     if compileStatus?.errors
       @setItems compileStatus.errors
     else

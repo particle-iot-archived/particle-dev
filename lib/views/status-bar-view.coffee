@@ -4,7 +4,6 @@ packageName = require '../utils/package-helper'
 CompositeDisposable = null
 shell = null
 $ = null
-SettingsHelper = null
 spark = null
 
 module.exports =
@@ -43,13 +42,11 @@ class StatusBarView extends View
     @disposables = new CompositeDisposable
     @workspaceElement = atom.views.getView(atom.workspace)
 
-    SettingsHelper = require '../utils/settings-helper'
-
     @getAttributesPromise = null
     @interval = null
 
     commands = {}
-    commands["#{packageName()}:update-login-status"] = => @updateLoginStatus()
+    atom.particleDev.emitter.on 'update-login-status', => @updateLoginStatus()
     commands["#{packageName()}:update-core-status"] = => @updateCoreStatus()
     commands["#{packageName()}:update-compile-status"] = => @updateCompileStatus()
     commands["#{packageName()}:update-build-target"] = => @updateBuildTarget()
@@ -85,30 +82,30 @@ class StatusBarView extends View
   showFile: ->
     shell ?= require 'shell'
     rootPath = atom.project.getPaths()[0]
-    compileStatus = SettingsHelper.getLocal 'compile-status'
+    compileStatus = @main.profileManager.getLocal 'compile-status'
     shell.showItemInFolder rootPath + '/' + compileStatus.filename
 
   # Get current core's status from the cloud
   getCurrentCoreStatus: ->
-    if !SettingsHelper.hasCurrentCore()
+    if !@main.profileManager.hasCurrentDevice
       return
 
     statusElement = @currentCoreTile.find('a')
     @currentCoreTile.removeClass 'online'
 
     spark = require 'spark'
-    spark.login { accessToken: SettingsHelper.get('access_token') }
-    @getAttributesPromise = spark.getAttributes SettingsHelper.getLocal('current_core')
+    spark.login { accessToken: @main.profileManager.accessToken }
+    @getAttributesPromise = spark.getAttributes @main.profileManager.currentDevice.id
     @getAttributesPromise.then (e) =>
-      SettingsHelper.setLocal 'variables', {}
-      SettingsHelper.setLocal 'functions', []
+      @main.profileManager.setLocal 'variables', {}
+      @main.profileManager.setLocal 'functions', []
 
       if !e
         return
 
       # Check if current core is still available
       if e.error
-        SettingsHelper.clearCurrentCore()
+        @main.profileManager.clearCurrentDevice()
         clearInterval @interval
         @interval = null
         @updateCoreStatus()
@@ -116,14 +113,14 @@ class StatusBarView extends View
         if e.connected
           @currentCoreTile.addClass 'online'
 
-        SettingsHelper.setLocal 'current_core_name', e.name
+        @main.profileManager.setLocal 'current_core_name', e.name
         if !e.name
           statusElement.text 'Unnamed'
         else
           statusElement.text e.name
 
-        SettingsHelper.setLocal 'variables', e.variables
-        SettingsHelper.setLocal 'functions', e.functions
+        @main.profileManager.setLocal 'variables', e.variables
+        @main.profileManager.setLocal 'functions', e.functions
 
         # Periodically check if core is online
         if !@interval
@@ -146,12 +143,12 @@ class StatusBarView extends View
     @platformIcon.removeClass()
     @platformIcon.addClass 'platform-icon'
 
-    if SettingsHelper.hasCurrentCore()
-      currentCore = SettingsHelper.getLocal('current_core_name')
+    if @main.profileManager.hasCurrentDevice
+      currentCore = @main.profileManager.currentDevice.name
       if !currentCore
         currentCore = 'Unnamed'
       statusElement.text currentCore
-      @platformIcon.addClass 'platform-icon-' + SettingsHelper.getLocal('current_core_platform')
+      @platformIcon.addClass 'platform-icon-' + @main.profileManager.currentDevice.platformId
 
       @getCurrentCoreStatus()
     else
@@ -162,8 +159,8 @@ class StatusBarView extends View
   updateLoginStatus: ->
     @loginStatusTile.empty()
 
-    if SettingsHelper.isLoggedIn()
-      username = SettingsHelper.get('username')
+    if @main.profileManager.isLoggedIn
+      username = @main.profileManager.username
       @loginStatusTile.text(username)
 
       @currentCoreTile.removeClass 'hidden'
@@ -180,7 +177,7 @@ class StatusBarView extends View
 
   updateCompileStatus: ->
     @compileStatusTile.addClass 'hidden'
-    compileStatus = SettingsHelper.getLocal 'compile-status'
+    compileStatus = @main.profileManager.getLocal 'compile-status'
 
     if !!compileStatus
       @compileStatusTile.removeClass 'hidden'

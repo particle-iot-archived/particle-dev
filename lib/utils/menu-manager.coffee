@@ -1,7 +1,6 @@
-SettingsHelper = require './settings-helper'
 packageName = require './package-helper'
 
-module.exports =
+module.exports = (profileManager) ->
   # Get root menu
   getMenu: ->
     devMenu = atom.menu.template.filter (value) ->
@@ -13,9 +12,9 @@ module.exports =
   update: ->
     devMenu = @getMenu()
 
-    if SettingsHelper.isLoggedIn()
+    if profileManager.isLoggedIn
       # Menu items for logged in user
-      username = SettingsHelper.get('username')
+      username = profileManager.get('username')
 
       devMenu.submenu = [{
         label: 'Log out ' + username,
@@ -27,8 +26,8 @@ module.exports =
         command: "#{packageName()}:select-device"
       }]
 
-      if SettingsHelper.hasCurrentCore()
-        currentCoreName = SettingsHelper.getLocal('current_core_name')
+      if profileManager.hasCurrentDevice
+        currentCoreName = profileManager.currentDevice.name
         if !currentCoreName
           currentCoreName = 'Unnamed'
         # Menu items depending on current core

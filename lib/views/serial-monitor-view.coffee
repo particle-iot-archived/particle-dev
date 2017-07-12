@@ -4,7 +4,6 @@
 packageName = require '../utils/package-helper'
 
 $$ = null
-SettingsHelper = null
 serialport = null
 
 module.exports =
@@ -23,16 +22,18 @@ class SerialMonitorView extends View
         @pre outlet: 'output'
         @subview 'input', new MiniEditorView('Enter string to send')
 
+  constructor: (@main) ->
+    super
+
   initialize: (serializeState) ->
     {$$} = require 'atom-space-pen-views'
-    SettingsHelper = require '../utils/settings-helper'
 
     @disposables = new CompositeDisposable
 
     @currentPort = null
     @refreshSerialPorts()
 
-    @currentBaudrate = SettingsHelper.get 'serial_baudrate'
+    @currentBaudrate = @main.profileManager.get 'serial_baudrate'
     @currentBaudrate ?= 9600
     @currentBaudrate = parseInt @currentBaudrate
 
@@ -96,7 +97,7 @@ class SerialMonitorView extends View
     serialport ?= require 'serialport'
     serialport.list (err, ports) =>
       @portsSelect.find('>').remove()
-      @currentPort = SettingsHelper.get 'serial_port'
+      @currentPort = @main.profileManager.get 'serial_port'
       for port in ports
         option = $$ ->
           @option value:port.comName, port.comName
@@ -106,15 +107,15 @@ class SerialMonitorView extends View
 
       if ports.length > 0
         @currentPort ?= ports[0].comName
-        SettingsHelper.set 'serial_port', @currentPort
+        @main.profileManager.set 'serial_port', @currentPort
 
   portSelected: ->
     @currentPort = @portsSelect.val()
-    SettingsHelper.set 'serial_port', @currentPort
+    @main.profileManager.set 'serial_port', @currentPort
 
   baudrateSelected: ->
     @currentBaudrate = @baudratesSelect.val()
-    SettingsHelper.set 'serial_baudrate', @currentBaudrate
+    @main.profileManager.set 'serial_baudrate', @currentBaudrate
 
   toggleConnect: ->
     if !!@portsSelect.attr 'disabled'

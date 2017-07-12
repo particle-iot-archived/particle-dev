@@ -5,7 +5,6 @@ packageName = require '../utils/package-helper'
 CompositeDisposable = null
 _s = null
 spark = null
-SettingsHelper = null
 validator = null
 
 module.exports =
@@ -30,7 +29,6 @@ class LoginView extends View
   initialize: (serializeState) ->
     {CompositeDisposable} = require 'atom'
     _s ?= require 'underscore.string'
-    SettingsHelper = require '../utils/settings-helper'
 
     @panel = atom.workspace.addModalPanel(item: this, visible: false)
     @workspaceElement = atom.views.getView(atom.workspace)
@@ -44,6 +42,7 @@ class LoginView extends View
 
 
     @loginPromise = null
+    @main = null
 
     @emailModel = @emailEditor.editor.getModel()
     @emailEditor.editor.element.setAttribute('tabindex', 1)
@@ -57,7 +56,7 @@ class LoginView extends View
       ).join ''
 
       passwordElement.find('#password-style').remove()
-      passwordElement.append('<style id="password-style">.password-lines .line span.text:before {content:"' + string + '";}</style>')
+      passwordElement.append('<style id="password-style">.password-lines .line span.syntax--text:before {content:"' + string + '";}</style>')
     @disposables.add atom.commands.add @passwordEditor.editor.element,
       'core:confirm': =>
         @login()
@@ -142,8 +141,9 @@ class LoginView extends View
       @spinner.addClass 'hidden'
       if !@loginPromise
         return
-      SettingsHelper.setCredentials @email, e.access_token
-      atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"
+      @main.profileManager.username = @email
+      @main.profileManager.accessToken = e.access_token
+      atom.particleDev.emitter.emit 'update-login-status'
       @loginPromise = null
 
       @cancel()
@@ -165,5 +165,5 @@ class LoginView extends View
 
   # Logout
   logout: =>
-    SettingsHelper.clearCredentials()
-    atom.commands.dispatch @workspaceElement, "#{packageName()}:update-login-status"
+    @main.profileManager.clearCredentials()
+    atom.particleDev.emitter.emit 'update-login-status'

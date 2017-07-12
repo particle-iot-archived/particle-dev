@@ -54,7 +54,7 @@
     },
     "console-panel": {
       "versions": {
-        "^1.0.0": "consumeConsole"
+        "^1.0.0": "consumeConsolePanel"
       }
     },
     "tool-bar": {
