@@ -1,3 +1,7 @@
+## 0.1.23
+* Fix [When logging in no characters are being shown in the password input](https://github.com/spark/particle-dev/issues/216)
+* Fix [Deprecated selector](https://github.com/spark/particle-dev/issues/176)
+
 ## 0.1.22
 * Don’t rename `.ino` filenames in errors
 
