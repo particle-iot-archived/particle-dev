@@ -6,24 +6,25 @@ Particle Dev is a professional, open source, hackable IDE, designed for use with
 
 ## Installing
 
-#### Particle Dev App
+#### Particle Dev App (recommended)
 
-Download and install the latest [Particle Dev App](https://github.com/spark/particle-dev-app)
+Download and install the latest [Particle Dev App](https://particle.io/dev) for your operating system.
 
 #### GitHub Atom
 
-To install Particle Dev package you'll need following dependencies:
+To get the latest, bleeding edge updates install Particle Dev packages. You'll need following dependencies:
 
 ##### Requirements
 
 ###### Windows
 
-* [GitHub for Windows](https://desktop.github.com/)
-* [Visual Studio Community 2013 for Windows Desktop](https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs#DownloadFamilies_2)
+Install all the required tools and configurations using Microsoft's [windows-build-tools](https://github.com/felixrieseberg/windows-build-tools) using `npm install --global --production windows-build-tools` from an elevated PowerShell or CMD.exe (run as Administrator).
 
 ###### OS X
 
-* [XCode](https://itunes.apple.com/gb/app/xcode/id497799835?mt=12) (you need to run it first in order to finish the installation)
+* [Xcode](https://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12)
+     * You also need to install the `Command Line Tools` via Xcode. You can find this under the menu `Xcode -> Preferences -> Downloads`
+     * This step will install `gcc` and the related toolchain containing `make`
 
 ###### Linux
 
@@ -48,15 +49,9 @@ To install Particle Dev package you'll need following dependencies:
 
 ##### Installation
 
-Install following packages:
+Install [particle-dev-complete](https://atom.io/packages/console-panel) meta package. After this it will ask you to install dependencies.
 
-* [console-panel](https://atom.io/packages/console-panel)
-* [tool-bar](https://atom.io/packages/tool-bar)
-* [particle-dev](https://atom.io/packages/particle-dev)
-* [particle-dev-cloud-functions](https://atom.io/packages/particle-dev-cloud-functions)
-* [particle-dev-cloud-variables](https://atom.io/packages/particle-dev-cloud-variables)
-
-After installation of `particle-dev` package, restart Atom. If you see a red bug icon in status bar, click it, then click `Rebuild Modules` button and `Restart Atom` again.
+![](images/install-short.gif)
 
 ## Usage
 
