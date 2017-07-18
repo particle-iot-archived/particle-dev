@@ -114,7 +114,7 @@ class SerialMonitorView extends View
     @main.profileManager.set 'serial_port', @currentPort
 
   baudrateSelected: ->
-    @currentBaudrate = @baudratesSelect.val()
+    @currentBaudrate = parseInt(@baudratesSelect.val())
     @main.profileManager.set 'serial_baudrate', @currentBaudrate
 
   toggleConnect: ->
