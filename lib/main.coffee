@@ -265,7 +265,7 @@ module.exports =
 
   # "Decorator" which tests if we're using at least 0.5.3 when compiling with libraries
   minBuildTargetRequired: (callback) ->
-    if @isProject() or @isLibrary()
+    if (@isProject() or @isLibrary()) and @profileManager.hasCurrentDevice
       semver ?= require 'semver'
       defaultBuildTarget = @profileManager.currentDevice.defaultBuildTarget
       if defaultBuildTarget && semver.lt(defaultBuildTarget, '0.5.3')
