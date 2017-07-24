@@ -627,6 +627,7 @@ module.exports =
     targetPlatformId = @profileManager.currentTargetPlatform
     targetBuild = @getCurrentBuildTarget()
     targetPlatformSlug = @getPlatformSlug(targetPlatformId) + '_' + targetBuild
+    console.info 'Compile code', filesObject, targetPlatformId, targetBuild
     @compileCloudPromise = @profileManager.apiClient.compileCode filesObject, targetPlatformId, targetBuild
     @compileCloudPromise.then (value) =>
       e = value.body
