@@ -16,7 +16,7 @@
     "atom-package-deps": "^4.6.0",
     "atom-space-pen-views": "^2.0.3",
     "fs-plus": "^2.0.4",
-    "gcc-output-parser": "^0.0.3",
+    "gcc-output-parser": "^0.0.4",
     "glob": "^4.2.1",
     "jquery": "^2.0.0",
     "node-analytics": "^1.0.1",
