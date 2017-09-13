@@ -18,7 +18,7 @@ To get the latest, bleeding edge updates install Particle Dev packages. You'll n
 
 ###### Windows
 
-Install all the required tools and configurations using Microsoft's [windows-build-tools](https://github.com/felixrieseberg/windows-build-tools) using `npm install --global --production windows-build-tools` from an elevated PowerShell or CMD.exe (run as Administrator).
+Install all the required tools and configurations using Microsoft's [windows-build-tools](https://github.com/felixrieseberg/windows-build-tools) using `npm install --global --production --add-python-to-path windows-build-tools` from an elevated PowerShell or CMD.exe (run as Administrator).
 
 ###### OS X
 
