@@ -1,3 +1,7 @@
+## 0.2.0
+* Make serial monitor use Atom dock
+* Fix [Opening panes with `openPane` toggles the bottom dock](https://github.com/spark/particle-dev/issues/226)
+
 ## 0.1.25
 * Fix _Compiler timed out or encountered a problem_ error
 
