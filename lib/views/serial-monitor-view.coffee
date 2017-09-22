@@ -62,12 +62,11 @@ class SerialMonitorView extends View
   getTitle: ->
     'Serial monitor'
 
-  # TODO: Remove both of these post 1.0
-  onDidChangeTitle: (callback) -> new Disposable()
-  onDidChangeModified: (callback) -> new Disposable()
-
   getUri: ->
     "#{packageName()}://editor/serial-monitor"
+
+  getDefaultLocation: ->
+    'bottom'
 
   close: ->
     pane = atom.workspace.paneForUri @getUri()

@@ -275,32 +275,13 @@ module.exports =
     callback()
 
   # Open view in a panel
-  openPane: (uri, location='bottom', packageName) ->
+  openPane: (uri, location='right', packageName) ->
     if packageName
       uri = "#{packageName}://editor/" + uri
     else
       uri = "#{@packageName()}://editor/" + uri
-    pane = atom.workspace.paneForURI uri
 
-    if pane?
-      pane.activateItemForURI uri
-    else
-      if atom.workspace.getPanes().length == 1
-        switch location
-          when 'bottom' then pane = atom.workspace.getActivePane().splitDown()
-          when 'top' then pane = atom.workspace.getActivePane().splitUp()
-          when 'left' then pane = atom.workspace.getActivePane().splitLeft()
-          when 'right' then pane = atom.workspace.getActivePane().splitRight()
-      else
-        panes = atom.workspace.getPanes()
-        pane = panes.pop()
-        if location == 'left'
-          pane = pane.splitLeft()
-        else
-          pane = pane.splitRight()
-
-      pane.activate()
-      atom.workspace.open uri, searchAllPanes: true
+    atom.workspace.open(uri, {searchAllPanes: true, split: location})
 
   isCompileAvailable: ->
     return (not @isLibrary() or @isLibraryExampleInFocus())
@@ -831,7 +812,7 @@ module.exports =
     @SerialMonitorView ?= require './views/serial-monitor-view'
     @serialMonitorView = new @SerialMonitorView(@)
 
-    @openPane 'serial-monitor'
+    atom.workspace.open(@serialMonitorView)
 
   # Set up core's WiFi
   setupWifi: (port=null) -> @loginRequired =>
