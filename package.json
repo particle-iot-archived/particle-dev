@@ -10,7 +10,9 @@
   },
   "scripts": {
     "lint": "coffeelint -f coffeelint.json lib/**/*.coffee",
-    "test:unit": "mocha test/**/*.spec.js -R spec --compilers js:babel-register"
+    "test:unit": "mocha test/**/*.spec.js -R spec --compilers js:babel-register",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "atom-package-deps": "^4.6.0",
@@ -31,7 +33,8 @@
     "underscore.string": "*",
     "validator": "*",
     "when": "*",
-    "xtend": "*"
+    "xtend": "*",
+    "snyk": "^1.42.5"
   },
   "package-deps": [
     "tool-bar",
@@ -79,5 +82,6 @@
     "sinon": "1.17.7",
     "sinon-as-promised": "^4.0.3",
     "sinon-chai": "^2.9.0"
-  }
+  },
+  "snyk": true
 }
