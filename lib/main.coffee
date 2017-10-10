@@ -323,6 +323,7 @@ module.exports =
     ignores = []
     includes = [
       "**/*.h",
+      "**/*.hpp",
       "**/*.ino",
       "**/*.cpp",
       "**/*.c",
