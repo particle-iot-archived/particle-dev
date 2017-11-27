@@ -9,7 +9,8 @@
     "atom": ">0.50.0"
   },
   "scripts": {
-    "lint": "coffeelint -f coffeelint.json lib/**/*.coffee",
+    "lint": "eslint -f unix lib/**/*.js",
+    "lint:fix": "eslint --fix -f unix",
     "test:unit": "mocha test/**/*.spec.js -R spec --compilers js:babel-register"
   },
   "dependencies": {
@@ -70,11 +71,13 @@
   },
   "readme": "ERROR: No README data found!",
   "devDependencies": {
+    "babel-eslint": "^8.0.2",
     "babel-preset-es2015": "^6.24.0",
     "babel-register": "^6.24.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "coffeelint": "^1.16.0",
+    "eslint": "^4.12.0",
+    "eslint-config-particle": "^2.0.0",
     "mocha": "^3.2.0",
     "sinon": "1.17.7",
     "sinon-as-promised": "^4.0.3",
