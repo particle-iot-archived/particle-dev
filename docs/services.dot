@@ -1,0 +1,33 @@
+digraph packages {
+	graph [fontname = "Gotham"];
+	node [fontname = "Hack"];
+	node [shape = "rect"];
+
+	// particle-dev
+	"status-bar" -> "particle-dev";
+	"console-panel" -> "particle-dev";
+	"tool-bar" -> "particle-dev";
+	"particle-dev-profiles" -> "particle-dev";
+
+	// particle-dev-profiles
+	"status-bar" -> "particle-dev-profiles";
+
+	// console-panel
+	"tool-bar" -> "console-panel"
+
+	// particle-dev-libraries
+	"particle-dev" -> "particle-dev-libraries";
+	"particle-dev-profiles" -> "particle-dev-libraries";
+	"tool-bar" -> "particle-dev-libraries";
+
+	// particle-dev-local-compiler
+	"status-bar" -> "particle-dev-local-compiler";
+	"console-panel" -> "particle-dev-local-compiler";
+	"tool-bar" -> "particle-dev-local-compiler";
+	"particle-dev" -> "particle-dev-local-compiler";
+	"particle-dev-profiles" -> "particle-dev-local-compiler";
+
+	{ rank=same; "particle-dev-libraries" "particle-dev-local-compiler" }
+	{ rank=same; "status-bar" "tool-bar" }
+	{ rank=same; "console-panel" "particle-dev-profiles" }
+}
