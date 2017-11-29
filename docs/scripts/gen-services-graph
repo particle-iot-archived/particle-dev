@@ -1,0 +1,5 @@
+#!/bin/bash
+SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+dot -Tpng -o $SCRIPT_PATH/../images/services-graph.png -Grankdir=LR $SCRIPT_PATH/../services.dot
+dot -Tsvg -o $SCRIPT_PATH/../images/services-graph.svg -Grankdir=LR $SCRIPT_PATH/../services.dot

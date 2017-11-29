@@ -4,5 +4,5 @@
 * [ ] Remove package name from event emitter event names
 * [ ] Switch to `Particle.js` from `spark`
 * [ ] Break out code from `main.coffee` into separate files
-* [ ] Convert to ES6 from CoffeeScript
+* [X] Convert to ES6 from CoffeeScript
 * [ ] Remove atom-space-pen-views same way [Atom has done it](https://github.com/atom/atom/issues/13254)
