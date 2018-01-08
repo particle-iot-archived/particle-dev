@@ -1,3 +1,10 @@
+## 0.2.2
+* Fix [Protect the main package from crashing if one of the depending packages didn't load](https://github.com/particle-iot/particle-dev/issues/231)
+* Fix [Compile Error: "This project is only compatible with Particle system firmware v0.5.3 or later"](https://github.com/particle-iot/particle-dev/issues/225)
+
+## 0.2.1
+* Include .hpp files when compiling
+
 ## 0.2.0
 * Make serial monitor use Atom dock
 * Fix [Opening panes with `openPane` toggles the bottom dock](https://github.com/particle-iot/particle-dev/issues/226)
