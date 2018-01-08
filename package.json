@@ -3,7 +3,7 @@
   "main": "./lib/main",
   "version": "0.2.1",
   "description": "Professional, hackable IDE for Particle, based on Github's Atom",
-  "repository": "https://github.com/spark/particle-dev",
+  "repository": "https://github.com/particle-iot/particle-dev",
   "license": "Apache-2.0",
   "engines": {
     "atom": ">0.50.0"
@@ -22,8 +22,8 @@
     "jquery": "^2.0.0",
     "node-analytics": "^1.0.1",
     "particle-commands": "^0.2.12",
-    "particle-dev-spec-stubs": "https://github.com/spark/particle-dev-spec-stubs/archive/v0.0.2.tar.gz",
-    "particle-dev-views": "https://github.com/spark/particle-dev-views/archive/v0.1.0.tar.gz",
+    "particle-dev-spec-stubs": "https://github.com/particle-iot/particle-dev-spec-stubs/archive/v0.0.2.tar.gz",
+    "particle-dev-views": "https://github.com/particle-iot/particle-dev-views/archive/v0.1.0.tar.gz",
     "particle-library-manager": "^0.1.11",
     "request": "*",
     "semver": "^5.3.0",

@@ -1,28 +1,28 @@
 ## 0.2.0
 * Make serial monitor use Atom dock
-* Fix [Opening panes with `openPane` toggles the bottom dock](https://github.com/spark/particle-dev/issues/226)
+* Fix [Opening panes with `openPane` toggles the bottom dock](https://github.com/particle-iot/particle-dev/issues/226)
 
 ## 0.1.25
 * Fix _Compiler timed out or encountered a problem_ error
 
 ## 0.1.24
-* Fix [Uncaught TypeError: Invalid "baudRate" must be a number got: 115200](https://github.com/spark/particle-dev/issues/183)
+* Fix [Uncaught TypeError: Invalid "baudRate" must be a number got: 115200](https://github.com/particle-iot/particle-dev/issues/183)
 
 ## 0.1.23
-* Fix [When logging in no characters are being shown in the password input](https://github.com/spark/particle-dev/issues/216)
-* Fix [Deprecated selector](https://github.com/spark/particle-dev/issues/176)
+* Fix [When logging in no characters are being shown in the password input](https://github.com/particle-iot/particle-dev/issues/216)
+* Fix [Deprecated selector](https://github.com/particle-iot/particle-dev/issues/176)
 
 ## 0.1.22
 * Don’t rename `.ino` filenames in errors
 
 ## 0.1.21
-* Fix [Uncaught TypeError: Cannot read property 'length' of null](https://github.com/spark/particle-dev/issues/200)
+* Fix [Uncaught TypeError: Cannot read property 'length' of null](https://github.com/particle-iot/particle-dev/issues/200)
 * Fix issues with opening a non existing `.ino` file when jumping to a `.cpp` file with an error
 * Parse linker errors
 
 ## 0.1.20
 * Add ability to select build target
-* Fix [File path in .ino errors leads to empty editor](https://github.com/spark/particle-dev/issues/185)
+* Fix [File path in .ino errors leads to empty editor](https://github.com/particle-iot/particle-dev/issues/185)
 
 ## 0.1.19
 * Fix bug causing Core not automatically becoming a build target
@@ -44,7 +44,7 @@
 * Add warning when compiling using libraries against fw older than 0.5.3
 
 ## 0.1.14
-* Fix [Case Sensitivity issue](https://github.com/spark/particle-dev/issues/172)
+* Fix [Case Sensitivity issue](https://github.com/particle-iot/particle-dev/issues/172)
 
 ## 0.1.13
 * Flash/compile library example open in tab from toolbar
@@ -90,20 +90,20 @@
 * Use `~/.particle` directory for storing credentials
 
 ## 0.0.33
-* Fix [#123](https://github.com/spark/spark-dev/issues/123)
-* Fix [#125](https://github.com/spark/spark-dev/issues/125)
-* Fix [#126](https://github.com/spark/spark-dev/issues/126)
-* Fix [#135](https://github.com/spark/spark-dev/issues/135)
-* Fix [#136](https://github.com/spark/spark-dev/issues/136)
-* Add option to autosave files when compiling [#31](https://github.com/spark/spark-dev/issues/31)
+* Fix [#123](https://github.com/particle-iot/spark-dev/issues/123)
+* Fix [#125](https://github.com/particle-iot/spark-dev/issues/125)
+* Fix [#126](https://github.com/particle-iot/spark-dev/issues/126)
+* Fix [#135](https://github.com/particle-iot/spark-dev/issues/135)
+* Fix [#136](https://github.com/particle-iot/spark-dev/issues/136)
+* Add option to autosave files when compiling [#31](https://github.com/particle-iot/spark-dev/issues/31)
 
 ## 0.0.32
-* [#111](https://github.com/spark/spark-dev/issues/111) Fixed
-* [#132](https://github.com/spark/spark-dev/issues/132) Fixed
+* [#111](https://github.com/particle-iot/spark-dev/issues/111) Fixed
+* [#132](https://github.com/particle-iot/spark-dev/issues/132) Fixed
 * Warning Electron users about OTA update
 
 ## 0.0.31
-* [#122](https://github.com/spark/spark-dev/issues/122) Fixed
+* [#122](https://github.com/particle-iot/spark-dev/issues/122) Fixed
 
 ## 0.0.30
 * Added ability to flash selected file
@@ -113,36 +113,36 @@
 * Fix opening single file on Windows
 
 ## 0.0.28
-* [#105](https://github.com/spark/spark-dev/issues/105) Fixed
+* [#105](https://github.com/particle-iot/spark-dev/issues/105) Fixed
 * Provide `particle-dev` [service](https://atom.io/docs/v1.0.19/behind-atom-interacting-with-other-packages-via-services)
 
 ## 0.0.27
-* [#116](https://github.com/spark/spark-dev/issues/116) Fixed
+* [#116](https://github.com/particle-iot/spark-dev/issues/116) Fixed
 
 ## 0.0.26
-* [#114](https://github.com/spark/spark-dev/issues/114) Add support for P1 and Electron
-* [#108](https://github.com/spark/spark-dev/issues/108) Fixed
+* [#114](https://github.com/particle-iot/spark-dev/issues/114) Add support for P1 and Electron
+* [#108](https://github.com/particle-iot/spark-dev/issues/108) Fixed
 
 ## 0.0.25
 **Windows users**: Please uninstall previous versions of Particle Dev before installing this one.
 
 * Updated Atom to [1.0.5](https://github.com/atom/atom/releases/tag/v1.0.5)
-* Fixed [#80](https://github.com/spark/spark-dev/issues/80)
-* Fixed [#97](https://github.com/spark/spark-dev/issues/97)
+* Fixed [#80](https://github.com/particle-iot/spark-dev/issues/80)
+* Fixed [#97](https://github.com/particle-iot/spark-dev/issues/97)
 * Added auto update on Windows
 
 ## 0.0.24
-* Fixed [#72](https://github.com/spark/spark-dev/issues/72)
-* Fixed [#76](https://github.com/spark/spark-dev/issues/76)
-* Fixed [#81](https://github.com/spark/spark-dev/issues/81)
-* Fixed [#85](https://github.com/spark/spark-dev/issues/85)
+* Fixed [#72](https://github.com/particle-iot/spark-dev/issues/72)
+* Fixed [#76](https://github.com/particle-iot/spark-dev/issues/76)
+* Fixed [#81](https://github.com/particle-iot/spark-dev/issues/81)
+* Fixed [#85](https://github.com/particle-iot/spark-dev/issues/85)
 
 ## 0.0.23
 * Support for the Photon
-* Fixed [#84](https://github.com/spark/spark-dev/issues/84)
-* Fixed [#83](https://github.com/spark/spark-dev/issues/83)
-* Fixed [#82](https://github.com/spark/spark-dev/issues/82)
-* Fixed [#64](https://github.com/spark/spark-dev/issues/64)
+* Fixed [#84](https://github.com/particle-iot/spark-dev/issues/84)
+* Fixed [#83](https://github.com/particle-iot/spark-dev/issues/83)
+* Fixed [#82](https://github.com/particle-iot/spark-dev/issues/82)
+* Fixed [#64](https://github.com/particle-iot/spark-dev/issues/64)
 
 ## 0.0.22
 * Fixed clipped status bar
@@ -152,34 +152,34 @@
 
 ## 0.0.21
 * Updated Atom to 0.187.0
-* Fixed [#43](https://github.com/spark/spark-dev/issues/43)
+* Fixed [#43](https://github.com/particle-iot/spark-dev/issues/43)
 
 ## 0.0.20
 * Storing current device and compile status in session instead of globally
 * Better messages on invalid credentials
-* Fixed [#57](https://github.com/spark/spark-dev/issues/57)
-* Fixed [#56](https://github.com/spark/spark-dev/issues/56)
-* Fixed [#59](https://github.com/spark/spark-dev/issues/59)
-* Fixed [#55](https://github.com/spark/spark-dev/issues/55)
-* Fixed [#53](https://github.com/spark/spark-dev/issues/53)
-* Fixed [#30](https://github.com/spark/spark-dev/issues/30)
+* Fixed [#57](https://github.com/particle-iot/spark-dev/issues/57)
+* Fixed [#56](https://github.com/particle-iot/spark-dev/issues/56)
+* Fixed [#59](https://github.com/particle-iot/spark-dev/issues/59)
+* Fixed [#55](https://github.com/particle-iot/spark-dev/issues/55)
+* Fixed [#53](https://github.com/particle-iot/spark-dev/issues/53)
+* Fixed [#30](https://github.com/particle-iot/spark-dev/issues/30)
 
 ## 0.0.19
-* Fixed [#28](https://github.com/spark/spark-dev/issues/28)
-* Fixed [#41](https://github.com/spark/spark-dev/issues/41)
+* Fixed [#28](https://github.com/particle-iot/spark-dev/issues/28)
+* Fixed [#41](https://github.com/particle-iot/spark-dev/issues/41)
 * Cleaned up status bar
 
 ## 0.0.18
 * Fixed new version notification on Windows
-* Fixed [#19](https://github.com/spark/spark-dev/issues/19)
-* Fixed [#24](https://github.com/spark/spark-dev/issues/24)
-* Fixed [#26](https://github.com/spark/spark-dev/issues/26)
-* Fixed [#29](https://github.com/spark/spark-dev/issues/29)
-* Fixed [#33](https://github.com/spark/spark-dev/issues/33)
-* Fixed [#34](https://github.com/spark/spark-dev/issues/34)
-* Fixed [#35](https://github.com/spark/spark-dev/issues/35)
-* Fixed [#36](https://github.com/spark/spark-dev/issues/36)
-* Fixed [#37](https://github.com/spark/spark-dev/issues/37)
+* Fixed [#19](https://github.com/particle-iot/spark-dev/issues/19)
+* Fixed [#24](https://github.com/particle-iot/spark-dev/issues/24)
+* Fixed [#26](https://github.com/particle-iot/spark-dev/issues/26)
+* Fixed [#29](https://github.com/particle-iot/spark-dev/issues/29)
+* Fixed [#33](https://github.com/particle-iot/spark-dev/issues/33)
+* Fixed [#34](https://github.com/particle-iot/spark-dev/issues/34)
+* Fixed [#35](https://github.com/particle-iot/spark-dev/issues/35)
+* Fixed [#36](https://github.com/particle-iot/spark-dev/issues/36)
+* Fixed [#37](https://github.com/particle-iot/spark-dev/issues/37)
 
 ## 0.0.17
 * Bug fixes
