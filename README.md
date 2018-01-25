@@ -49,7 +49,7 @@ Install all the required tools and configurations using Microsoft's [windows-bui
 
 ##### Installation
 
-Install [particle-dev-complete](https://atom.io/packages/console-panel) meta package. After this it will ask you to install dependencies.
+Install [particle-dev-complete](https://atom.io/packages/particle-dev-complete) meta package. After this it will ask you to install dependencies.
 
 ![](images/install-short.gif)
 
